@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ink — тест</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#0f1115;color:#fff;padding:20px;margin:0;font-size:15px;line-height:1.5}
+h1{font-size:20px;margin:0 0 16px}
+.test{padding:14px;border-radius:10px;margin-bottom:10px;border:1px solid #333;background:#1a1d24}
+.test.ok{border-color:#4ade80;background:rgba(74,222,128,.1)}
+.test.fail{border-color:#ff5c5c;background:rgba(255,92,92,.1)}
+.test.wait{border-color:#ffd18a;background:rgba(255,209,138,.1)}
+.test b{display:block;margin-bottom:6px}
+.test small{color:#8a93a5;font-size:12px;word-break:break-all}
+</style>
+</head>
+<body>
+<h1>🔍 Диагностика Ink</h1>
+<div id="results"></div>
+
+<script>
+const box = document.getElementById('results');
+
+function addTest(name, status, detail){
+  const el = document.createElement('div');
+  el.className = 'test ' + status;
+  el.innerHTML = '<b>' + name + '</b><small>' + (detail || '') + '</small>';
+  box.appendChild(el);
+  console.log('[test]', name, status, detail);
+}
+
+async function test1_supabaseReachable(){
+  const start = Date.now();
+  try{
+    const res = await fetch('https://eycszimjsmgcodempxwd.supabase.co', {method:'GET'});
+    return {ok:true, ms:Date.now()-start};
+  }catch(e){
+    return {ok:false, err:e.message};
+  }
+}
+
+async function test2_supabaseRest(){
+  const start = Date.now();
+  try{
+    const res = await fetch('https://eycszimjsmgcodempxwd.supabase.co/rest/v1/profiles?select=username', {
+      headers:{
+        'apikey':'sb_publishable_ONJbvEjeKByhDrj1OX2nZw_Xj1wRJDv',
+        'Authorization':'Bearer sb_publishable_ONJbvEjeKByhDrj1OX2nZw_Xj1wRJDv'
+      }
+    });
+    const text = await res.text();
+    return {ok:true, ms:Date.now()-start, status:res.status, body:text.slice(0,200)};
+  }catch(e){
+    return {ok:false, err:e.message, ms:Date.now()-start};
+  }
+}
+
+async function test3_sdkCDN(){
+  const start = Date.now();
+  try{
+    const res = await fetch('https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js', {method:'HEAD'});
+    return {ok:true, ms:Date.now()-start};
+  }catch(e){
+    return {ok:false, err:e.message};
+  }
+}
+
+async function test4_localStorage(){
+  try{
+    localStorage.setItem('__test__','1');
+    localStorage.removeItem('__test__');
+    return {ok:true};
+  }catch(e){
+    return {ok:false, err:e.message};
+  }
+}
+
+async function test5_sessionStorage(){
+  try{
+    sessionStorage.setItem('__test__','1');
+    sessionStorage.removeItem('__test__');
+    return {ok:true};
+  }catch(e){
+    return {ok:false, err:e.message};
+  }
+}
+
+async function run(){
+  addTest('1. Запуск тестов', 'wait', 'Проверяю...');
+
+  const t4 = await test4_localStorage();
+  addTest('4. localStorage', t4.ok?'ok':'fail', t4.ok?'Работает':'Ошибка: '+t4.err);
+
+  const t5 = await test5_sessionStorage();
+  addTest('5. sessionStorage', t5.ok?'ok':'fail', t5.ok?'Работает':'Ошибка: '+t5.err);
+
+  const t3 = await test3_sdkCDN();
+  addTest('3. CDN Supabase SDK', t3.ok?'ok':'fail', t3.ok?('OK за '+t3.ms+'мс'):('Ошибка: '+t3.err));
+
+  addTest('2. Supabase REST API', 'wait', 'Проверяю... (макс 15 сек)');
+  const t2 = await test2_supabaseRest();
+  if(t2.ok){
+    addTest('2. Supabase REST API', 'ok', '✅ Ответ за '+t2.ms+'мс. Статус '+t2.status+'. '+t2.body);
+  }else{
+    addTest('2. Supabase REST API', 'fail', '❌ '+t2.err+' (через '+t2.ms+'мс)');
+  }
+}
+
+run();
+</script>
+</body>
+</html>
