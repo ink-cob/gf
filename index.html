@@ -455,7 +455,17 @@ let pendingPhoto=null, repTargetUid=null, exportChatTarget=null;
 let adminFilter='all', adminSearch='', notesTargetUid=null;
 
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function toEmail(l){return l.toLowerCase().replace(/[^a-z0-9_]/g,'_')+'@ink.local';}
+function toEmail(l){
+  const clean = l.toLowerCase().trim().replace(/[^a-z0-9_]/g,'_');
+  // Уникальный суффикс, чтобы 'Маша' и 'Петя' не схлопывались в одно
+  let h = 0;
+  for (let i = 0; i < l.toLowerCase().trim().length; i++) {
+    h = ((h << 5) - h + l.toLowerCase().trim().charCodeAt(i)) | 0;
+  }
+  const hashPart = Math.abs(h).toString(36);
+  // .app — валидный TLD, Supabase его принимает
+  return 'u' + hashPart + '_' + clean + '@ink-app.com';
+}
 function fmtTime(iso){if(!iso)return '';const d=new Date(iso);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
 function isOnline(u){return u&&u.last_seen&&(Date.now()-new Date(u.last_seen).getTime())<PRESENCE_ONLINE;}
 function statusText(u){
