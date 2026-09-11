@@ -11,6 +11,7 @@
     --accent:#4f8cff; --accent2:#7c5cff;
     --text:#e8ecf3; --muted:#8a93a5;
     --danger:#ff5c5c; --ok:#4ade80; --warn:#ffd18a;
+    --shadow:0 20px 60px rgba(0,0,0,.4);
   }
   body.light{
     --bg:#f4f6fa; --panel:#ffffff; --panel2:#eef1f6;
@@ -18,6 +19,7 @@
     --accent:#3b7dff; --accent2:#6a4cff;
     --text:#141821; --muted:#6b7280;
     --danger:#d92d2d; --ok:#15803d; --warn:#a16207;
+    --shadow:0 20px 60px rgba(0,0,0,.15);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html,body{height:100%; margin:0}
@@ -36,17 +38,17 @@
     body.in-chat .sidebar{display:none}
     body.in-chat .chatpane{display:flex}
   }
-  header{height:58px; display:flex; align-items:center; gap:6px; padding:0 12px; background:var(--panel); border-bottom:1px solid var(--border); flex-shrink:0; transition:background .25s}
-  header .title{font-weight:700; font-size:18px}
+  header{height:58px; display:flex; align-items:center; gap:4px; padding:0 12px; background:var(--panel); border-bottom:1px solid var(--border); flex-shrink:0}
+  header .title{font-weight:700; font-size:17px; cursor:pointer; padding:4px 8px; border-radius:10px}
+  header .title:hover{background:rgba(127,127,127,.1)}
   header .spacer{flex:1}
-  header button{background:transparent; border:0; color:var(--text); font-size:18px; cursor:pointer; padding:8px 10px; border-radius:12px}
+  header button{background:transparent; border:0; color:var(--text); font-size:17px; cursor:pointer; padding:8px 10px; border-radius:12px}
   header button:hover{background:rgba(127,127,127,.12)}
 
-  /* ================= АВТОРИЗАЦИЯ ================= */
   #auth{position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center;
     background:radial-gradient(1200px 600px at 50% -10%, var(--panel2) 0%, var(--bg) 60%); padding:20px}
   #auth .card{width:100%; max-width:400px; background:var(--panel); border:1px solid var(--border2); border-radius:22px;
-    padding:26px 22px; box-shadow:0 20px 60px rgba(0,0,0,.3); animation:pop .35s cubic-bezier(.2,.9,.3,1.4)}
+    padding:26px 22px; box-shadow:var(--shadow); animation:pop .35s cubic-bezier(.2,.9,.3,1.4)}
   @keyframes pop{from{transform:scale(.92); opacity:0} to{transform:scale(1); opacity:1}}
   #auth h1{margin:0 0 6px; font-size:26px}
   #auth p.sub{margin:0 0 18px; color:var(--muted); font-size:13px}
@@ -57,6 +59,8 @@
     background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; transition:transform .12s}
   .btn:active{transform:scale(.97)}
   .btn.ghost{background:transparent; border:1px solid var(--border2); color:var(--muted)}
+  .btn.small{padding:8px 12px; font-size:13px; width:auto}
+  .btn.danger{background:linear-gradient(135deg,#e04343,#a02020)}
   .row{display:flex; gap:8px; margin-top:8px}
   .row .btn{flex:1}
   .msg-ok{padding:10px 12px; border-radius:10px; font-size:13px; margin-bottom:10px; display:none}
@@ -64,7 +68,6 @@
   .msg-ok.ok{background:rgba(74,222,128,.12); color:var(--ok); border:1px solid rgba(74,222,128,.35); display:block}
   .msg-ok.warn{background:rgba(255,209,138,.12); color:var(--warn); border:1px solid rgba(255,209,138,.35); display:block}
 
-  /* ================= СПИСОК ЧАТОВ ================= */
   .search{margin:10px 14px 0; padding:10px 12px; background:var(--panel2); border:1px solid var(--border2);
     border-radius:14px; color:var(--text); outline:none; font-size:14px}
   .search:focus{border-color:var(--accent)}
@@ -73,18 +76,31 @@
   .avatar{width:46px; height:46px; border-radius:50%; flex-shrink:0;
     background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;
     display:flex; align-items:center; justify-content:center; font-weight:700}
+  .avatar.sm{width:34px; height:34px; font-size:13px}
   .chat-item .meta{flex:1; min-width:0}
   .chat-item .name{font-weight:600; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .chat-item .last{font-size:12.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .lock-badge{font-size:11px; color:var(--muted); margin-left:4px}
+  .createBtn{margin:10px 14px 0; padding:11px; text-align:center; border-radius:14px;
+    border:1px dashed var(--border2); color:var(--muted); cursor:pointer; font-size:14px}
+  .createBtn:hover{color:var(--accent); border-color:var(--accent)}
 
-  /* ================= ОКНО ЧАТА ================= */
   #messages{flex:1; overflow-y:auto; padding:16px 14px; display:flex; flex-direction:column; gap:8px;
     overscroll-behavior:contain; -webkit-overflow-scrolling:touch}
   .msg{max-width:78%; padding:9px 13px; border-radius:16px; background:var(--panel2); align-self:flex-start;
-    font-size:14.5px; line-height:1.35; word-wrap:break-word; border:1px solid var(--border)}
+    font-size:14.5px; line-height:1.35; word-wrap:break-word; border:1px solid var(--border);
+    position:relative; cursor:pointer; user-select:none}
   .msg.me{align-self:flex-end; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:0}
+  .msg .sname{display:block; font-size:11.5px; font-weight:700; color:var(--accent); margin-bottom:3px}
+  .msg.me .sname{color:#cfe0ff}
   .msg .time{display:block; font-size:10.5px; opacity:.7; margin-top:3px; text-align:right}
+  .msg .edited{font-size:10px; opacity:.6; margin-right:4px}
+  .msg .replyQuote{border-left:3px solid var(--accent); padding:2px 8px; margin-bottom:5px;
+    font-size:12px; color:var(--muted); background:rgba(127,127,127,.08); border-radius:4px}
+  .msg .fwd{font-size:11.5px; color:var(--muted); font-style:italic; margin-bottom:3px}
+  .reactions{display:flex; gap:4px; flex-wrap:wrap; margin-top:5px}
+  .reaction{background:rgba(127,127,127,.15); padding:1px 7px; border-radius:10px; font-size:12px; cursor:pointer}
+  .reaction.mine{background:rgba(79,140,255,.3); border:1px solid var(--accent)}
   .composer{display:flex; gap:8px; padding:10px 12px; border-top:1px solid var(--border); background:var(--panel); flex-shrink:0}
   .composer input{flex:1; padding:12px 14px; background:var(--panel2); border:1px solid var(--border2);
     border-radius:14px; color:var(--text); outline:none; font-size:14.5px}
@@ -93,6 +109,10 @@
   .composer button{width:46px; height:46px; border-radius:50%; border:0; cursor:pointer; font-size:18px;
     background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff}
   .composer button:disabled{opacity:.4; cursor:not-allowed}
+  .replyBar{padding:6px 14px; background:var(--panel2); border-top:1px solid var(--border);
+    font-size:12.5px; color:var(--muted); display:none; justify-content:space-between; align-items:center}
+  .replyBar.show{display:flex}
+  .replyBar .x{cursor:pointer; color:var(--danger); font-weight:700}
 
   body.inkognito #app{filter:hue-rotate(-40deg) saturate(1.2)}
   body.inkognito::after{content:"РЕЖИМ INKOGNITO"; position:fixed; bottom:8px; left:50%; transform:translateX(-50%);
@@ -101,12 +121,11 @@
   ::-webkit-scrollbar-thumb{background:var(--border2); border-radius:8px}
   .empty{color:var(--muted); text-align:center; margin-top:40px; font-size:14px}
 
-  /* ================= НАСТРОЙКИ ================= */
-  #settings{position:fixed; inset:0; z-index:70; display:none}
-  #settings.open{display:block}
-  #settings .overlay{position:absolute; inset:0; background:rgba(0,0,0,.45); animation:fade .2s}
+  #settings,#chatInfo,#admin,#createChat,#reportModal,#forwardModal{position:fixed; inset:0; z-index:70; display:none}
+  #settings.open,#chatInfo.open,#admin.open,#createChat.open,#reportModal.open,#forwardModal.open{display:block}
+  .overlay{position:absolute; inset:0; background:rgba(0,0,0,.45); animation:fade .2s}
   @keyframes fade{from{opacity:0} to{opacity:1}}
-  #settings .panel{position:absolute; top:0; right:0; bottom:0; width:min(420px,92vw);
+  .panel{position:absolute; top:0; right:0; bottom:0; width:min(440px,92vw);
     background:var(--panel); border-left:1px solid var(--border);
     display:flex; flex-direction:column; animation:slideIn .25s cubic-bezier(.2,.9,.3,1.1); overflow:hidden}
   @keyframes slideIn{from{transform:translateX(100%)} to{transform:none}}
@@ -128,15 +147,15 @@
   .st-row .check{color:var(--accent); font-weight:700; font-size:16px}
   .st-row.danger .t1{color:var(--danger)}
   .st-row.simple{justify-content:space-between}
-  .st-row.simple .txt{display:flex; align-items:center; gap:10px}
-  .st-row.simple .t1{margin:0}
+  .st-row.simple .t1{margin:0; font-weight:500}
+  .st-row .small-action{font-size:12px; color:var(--accent); cursor:pointer; padding:4px 8px; border-radius:8px}
+  .st-row .small-action:hover{background:rgba(79,140,255,.15)}
   .switch{position:relative; width:46px; height:26px; border-radius:14px; background:var(--border2); cursor:pointer; flex-shrink:0; transition:background .2s}
   .switch.on{background:var(--accent)}
   .switch::after{content:''; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff; transition:transform .2s}
   .switch.on::after{transform:translateX(20px)}
   .st-footer{padding:14px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); text-align:center}
 
-  /* ================= МОДАЛКА ПАРОЛЯ ================= */
   #passModal{position:fixed; inset:0; z-index:80; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.55); padding:20px}
   #passModal.open{display:flex}
   #passModal .box{width:100%; max-width:360px; background:var(--panel); border:1px solid var(--border2); border-radius:20px; padding:22px; animation:pop .25s cubic-bezier(.2,.9,.3,1.3)}
@@ -145,11 +164,41 @@
   #passModal input{width:100%; padding:12px 14px; background:var(--panel2); border:1px solid var(--border2); border-radius:12px; color:var(--text); font-size:15px; outline:none; margin-bottom:10px}
   #passModal input:focus{border-color:var(--accent)}
   #passModal .err{color:var(--danger); font-size:12px; margin-bottom:10px; min-height:14px}
+
+  /* Универсальная модалка */
+  .modalBox{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:min(420px,92vw);
+    background:var(--panel); border:1px solid var(--border2); border-radius:20px; padding:22px; animation:pop .25s cubic-bezier(.2,.9,.3,1.3); max-height:88vh; overflow-y:auto}
+  .modalBox h3{margin:0 0 6px; font-size:18px}
+  .modalBox p.hint{margin:0 0 14px; font-size:13px; color:var(--muted)}
+  .modalBox input,.modalBox textarea,.modalBox select{width:100%; padding:12px 14px; background:var(--panel2); border:1px solid var(--border2);
+    border-radius:12px; color:var(--text); font-size:14.5px; outline:none; margin-bottom:10px; font-family:inherit; resize:vertical}
+  .modalBox input:focus,.modalBox textarea:focus{border-color:var(--accent)}
+  .modalBox .seg{display:flex; gap:6px; margin-bottom:12px}
+  .modalBox .seg button{flex:1; padding:10px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px;
+    color:var(--text); cursor:pointer; font-size:13.5px}
+  .modalBox .seg button.active{background:linear-gradient(135deg,var(--accent),var(--accent2)); border-color:transparent; color:#fff}
+  .modalBox .chkRow{display:flex; align-items:center; gap:10px; padding:8px 0; font-size:14px; cursor:pointer}
+  .modalBox .chkRow input{width:auto; margin:0}
+
+  /* Контекстное меню сообщения */
+  #ctxMenu{position:fixed; z-index:90; background:var(--panel); border:1px solid var(--border2); border-radius:14px;
+    padding:6px; box-shadow:var(--shadow); display:none; min-width:200px; animation:pop .15s}
+  #ctxMenu.open{display:block}
+  #ctxMenu .it{padding:10px 14px; cursor:pointer; border-radius:10px; font-size:14px; display:flex; gap:10px; align-items:center}
+  #ctxMenu .it:hover{background:rgba(127,127,127,.15)}
+  #ctxMenu .it.danger{color:var(--danger)}
+  #ctxMenu .sep{height:1px; background:var(--border); margin:4px 6px}
+
+  /* Быстрые реакции */
+  #reactionPick{position:fixed; z-index:91; background:var(--panel); border:1px solid var(--border2); border-radius:999px;
+    padding:6px; display:none; box-shadow:var(--shadow); gap:2px}
+  #reactionPick.open{display:flex}
+  #reactionPick button{background:transparent; border:0; font-size:20px; cursor:pointer; padding:6px 8px; border-radius:50%}
+  #reactionPick button:hover{background:rgba(127,127,127,.2)}
 </style>
 </head>
 <body>
 
-<!-- ================= АВТОРИЗАЦИЯ ================= -->
 <div id="auth">
   <div class="card">
     <div id="authMode">
@@ -163,6 +212,7 @@
         <button class="btn ghost" onclick="switchTo('reg')">Регистрация</button>
         <button class="btn ghost" onclick="forgot()">Забыл пароль</button>
       </div>
+      <p style="font-size:11px; color:var(--muted); margin-top:14px; text-align:center">Совет: первый аккаунт становится админом</p>
     </div>
     <div id="regMode" style="display:none">
       <h1>Регистрация</h1>
@@ -179,11 +229,10 @@
   </div>
 </div>
 
-<!-- ================= ПРИЛОЖЕНИЕ ================= -->
 <div id="app" style="display:none">
   <header>
     <button id="backBtn" style="display:none" onclick="backToList()">←</button>
-    <div class="title" id="hTitle">Ink</div>
+    <div class="title" id="hTitle" onclick="openChatInfo()">Ink</div>
     <div class="spacer"></div>
     <button title="Инкогнито" onclick="toggleInkognito()">🕶️</button>
     <button title="Настройки" onclick="openSettings()">⚙️</button>
@@ -192,10 +241,15 @@
   <div class="layout" style="flex:1; overflow:hidden">
     <div class="sidebar">
       <input class="search" id="searchInput" placeholder="Поиск: логин, ID#, ##канал" oninput="renderChats()"/>
+      <div class="createBtn" onclick="openCreateChat()">+ Создать чат</div>
       <div class="scroll-rubber" id="chatList"></div>
     </div>
     <div class="chatpane">
       <div id="messages" class="scroll-rubber"></div>
+      <div class="replyBar" id="replyBar">
+        <span id="replyPreview"></span>
+        <span class="x" onclick="cancelReply()">✕</span>
+      </div>
       <div class="composer">
         <input id="msgInput" placeholder="Сообщение..." onkeydown="if(event.key==='Enter')sendMsg()"/>
         <button id="sendBtn" onclick="sendMsg()">➤</button>
@@ -204,14 +258,14 @@
   </div>
 </div>
 
-<!-- ================= НАСТРОЙКИ ================= -->
+<!-- НАСТРОЙКИ -->
 <div id="settings">
-  <div class="overlay" onclick="closeSettings()"></div>
+  <div class="overlay" onclick="closePanel('settings')"></div>
   <div class="panel">
     <div class="st-header">
       <h2>Настройки</h2>
       <div class="spacer"></div>
-      <button onclick="closeSettings()">✕</button>
+      <button onclick="closePanel('settings')">✕</button>
     </div>
     <div class="st-body">
       <div class="st-section">
@@ -219,36 +273,109 @@
         <div id="accountsList"></div>
         <div class="st-row" onclick="addAccount()">
           <div class="icon" style="background:var(--panel2); color:var(--accent); border:1px dashed var(--border2)">+</div>
-          <div class="txt">
-            <div class="t1">Добавить аккаунт</div>
-            <div class="t2">Создать новый и переключиться</div>
-          </div>
+          <div class="txt"><div class="t1">Добавить аккаунт</div><div class="t2">Создать новый</div></div>
         </div>
       </div>
-
       <div class="st-section">
         <h3>Внешний вид</h3>
         <div class="st-row simple" onclick="toggleTheme()">
-          <div class="txt"><span style="font-size:18px">🌗</span><span class="t1">Светлая тема</span></div>
+          <div class="txt"><span style="font-size:18px">🌗</span><span class="t1" style="margin-left:10px">Светлая тема</span></div>
           <div class="switch" id="themeSwitch"></div>
         </div>
       </div>
-
+      <div class="st-section" id="adminSection" style="display:none">
+        <h3>Администрирование</h3>
+        <div class="st-row" onclick="openAdmin()">
+          <div class="icon" style="background:#c8410f">🛡️</div>
+          <div class="txt"><div class="t1">Консоль админа</div><div class="t2">Список аккаунтов, блокировки</div></div>
+        </div>
+      </div>
       <div class="st-section">
         <h3>Аккаунт</h3>
         <div class="st-row simple" onclick="logout()">
-          <div class="txt"><span style="font-size:18px">🚪</span><span class="t1">Выйти из аккаунта</span></div>
+          <div class="txt"><span style="font-size:18px">🚪</span><span class="t1" style="margin-left:10px">Выйти</span></div>
         </div>
         <div class="st-row danger simple" onclick="requestDeleteAccount()">
-          <div class="txt"><span style="font-size:18px">🗑️</span><span class="t1">Удалить аккаунт</span></div>
+          <div class="txt"><span style="font-size:18px">🗑️</span><span class="t1" style="margin-left:10px">Удалить аккаунт</span></div>
         </div>
       </div>
     </div>
-    <div class="st-footer">Ink · v0.2 · прототип</div>
+    <div class="st-footer">Ink · v0.3 · прототип</div>
   </div>
 </div>
 
-<!-- ================= МОДАЛКА ПАРОЛЯ КАНАЛА ================= -->
+<!-- ИНФО О ЧАТЕ -->
+<div id="chatInfo">
+  <div class="overlay" onclick="closePanel('chatInfo')"></div>
+  <div class="panel">
+    <div class="st-header">
+      <h2 id="ciTitle">Чат</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('chatInfo')">✕</button>
+    </div>
+    <div class="st-body" id="ciBody"></div>
+  </div>
+</div>
+
+<!-- АДМИНКА -->
+<div id="admin">
+  <div class="overlay" onclick="closePanel('admin')"></div>
+  <div class="panel">
+    <div class="st-header">
+      <h2>🛡️ Консоль админа</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('admin')">✕</button>
+    </div>
+    <div class="st-body" id="adminBody"></div>
+  </div>
+</div>
+
+<!-- СОЗДАНИЕ ЧАТА -->
+<div id="createChat">
+  <div class="overlay" onclick="closePanel('createChat')"></div>
+  <div class="modalBox">
+    <h3>Создать чат</h3>
+    <p class="hint">Выбери тип и настрой</p>
+    <div class="seg" id="ccType">
+      <button data-t="private" class="active">Личка</button>
+      <button data-t="group">Группа</button>
+      <button data-t="channel">Канал</button>
+    </div>
+    <input id="ccName" placeholder="Название или логин человека"/>
+    <textarea id="ccMembers" placeholder="Логины участников через запятую (для группы/канала)" rows="2"></textarea>
+    <div class="chkRow"><input type="checkbox" id="ccSend" checked><label for="ccSend">Участники могут писать</label></div>
+    <div class="chkRow"><input type="checkbox" id="ccFiles" checked><label for="ccFiles">Участники могут отправлять файлы</label></div>
+    <div class="chkRow"><input type="checkbox" id="ccInvite"><label for="ccInvite">Участники могут приглашать</label></div>
+    <button class="btn" onclick="createChat()">Создать</button>
+    <div class="row"><button class="btn ghost" onclick="closePanel('createChat')">Отмена</button></div>
+  </div>
+</div>
+
+<!-- ЖАЛОБА -->
+<div id="reportModal">
+  <div class="overlay" onclick="closePanel('reportModal')"></div>
+  <div class="modalBox">
+    <h3>Жалоба</h3>
+    <p class="hint">Опиши причину и приложи скриншоты</p>
+    <input id="repTarget" placeholder="На кого (логин или ID)" readonly/>
+    <textarea id="repReason" placeholder="Причина жалобы" rows="4"></textarea>
+    <input type="file" id="repShots" accept="image/*" multiple/>
+    <button class="btn danger" onclick="submitReport()">Отправить жалобу</button>
+    <div class="row"><button class="btn ghost" onclick="closePanel('reportModal')">Отмена</button></div>
+  </div>
+</div>
+
+<!-- ПЕРЕСЫЛКА -->
+<div id="forwardModal">
+  <div class="overlay" onclick="closePanel('forwardModal')"></div>
+  <div class="modalBox">
+    <h3>Переслать в...</h3>
+    <div id="fwdList" style="margin-top:10px"></div>
+    <div class="row"><button class="btn ghost" onclick="closePanel('forwardModal')">Отмена</button></div>
+  </div>
+</div>
+
+<!-- ПАРОЛЬ КАНАЛА -->
 <div id="passModal">
   <div class="box">
     <h3>🔒 Доступ к каналу</h3>
@@ -256,71 +383,74 @@
     <input id="passInput" type="password" placeholder="Пароль" onkeydown="if(event.key==='Enter')submitPass()"/>
     <div class="err" id="passErr"></div>
     <button class="btn" onclick="submitPass()">Разблокировать</button>
-    <div class="row">
-      <button class="btn ghost" onclick="closePassModal()">Отмена</button>
-    </div>
+    <div class="row"><button class="btn ghost" onclick="closePanel('passModal')">Отмена</button></div>
   </div>
+</div>
+
+<!-- КОНТЕКСТНОЕ МЕНЮ -->
+<div id="ctxMenu"></div>
+<div id="reactionPick">
+  <button onclick="pickReaction('👍')">👍</button>
+  <button onclick="pickReaction('❤️')">❤️</button>
+  <button onclick="pickReaction('😂')">😂</button>
+  <button onclick="pickReaction('😮')">😮</button>
+  <button onclick="pickReaction('😢')">😢</button>
+  <button onclick="pickReaction('🔥')">🔥</button>
 </div>
 
 <script>
 /* ============================================================
    КОНСТАНТЫ
    ============================================================ */
-const OFFICIAL_CHANNEL_PASS = 'ink2026';   // ← пароль канала ##ink_official
+const OFFICIAL_CHANNEL_PASS = 'ink2026';
 const OFFICIAL_CHANNEL_NAME = '##ink_official';
 const DELETE_DELAY_DAYS = 30;
-
 const $ = id => document.getElementById(id);
 
 /* ============================================================
    ХРАНИЛИЩЕ
    ============================================================ */
 const Store = (() => {
-  let backend = 'memory', memory = {};
-  try {
-    const k = '__ink_test__';
-    window.localStorage.setItem(k,'1'); window.localStorage.removeItem(k);
-    backend = 'localStorage';
-  } catch(e){ console.warn('[Ink] storage → memory:', e.message); }
+  let backend='memory', memory={};
+  try { window.localStorage.setItem('__t__','1'); window.localStorage.removeItem('__t__'); backend='localStorage'; }
+  catch(e){ console.warn('[Ink] storage → memory'); }
   return {
     type: backend,
-    get(k){ if(backend==='localStorage'){ try{return window.localStorage.getItem(k)}catch(e){return memory[k]??null} } return memory[k]??null },
-    set(k,v){ if(backend==='localStorage'){ try{window.localStorage.setItem(k,v);return}catch(e){memory[k]=v} } else memory[k]=v },
-    remove(k){ if(backend==='localStorage'){ try{window.localStorage.removeItem(k);return}catch(e){delete memory[k]} } else delete memory[k] }
+    get(k){ if(backend==='localStorage'){ try{return localStorage.getItem(k)}catch(e){return memory[k]??null} } return memory[k]??null },
+    set(k,v){ if(backend==='localStorage'){ try{localStorage.setItem(k,v);return}catch(e){memory[k]=v} } else memory[k]=v },
+    remove(k){ if(backend==='localStorage'){ try{localStorage.removeItem(k);return}catch(e){delete memory[k]} } else delete memory[k] }
   };
 })();
-
-/* Session-хранилище для разблокировки канала */
 const Session = (() => {
   let backend='memory', memory={};
   try { window.sessionStorage.setItem('__t__','1'); window.sessionStorage.removeItem('__t__'); backend='sessionStorage'; }
   catch(e){}
   return {
-    get(k){ if(backend==='sessionStorage'){ try{return window.sessionStorage.getItem(k)}catch(e){return memory[k]??null} } return memory[k]??null },
-    set(k,v){ if(backend==='sessionStorage'){ try{window.sessionStorage.setItem(k,v);return}catch(e){memory[k]=v} } else memory[k]=v },
-    remove(k){ if(backend==='sessionStorage'){ try{window.sessionStorage.removeItem(k);return}catch(e){delete memory[k]} } else delete memory[k] }
+    get(k){ if(backend==='sessionStorage'){ try{return sessionStorage.getItem(k)}catch(e){return memory[k]??null} } return memory[k]??null },
+    set(k,v){ if(backend==='sessionStorage'){ try{sessionStorage.setItem(k,v);return}catch(e){memory[k]=v} } else memory[k]=v },
+    remove(k){ if(backend==='sessionStorage'){ try{sessionStorage.removeItem(k);return}catch(e){delete memory[k]} } else delete memory[k] }
   };
 })();
 
 const DB = {
-  load(){ try{ return JSON.parse(Store.get('ink') || '{"users":[],"chats":[],"me":null,"theme":"dark"}'); }catch(e){ return {users:[],chats:[],me:null,theme:'dark'} } },
+  load(){ try{ return JSON.parse(Store.get('ink') || '{"users":[],"chats":[],"me":null,"theme":"dark","reports":[]}'); }catch(e){ return {users:[],chats:[],me:null,theme:'dark',reports:[]} } },
   save(d){ Store.set('ink', JSON.stringify(d)); }
 };
 
 function hash(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31 + s.charCodeAt(i))|0; return 'h'+h }
 function genId(){ return Math.random().toString(36).slice(2,8).toUpperCase() }
 function now(){ const d=new Date(); return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0') }
+function uid(){ return 'm' + Date.now() + Math.random().toString(36).slice(2,6) }
+function userById(id){ return DB.load().users.find(u => u.id === id) }
+function meUser(){ const d = DB.load(); return d.users.find(u => u.id === d.me) }
 
-/* ============================================================
-   ШИФР (заглушка — заменим позже)
-   ============================================================ */
+/* Шифр-заглушка (не трогаем) */
 const CIPHER_MAP = {
   'а':'✕','б':'✗','в':'✘','г':'⧉','д':'⋈','е':'✕','ё':'⧖','ж':'⧗','з':'⌛',
   'и':'✕','й':'✕','к':'✕','л':'✕','м':'◪','н':'⧖','о':'⟁','п':'◭',
   'р':'✕','с':'✕','т':'✕','у':'✕','ф':'✕','х':'✕','ц':'✕','ч':'✕',
   'ш':'✕','щ':'✕','ъ':'⊓','ы':'⊓','ь':'⨅','э':'∨','ю':'✕','я':'■',
-  '0':'⓪','1':'①','2':'②','3':'③','4':'④','5':'⑤','6':'⑥','7':'⑦','8':'⑧','9':'⑨',
-  ' ':'·','.':'⏹',',':'⏺','!':'⏰','?':'⏯'
+  ' ':'·'
 };
 const encryptInk = t => t.toLowerCase().split('').map(c => CIPHER_MAP[c] || c).join('');
 
@@ -330,30 +460,20 @@ const encryptInk = t => t.toLowerCase().split('').map(c => CIPHER_MAP[c] || c).j
 function applyTheme(){
   const d = DB.load();
   document.body.classList.toggle('light', d.theme === 'light');
-  const sw = $('themeSwitch');
-  if(sw) sw.classList.toggle('on', d.theme === 'light');
+  const sw = $('themeSwitch'); if(sw) sw.classList.toggle('on', d.theme === 'light');
 }
-function toggleTheme(){
-  const d = DB.load();
-  d.theme = d.theme === 'light' ? 'dark' : 'light';
-  DB.save(d);
-  applyTheme();
-}
+function toggleTheme(){ const d = DB.load(); d.theme = d.theme === 'light' ? 'dark' : 'light'; DB.save(d); applyTheme(); }
 
 /* ============================================================
    АВТОРИЗАЦИЯ
    ============================================================ */
 function showMsg(elId, text, kind){
-  const el = $(elId);
-  if(!el){ alert(text); return; }
-  el.textContent = text;
-  el.className = 'msg-ok ' + (kind || 'err');
+  const el = $(elId); if(!el){ alert(text); return; }
+  el.textContent = text; el.className = 'msg-ok ' + (kind || 'err');
 }
 function switchTo(which){
   $('authMode').style.display = which === 'login' ? 'block' : 'none';
   $('regMode').style.display  = which === 'reg'   ? 'block' : 'none';
-  $('authMsg').className = 'msg-ok';
-  $('regMsg').className = 'msg-ok';
 }
 
 function doLogin(){
@@ -364,15 +484,17 @@ function doLogin(){
     const u = d.users.find(x => x.login.toLowerCase()===lv.toLowerCase() || (x.id+'#')===lv);
     if(!u) return showMsg('authMsg','Пользователь не найден','err');
     if(u.pass !== hash(p)) return showMsg('authMsg','Неверный пароль','err');
+    if(u.blockedUntil && Date.now() < u.blockedUntil){
+      const days = Math.ceil((u.blockedUntil - Date.now())/86400000);
+      return showMsg('authMsg', `Аккаунт заблокирован ещё на ${days} дн. Причина: ${u.blockReason||'—'}`,'err');
+    }
     if(u.deletionScheduledAt && Date.now() > u.deletionScheduledAt){
-      // срок прошёл — считаем удалённым
-      d.users = d.users.filter(x => x.id !== u.id);
-      DB.save(d);
+      d.users = d.users.filter(x => x.id !== u.id); DB.save(d);
       return showMsg('authMsg','Аккаунт удалён','err');
     }
     d.me = u.id; DB.save(d);
-    if(u.deletionScheduledAt) {
-      setTimeout(()=>alert('⚠ Внимание: аккаунт помечен на удаление. Открой Настройки → Удалить аккаунт → Отменить удаление.'), 200);
+    if(u.deletionScheduledAt){
+      setTimeout(()=>alert('⚠ Аккаунт помечен на удаление. Настройки → Удалить аккаунт → отмена.'), 200);
     }
     startApp();
   }catch(err){ console.error(err); showMsg('authMsg','Ошибка: '+err.message,'err'); }
@@ -386,41 +508,44 @@ function doRegister(){
     if(p1 !== p2) return showMsg('regMsg','Пароли не совпадают','err');
     const d = DB.load();
     if(d.users.find(u => u.login.toLowerCase()===lv.toLowerCase())) return showMsg('regMsg','Логин занят','err');
-    const user = { login: lv, pass: hash(p1), id: genId() };
-    d.users.push(user);
-    d.me = user.id;
-    DB.save(d);
-    showMsg('regMsg','Готово! Твой ID: '+user.id+'#','ok');
+    const isFirst = d.users.length === 0;
+    const user = { login: lv, pass: hash(p1), id: genId(), isAdmin: isFirst };
+    d.users.push(user); d.me = user.id; DB.save(d);
+    showMsg('regMsg','Готово! Твой ID: '+user.id+'#' + (isFirst ? ' (ты админ)' : ''),'ok');
     setTimeout(()=>startApp(), 900);
   }catch(err){ console.error(err); showMsg('regMsg','Ошибка: '+err.message,'err'); }
 }
 
-function forgot(){ alert('Запрос на удаление принят. У тебя 30 дней. Войди снова, чтобы отменить.'); }
+function forgot(){ alert('Запрос на удаление принят. 30 дней. Войди снова, чтобы отменить.'); }
 
 /* ============================================================
    ЗАПУСК
    ============================================================ */
 let currentChat = null;
-let passModalResolve = null;
+let replyToId = null;
+let ctxMessageId = null;
 
 function startApp(){
   $('auth').style.display = 'none';
   $('app').style.display = 'flex';
   const d = DB.load();
   if(!d.chats || !d.chats.length) seedChats();
+  // админ-секция
+  const me = meUser();
+  $('adminSection').style.display = me && me.isAdmin ? 'block' : 'none';
   renderChats();
   renderAccounts();
 }
 
 function seedChats(){
   const d = DB.load();
-  const me = d.users.find(u => u.id === d.me);
+  const me = meUser();
   d.chats = [
-    { id:'c1', name:'Избранное', type:'private', ownerId: me.id, members:[me.id],
-      msgs:[ { me:false, text:'Добро пожаловать в Ink.', t: now() } ] },
+    { id:'c1', name:'Избранное', type:'private', ownerId: me.id, members:[me.id], rights:{send:true,files:true,invite:true},
+      msgs:[ { id: uid(), senderId: me.id, text:'Добро пожаловать в Ink.', t: now() } ] },
     { id:'official', name: OFFICIAL_CHANNEL_NAME, type:'channel', ownerId: null,
-      locked: true,                       // ← защищён паролем
-      msgs:[ { me:false, text:'Это официальный канал Ink. Для записи нужен пароль.', t: now() } ] }
+      locked: true, members:[], rights:{send:true,files:true,invite:false},
+      msgs:[ { id: uid(), senderId:'system', text:'Официальный канал Ink. Для записи нужен пароль.', t: now() } ] }
   ];
   DB.save(d);
 }
@@ -430,20 +555,28 @@ function seedChats(){
    ============================================================ */
 function renderChats(){
   const d = DB.load();
+  const me = d.me;
   const q = ($('searchInput').value || '').trim().toLowerCase();
-  const list = (d.chats || []).filter(c => !q || c.name.toLowerCase().includes(q) || c.id.toLowerCase().includes(q));
+  // фильтр: я участник или канал/группа без явных участников
+  const visible = (d.chats || []).filter(c => {
+    if(c.locked) return true;                // официальный канал виден всем
+    if(c.type === 'private') return c.members.includes(me);
+    return c.members.includes(me);
+  });
+  const list = visible.filter(c => !q || c.name.toLowerCase().includes(q) || c.id.toLowerCase().includes(q));
   const box = $('chatList');
   box.innerHTML = list.length ? '' : '<div class="empty">Ничего не найдено</div>';
   list.forEach(c => {
     const el = document.createElement('div');
     el.className = 'chat-item';
-    const last = c.msgs.length ? c.msgs[c.msgs.length-1].text : '';
+    const visibleMsgs = c.msgs.filter(m => !m.deletedAll && !(m.deletedFor||[]).includes(me));
+    const last = visibleMsgs.length ? visibleMsgs[visibleMsgs.length-1].text : '';
     const lock = c.locked && !isChannelUnlocked(c) ? '<span class="lock-badge">🔒</span>' : '';
     el.innerHTML = `
       <div class="avatar">${c.name.replace(/^#+/, '')[0].toUpperCase()}</div>
       <div class="meta">
         <div class="name">${c.name} ${lock}</div>
-        <div class="last">${last.slice(0,60)}</div>
+        <div class="last">${(last||'').slice(0,60)}</div>
       </div>`;
     el.onclick = () => openChat(c.id);
     box.appendChild(el);
@@ -456,9 +589,11 @@ function renderChats(){
 function openChat(id){
   const d = DB.load();
   currentChat = d.chats.find(c => c.id === id);
+  replyToId = null;
   document.body.classList.add('in-chat');
   $('backBtn').style.display = 'inline-block';
   $('hTitle').textContent = currentChat.name;
+  cancelReply();
   renderMessages();
   updateComposer();
 }
@@ -466,124 +601,493 @@ function openChat(id){
 function updateComposer(){
   const input = $('msgInput'), btn = $('sendBtn');
   if(!currentChat){ input.disabled = true; btn.disabled = true; return; }
-
   const needPass = currentChat.locked && !isChannelUnlocked(currentChat);
   if(needPass){
-    input.disabled = false;
-    input.value = '';
-    input.placeholder = '🔒 Нажми, чтобы ввести пароль';
-    btn.disabled = true;
-  } else {
-    input.disabled = false;
-    input.placeholder = 'Сообщение...';
-    btn.disabled = false;
+    input.disabled = false; input.placeholder = '🔒 Нажми, чтобы ввести пароль';
+    input.value = ''; btn.disabled = true; return;
   }
+  const me = DB.load().me;
+  const iAmOwner = currentChat.ownerId === me;
+  const isMember = currentChat.members.includes(me);
+  const banned = (currentChat.banned||[]).includes(me);
+
+  if(banned){ input.disabled = true; btn.disabled = true; input.placeholder = 'Вы забанены в этом чате'; return; }
+  if(!isMember && !currentChat.locked){ input.disabled = true; btn.disabled = true; input.placeholder = 'Вы не участник'; return; }
+  const canSend = iAmOwner || currentChat.rights.send;
+  if(!canSend){ input.disabled = true; btn.disabled = true; input.placeholder = 'Только владелец может писать'; return; }
+  input.disabled = false; btn.disabled = false; input.placeholder = 'Сообщение...';
 }
 
 function backToList(){
-  currentChat = null;
-  document.body.classList.remove('in-chat');
-  $('backBtn').style.display = 'none';
-  $('hTitle').textContent = 'Ink';
+  currentChat = null; document.body.classList.remove('in-chat');
+  $('backBtn').style.display = 'none'; $('hTitle').textContent = 'Ink';
 }
 
 function renderMessages(){
   const box = $('messages');
   box.innerHTML = '';
+  const d = DB.load();
+  const me = d.me;
   currentChat.msgs.forEach(m => {
+    if(m.deletedAll) return;
+    if((m.deletedFor||[]).includes(me)) return;
     const el = document.createElement('div');
-    el.className = 'msg' + (m.me ? ' me' : '');
+    el.className = 'msg' + (m.senderId === me ? ' me' : '');
+    el.dataset.mid = m.id;
+
+    // имя отправителя (в группах)
+    let header = '';
+    if(currentChat.type !== 'private' && m.senderId !== me && m.senderId !== 'system'){
+      const u = userById(m.senderId);
+      if(u) header = `<span class="sname">${u.login}</span>`;
+    }
+    // пересылка
+    let fwd = '';
+    if(m.forwardedFrom){
+      const fu = userById(m.forwardedFrom);
+      fwd = `<div class="fwd">↪ переслано от ${fu ? fu.login : '—'}</div>`;
+    }
+    // цитата
+    let quote = '';
+    if(m.replyTo){
+      const q = currentChat.msgs.find(x => x.id === m.replyTo);
+      if(q){
+        const qu = userById(q.senderId);
+        const qtext = (q.text||'').slice(0,80);
+        quote = `<div class="replyQuote"><b>${qu ? qu.login : '—'}:</b> ${qtext}</div>`;
+      }
+    }
+    // реакции
+    let reactions = '';
+    if(m.reactions && Object.keys(m.reactions).length){
+      reactions = '<div class="reactions">';
+      Object.entries(m.reactions).forEach(([emo, users]) => {
+        const mine = users.includes(me);
+        reactions += `<span class="reaction ${mine?'mine':''}" data-mid="${m.id}" data-emo="${emo}">${emo} ${users.length}</span>`;
+      });
+      reactions += '</div>';
+    }
+    const edited = m.edited ? '<span class="edited">изм.</span>' : '';
     const text = currentChat.ink ? encryptInk(m.text) : m.text;
-    el.innerHTML = `${text}<span class="time">${m.t}</span>`;
+    el.innerHTML = header + fwd + quote + `${text}` + reactions + `<span class="time">${edited}${m.t}</span>`;
     box.appendChild(el);
   });
   box.scrollTop = box.scrollHeight;
 }
 
 /* ============================================================
-   РАЗБЛОКИРОВКА КАНАЛА (сессионная)
+   РАЗБЛОКИРОВКА КАНАЛА
    ============================================================ */
-function isChannelUnlocked(chat){
-  if(!chat.locked) return true;
-  return Session.get('ink_unlocked_' + chat.id) === '1';
+function isChannelUnlocked(chat){ if(!chat.locked) return true; return Session.get('ink_unlocked_'+chat.id)==='1'; }
+function unlockChannel(chat){ Session.set('ink_unlocked_'+chat.id, '1'); }
+
+function openPassModal(){ $('passModal').classList.add('open'); $('passInput').value=''; $('passErr').textContent=''; setTimeout(()=>$('passInput').focus(),100); }
+function submitPass(){
+  if($('passInput').value === OFFICIAL_CHANNEL_PASS){
+    unlockChannel(currentChat); closePanel('passModal'); updateComposer(); renderChats(); $('msgInput').focus();
+  } else $('passErr').textContent = 'Неверный пароль';
 }
-function unlockChannel(chat){
-  Session.set('ink_unlocked_' + chat.id, '1');
-}
+document.addEventListener('click', e => {
+  if(e.target && e.target.id === 'msgInput' && currentChat && currentChat.locked && !isChannelUnlocked(currentChat)) openPassModal();
+});
 
 /* ============================================================
    ОТПРАВКА
    ============================================================ */
 function sendMsg(){
   if(!currentChat) return;
-
-  // канал под паролем?
-  if(currentChat.locked && !isChannelUnlocked(currentChat)){
-    openPassModal();
-    return;
-  }
-
+  if(currentChat.locked && !isChannelUnlocked(currentChat)){ openPassModal(); return; }
   const input = $('msgInput');
   const v = input.value.trim();
   if(!v) return;
-
-  currentChat.msgs.push({ me:true, text:v, t: now() });
   const d = DB.load();
   const c = d.chats.find(x => x.id === currentChat.id);
-  c.msgs = currentChat.msgs;
+  const msg = { id: uid(), senderId: d.me, text: v, t: now() };
+  if(replyToId) msg.replyTo = replyToId;
+  c.msgs.push(msg);
   DB.save(d);
+  currentChat = c;
+  input.value = ''; cancelReply(); renderMessages(); renderChats();
+}
 
-  input.value = '';
-  renderMessages();
-  renderChats();
+function cancelReply(){ replyToId = null; $('replyBar').classList.remove('show'); }
+
+/* ============================================================
+   КОНТЕКСТНОЕ МЕНЮ СООБЩЕНИЯ
+   ============================================================ */
+function openCtx(x, y, mid){
+  ctxMessageId = mid;
+  const d = DB.load();
+  const me = d.me;
+  const m = currentChat.msgs.find(x => x.id === mid);
+  if(!m) return;
+  const mine = m.senderId === me;
+  const iAmOwner = currentChat.ownerId === me;
+  const items = [];
+  items.push(['↩ Ответить', ()=>doReply(mid)]);
+  items.push(['↪ Переслать', ()=>openForward(mid)]);
+  items.push(['😀 Реакция', ()=>openReactionPicker(x,y,mid)]);
+  if(mine){
+    items.push(['✏️ Редактировать', ()=>doEdit(mid)]);
+  }
+  items.push(['—', null]);
+  items.push(['🗑️ Удалить у себя', ()=>doDelete(mid,'me'), 'danger']);
+  if(mine || iAmOwner){
+    items.push(['🗑️ Удалить у всех', ()=>doDelete(mid,'all'), 'danger']);
+  }
+  if(currentChat.type === 'private' && !mine){
+    items.push(['—', null]);
+    items.push(['🚫 Заблокировать', ()=>doBlock(m.senderId), 'danger']);
+    items.push(['⚠️ Жалоба', ()=>openReport(m.senderId), 'danger']);
+  }
+  const menu = $('ctxMenu');
+  menu.innerHTML = '';
+  items.forEach(([label, fn, cls]) => {
+    if(label === '—'){ const s = document.createElement('div'); s.className='sep'; menu.appendChild(s); return; }
+    const it = document.createElement('div'); it.className = 'it ' + (cls||''); it.textContent = label;
+    it.onclick = () => { closeCtx(); fn(); }; menu.appendChild(it);
+  });
+  menu.classList.add('open');
+  const rect = menu.getBoundingClientRect();
+  const px = Math.min(x, window.innerWidth - rect.width - 8);
+  const py = Math.min(y, window.innerHeight - rect.height - 8);
+  menu.style.left = px + 'px'; menu.style.top = py + 'px';
+}
+function closeCtx(){ $('ctxMenu').classList.remove('open'); $('reactionPick').classList.remove('open'); }
+
+function doReply(mid){
+  replyToId = mid;
+  const m = currentChat.msgs.find(x => x.id === mid);
+  const u = userById(m.senderId);
+  $('replyPreview').textContent = `${u ? u.login : '—'}: ${(m.text||'').slice(0,50)}`;
+  $('replyBar').classList.add('show');
+  $('msgInput').focus();
+}
+function doEdit(mid){
+  const m = currentChat.msgs.find(x => x.id === mid);
+  const v = prompt('Редактировать:', m.text);
+  if(v === null) return;
+  const d = DB.load();
+  const c = d.chats.find(x => x.id === currentChat.id);
+  const mm = c.msgs.find(x => x.id === mid);
+  mm.text = v; mm.edited = true;
+  DB.save(d); currentChat = c; renderMessages();
+}
+function doDelete(mid, mode){
+  if(!confirm(mode === 'all' ? 'Удалить у всех?' : 'Удалить у себя?')) return;
+  const d = DB.load();
+  const c = d.chats.find(x => x.id === currentChat.id);
+  const m = c.msgs.find(x => x.id === mid);
+  if(mode === 'all') m.deletedAll = true;
+  else { m.deletedFor = m.deletedFor || []; m.deletedFor.push(d.me); }
+  DB.save(d); currentChat = c; renderMessages(); renderChats();
+}
+function doBlock(userId){
+  const d = DB.load();
+  const c = d.chats.find(x => x.id === currentChat.id);
+  c.blocked = c.blocked || [];
+  if(!c.blocked.includes(userId)) c.blocked.push(userId);
+  DB.save(d);
+  alert('Пользователь заблокирован в этом чате');
+}
+function openReactionPicker(x, y, mid){
+  const pick = $('reactionPick'); pick.classList.add('open'); pick.dataset.mid = mid;
+  pick.style.left = x + 'px'; pick.style.top = (y - 60) + 'px';
+}
+function pickReaction(emo){
+  const mid = $('reactionPick').dataset.mid;
+  const d = DB.load();
+  const c = d.chats.find(x => x.id === currentChat.id);
+  const m = c.msgs.find(x => x.id === mid);
+  m.reactions = m.reactions || {};
+  m.reactions[emo] = m.reactions[emo] || [];
+  const i = m.reactions[emo].indexOf(d.me);
+  if(i >= 0) m.reactions[emo].splice(i,1); else m.reactions[emo].push(d.me);
+  if(!m.reactions[emo].length) delete m.reactions[emo];
+  DB.save(d); currentChat = c; closeCtx(); renderMessages();
+}
+document.addEventListener('click', e => {
+  // реакции
+  if(e.target.classList.contains('reaction')){
+    pickReactionOn(e.target.dataset.mid, e.target.dataset.emo); return;
+  }
+  if(!e.target.closest('#ctxMenu')) closeCtx();
+});
+function pickReactionOn(mid, emo){
+  const d = DB.load();
+  const c = d.chats.find(x => x.id === currentChat.id);
+  const m = c.msgs.find(x => x.id === mid);
+  m.reactions = m.reactions || {};
+  m.reactions[emo] = m.reactions[emo] || [];
+  const i = m.reactions[emo].indexOf(d.me);
+  if(i >= 0) m.reactions[emo].splice(i,1); else m.reactions[emo].push(d.me);
+  if(!m.reactions[emo].length) delete m.reactions[emo];
+  DB.save(d); currentChat = c; renderMessages();
+}
+
+/* Ловим клики по сообщениям */
+$('messages').addEventListener('contextmenu', e => {
+  const t = e.target.closest('.msg'); if(!t) return;
+  e.preventDefault(); openCtx(e.clientX, e.clientY, t.dataset.mid);
+});
+let pressTimer = null;
+$('messages').addEventListener('touchstart', e => {
+  const t = e.target.closest('.msg'); if(!t) return;
+  pressTimer = setTimeout(() => {
+    const r = t.getBoundingClientRect();
+    openCtx(r.left + 20, r.top + r.height/2, t.dataset.mid);
+  }, 500);
+});
+$('messages').addEventListener('touchend', () => clearTimeout(pressTimer));
+$('messages').addEventListener('touchmove', () => clearTimeout(pressTimer));
+$('messages').addEventListener('dblclick', e => {
+  const t = e.target.closest('.msg'); if(!t) return;
+  pickReactionOn(t.dataset.mid, '👍');
+});
+
+/* ============================================================
+   ПЕРЕСЫЛКА
+   ============================================================ */
+function openForward(mid){
+  const d = DB.load();
+  const box = $('fwdList'); box.innerHTML = '';
+  d.chats.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'st-row'; el.innerHTML = `<div class="icon">${c.name.replace(/^#/,'')[0].toUpperCase()}</div><div class="txt"><div class="t1">${c.name}</div></div>`;
+    el.onclick = () => { doForward(mid, c.id); closePanel('forwardModal'); };
+    box.appendChild(el);
+  });
+  $('forwardModal').classList.add('open');
+}
+function doForward(mid, toChatId){
+  const d = DB.load();
+  const src = d.chats.find(c => c.id === currentChat.id);
+  const m = src.msgs.find(x => x.id === mid);
+  const dst = d.chats.find(c => c.id === toChatId);
+  dst.msgs.push({ id: uid(), senderId: d.me, text: m.text, t: now(), forwardedFrom: m.senderId });
+  DB.save(d);
+  alert('Переслано в ' + dst.name);
 }
 
 /* ============================================================
-   МОДАЛКА ПАРОЛЯ КАНАЛА
+   СОЗДАНИЕ ЧАТА
    ============================================================ */
-function openPassModal(){
-  $('passModal').classList.add('open');
-  $('passInput').value = '';
-  $('passErr').textContent = '';
-  setTimeout(()=>$('passInput').focus(), 100);
+let ccType = 'private';
+document.addEventListener('click', e => {
+  const b = e.target.closest('#ccType button');
+  if(b){ ccType = b.dataset.t; document.querySelectorAll('#ccType button').forEach(x=>x.classList.toggle('active', x===b)); }
+});
+function openCreateChat(){
+  $('ccName').value=''; $('ccMembers').value='';
+  $('ccSend').checked=true; $('ccFiles').checked=true; $('ccInvite').checked=false;
+  $('createChat').classList.add('open');
 }
-function closePassModal(){
-  $('passModal').classList.remove('open');
-}
-function submitPass(){
-  const val = $('passInput').value;
-  if(val === OFFICIAL_CHANNEL_PASS){
-    unlockChannel(currentChat);
-    closePassModal();
-    updateComposer();
-    renderChats();
-    $('msgInput').focus();
-  } else {
-    $('passErr').textContent = 'Неверный пароль';
+function createChat(){
+  const d = DB.load();
+  const me = meUser();
+  const name = $('ccName').value.trim();
+  if(!name) return alert('Введи название');
+
+  if(ccType === 'private'){
+    // найти пользователя
+    const other = d.users.find(u => u.login.toLowerCase() === name.toLowerCase() || (u.id+'#')===name);
+    if(!other) return alert('Пользователь не найден');
+    if(other.id === me.id) return alert('Нельзя с самим собой');
+    const existing = d.chats.find(c => c.type==='private' && c.members.includes(me.id) && c.members.includes(other.id));
+    if(existing){ closePanel('createChat'); openChat(existing.id); return; }
+    const c = { id:'c'+Date.now(), name: other.login, type:'private', ownerId: me.id,
+      members:[me.id, other.id], rights:{send:true,files:true,invite:true},
+      msgs:[{ id: uid(), senderId:'system', text:'Диалог начат', t: now() }] };
+    d.chats.push(c); DB.save(d); closePanel('createChat');
+    renderChats(); openChat(c.id); return;
   }
+
+  // группа / канал
+  const memberLogins = $('ccMembers').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const members = [me.id];
+  memberLogins.forEach(l => {
+    const u = d.users.find(x => x.login.toLowerCase()===l.toLowerCase() || (x.id+'#')===l);
+    if(u && !members.includes(u.id)) members.push(u.id);
+  });
+  const c = {
+    id:'c'+Date.now(),
+    name: ccType === 'channel' ? '##'+name.replace(/^#+/,'') : name,
+    type: ccType,
+    ownerId: me.id,
+    members,
+    banned: [],
+    rights: { send: $('ccSend').checked, files: $('ccFiles').checked, invite: $('ccInvite').checked },
+    msgs: [{ id: uid(), senderId:'system', text: ccType==='channel'?'Канал создан':'Группа создана', t: now() }]
+  };
+  d.chats.push(c); DB.save(d); closePanel('createChat'); renderChats(); openChat(c.id);
 }
 
-/* Клик по полю ввода, когда канал закрыт → открыть модалку */
-document.addEventListener('click', e => {
-  if(e.target && e.target.id === 'msgInput' && currentChat && currentChat.locked && !isChannelUnlocked(currentChat)){
-    openPassModal();
+/* ============================================================
+   ИНФО О ЧАТЕ / УПРАВЛЕНИЕ
+   ============================================================ */
+function openChatInfo(){
+  if(!currentChat) return;
+  const d = DB.load();
+  const me = d.me;
+  const iAmOwner = currentChat.ownerId === me;
+  $('ciTitle').textContent = currentChat.name;
+  const body = $('ciBody');
+  body.innerHTML = '';
+
+  const typeLabel = { private:'Личный диалог', group:'Группа', channel:'Канал' }[currentChat.type] || '';
+  body.innerHTML += `<div class="st-row simple"><div class="txt"><div class="t1">Тип</div></div><div>${typeLabel}</div></div>`;
+
+  if(currentChat.type !== 'private'){
+    body.innerHTML += `<h3 style="margin-top:16px; font-size:12px; color:var(--muted); letter-spacing:1.2px">УЧАСТНИКИ (${currentChat.members.length})</h3>`;
+    currentChat.members.forEach(uid => {
+      const u = userById(uid); if(!u) return;
+      const isOwner = uid === currentChat.ownerId;
+      const isBanned = (currentChat.banned||[]).includes(uid);
+      const el = document.createElement('div');
+      el.className = 'st-row';
+      el.innerHTML = `
+        <div class="icon">${u.login[0].toUpperCase()}</div>
+        <div class="txt">
+          <div class="t1">${u.login} ${isOwner?'👑':''} ${isBanned?'🚫':''}</div>
+          <div class="t2">ID: ${u.id}#</div>
+        </div>
+        ${iAmOwner && !isOwner ? `
+          <span class="small-action" data-act="kick" data-uid="${uid}">кик</span>
+          <span class="small-action" data-act="ban" data-uid="${uid}">${isBanned?'разбан':'бан'}</span>
+        ` : ''}`;
+      body.appendChild(el);
+    });
+
+    if(iAmOwner){
+      body.innerHTML += `<h3 style="margin-top:16px; font-size:12px; color:var(--muted); letter-spacing:1.2px">ПРАВА УЧАСТНИКОВ</h3>`;
+      const rights = currentChat.rights;
+      [['send','Могут писать'],['files','Могут отправлять файлы'],['invite','Могут приглашать']].forEach(([key,label])=>{
+        const el = document.createElement('div');
+        el.className = 'st-row simple';
+        el.innerHTML = `<div class="txt"><div class="t1">${label}</div></div><div class="switch ${rights[key]?'on':''}" data-right="${key}"></div>`;
+        body.appendChild(el);
+      });
+    }
+  } else {
+    // в личке — жалоба и блок
+    const otherId = currentChat.members.find(x => x !== me);
+    const other = userById(otherId);
+    if(other){
+      body.innerHTML += `<h3 style="margin-top:16px; font-size:12px; color:var(--muted); letter-spacing:1.2px">ДЕЙСТВИЯ</h3>`;
+      body.innerHTML += `<div class="st-row danger simple" onclick="openReport('${other.id}')"><div class="txt"><span>⚠️</span><span class="t1" style="margin-left:10px">Жалоба на ${other.login}</span></div></div>`;
+      body.innerHTML += `<div class="st-row danger simple" onclick="doBlock('${other.id}')"><div class="txt"><span>🚫</span><span class="t1" style="margin-left:10px">Заблокировать</span></div></div>`;
+    }
   }
+
+  $('chatInfo').classList.add('open');
+}
+document.addEventListener('click', e => {
+  const act = e.target.closest('[data-act]'); if(!act) return;
+  const uid = act.dataset.uid;
+  const d = DB.load();
+  const c = d.chats.find(x => x.id === currentChat.id);
+  if(act.dataset.act === 'kick'){
+    if(!confirm('Кикнуть?')) return;
+    c.members = c.members.filter(x => x !== uid);
+  } else if(act.dataset.act === 'ban'){
+    c.banned = c.banned || [];
+    const i = c.banned.indexOf(uid);
+    if(i >= 0) c.banned.splice(i,1); else c.banned.push(uid);
+  }
+  DB.save(d); currentChat = c; openChatInfo();
+});
+document.addEventListener('click', e => {
+  const sw = e.target.closest('[data-right]'); if(!sw) return;
+  const key = sw.dataset.right;
+  const d = DB.load();
+  const c = d.chats.find(x => x.id === currentChat.id);
+  c.rights[key] = !c.rights[key];
+  DB.save(d); currentChat = c; openChatInfo();
+});
+
+/* ============================================================
+   ЖАЛОБЫ
+   ============================================================ */
+function openReport(userId){
+  const u = userById(userId);
+  $('repTarget').value = u ? u.login + ' (' + u.id + '#)' : '—';
+  $('repTarget').dataset.uid = userId;
+  $('repReason').value = '';
+  $('repShots').value = '';
+  $('reportModal').classList.add('open');
+}
+function submitReport(){
+  const d = DB.load();
+  const target = $('repTarget').dataset.uid;
+  const reason = $('repReason').value.trim();
+  if(!reason) return alert('Напиши причину');
+  d.reports = d.reports || [];
+  d.reports.push({ id: uid(), from: d.me, target, reason, t: new Date().toISOString() });
+  DB.save(d);
+  closePanel('reportModal');
+  alert('Жалоба отправлена');
+}
+
+/* ============================================================
+   АДМИН-КОНСОЛЬ
+   ============================================================ */
+function openAdmin(){
+  const me = meUser();
+  if(!me || !me.isAdmin) return alert('Доступ только для админа');
+  renderAdmin();
+  $('admin').classList.add('open');
+}
+function renderAdmin(){
+  const d = DB.load();
+  const box = $('adminBody'); box.innerHTML = '';
+  box.innerHTML += `<h3 style="font-size:12px; color:var(--muted); letter-spacing:1.2px">АККАУНТЫ (${d.users.length})</h3>`;
+  d.users.forEach(u => {
+    const blocked = u.blockedUntil && Date.now() < u.blockedUntil;
+    const el = document.createElement('div'); el.className = 'st-row';
+    el.innerHTML = `
+      <div class="icon">${u.login[0].toUpperCase()}</div>
+      <div class="txt">
+        <div class="t1">${u.login} ${u.isAdmin?'👑':''} ${blocked?'🚫':''}</div>
+        <div class="t2">ID: ${u.id}# · пароль: ${u.pass}</div>
+      </div>
+      ${!u.isAdmin ? `<span class="small-action" data-adm="block" data-uid="${u.id}">${blocked?'разблок':'блок'}</span>` : ''}`;
+    box.appendChild(el);
+  });
+  box.innerHTML += `<h3 style="margin-top:16px; font-size:12px; color:var(--muted); letter-spacing:1.2px">ЖАЛОБЫ (${(d.reports||[]).length})</h3>`;
+  (d.reports||[]).forEach(r => {
+    const from = userById(r.from), to = userById(r.target);
+    const el = document.createElement('div'); el.className = 'st-row';
+    el.innerHTML = `<div class="txt"><div class="t1">${from?from.login:'—'} → ${to?to.login:'—'}</div><div class="t2">${r.reason}</div></div>`;
+    box.appendChild(el);
+  });
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-adm="block"]'); if(!b) return;
+  const uid = b.dataset.uid;
+  const d = DB.load();
+  const u = d.users.find(x => x.id === uid);
+  if(u.blockedUntil && Date.now() < u.blockedUntil){
+    delete u.blockedUntil; delete u.blockReason; DB.save(d); renderAdmin(); return;
+  }
+  const days = parseInt(prompt('На сколько дней заблокировать?','7'), 10);
+  if(!days || days < 1) return;
+  const reason = prompt('Причина блокировки:', 'нарушение правил');
+  if(reason === null) return;
+  u.blockedUntil = Date.now() + days*86400000;
+  u.blockReason = reason;
+  DB.save(d); renderAdmin();
 });
 
 /* ============================================================
    НАСТРОЙКИ
    ============================================================ */
-function openSettings(){
-  $('settings').classList.add('open');
-  renderAccounts();
-  applyTheme();
-}
-function closeSettings(){ $('settings').classList.remove('open'); }
+function openPanel(id){ $(id).classList.add('open'); }
+function closePanel(id){ $(id).classList.remove('open'); }
+function openSettings(){ openPanel('settings'); renderAccounts(); applyTheme(); }
 
 function renderAccounts(){
   const d = DB.load();
-  const box = $('accountsList');
-  if(!box) return;
+  const box = $('accountsList'); if(!box) return;
   box.innerHTML = '';
   d.users.forEach(u => {
     const active = u.id === d.me;
@@ -593,7 +1097,7 @@ function renderAccounts(){
     el.innerHTML = `
       <div class="icon">${u.login[0].toUpperCase()}</div>
       <div class="txt">
-        <div class="t1">${u.login} ${isDeleting ? '· ⏳ удаление' : ''}</div>
+        <div class="t1">${u.login} ${u.isAdmin?'👑':''} ${isDeleting?'· ⏳':''}</div>
         <div class="t2">ID: ${u.id}#</div>
       </div>
       ${active ? '<div class="check">✓</div>' : ''}`;
@@ -601,68 +1105,25 @@ function renderAccounts(){
     box.appendChild(el);
   });
 }
-
 function switchAccount(id){
-  const d = DB.load();
-  d.me = id;
-  DB.save(d);
-  currentChat = null;
-  document.body.classList.remove('in-chat');
-  $('backBtn').style.display = 'none';
-  $('hTitle').textContent = 'Ink';
-  renderChats();
-  renderAccounts();
-  closeSettings();
+  const d = DB.load(); d.me = id; DB.save(d);
+  currentChat = null; document.body.classList.remove('in-chat');
+  $('backBtn').style.display = 'none'; $('hTitle').textContent = 'Ink';
+  closePanel('settings');
+  startApp();
 }
-
-function addAccount(){
-  // выходим в окно регистрации, но старую сессию помним
-  const d = DB.load();
-  d.me = null;
-  DB.save(d);
-  closeSettings();
-  $('app').style.display = 'none';
-  $('auth').style.display = 'flex';
-  switchTo('reg');
-  $('regLogin').focus();
-}
-
-function logout(){
-  if(!confirm('Выйти из аккаунта?')) return;
-  const d = DB.load();
-  d.me = null;
-  DB.save(d);
-  closeSettings();
-  $('app').style.display = 'none';
-  $('auth').style.display = 'flex';
-  switchTo('login');
-}
-
-/* ============================================================
-   УДАЛЕНИЕ АККАУНТА (30 дней)
-   ============================================================ */
+function addAccount(){ const d=DB.load(); d.me=null; DB.save(d); closePanel('settings'); $('app').style.display='none'; $('auth').style.display='flex'; switchTo('reg'); $('regLogin').focus(); }
+function logout(){ if(!confirm('Выйти?')) return; const d=DB.load(); d.me=null; DB.save(d); closePanel('settings'); $('app').style.display='none'; $('auth').style.display='flex'; switchTo('login'); }
 function requestDeleteAccount(){
-  const d = DB.load();
-  const u = d.users.find(x => x.id === d.me);
-  if(!u) return;
-
+  const d = DB.load(); const u = d.users.find(x => x.id === d.me); if(!u) return;
   if(u.deletionScheduledAt){
-    const left = Math.ceil((u.deletionScheduledAt - Date.now()) / 86400000);
-    if(confirm(`Аккаунт помечен на удаление. Осталось ${left} дн.\nОтменить удаление?`)){
-      delete u.deletionScheduledAt;
-      DB.save(d);
-      renderAccounts();
-      alert('Удаление отменено.');
-    }
+    const left = Math.ceil((u.deletionScheduledAt - Date.now())/86400000);
+    if(confirm(`Удаление через ${left} дн. Отменить?`)){ delete u.deletionScheduledAt; DB.save(d); renderAccounts(); alert('Отменено'); }
     return;
   }
-
-  if(!confirm('Удалить аккаунт? Запустится отсчёт ' + DELETE_DELAY_DAYS + ' дней.\nЕсли зайдёшь за это время — сможешь отменить.')) return;
-
-  u.deletionScheduledAt = Date.now() + DELETE_DELAY_DAYS * 86400000;
-  DB.save(d);
-  renderAccounts();
-  alert('Аккаунт помечен на удаление. ' + DELETE_DELAY_DAYS + ' дней на отмену.');
+  if(!confirm(`Удалить? Отсчёт ${DELETE_DELAY_DAYS} дней.`)) return;
+  u.deletionScheduledAt = Date.now() + DELETE_DELAY_DAYS*86400000;
+  DB.save(d); renderAccounts(); alert('Помечено на удаление');
 }
 
 /* ============================================================
@@ -678,11 +1139,7 @@ function requestDeleteAccount(){
         const shift = Math.max(-30, Math.min(30, e.deltaY * 0.25));
         area.style.transform = `translateY(${shift}px)`;
         clearTimeout(area._t);
-        area._t = setTimeout(() => {
-          area.style.transition = 'transform .25s cubic-bezier(.2,.9,.3,1.4)';
-          area.style.transform = '';
-          setTimeout(() => area.style.transition = '', 250);
-        }, 0);
+        area._t = setTimeout(() => { area.style.transition='transform .25s cubic-bezier(.2,.9,.3,1.4)'; area.style.transform=''; setTimeout(()=>area.style.transition='',250); }, 0);
       }
     }, {passive:true});
     area.addEventListener('touchstart', e => { startY = e.touches[0].clientY; pulling = true }, {passive:true});
@@ -696,8 +1153,7 @@ function requestDeleteAccount(){
     area.addEventListener('touchend', () => {
       pulling = false;
       area.style.transition = 'transform .3s cubic-bezier(.2,.9,.3,1.4)';
-      area.style.transform = '';
-      setTimeout(() => area.style.transition = '', 300);
+      area.style.transform = ''; setTimeout(() => area.style.transition = '', 300);
     });
   });
 })();
@@ -709,12 +1165,8 @@ function requestDeleteAccount(){
   try{
     applyTheme();
     const d = DB.load();
-    if(d.me && d.users && d.users.find(u => u.id === d.me)) startApp();
-    else {
-      if(d.me){ d.me = null; DB.save(d); }
-      $('auth').style.display = 'flex';
-      $('app').style.display = 'none';
-    }
+    if(d.me && d.users.find(u => u.id === d.me)) startApp();
+    else { if(d.me){ d.me=null; DB.save(d); } $('auth').style.display='flex'; $('app').style.display='none'; }
   }catch(err){ console.error(err); }
 })();
 </script>
