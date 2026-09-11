@@ -3,11 +3,16 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
-<meta name="theme-color" content="#0f1115"/>
+<meta name="theme-color" content="#4f8cff"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Ink"/>
+<meta name="format-detection" content="telephone=no"/>
 <title>Ink</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%234f8cff'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text></svg>"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
 <style>
 :root{--bg:#0f1115;--panel:#171a21;--panel2:#1f232c;--border:#222;--border2:#2a3040;--accent:#4f8cff;--accent2:#7c5cff;--text:#e8ecf3;--muted:#8a93a5;--danger:#ff5c5c;--ok:#4ade80;--warn:#ffd18a;--mine:#5b6cff;--mine2:#8b5cff;--them:#232936;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--tap:44px}
 body.light{--bg:#f4f6fa;--panel:#fff;--panel2:#eef1f6;--border:#dfe3ea;--border2:#d3d9e2;--accent:#3b7dff;--accent2:#6a4cff;--text:#141821;--muted:#6b7280;--danger:#d92d2d;--ok:#15803d;--warn:#a16207;--mine:#3b7dff;--mine2:#6a4cff;--them:#fff}
@@ -15,7 +20,7 @@ body.light{--bg:#f4f6fa;--panel:#fff;--panel2:#eef1f6;--border:#dfe3ea;--border2
 html,body{height:100%;margin:0;overflow:hidden}
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-user-select:none;user-select:none;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)}
 input,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
-#app{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
 .scroll-rubber{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:14px}
 @media(min-width:900px){#app{max-width:1100px;margin:0 auto;border-left:1px solid var(--border);border-right:1px solid var(--border)}.layout{display:grid;grid-template-columns:340px 1fr;height:100%}.sidebar{display:flex;flex-direction:column;border-right:1px solid var(--border);min-width:0}.chatpane{display:flex;flex-direction:column;min-width:0}.mobile-nav{display:none!important}}
 @media(max-width:899px){.sidebar{display:flex;flex-direction:column;height:100%}.chatpane{display:none;height:100%}body.in-chat .sidebar{display:none}body.in-chat .chatpane{display:flex}}
@@ -166,8 +171,6 @@ header button{background:transparent;border:0;color:var(--text);font-size:18px;c
 .pick-mark.checkbox{border-radius:6px}
 .pick-item.selected .pick-mark{border-color:var(--accent);background:var(--accent)}
 .pick-item.selected .pick-mark::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
-
-/* ПРЕМИУМ */
 .premium-name{background:linear-gradient(135deg,#ffb84d,#ff5c8a,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
 .premium-badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;margin-left:4px;text-transform:uppercase;letter-spacing:.5px}
 .premium-avatar{border:2px solid transparent;background-image:linear-gradient(var(--panel),var(--panel)),linear-gradient(135deg,#ffb84d,#ff5c8a,#7c5cff);background-origin:border-box;background-clip:padding-box,border-box}
@@ -497,7 +500,6 @@ function hideLoading(){$('loadingOverlay').classList.remove('open');}
 function closePanel(id){$(id).classList.remove('open');}
 function openPanel(id){$(id).classList.add('open');}
 
-/* ═══ АВТОРИЗАЦИЯ ═══ */
 async function doRegister(){
   try{
     const lv=$('regLogin').value.trim(),p1=$('regPass').value,p2=$('regPass2').value;
@@ -532,7 +534,6 @@ async function doLogin(){
 }
 async function logout(){if(!confirm('Выйти?'))return;await sb.auth.signOut();location.reload();}
 
-/* ═══ ЗАГРУЗКА ═══ */
 async function loadAll(){
   showLoading('Загрузка...');
   const {data:profiles}=await sb.from('profiles').select('*');
@@ -568,7 +569,6 @@ async function loadAll(){
   return true;
 }
 
-/* ═══ REALTIME ═══ */
 function setupRealtime(){
   sb.channel('rt-messages')
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
@@ -654,7 +654,6 @@ async function enterApp(){
   hideLoading();
 }
 
-/* ═══ ДРУЗЬЯ ═══ */
 function friendState(uid){
   const f=state.friendships.find(x=>(x.user_a===state.me.id&&x.user_b===uid)||(x.user_b===state.me.id&&x.user_a===uid));
   if(!f)return 'none';
@@ -688,7 +687,6 @@ function myFriends(){return state.friendships.filter(f=>f.status==='accepted').m
 function incomingReq(){return state.friendships.filter(f=>f.status==='pending'&&f.requested_by!==state.me.id).map(f=>f.requested_by);}
 function outgoingReq(){return state.friendships.filter(f=>f.status==='pending'&&f.requested_by===state.me.id).map(f=>f.user_a===state.me.id?f.user_b:f.user_a);}
 
-/* ═══ ЧАТЫ ═══ */
 function unreadCount(c){
   const msgs=state.messages[c.id]||[];
   const lr=state.lastRead[c.id]||0;
@@ -762,7 +760,6 @@ function buildUserRow(u){
   return el;
 }
 
-/* ═══ ЛЮДИ ═══ */
 function openPeoplePage(){closePanel('settings');$('peopleSearch').value='';renderPeoplePage();openPanel('peoplePage');}
 function renderPeoplePage(){
   const q=($('peopleSearch').value||'').trim().toLowerCase();
@@ -804,7 +801,6 @@ function renderPeoplePage(){
   all.forEach(u=>body.appendChild(buildUserRow(u)));
 }
 
-/* ═══ ЧАТ ═══ */
 async function openChat(id){
   const d=chatById(id);if(!d)return;
   currentChat=d;replyToId=null;
@@ -884,7 +880,6 @@ async function sendMsg(){
 }
 function cancelReply(){replyToId=null;$('replyBar').style.display='none';}
 
-/* ═══ СОЗДАНИЕ ЧАТА ═══ */
 document.querySelectorAll('#ccType button').forEach(b=>b.addEventListener('click',()=>setChatType(b.dataset.t)));
 function setChatType(t){
   const prev=ccType;ccType=t;
@@ -971,7 +966,6 @@ async function createChat(){
   closePanel('createChat');
 }
 
-/* ═══ ПРОФИЛЬ ═══ */
 function openProfile(uid){
   const u=userById(uid);if(!u)return;
   const isMe=u.id===state.me.id;
@@ -1071,7 +1065,6 @@ async function startPrivateWith(uid){
   closePanel('profileModal');closePanel('peoplePage');
 }
 
-/* ═══ ГАЛЕРЕЯ ═══ */
 async function addGalleryPhoto(){
   if(!state.me)return;
   const prem=isPremium(state.me);
@@ -1108,7 +1101,6 @@ async function removeGalleryPhoto(idx){
   openProfile(state.me.id);
 }
 
-/* ═══ ПРЕМИУМ-СТАТУС ═══ */
 async function editCustomStatus(){
   if(!state.me)return;
   if(!isPremium(state.me))return alert('Кастомный статус — Premium 💎');
@@ -1124,7 +1116,6 @@ async function editCustomStatus(){
   openProfile(state.me.id);
 }
 
-/* ═══ ПРЕМИУМ СТРАНИЦА ═══ */
 function openPremiumInfo(){
   closePanel('profileModal');
   const view=$('profileView');
@@ -1151,7 +1142,6 @@ function openPremiumInfo(){
   openPanel('profileModal');
 }
 
-/* ═══ РЕДАКТОР ПРОФИЛЯ ═══ */
 function renderMyProfileRow(){
   if(!state.me)return;
   const av=$('myProfileAvatar');
@@ -1188,7 +1178,6 @@ async function saveProfile(){
   pendingPhoto=null;closePanel('profileEdit');toast('Сохранено','','');
 }
 
-/* ═══ ИНФО О ЧАТЕ ═══ */
 function openChatInfo(){
   if(!currentChat)return;
   $('ciTitle').textContent=currentChat.name;
@@ -1225,7 +1214,6 @@ async function saveChatSettings(){
   closePanel('editChatModal');toast('Сохранено','','');
 }
 
-/* ═══ АДМИН ═══ */
 function openAdmin(){
   if(!state.me.is_admin)return alert('Только для админа');
   adminFilter='all';adminSearch='';
@@ -1441,7 +1429,6 @@ async function sendBroadcast(){
   toast('Отправлено','Юзеров: '+sent,'');
 }
 
-/* ═══ ТЕМА / ЖАЛОБА / НАВИГАЦИЯ ═══ */
 function applyTheme(){
   const t=localStorage.getItem('ink_theme')||'dark';
   document.body.classList.toggle('light',t==='light');
@@ -1467,14 +1454,12 @@ function navTo(w){
 }
 function openSettings(){closePanel('chatInfo');openPanel('settings');renderMyProfileRow();}
 
-/* ═══ ДВОЙНОЙ КЛИК — РЕАКЦИЯ ═══ */
 document.addEventListener('dblclick',e=>{
   const t=e.target.closest('.msg');if(!t)return;
   const emo = isPremium(state.me) ? '💎' : '👍';
   toggleReaction(parseInt(t.dataset.mid,10), emo);
 });
 
-/* ═══ СТАРТ ═══ */
 (async function init(){
   showLoading('Подключение...');
   try{
@@ -1490,6 +1475,16 @@ document.addEventListener('dblclick',e=>{
     alert('Ошибка: '+err.message);
   }
 })();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('[Ink] SW registered:', reg.scope))
+      .catch(err => console.warn('[Ink] SW failed:', err));
+  });
+}
 </script>
 </body>
 </html>
