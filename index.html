@@ -812,7 +812,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const $ = id => document.getElementById(id);
 const PRESENCE_ONLINE = 30000;
-const REQUEST_TIMEOUT = 15000;
+const REQUEST_TIMEOUT = 40000;
 
 /* ═══════════════════════════════════════════════════════════════
    УТИЛИТЫ
@@ -2058,7 +2058,7 @@ document.addEventListener('dblclick', e => {
 
     // Ждём сессию с таймаутом
     const sessionPromise = sb.auth.getSession();
-    const { data: { session } } = await withTimeout(sessionPromise, 8000);
+    const { data: { session } } = await withTimeout(sessionPromise, 25000);
 
     if(session){
       await enterApp();
