@@ -172,6 +172,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .island .name{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .island .id{font-size:11px;color:var(--muted);margin-top:2px}
 .island .desc{font-size:11.5px;color:var(--muted);margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.island.friend .avatar{box-shadow:0 0 0 2px var(--ok)}
 .profileHero{display:flex;flex-direction:column;align-items:center;padding:16px 8px 22px;gap:8px}
 .profileHero .name{font-size:19px;font-weight:700}
 .profileHero .id{font-size:12.5px;color:var(--muted)}
@@ -197,20 +198,20 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 @keyframes toastOut{from{transform:none;opacity:1}to{transform:translateY(30px);opacity:0}}
 .bell-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--danger);border-radius:50%;box-shadow:0 0 0 2px var(--panel)}
 
-/* Страница людей */
 .people-header{padding:14px}
 .people-search{width:100%;padding:12px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:14px;color:var(--text);font-size:14.5px;outline:none}
 .people-search:focus{border-color:var(--accent)}
-.user-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--panel2);margin-bottom:8px;transition:background .15s}
+.user-row{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:var(--panel2);margin-bottom:8px;transition:background .15s}
 .user-row:hover{background:rgba(127,127,127,.12)}
 .user-row .avatar{width:44px;height:44px}
 .user-row .info{flex:1;min-width:0}
 .user-row .uname{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
 .user-row .udescr{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.user-row .actions{display:flex;gap:6px;flex-shrink:0}
-.icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border2);background:var(--panel);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s}
+.user-row .actions{display:flex;gap:4px;flex-shrink:0}
+.icon-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--panel);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s}
 .icon-btn:hover{background:rgba(79,140,255,.15);border-color:var(--accent)}
 .icon-btn.on{background:linear-gradient(135deg,#22a55a,#15803d);border-color:transparent;color:#fff}
+.icon-btn.on:hover{filter:brightness(1.15)}
 .icon-btn.danger:hover{background:rgba(255,92,92,.15);border-color:var(--danger)}
 .icon-btn.pending{background:rgba(255,209,138,.15);border-color:var(--warn);color:var(--warn)}
 
@@ -223,6 +224,11 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .req-row .uname{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .req-row .udescr{font-size:11.5px;color:var(--muted)}
 .btn.small-btn{padding:7px 12px;font-size:12.5px;width:auto;font-weight:600}
+
+/* поиск в островках */
+.islands-search{width:100%;padding:12px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:14px;outline:none;margin-bottom:12px}
+.islands-search:focus{border-color:var(--accent)}
+.islands-scroll{max-height:360px;overflow-y:auto;padding-right:4px}
 </style>
 </head>
 <body>
@@ -346,7 +352,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
         <div class="st-row danger simple" onclick="requestDeleteAccount()"><div class="txt"><span style="font-size:18px">🗑️</span><span class="t1" style="margin-left:10px">Удалить аккаунт</span></div></div>
       </div>
     </div>
-    <div class="st-footer">Ink · v0.9 · friends</div>
+    <div class="st-footer">Ink · v1.0 · friends + remove</div>
   </div>
 </div>
 
@@ -366,7 +372,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
   </div>
 </div>
 
-<!-- СТРАНИЦА ЛЮДЕЙ -->
 <div id="peoplePage">
   <div class="overlay" onclick="closePanel('peoplePage')"></div>
   <div class="panel">
@@ -397,8 +402,10 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
     <div id="ccMembersBlock" style="display:none">
       <div class="islands-title">Добавленные</div>
       <div class="selected-strip empty-strip" id="selectedStrip"></div>
-      <div class="islands-title">Все пользователи</div>
-      <div class="islands" id="islandsGrid"></div>
+      <input class="islands-search" id="islandSearch" placeholder="Поиск по имени" oninput="renderIslands()"/>
+      <div class="islands-scroll">
+        <div id="islandsGrid"></div>
+      </div>
     </div>
     <div class="chkRow"><input type="checkbox" id="ccSend" checked><label for="ccSend">Участники могут писать</label></div>
     <div class="chkRow"><input type="checkbox" id="ccFiles" checked><label for="ccFiles">Участники могут отправлять файлы</label></div>
@@ -524,7 +531,6 @@ const DB={
     raw.notify   = raw.notify !== false;
     raw.lastRead = raw.lastRead || {};
     raw.me       = TabMe.get('ink_me') || null;
-    // миграция: добавим поля дружбы, если их нет
     raw.users.forEach(u=>{
       if(!Array.isArray(u.friends))   u.friends   = [];
       if(!Array.isArray(u.reqIn))     u.reqIn     = [];
@@ -601,7 +607,6 @@ function sendFriendRequest(toUid){
   if(!me||!other) return;
   if(me.friends.includes(toUid)) return;
   if(me.reqOut.includes(toUid)) return;
-  // если уже пришла заявка — принимаем
   if(me.reqIn.includes(toUid)){ acceptFriendRequest(toUid); return; }
   me.reqOut.push(toUid);
   other.reqIn.push(me.uid);
@@ -652,7 +657,9 @@ function removeFriend(uid){
   me.friends = me.friends.filter(x=>x!==uid);
   other.friends = other.friends.filter(x=>x!==me.uid);
   DB.save(d);
-  renderPeoplePage();
+  toast('Убрано из друзей', other.login, '');
+  NotifyBus.send({type:'friend-removed',fromUid:me.uid,toUid:uid,login:me.login});
+  renderPeoplePage(); renderChats();
 }
 
 /* ============================================================
@@ -764,6 +771,12 @@ NotifyBus.on(msg=>{
     if(!meId || msg.toUid!==meId) return;
     toast('Заявка принята', (msg.login||'—')+' теперь ваш друг', '');
     showBrowserNotify('Ink · Заявка принята', (msg.login||'—')+' принял(а) вашу заявку');
+    renderPeoplePage();
+  }
+
+  if(msg.type==='friend-removed'){
+    const d=DB.load();const meId=d.me;
+    if(!meId || msg.toUid!==meId) return;
     renderPeoplePage();
   }
 });
@@ -895,7 +908,7 @@ function ensureStartersFor(meUid){
 }
 
 /* ============================================================
-   СПИСОК ЧАТОВ + ПОИСК ЛЮДЕЙ ПО ЛОГИНУ
+   СПИСОК ЧАТОВ + ПОИСК
    ============================================================ */
 function renderChats(){
   const d=DB.load();const me=d.me;if(!me)return;
@@ -903,7 +916,6 @@ function renderChats(){
   const listBox=$('chatListOnly');
   listBox.innerHTML='';
 
-  // Поиск людей по логину → показываем строки с действиями
   if(q){
     const qClean=normPhone(q);
     const found=d.users.filter(u=>{
@@ -969,15 +981,19 @@ function buildUserRow(u){
   el.className='user-row';
   el.dataset.uid=u.uid;
 
-  let friendBtn;
+  let friendBtns='';
   if(isFriend){
-    friendBtn=`<button class="icon-btn on" title="В друзьях — открыть профиль" data-act="profile">✓</button>`;
+    friendBtns=`
+      <button class="icon-btn on" title="Друзья" data-act="profile">✓</button>
+      <button class="icon-btn danger" title="Убрать из друзей" data-act="remove">✕</button>`;
   } else if(outgoing){
-    friendBtn=`<button class="icon-btn pending" title="Заявка отправлена — отменить" data-act="cancel">⏳</button>`;
+    friendBtns=`<button class="icon-btn pending" title="Заявка отправлена — отменить" data-act="cancel">⏳</button>`;
   } else if(incoming){
-    friendBtn=`<button class="icon-btn pending" title="Принять заявку" data-act="accept">✓</button>`;
+    friendBtns=`
+      <button class="icon-btn pending" title="Принять заявку" data-act="accept">✓</button>
+      <button class="icon-btn danger" title="Отклонить" data-act="decline">✕</button>`;
   } else {
-    friendBtn=`<button class="icon-btn" title="Добавить в друзья" data-act="add">➕</button>`;
+    friendBtns=`<button class="icon-btn" title="Добавить в друзья" data-act="add">➕</button>`;
   }
 
   el.innerHTML=`
@@ -988,19 +1004,21 @@ function buildUserRow(u){
     </div>
     <div class="actions">
       <button class="icon-btn" title="Написать" data-act="write">💬</button>
-      ${friendBtn}
+      ${friendBtns}
       <button class="icon-btn danger" title="Пожаловаться" data-act="report">⚠️</button>
     </div>`;
 
   el.addEventListener('click',e=>{
-    const act=(e.target.closest('[data-act]')||{}).dataset;
-    if(!act||!act.act){openProfile(u.uid);return;}
-    switch(act.act){
+    const a=(e.target.closest('[data-act]')||{}).dataset;
+    if(!a||!a.act){openProfile(u.uid);return;}
+    switch(a.act){
       case 'profile': openProfile(u.uid);break;
       case 'write':   startPrivateWith(u.uid);break;
       case 'add':     sendFriendRequest(u.uid);break;
       case 'cancel':  cancelFriendRequest(u.uid);break;
       case 'accept':  acceptFriendRequest(u.uid);break;
+      case 'decline': declineFriendRequest(u.uid);break;
+      case 'remove':  if(confirm('Убрать '+u.login+' из друзей?')) removeFriend(u.uid); break;
       case 'report':  openReport(u.uid);break;
     }
   });
@@ -1026,7 +1044,6 @@ function renderPeoplePage(){
   const body=$('peopleBody');
   body.innerHTML='';
 
-  // Входящие заявки
   const incoming=me.reqIn.map(uid=>userByUid(uid)).filter(Boolean).filter(u=>!u.deletedAt);
   if(incoming.length){
     const block=document.createElement('div');
@@ -1052,7 +1069,6 @@ function renderPeoplePage(){
     body.appendChild(block);
   }
 
-  // Исходящие
   const outgoing=me.reqOut.map(uid=>userByUid(uid)).filter(Boolean).filter(u=>!u.deletedAt);
   if(outgoing.length){
     const block=document.createElement('div');
@@ -1076,7 +1092,6 @@ function renderPeoplePage(){
     body.appendChild(block);
   }
 
-  // Друзья
   const friends=me.friends.map(uid=>userByUid(uid)).filter(Boolean).filter(u=>!u.deletedAt);
   if(friends.length && !q){
     const t=document.createElement('div');
@@ -1085,7 +1100,6 @@ function renderPeoplePage(){
     friends.forEach(u=>body.appendChild(buildUserRow(u)));
   }
 
-  // Все пользователи
   const all=d.users.filter(u=>{
     if(u.uid===meUid||u.deletedAt)return false;
     if(me.friends.includes(u.uid))return false;
@@ -1371,34 +1385,77 @@ document.addEventListener('click',e=>{
 function openCreateChat(){
   $('ccName').value='';$('ccPrivateLogin').value='';
   $('ccSend').checked=true;$('ccFiles').checked=true;$('ccInvite').checked=false;
+  const s=$('islandSearch'); if(s) s.value='';
   selectedMembers=[];
   renderIslands();
   $('createChat').classList.add('open');
 }
+
+function buildIsland(u, isFriend){
+  const sel=selectedMembers.includes(u.uid);
+  const el=document.createElement('div');
+  el.className='island'+(sel?' selected':'')+(isFriend?' friend':'');
+  el.dataset.uid=u.uid;
+  el.innerHTML=`${avatarHTML(u)}<div class="name">${u.login}${isFriend?' ✓':''}</div>${u.description?`<div class="desc">${u.description}</div>`:''}`;
+  el.onclick=(e)=>{
+    if(e.shiftKey||e.altKey||e.metaKey){openProfile(u.uid);return;}
+    toggleMember(u.uid);
+  };
+  let lt=null;
+  el.addEventListener('touchstart',()=>{lt=setTimeout(()=>openProfile(u.uid),550);});
+  el.addEventListener('touchend',()=>clearTimeout(lt));
+  el.addEventListener('touchmove',()=>clearTimeout(lt));
+  el.addEventListener('contextmenu',e=>{e.preventDefault();openProfile(u.uid);});
+  return el;
+}
+
 function renderIslands(){
   const d=DB.load();const meUid=d.me;
-  const others=d.users.filter(u=>u.uid!==meUid&&!u.deletedAt);
+  const me=d.users.find(u=>u.uid===meUid);
+  if(!me)return;
+  const sEl=$('islandSearch');
+  const q=(sEl?sEl.value:'').trim().toLowerCase();
+  const match=(u)=>!q || (u.login||'').toLowerCase().includes(q);
+
+  const friendsList = me.friends
+    .map(uid=>userByUid(uid))
+    .filter(u=>u&&!u.deletedAt)
+    .filter(match);
+
+  const othersList = d.users
+    .filter(u=>u.uid!==meUid && !u.deletedAt && !me.friends.includes(u.uid))
+    .filter(match);
+
   const grid=$('islandsGrid');if(!grid)return;
-  grid.innerHTML=others.length?'':'<div class="empty" style="grid-column:1/-1;margin-top:10px">Других пользователей пока нет</div>';
-  others.forEach(u=>{
-    const sel=selectedMembers.includes(u.uid);
-    const el=document.createElement('div');
-    el.className='island'+(sel?' selected':'');
-    el.dataset.uid=u.uid;
-    el.innerHTML=`${avatarHTML(u)}<div class="name">${u.login}</div>${u.description?`<div class="desc">${u.description}</div>`:''}`;
-    el.onclick=(e)=>{
-      if(e.shiftKey||e.altKey||e.metaKey){openProfile(u.uid);return;}
-      toggleMember(u.uid);
-    };
-    let lt=null;
-    el.addEventListener('touchstart',()=>{lt=setTimeout(()=>openProfile(u.uid),550);});
-    el.addEventListener('touchend',()=>clearTimeout(lt));
-    el.addEventListener('touchmove',()=>clearTimeout(lt));
-    el.addEventListener('contextmenu',e=>{e.preventDefault();openProfile(u.uid);});
-    grid.appendChild(el);
-  });
+  grid.innerHTML='';
+
+  if(friendsList.length){
+    const t=document.createElement('div');
+    t.className='islands-title'; t.textContent='Друзья ('+friendsList.length+')';
+    grid.appendChild(t);
+    const sub=document.createElement('div'); sub.className='islands';
+    friendsList.forEach(u=>sub.appendChild(buildIsland(u, true)));
+    grid.appendChild(sub);
+  }
+
+  if(othersList.length){
+    const t=document.createElement('div');
+    t.className='islands-title';
+    t.style.marginTop = friendsList.length ? '14px' : '0';
+    t.textContent = (q?'Найдено':'Все пользователи')+' ('+othersList.length+')';
+    grid.appendChild(t);
+    const sub=document.createElement('div'); sub.className='islands';
+    othersList.forEach(u=>sub.appendChild(buildIsland(u, false)));
+    grid.appendChild(sub);
+  }
+
+  if(!friendsList.length && !othersList.length){
+    grid.innerHTML='<div class="empty" style="margin-top:10px">Никого не найдено</div>';
+  }
+
   renderSelectedStrip();
 }
+
 function toggleMember(u){
   const i=selectedMembers.indexOf(u);
   if(i>=0)selectedMembers.splice(i,1);else selectedMembers.push(u);
