@@ -111,8 +111,8 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 ::-webkit-scrollbar{width:8px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px}
 .empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px}
-#settings,#chatInfo,#admin,#createChat,#reportModal,#forwardModal,#profileModal,#profileEdit{position:fixed;inset:0;z-index:70;display:none}
-#settings.open,#chatInfo.open,#admin.open,#createChat.open,#reportModal.open,#forwardModal.open,#profileModal.open,#profileEdit.open{display:block}
+#settings,#chatInfo,#admin,#createChat,#reportModal,#forwardModal,#profileModal,#profileEdit,#allUsersModal{position:fixed;inset:0;z-index:70;display:none}
+#settings.open,#chatInfo.open,#admin.open,#createChat.open,#reportModal.open,#forwardModal.open,#profileModal.open,#profileEdit.open,#allUsersModal.open{display:block}
 .overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);animation:fade .2s}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 .panel{position:absolute;top:0;right:0;bottom:0;width:min(460px,94vw);background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;animation:slideIn .25s cubic-bezier(.2,.9,.3,1.1);overflow:hidden}
@@ -125,9 +125,11 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .st-body{flex:1;overflow-y:auto;padding:14px}
 .st-section{margin-bottom:20px}
 .st-section h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted)}
-.st-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--panel2);margin-bottom:8px;cursor:pointer;border:1px solid transparent}
+.st-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--panel2);margin-bottom:8px;cursor:pointer;border:1px solid transparent;transition:background .15s,opacity .15s}
 .st-row:hover{background:rgba(127,127,127,.12)}
 .st-row.active{border-color:var(--accent)}
+.st-row.deleted{opacity:.55;filter:grayscale(.5)}
+.st-row.deleted .t1{text-decoration:line-through}
 .st-row .icon{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;background-size:cover;background-position:center}
 .st-row .txt{flex:1;min-width:0}
 .st-row .t1{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -271,6 +273,13 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
         </div>
       </div>
       <div class="st-section">
+        <h3>Люди</h3>
+        <div class="st-row" onclick="openAllUsers()">
+          <div class="icon">👥</div>
+          <div class="txt"><div class="t1">Все пользователи</div><div class="t2">Список всех зарегистрированных</div></div>
+        </div>
+      </div>
+      <div class="st-section">
         <h3>Уведомления</h3>
         <div class="st-row simple" onclick="toggleNotifications()">
           <div class="txt"><span style="font-size:18px">🔔</span><span class="t1" style="margin-left:10px">Показывать уведомления</span></div>
@@ -309,7 +318,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
         <div class="st-row danger simple" onclick="requestDeleteAccount()"><div class="txt"><span style="font-size:18px">🗑️</span><span class="t1" style="margin-left:10px">Удалить аккаунт</span></div></div>
       </div>
     </div>
-    <div class="st-footer">Ink · v0.7 · multi-tab режим</div>
+    <div class="st-footer">Ink · v0.8 · multi-tab · restore 3d</div>
   </div>
 </div>
 
@@ -400,6 +409,16 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
   </div>
 </div>
 
+<div id="allUsersModal">
+  <div class="overlay" onclick="closePanel('allUsersModal')"></div>
+  <div class="modalBox">
+    <h3>Все пользователи</h3>
+    <p class="hint">Нажми на островок, чтобы открыть профиль</p>
+    <input id="allUsersFilter" placeholder="Фильтр: логин, ID, телефон, описание" oninput="renderAllUsers()" style="margin-bottom:12px"/>
+    <div class="islands" id="allUsersGrid"></div>
+  </div>
+</div>
+
 <div id="passModal" style="position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:20px">
   <div class="modalBox" style="position:relative;top:0;left:0;transform:none">
     <h3>🔒 Доступ к каналу</h3>
@@ -428,10 +447,9 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
    ============================================================ */
 const OFFICIAL_CHANNEL_PASS='ink2026';
 const OFFICIAL_CHANNEL_NAME='##ink_official';
-const DELETE_DELAY_DAYS=30;
+const RESTORE_WINDOW_DAYS=3;
 const $=id=>document.getElementById(id);
 
-/* localStorage — общая БД (users, chats, reports, theme, notify, lastRead) */
 const Store=(()=>{
   let backend='memory',memory={};
   try{localStorage.setItem('__t__','1');localStorage.removeItem('__t__');backend='localStorage';}
@@ -444,7 +462,6 @@ const Store=(()=>{
   };
 })();
 
-/* sessionStorage — «кто я» в ЭТОЙ вкладке. У каждой вкладки свой! */
 const TabMe=(()=>{
   let backend='memory',memory={};
   try{sessionStorage.setItem('__t__','1');sessionStorage.removeItem('__t__');backend='sessionStorage';}
@@ -457,17 +474,11 @@ const TabMe=(()=>{
   };
 })();
 
-/* Разблокировка каналов — тоже по вкладке */
-const Unlocked = {
-  get(k){ return TabMe.get('ink_unlocked_'+k)==='1'; },
-  set(k){ TabMe.set('ink_unlocked_'+k,'1'); }
+const Unlocked={
+  get(k){return TabMe.get('ink_unlocked_'+k)==='1';},
+  set(k){TabMe.set('ink_unlocked_'+k,'1');}
 };
 
-/* ============================================================
-   БАЗА
-   Ключевое: me хранится в sessionStorage (per-tab),
-   остальное — в localStorage (shared).
-   ============================================================ */
 const DB={
   load(){
     let raw;
@@ -477,16 +488,16 @@ const DB={
     raw.reports  = raw.reports  || [];
     raw.theme    = raw.theme    || 'dark';
     raw.notify   = raw.notify !== false;
-    raw.lastRead = raw.lastRead || {};  // {userId: {chatId: msgsLength}}
-    raw.me       = TabMe.get('ink_me') || null;  // ← per-tab!
+    raw.lastRead = raw.lastRead || {};
+    raw.me       = TabMe.get('ink_me') || null;
     return raw;
   },
   save(d){
-    const tabMe = d.me;
-    const shared = Object.assign({}, d, { me: null });
-    delete shared.unread; // legacy
-    Store.set('ink', JSON.stringify(shared));
-    if(tabMe) TabMe.set('ink_me', tabMe);
+    const tabMe=d.me;
+    const shared=Object.assign({},d,{me:null});
+    delete shared.unread;
+    Store.set('ink',JSON.stringify(shared));
+    if(tabMe)TabMe.set('ink_me',tabMe);
     else TabMe.remove('ink_me');
   }
 };
@@ -526,37 +537,35 @@ function applyTheme(){
 function toggleTheme(){const d=DB.load();d.theme=d.theme==='light'?'dark':'light';DB.save(d);applyTheme();}
 
 /* ============================================================
-   НЕПРОЧИТАННЫЕ — per-user, считаем на лету
+   НЕПРОЧИТАННЫЕ — per-user
    ============================================================ */
-function unreadCount(chat, meId){
-  const d = DB.load();
-  const readUp = (d.lastRead[meId] && d.lastRead[meId][chat.id]) || 0;
-  let n = 0;
-  for(let i = readUp; i < chat.msgs.length; i++){
-    const m = chat.msgs[i];
-    if(m.senderId === meId) continue;
-    if(m.deletedAll) continue;
-    if((m.deletedFor||[]).includes(meId)) continue;
+function unreadCount(chat,meId){
+  const d=DB.load();
+  const readUp=(d.lastRead[meId]&&d.lastRead[meId][chat.id])||0;
+  let n=0;
+  for(let i=readUp;i<chat.msgs.length;i++){
+    const m=chat.msgs[i];
+    if(m.senderId===meId)continue;
+    if(m.deletedAll)continue;
+    if((m.deletedFor||[]).includes(meId))continue;
     n++;
   }
   return n;
 }
 function markRead(chatId){
-  const d = DB.load();
-  const meId = d.me; if(!meId) return;
-  const c = d.chats.find(x=>x.id===chatId); if(!c) return;
-  d.lastRead[meId] = d.lastRead[meId] || {};
-  d.lastRead[meId][chatId] = c.msgs.length;
+  const d=DB.load();const meId=d.me;if(!meId)return;
+  const c=d.chats.find(x=>x.id===chatId);if(!c)return;
+  d.lastRead[meId]=d.lastRead[meId]||{};
+  d.lastRead[meId][chatId]=c.msgs.length;
   DB.save(d);
 }
 function totalUnread(){
-  const d = DB.load();
-  const meId = d.me; if(!meId) return 0;
-  let n = 0;
+  const d=DB.load();const meId=d.me;if(!meId)return 0;
+  let n=0;
   d.chats.forEach(c=>{
-    if(c.type==='private' && !c.members.includes(meId)) return;
-    if(c.type!=='private' && !c.members.includes(meId) && c.id!=='official') return;
-    n += unreadCount(c, meId);
+    if(c.type==='private'&&!c.members.includes(meId))return;
+    if(c.type!=='private'&&!c.members.includes(meId)&&c.id!=='official')return;
+    n+=unreadCount(c,meId);
   });
   return n;
 }
@@ -570,76 +579,63 @@ function renderBell(){
 }
 
 /* ============================================================
-   УВЕДОМЛЕНИЯ + КРОСС-ВКЛАДОЧНАЯ СИНХРОНИЗАЦИЯ
+   УВЕДОМЛЕНИЯ
    ============================================================ */
-const NotifyBus = (() => {
+const NotifyBus=(()=>{
   let bc=null;
-  try{ bc=new BroadcastChannel('ink'); }catch(e){ console.warn('BroadcastChannel недоступен'); }
-  return {
-    send(msg){ if(bc) bc.postMessage(msg); },
-    on(handler){ if(bc) bc.onmessage=e=>handler(e.data); }
+  try{bc=new BroadcastChannel('ink');}catch(e){console.warn('BroadcastChannel недоступен');}
+  return{
+    send(msg){if(bc)bc.postMessage(msg);},
+    on(handler){if(bc)bc.onmessage=e=>handler(e.data);}
   };
 })();
 
-/* Когда другой таб поменял localStorage — обновим UI */
-window.addEventListener('storage', e=>{
-  if(e.key !== 'ink') return;
-  renderChats();
-  renderBell();
-  if(currentChat) reloadCurrentChat();
-  if($('settings').classList.contains('open')) renderAccounts();
+window.addEventListener('storage',e=>{
+  if(e.key!=='ink')return;
+  renderChats();renderBell();
+  if(currentChat)reloadCurrentChat();
+  if($('settings').classList.contains('open'))renderAccounts();
 });
 
-/* Когда другой таб прислал сообщение через BroadcastChannel */
 NotifyBus.on(msg=>{
-  if(!msg) return;
-
+  if(!msg)return;
   if(msg.type==='msg'){
-    const d = DB.load();
-    const meId = d.me;
-    if(!meId) return;
-    if(msg.fromUserId === meId) return; // это моё исходящее, не мне
-
-    const chat = d.chats.find(c => c.id === msg.chatId);
-    if(!chat) return;
-    // я должен иметь доступ к чату
-    if(chat.type==='private' && !chat.members.includes(meId)) return;
-    if(chat.type!=='private' && !chat.members.includes(meId) && chat.id!=='official') return;
-    // официальный канал: все видят
-    const sender = d.users.find(u=>u.id === msg.fromUserId);
-    const title  = sender ? sender.login : 'Кто-то';
-
+    const d=DB.load();const meId=d.me;
+    if(!meId)return;
+    if(msg.fromUserId===meId)return;
+    const chat=d.chats.find(c=>c.id===msg.chatId);
+    if(!chat)return;
+    if(chat.type==='private'&&!chat.members.includes(meId))return;
+    if(chat.type!=='private'&&!chat.members.includes(meId)&&chat.id!=='official')return;
+    const sender=d.users.find(u=>u.id===msg.fromUserId);
+    const title=sender?sender.login:'Кто-то';
     if(chat.type==='channel'){
-      showBrowserNotify('Ink · '+chat.name, title + ': ' + msg.text.slice(0,80));
-      toast(chat.name, title+': '+msg.text.slice(0,50), chat.id);
+      showBrowserNotify('Ink · '+chat.name,title+': '+msg.text.slice(0,80));
+      toast(chat.name,title+': '+msg.text.slice(0,50),chat.id);
     } else {
-      showBrowserNotify('Ink · '+title, msg.text.slice(0,80));
-      toast(title, msg.text.slice(0,60), chat.id);
+      showBrowserNotify('Ink · '+title,msg.text.slice(0,80));
+      toast(title,msg.text.slice(0,60),chat.id);
     }
-
-    // обновляем список и (если открыт) сам чат
     renderChats();renderBell();
-    if(currentChat && currentChat.id === chat.id){
-      reloadCurrentChat();
-    }
+    if(currentChat&&currentChat.id===chat.id)reloadCurrentChat();
   }
 });
 
 function toggleNotifications(){
   const d=DB.load();
-  d.notify = d.notify === false ? true : false;
+  d.notify=d.notify===false?true:false;
   DB.save(d);applyTheme();
-  toast('Уведомления ' + (d.notify?'включены':'выключены'), '', '');
+  toast('Уведомления '+(d.notify?'включены':'выключены'),'','');
 }
 function requestBrowserPermission(){
-  if(!('Notification' in window)) return alert('Браузер не поддерживает уведомления');
+  if(!('Notification' in window))return alert('Браузер не поддерживает уведомления');
   Notification.requestPermission().then(p=>{applyTheme();toast('Разрешение: '+p,'','');});
 }
-function showBrowserNotify(title, body){
+function showBrowserNotify(title,body){
   const d=DB.load();
-  if(d.notify===false) return;
-  if(!('Notification' in window)) return;
-  if(Notification.permission!=='granted') return;
+  if(d.notify===false)return;
+  if(!('Notification' in window))return;
+  if(Notification.permission!=='granted')return;
   try{
     const n=new Notification(title,{body,tag:'ink-'+(body||'').slice(0,20)});
     n.onclick=()=>{window.focus();n.close();};
@@ -648,14 +644,14 @@ function showBrowserNotify(title, body){
 }
 function toast(t1,t2,chatId){
   const d=DB.load();
-  if(d.notify===false) return;
+  if(d.notify===false)return;
   const box=$('toastBox');
   const el=document.createElement('div');
   el.className='toast';
   el.innerHTML=`<div class="avatar sm">${(t1||'?')[0].toUpperCase()}</div><div class="txt"><div class="t1">${t1}</div><div class="t2">${t2||''}</div></div>`;
-  el.onclick=()=>{ if(chatId) openChat(chatId); el.remove(); };
+  el.onclick=()=>{if(chatId)openChat(chatId);el.remove();};
   box.appendChild(el);
-  setTimeout(()=>{ el.style.animation='toastOut .25s forwards'; setTimeout(()=>el.remove(),250); }, 4500);
+  setTimeout(()=>{el.style.animation='toastOut .25s forwards';setTimeout(()=>el.remove(),250);},4500);
 }
 
 /* ============================================================
@@ -672,13 +668,25 @@ function doLogin(){
     const u=d.users.find(x=>x.login.toLowerCase()===lv.toLowerCase()||(x.id+'#')===lv||(normPhone(x.phone)&&normPhone(x.phone)===normPhone(lv)));
     if(!u)return showMsg('authMsg','Пользователь не найден','err');
     if(u.pass!==hash(p))return showMsg('authMsg','Неверный пароль','err');
+
+    // Удалённый аккаунт
+    if(u.deletedAt){
+      const ageDays=(Date.now()-u.deletedAt)/86400000;
+      if(ageDays>=RESTORE_WINDOW_DAYS){
+        d.users=d.users.filter(x=>x.id!==u.id);DB.save(d);
+        return showMsg('authMsg','Аккаунт удалён окончательно (прошло больше '+RESTORE_WINDOW_DAYS+' дн.)','err');
+      }
+      const left=Math.ceil(RESTORE_WINDOW_DAYS-ageDays);
+      delete u.deletedAt;
+      d.me=u.id;DB.save(d);
+      toast('Аккаунт восстановлен','Переписки на месте. Осталось было '+left+' дн.','');
+      startApp();
+      return;
+    }
+
     if(u.blockedUntil&&Date.now()<u.blockedUntil){
       const days=Math.ceil((u.blockedUntil-Date.now())/86400000);
       return showMsg('authMsg',`Заблокирован ещё на ${days} дн. Причина: ${u.blockReason||'—'}`,'err');
-    }
-    if(u.deletionScheduledAt&&Date.now()>u.deletionScheduledAt){
-      d.users=d.users.filter(x=>x.id!==u.id);DB.save(d);
-      return showMsg('authMsg','Аккаунт удалён','err');
     }
     d.me=u.id;DB.save(d);startApp();
   }catch(err){console.error(err);showMsg('authMsg','Ошибка: '+err.message,'err');}
@@ -699,7 +707,7 @@ function doRegister(){
     setTimeout(()=>startApp(),900);
   }catch(err){console.error(err);showMsg('regMsg','Ошибка: '+err.message,'err');}
 }
-function forgot(){alert('Запрос на удаление принят. 30 дней. Войди снова, чтобы отменить.');}
+function forgot(){alert('Восстановление пароля: создай новый аккаунт или обратись к админу.');}
 
 /* ============================================================
    ЗАПУСК
@@ -713,16 +721,13 @@ function startApp(){
   $('auth').style.display='none';
   $('app').style.display='flex';
   const d=DB.load();
-  if(!d.me){ // защита: нет me — на логин
-    $('app').style.display='none';$('auth').style.display='flex';return;
-  }
+  if(!d.me){$('app').style.display='none';$('auth').style.display='flex';return;}
   ensureStartersFor(d.me);
   const me=meUser();
   $('adminSection').style.display=me&&me.isAdmin?'block':'none';
   renderChats();renderAccounts();renderMyProfileRow();applyTheme();renderBell();
 }
 
-/* У каждого пользователя — свой «Избранное», канал — один на всех */
 function ensureStartersFor(meId){
   const d=DB.load();
   const favId='fav_'+meId;
@@ -747,31 +752,33 @@ function ensureStartersFor(meId){
    ПОИСК + СПИСОК ЧАТОВ
    ============================================================ */
 function renderChats(){
-  const d=DB.load();
-  const me=d.me;
-  if(!me) return;
+  const d=DB.load();const me=d.me;if(!me)return;
   const q=($('searchInput').value||'').trim().toLowerCase();
   const peopleResults=$('peopleResults');
   const listBox=$('chatListOnly');
 
+  const allOthers=d.users.filter(u=>u.id!==me&&!u.deletedAt);
   let matchedUsers=[];
   if(q && q.length>=1){
     const qClean=normPhone(q);
-    matchedUsers=d.users.filter(u=>{
-      if(u.id===me)return false;
+    matchedUsers=allOthers.filter(u=>{
       const login=(u.login||'').toLowerCase();
       const id=(u.id||'').toLowerCase();
       const phone=normPhone(u.phone);
       const desc=(u.description||'').toLowerCase();
-      return login.includes(q) || id.includes(q)
-          || (qClean && phone && phone.includes(qClean))
-          || (desc && desc.includes(q));
+      return login.includes(q)||id.includes(q)
+          ||(qClean&&phone&&phone.includes(qClean))
+          ||(desc&&desc.includes(q));
     });
+  } else {
+    matchedUsers=allOthers;
   }
+
   if(matchedUsers.length){
-    peopleResults.innerHTML=`<div class="islands-title">Люди (${matchedUsers.length})</div><div class="islands" id="peopleGrid"></div>`;
+    const title=q?`Люди (${matchedUsers.length})`:`Все пользователи (${matchedUsers.length})`;
+    peopleResults.innerHTML=`<div class="islands-title">${title}</div><div class="islands" id="peopleGrid"></div>`;
     const grid=$('peopleGrid');
-    matchedUsers.slice(0,18).forEach(u=>{
+    matchedUsers.slice(0,24).forEach(u=>{
       const el=document.createElement('div');el.className='island';
       el.innerHTML=`${avatarHTML(u)}<div class="name">${u.login}</div><div class="id">ID: ${u.id}#</div>${u.description?`<div class="desc">${u.description}</div>`:''}`;
       el.onclick=()=>openProfile(u.id);
@@ -787,17 +794,16 @@ function renderChats(){
   const list=visible.filter(c=>!q||c.name.toLowerCase().includes(q)||c.id.toLowerCase().includes(q));
 
   listBox.innerHTML='';
-  if(q && matchedUsers.length){
+  if(matchedUsers.length){
     listBox.innerHTML+=`<div class="islands-title" style="margin-top:12px">Мои чаты (${list.length})</div>`;
   }
-  if(!list.length && !matchedUsers.length){
+  if(!list.length&&!matchedUsers.length){
     listBox.innerHTML+='<div class="empty">Ничего не найдено</div>';
   }
   list.forEach(c=>{
     const el=document.createElement('div');el.className='chat-item';
     const unread=unreadCount(c,me);
     if(unread)el.classList.add('unread');
-
     const visibleMsgs=c.msgs.filter(m=>!m.deletedAll&&!(m.deletedFor||[]).includes(me));
     const lastMsg=visibleMsgs.length?visibleMsgs[visibleMsgs.length-1]:null;
     let lastText='';
@@ -933,20 +939,12 @@ function sendMsg(){
   const msg={id:uid(),senderId:d.me,text:v,t:now()};
   if(replyToId)msg.replyTo=replyToId;
   c.msgs.push(msg);
-  // помечаем как прочитанное для отправителя
-  d.lastRead[d.me] = d.lastRead[d.me] || {};
-  d.lastRead[d.me][c.id] = c.msgs.length;
+  d.lastRead[d.me]=d.lastRead[d.me]||{};
+  d.lastRead[d.me][c.id]=c.msgs.length;
   DB.save(d);
   currentChat=c;
   input.value='';cancelReply();renderMessages();renderChats();
-
-  // уведомить другие вкладки
-  NotifyBus.send({
-    type:'msg',
-    chatId: c.id,
-    fromUserId: d.me,
-    text: v
-  });
+  NotifyBus.send({type:'msg',chatId:c.id,fromUserId:d.me,text:v});
 }
 function cancelReply(){replyToId=null;$('replyBar').classList.remove('show');}
 
@@ -1055,8 +1053,8 @@ $('messages').addEventListener('dblclick',e=>{
 function openForward(mid){
   const d=DB.load();const box=$('fwdList');box.innerHTML='';
   d.chats.forEach(c=>{
-    if(c.type==='private' && !c.members.includes(d.me)) return;
-    if(c.type!=='private' && !c.members.includes(d.me) && c.id!=='official') return;
+    if(c.type==='private'&&!c.members.includes(d.me))return;
+    if(c.type!=='private'&&!c.members.includes(d.me)&&c.id!=='official')return;
     const el=document.createElement('div');el.className='st-row';
     el.innerHTML=`<div class="icon">${c.name.replace(/^#/,'')[0].toUpperCase()}</div><div class="txt"><div class="t1">${c.name}</div></div>`;
     el.onclick=()=>{doForward(mid,c.id);closePanel('forwardModal');};
@@ -1095,7 +1093,7 @@ function openCreateChat(){
 }
 function renderIslands(){
   const d=DB.load();const me=d.me;
-  const others=d.users.filter(u=>u.id!==me);
+  const others=d.users.filter(u=>u.id!==me&&!u.deletedAt);
   const grid=$('islandsGrid');if(!grid)return;
   grid.innerHTML=others.length?'':'<div class="empty" style="grid-column:1/-1;margin-top:10px">Других пользователей пока нет</div>';
   others.forEach(u=>{
@@ -1255,16 +1253,22 @@ function openProfile(userId){
   view.innerHTML=`
     <div class="profileHero">
       ${avatarHTML(u,'')}
-      <div class="name">${u.login}${u.isAdmin?' 👑':''}</div>
+      <div class="name">${u.login}${u.isAdmin?' 👑':''}${u.deletedAt?' 🗑️':''}</div>
       <div class="id">ID: ${u.id}#</div>
       ${u.description?`<div class="desc">${u.description}</div>`:''}
       ${u.phone?`<div class="phone">📞 ${u.phone}</div>`:''}
+      ${u.deletedAt?`<div class="desc" style="color:var(--danger);margin-top:8px">Аккаунт помечен на удаление. Восстановление доступно ${RESTORE_WINDOW_DAYS} дня.</div>`:''}
     </div>`;
   const av=view.querySelector('.avatar');
   if(av){av.style.width='96px';av.style.height='96px';av.style.fontSize='34px';}
   const actions=$('profileActions');actions.innerHTML='';
-  if(isMe)actions.innerHTML=`<button class="btn" onclick="closePanel('profileModal');openProfileEdit()">Редактировать</button>`;
-  else actions.innerHTML=`<button class="btn" onclick="startPrivateWith('${u.id}')">Написать</button><button class="btn danger" onclick="openReport('${u.id}')">Жалоба</button>`;
+  if(isMe){
+    actions.innerHTML=`<button class="btn" onclick="closePanel('profileModal');openProfileEdit()">Редактировать</button>`;
+  } else if(u.deletedAt){
+    actions.innerHTML=`<button class="btn ghost" disabled>Аккаунт удалён</button>`;
+  } else {
+    actions.innerHTML=`<button class="btn" onclick="startPrivateWith('${u.id}')">Написать</button><button class="btn danger" onclick="openReport('${u.id}')">Жалоба</button>`;
+  }
   $('profileModal').classList.add('open');
 }
 function startPrivateWith(uid2){
@@ -1272,6 +1276,7 @@ function startPrivateWith(uid2){
   let c=d.chats.find(x=>x.type==='private'&&x.members.includes(me)&&x.members.includes(uid2));
   if(!c){
     const other=userById(uid2);
+    if(!other||other.deletedAt){alert('Аккаунт удалён');return;}
     c={id:'c'+Date.now(),name:other.login,type:'private',ownerId:me,
       members:[me,uid2],rights:{send:true,files:true,invite:true},
       msgs:[{id:uid(),senderId:'system',text:'Диалог начат',t:now()}]};
@@ -1318,6 +1323,39 @@ function saveProfile(){
 }
 
 /* ============================================================
+   ВСЕ ПОЛЬЗОВАТЕЛИ
+   ============================================================ */
+function openAllUsers(){
+  $('allUsersFilter').value='';
+  renderAllUsers();
+  closePanel('settings');
+  $('allUsersModal').classList.add('open');
+}
+function renderAllUsers(){
+  const d=DB.load();const me=d.me;
+  const q=($('allUsersFilter').value||'').trim().toLowerCase();
+  const qClean=normPhone(q);
+  const users=d.users.filter(u=>{
+    if(u.id===me)return false;
+    if(u.deletedAt)return false;
+    if(!q)return true;
+    return (u.login||'').toLowerCase().includes(q)
+        ||(u.id||'').toLowerCase().includes(q)
+        ||(qClean&&normPhone(u.phone).includes(qClean))
+        ||(u.description||'').toLowerCase().includes(q);
+  });
+  const grid=$('allUsersGrid');
+  grid.innerHTML=users.length?'':'<div class="empty" style="grid-column:1/-1">Никого не найдено</div>';
+  users.forEach(u=>{
+    const el=document.createElement('div');
+    el.className='island';
+    el.innerHTML=`${avatarHTML(u)}<div class="name">${u.login}</div><div class="id">ID: ${u.id}#</div>${u.description?`<div class="desc">${u.description}</div>`:''}`;
+    el.onclick=()=>{closePanel('allUsersModal');openProfile(u.id);};
+    grid.appendChild(el);
+  });
+}
+
+/* ============================================================
    ЖАЛОБЫ
    ============================================================ */
 function openReport(userId){
@@ -1350,14 +1388,14 @@ function renderAdmin(){
   box.innerHTML+=`<h3 style="font-size:12px;color:var(--muted);letter-spacing:1.2px">АККАУНТЫ (${d.users.length})</h3>`;
   d.users.forEach(u=>{
     const blocked=u.blockedUntil&&Date.now()<u.blockedUntil;
-    const el=document.createElement('div');el.className='st-row';
+    const el=document.createElement('div');el.className='st-row'+(u.deletedAt?' deleted':'');
     el.innerHTML=`
       ${avatarHTML(u,'sm')}
       <div class="txt">
-        <div class="t1">${u.login} ${u.isAdmin?'👑':''} ${blocked?'🚫':''}</div>
-        <div class="t2">ID: ${u.id}# · хэш: ${u.pass}${u.phone?' · '+u.phone:''}</div>
+        <div class="t1">${u.login} ${u.isAdmin?'👑':''} ${blocked?'🚫':''} ${u.deletedAt?'🗑️':''}</div>
+        <div class="t2">ID: ${u.id}# · хэш: ${u.pass}${u.phone?' · '+u.phone:''}${u.deletedAt?' · удалён':''}</div>
       </div>
-      ${!u.isAdmin?`<span class="small-action" data-adm="block" data-uid="${u.id}">${blocked?'разблок':'блок'}</span>`:''}`;
+      ${!u.isAdmin&&!u.deletedAt?`<span class="small-action" data-adm="block" data-uid="${u.id}">${blocked?'разблок':'блок'}</span>`:''}`;
     box.appendChild(el);
   });
   box.innerHTML+=`<h3 style="margin-top:16px;font-size:12px;color:var(--muted);letter-spacing:1.2px">ЖАЛОБЫ (${(d.reports||[]).length})</h3>`;
@@ -1384,25 +1422,48 @@ document.addEventListener('click',e=>{
 function openPanel(id){$(id).classList.add('open');}
 function closePanel(id){$(id).classList.remove('open');}
 function openSettings(){openPanel('settings');renderAccounts();renderMyProfileRow();applyTheme();}
+
 function renderAccounts(){
   const d=DB.load();const box=$('accountsList');if(!box)return;
   box.innerHTML='';
   d.users.forEach(u=>{
     const active=u.id===d.me;
-    const isDeleting=!!u.deletionScheduledAt;
+    const isDeleted=!!u.deletedAt;
     const el=document.createElement('div');
-    el.className='st-row'+(active?' active':'');
+    el.className='st-row'+(active?' active':'')+(isDeleted?' deleted':'');
+    let sub2='ID: '+u.id+'#';
+    if(isDeleted){
+      const left=Math.max(0,RESTORE_WINDOW_DAYS-Math.floor((Date.now()-u.deletedAt)/86400000));
+      sub2='ID: '+u.id+'# · 🗑️ удалён · осталось '+left+' дн.';
+    }
     el.innerHTML=`
       ${avatarHTML(u,'sm')}
       <div class="txt">
-        <div class="t1">${u.login} ${u.isAdmin?'👑':''} ${isDeleting?'· ⏳':''}</div>
-        <div class="t2">ID: ${u.id}#</div>
+        <div class="t1">${u.login} ${u.isAdmin?'👑':''}</div>
+        <div class="t2">${sub2}</div>
       </div>
-      ${active?'<div class="check">✓ этот таб</div>':''}`;
-    el.onclick=()=>{if(!active)switchAccount(u.id);else openProfileEdit();};
+      ${isDeleted
+        ? `<span class="small-action" data-restore="${u.id}" style="color:var(--ok);font-weight:700">восстановить</span>`
+        : (active ? '<div class="check">✓ этот таб</div>' : '')
+      }`;
+    el.onclick=(e)=>{
+      if(e.target.dataset.restore){restoreAccount(e.target.dataset.restore);return;}
+      if(isDeleted)return;
+      if(!active)switchAccount(u.id);else openProfileEdit();
+    };
     box.appendChild(el);
   });
 }
+
+function restoreAccount(id){
+  const d=DB.load();
+  const u=d.users.find(x=>x.id===id);if(!u)return;
+  delete u.deletedAt;
+  DB.save(d);
+  toast('Аккаунт восстановлен',u.login,'');
+  renderAccounts();
+}
+
 function switchAccount(id){
   const d=DB.load();d.me=id;DB.save(d);
   currentChat=null;document.body.classList.remove('in-chat');
@@ -1425,14 +1486,28 @@ function logout(){
 }
 function requestDeleteAccount(){
   const d=DB.load();const u=d.users.find(x=>x.id===d.me);if(!u)return;
-  if(u.deletionScheduledAt){
-    const left=Math.ceil((u.deletionScheduledAt-Date.now())/86400000);
-    if(confirm(`Удаление через ${left} дн. Отменить?`)){delete u.deletionScheduledAt;DB.save(d);renderAccounts();alert('Отменено');}
+
+  if(u.deletedAt){
+    if(confirm('Аккаунт удалён. Восстановить сейчас?')){
+      delete u.deletedAt;
+      DB.save(d);
+      renderAccounts();
+      toast('Аккаунт восстановлен',u.login,'');
+    }
     return;
   }
-  if(!confirm(`Удалить? Отсчёт ${DELETE_DELAY_DAYS} дней.`))return;
-  u.deletionScheduledAt=Date.now()+DELETE_DELAY_DAYS*86400000;
-  DB.save(d);renderAccounts();alert('Помечено на удаление');
+
+  if(!confirm('Удалить аккаунт? Переписки сохранятся. В течение '+RESTORE_WINDOW_DAYS+' дней можно восстановить.'))return;
+
+  u.deletedAt=Date.now();
+  d.me=null;
+  DB.save(d);
+
+  closePanel('settings');
+  $('app').style.display='none';
+  $('auth').style.display='flex';
+  switchTo('login');
+  setTimeout(()=>toast('Аккаунт удалён','Восстановить можно в течение '+RESTORE_WINDOW_DAYS+' дней — просто войди снова',''),300);
 }
 
 /* ============================================================
@@ -1470,22 +1545,39 @@ function requestDeleteAccount(){
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     closeCtx();
-    ['settings','chatInfo','admin','createChat','reportModal','forwardModal','profileModal','profileEdit'].forEach(closePanel);
+    ['settings','chatInfo','admin','createChat','reportModal','forwardModal','profileModal','profileEdit','allUsersModal'].forEach(closePanel);
     closePassModal();
   }
 });
 
 /* ============================================================
-   АВТОЛОГИН (в этой вкладке — по sessionStorage)
+   ПРОСРОЧЕННЫЕ УДАЛЕНИЯ
+   ============================================================ */
+function cleanupExpiredDeletes(){
+  const d=DB.load();
+  const nowTs=Date.now();
+  const before=d.users.length;
+  d.users=d.users.filter(u=>{
+    if(!u.deletedAt)return true;
+    if(nowTs-u.deletedAt>=RESTORE_WINDOW_DAYS*86400000)return false;
+    return true;
+  });
+  if(d.users.length!==before)DB.save(d);
+}
+
+/* ============================================================
+   АВТОЛОГИН
    ============================================================ */
 (function auto(){
   try{
+    cleanupExpiredDeletes();
     applyTheme();
     const d=DB.load();
-    if(d.me && d.users.find(u=>u.id===d.me)){
-      console.log('[Ink] auto-login as', d.me, '(storage:', Store.type, '/', TabMe.type, ')');
+    if(d.me&&d.users.find(u=>u.id===d.me&&!u.deletedAt)){
+      console.log('[Ink] auto-login as',d.me,'(storage:',Store.type,'/',TabMe.type,')');
       startApp();
     } else {
+      if(d.me){d.me=null;DB.save(d);}
       console.log('[Ink] no session, show auth');
       $('auth').style.display='flex';
       $('app').style.display='none';
