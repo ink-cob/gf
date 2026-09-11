@@ -59,6 +59,7 @@ header button:hover{background:rgba(127,127,127,.12)}
 .msg-ok.err{background:rgba(255,92,92,.12);color:var(--danger);border:1px solid rgba(255,92,92,.35);display:block}
 .msg-ok.ok{background:rgba(74,222,128,.12);color:var(--ok);border:1px solid rgba(74,222,128,.35);display:block}
 .msg-ok.warn{background:rgba(255,209,138,.12);color:var(--warn);border:1px solid rgba(255,209,138,.35);display:block}
+.tab-note{font-size:11px;color:var(--accent);text-align:center;margin-top:10px;opacity:.85}
 
 .search{margin:10px 14px 0;padding:10px 12px;background:var(--panel2);border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:14px}
 .search:focus{border-color:var(--accent)}
@@ -78,57 +79,13 @@ header button:hover{background:rgba(127,127,127,.12)}
 .createBtn:hover{color:var(--accent);border-color:var(--accent)}
 
 #messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-
-/* ===== СВОИ И ЧУЖИЕ СООБЩЕНИЯ ===== */
-.msg{
-  max-width:78%;padding:9px 13px;border-radius:16px;
-  font-size:14.5px;line-height:1.35;word-wrap:break-word;
-  position:relative;cursor:pointer;user-select:none;
-  transition:transform .1s;
-}
+.msg{max-width:78%;padding:9px 13px;border-radius:16px;font-size:14.5px;line-height:1.35;word-wrap:break-word;position:relative;cursor:pointer;user-select:none;transition:transform .1s}
 .msg:active{transform:scale(.99)}
-
-/* ЧУЖИЕ: слева, светлее, углы скруглены кроме левого-нижнего */
-.msg.them{
-  align-self:flex-start;
-  background:var(--them);
-  border:1px solid var(--border);
-  border-bottom-left-radius:4px;
-  color:var(--text);
-  box-shadow:0 1px 2px rgba(0,0,0,.08);
-}
-
-/* СВОИ: справа, градиент, углы скруглены кроме правого-нижнего */
-.msg.me{
-  align-self:flex-end;
-  background:linear-gradient(135deg,var(--mine),var(--mine2));
-  color:#fff;
-  border:0;
-  border-bottom-right-radius:4px;
-  box-shadow:0 2px 8px rgba(91,108,255,.25);
-}
-
-/* Бейдж «Вы» для своих — маленькая метка */
-.msg.me::before{
-  content:'Вы';
-  position:absolute;
-  top:-8px;
-  right:12px;
-  font-size:9.5px;
-  font-weight:700;
-  letter-spacing:.8px;
-  text-transform:uppercase;
-  color:#fff;
-  background:linear-gradient(135deg,var(--mine),var(--mine2));
-  padding:1px 6px;
-  border-radius:6px;
-  opacity:.85;
-}
-
-/* Имя отправителя для чужих в группах */
+.msg.them{align-self:flex-start;background:var(--them);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.msg.me{align-self:flex-end;background:linear-gradient(135deg,var(--mine),var(--mine2));color:#fff;border:0;border-bottom-right-radius:4px;box-shadow:0 2px 8px rgba(91,108,255,.25)}
+.msg.me::before{content:'Вы';position:absolute;top:-8px;right:12px;font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--mine),var(--mine2));padding:1px 6px;border-radius:6px;opacity:.85}
 .msg .sname{display:block;font-size:11.5px;font-weight:700;color:var(--accent);margin-bottom:3px;cursor:pointer}
 .msg.me .sname{color:#cfe0ff}
-
 .msg .time{display:block;font-size:10.5px;opacity:.7;margin-top:4px;text-align:right}
 .msg .edited{font-size:10px;opacity:.6;margin-right:4px}
 .msg .replyQuote{border-left:3px solid var(--accent);padding:2px 8px;margin-bottom:5px;font-size:12px;color:var(--muted);background:rgba(127,127,127,.08);border-radius:4px}
@@ -140,7 +97,6 @@ header button:hover{background:rgba(127,127,127,.12)}
 .msg.me .reaction{background:rgba(255,255,255,.2)}
 .reaction.mine{background:rgba(79,140,255,.3);border:1px solid var(--accent)}
 .msg.me .reaction.mine{background:rgba(255,255,255,.35);border-color:#fff}
-
 .composer{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);background:var(--panel);flex-shrink:0}
 .composer input{flex:1;padding:12px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:14.5px}
 .composer input:focus{border-color:var(--accent)}
@@ -150,13 +106,11 @@ header button:hover{background:rgba(127,127,127,.12)}
 .replyBar{padding:6px 14px;background:var(--panel2);border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);display:none;justify-content:space-between;align-items:center}
 .replyBar.show{display:flex}
 .replyBar .x{cursor:pointer;color:var(--danger);font-weight:700}
-
 body.inkognito #app{filter:hue-rotate(-40deg) saturate(1.2)}
 body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#9fe;padding:4px 12px;border-radius:999px;font-size:11px;letter-spacing:1.5px;z-index:40;pointer-events:none}
 ::-webkit-scrollbar{width:8px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px}
 .empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px}
-
 #settings,#chatInfo,#admin,#createChat,#reportModal,#forwardModal,#profileModal,#profileEdit{position:fixed;inset:0;z-index:70;display:none}
 #settings.open,#chatInfo.open,#admin.open,#createChat.open,#reportModal.open,#forwardModal.open,#profileModal.open,#profileEdit.open{display:block}
 .overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);animation:fade .2s}
@@ -189,7 +143,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
 .switch.on::after{transform:translateX(20px)}
 .st-footer{padding:14px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);text-align:center}
-
 .modalBox{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(460px,94vw);background:var(--panel);border:1px solid var(--border2);border-radius:20px;padding:22px;animation:pop .25s cubic-bezier(.2,.9,.3,1.3);max-height:88vh;overflow-y:auto}
 .modalBox h3{margin:0 0 6px;font-size:18px}
 .modalBox p.hint{margin:0 0 14px;font-size:13px;color:var(--muted)}
@@ -200,7 +153,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .modalBox .seg button.active{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#fff}
 .modalBox .chkRow{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;cursor:pointer}
 .modalBox .chkRow input{width:auto;margin:0}
-
 .islands-title{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:6px 0 8px}
 .selected-strip{display:flex;gap:8px;flex-wrap:wrap;padding:10px;background:var(--panel2);border:1px dashed var(--border2);border-radius:14px;margin-bottom:12px;min-height:56px}
 .selected-strip.empty-strip::before{content:'Никого не добавлено';color:var(--muted);font-size:13px;margin:auto}
@@ -208,7 +160,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .chip:hover{border-color:var(--danger)}
 .chip .avatar{width:26px;height:26px;font-size:11px}
 .chip .x{color:var(--muted);font-weight:700;font-size:14px}
-
 .islands{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:8px}
 .island{position:relative;padding:14px 12px;border-radius:18px;background:var(--panel2);border:1px solid var(--border2);cursor:pointer;text-align:center;transition:transform .12s,border-color .15s,background .15s}
 .island:hover{transform:translateY(-2px);background:rgba(127,127,127,.12)}
@@ -218,26 +169,21 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .island .name{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .island .id{font-size:11px;color:var(--muted);margin-top:2px}
 .island .desc{font-size:11.5px;color:var(--muted);margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
-
 .profileHero{display:flex;flex-direction:column;align-items:center;padding:16px 8px 22px;gap:8px}
 .profileHero .name{font-size:19px;font-weight:700}
 .profileHero .id{font-size:12.5px;color:var(--muted)}
 .profileHero .desc{font-size:13.5px;color:var(--text);text-align:center;max-width:340px;margin-top:6px;line-height:1.4}
 .profileHero .phone{font-size:13px;color:var(--accent);margin-top:6px;cursor:pointer}
-
 #ctxMenu{position:fixed;z-index:90;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:6px;box-shadow:var(--shadow);display:none;min-width:200px;animation:pop .15s}
 #ctxMenu.open{display:block}
 #ctxMenu .it{padding:10px 14px;cursor:pointer;border-radius:10px;font-size:14px;display:flex;gap:10px;align-items:center}
 #ctxMenu .it:hover{background:rgba(127,127,127,.15)}
 #ctxMenu .it.danger{color:var(--danger)}
 #ctxMenu .sep{height:1px;background:var(--border);margin:4px 6px}
-
 #reactionPick{position:fixed;z-index:91;background:var(--panel);border:1px solid var(--border2);border-radius:999px;padding:6px;display:none;box-shadow:var(--shadow);gap:2px}
 #reactionPick.open{display:flex}
 #reactionPick button{background:transparent;border:0;font-size:20px;cursor:pointer;padding:6px 8px;border-radius:50%}
 #reactionPick button:hover{background:rgba(127,127,127,.2)}
-
-/* ============ ТОСТЫ ============ */
 #toastBox{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:min(420px,92vw)}
 .toast{pointer-events:auto;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:center;animation:toastIn .25s cubic-bezier(.2,.9,.3,1.3);cursor:pointer;transition:transform .12s}
 .toast:hover{transform:translateY(-2px)}
@@ -246,8 +192,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .toast .t2{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
 @keyframes toastIn{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
 @keyframes toastOut{from{transform:none;opacity:1}to{transform:translateY(30px);opacity:0}}
-
-/* Колокольчик с точкой */
 .bell-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--danger);border-radius:50%;box-shadow:0 0 0 2px var(--panel)}
 </style>
 </head>
@@ -266,7 +210,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
         <button class="btn ghost" onclick="switchTo('reg')">Регистрация</button>
         <button class="btn ghost" onclick="forgot()">Забыл пароль</button>
       </div>
-      <p style="font-size:11px;color:var(--muted);margin-top:14px;text-align:center">Первый аккаунт становится админом</p>
+      <p class="tab-note">💡 Эта вкладка = отдельное «устройство»<br/>Открой приложение ещё раз, чтобы войти другим аккаунтом</p>
     </div>
     <div id="regMode" style="display:none">
       <h1>Регистрация</h1>
@@ -319,7 +263,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
     <div class="st-header"><h2>Настройки</h2><div class="spacer"></div><button onclick="closePanel('settings')">✕</button></div>
     <div class="st-body">
       <div class="st-section">
-        <h3>Мой профиль</h3>
+        <h3>Этот таб сейчас</h3>
         <div class="st-row" onclick="openProfileEdit()">
           <div class="icon" id="myProfileAvatar"></div>
           <div class="txt"><div class="t1" id="myProfileName">—</div><div class="t2" id="myProfileDesc">Нажми, чтобы настроить</div></div>
@@ -338,11 +282,11 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
         </div>
       </div>
       <div class="st-section">
-        <h3>Аккаунты</h3>
+        <h3>Все аккаунты в браузере</h3>
         <div id="accountsList"></div>
         <div class="st-row" onclick="addAccount()">
           <div class="icon" style="background:var(--panel2);color:var(--accent);border:1px dashed var(--border2)">+</div>
-          <div class="txt"><div class="t1">Добавить аккаунт</div><div class="t2">Создать новый</div></div>
+          <div class="txt"><div class="t1">Добавить аккаунт</div><div class="t2">Создать новый в этой вкладке</div></div>
         </div>
       </div>
       <div class="st-section">
@@ -360,12 +304,12 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
         </div>
       </div>
       <div class="st-section">
-        <h3>Аккаунт</h3>
-        <div class="st-row simple" onclick="logout()"><div class="txt"><span style="font-size:18px">🚪</span><span class="t1" style="margin-left:10px">Выйти</span></div></div>
+        <h3>Эта вкладка</h3>
+        <div class="st-row simple" onclick="logout()"><div class="txt"><span style="font-size:18px">🚪</span><span class="t1" style="margin-left:10px">Выйти (в этой вкладке)</span></div></div>
         <div class="st-row danger simple" onclick="requestDeleteAccount()"><div class="txt"><span style="font-size:18px">🗑️</span><span class="t1" style="margin-left:10px">Удалить аккаунт</span></div></div>
       </div>
     </div>
-    <div class="st-footer">Ink · v0.6 · прототип</div>
+    <div class="st-footer">Ink · v0.7 · multi-tab режим</div>
   </div>
 </div>
 
@@ -396,9 +340,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
       <button data-t="channel">Канал</button>
     </div>
     <input id="ccName" placeholder="Название (для группы/канала)"/>
-    <div id="ccPrivateBlock">
-      <input id="ccPrivateLogin" placeholder="Логин, ID# или телефон человека"/>
-    </div>
+    <div id="ccPrivateBlock"><input id="ccPrivateLogin" placeholder="Логин, ID# или телефон"/></div>
     <div id="ccMembersBlock" style="display:none">
       <div class="islands-title">Добавленные</div>
       <div class="selected-strip empty-strip" id="selectedStrip"></div>
@@ -415,10 +357,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 
 <div id="profileModal">
   <div class="overlay" onclick="closePanel('profileModal')"></div>
-  <div class="modalBox">
-    <div id="profileView"></div>
-    <div class="row" id="profileActions"></div>
-  </div>
+  <div class="modalBox"><div id="profileView"></div><div class="row" id="profileActions"></div></div>
 </div>
 
 <div id="profileEdit">
@@ -444,8 +383,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 <div id="reportModal">
   <div class="overlay" onclick="closePanel('reportModal')"></div>
   <div class="modalBox">
-    <h3>Жалоба</h3>
-    <p class="hint">Опиши причину</p>
+    <h3>Жалоба</h3><p class="hint">Опиши причину</p>
     <input id="repTarget" placeholder="На кого" readonly/>
     <textarea id="repReason" placeholder="Причина жалобы" rows="4"></textarea>
     <input type="file" id="repShots" accept="image/*" multiple/>
@@ -457,8 +395,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 <div id="forwardModal">
   <div class="overlay" onclick="closePanel('forwardModal')"></div>
   <div class="modalBox">
-    <h3>Переслать в...</h3>
-    <div id="fwdList" style="margin-top:10px"></div>
+    <h3>Переслать в...</h3><div id="fwdList" style="margin-top:10px"></div>
     <div class="row"><button class="btn ghost" onclick="closePanel('forwardModal')">Отмена</button></div>
   </div>
 </div>
@@ -483,22 +420,22 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
   <button onclick="pickReaction('😢')">😢</button>
   <button onclick="pickReaction('🔥')">🔥</button>
 </div>
-
 <div id="toastBox"></div>
 
 <script>
 /* ============================================================
-   КОНСТАНТЫ, ХРАНИЛИЩЕ, УТИЛИТЫ
+   КОНСТАНТЫ, ХРАНИЛИЩА
    ============================================================ */
 const OFFICIAL_CHANNEL_PASS='ink2026';
 const OFFICIAL_CHANNEL_NAME='##ink_official';
 const DELETE_DELAY_DAYS=30;
 const $=id=>document.getElementById(id);
 
+/* localStorage — общая БД (users, chats, reports, theme, notify, lastRead) */
 const Store=(()=>{
   let backend='memory',memory={};
   try{localStorage.setItem('__t__','1');localStorage.removeItem('__t__');backend='localStorage';}
-  catch(e){console.warn('[Ink] storage→memory');}
+  catch(e){console.warn('[Ink] localStorage недоступен:',e.message);}
   return{
     type:backend,
     get(k){if(backend==='localStorage'){try{return localStorage.getItem(k)}catch(e){return memory[k]??null}}return memory[k]??null},
@@ -506,20 +443,52 @@ const Store=(()=>{
     remove(k){if(backend==='localStorage'){try{localStorage.removeItem(k);return}catch(e){delete memory[k]}}else delete memory[k]}
   };
 })();
-const Session=(()=>{
+
+/* sessionStorage — «кто я» в ЭТОЙ вкладке. У каждой вкладки свой! */
+const TabMe=(()=>{
   let backend='memory',memory={};
   try{sessionStorage.setItem('__t__','1');sessionStorage.removeItem('__t__');backend='sessionStorage';}
-  catch(e){}
+  catch(e){console.warn('[Ink] sessionStorage недоступен:',e.message);}
   return{
+    type:backend,
     get(k){if(backend==='sessionStorage'){try{return sessionStorage.getItem(k)}catch(e){return memory[k]??null}}return memory[k]??null},
     set(k,v){if(backend==='sessionStorage'){try{sessionStorage.setItem(k,v);return}catch(e){memory[k]=v}}else memory[k]=v},
     remove(k){if(backend==='sessionStorage'){try{sessionStorage.removeItem(k);return}catch(e){delete memory[k]}}else delete memory[k]}
   };
 })();
 
+/* Разблокировка каналов — тоже по вкладке */
+const Unlocked = {
+  get(k){ return TabMe.get('ink_unlocked_'+k)==='1'; },
+  set(k){ TabMe.set('ink_unlocked_'+k,'1'); }
+};
+
+/* ============================================================
+   БАЗА
+   Ключевое: me хранится в sessionStorage (per-tab),
+   остальное — в localStorage (shared).
+   ============================================================ */
 const DB={
-  load(){try{return JSON.parse(Store.get('ink')||'{"users":[],"chats":[],"me":null,"theme":"dark","reports":[],"notify":true,"unread":{}}')}catch(e){return{users:[],chats:[],me:null,theme:'dark',reports:[],notify:true,unread:{}}} },
-  save(d){Store.set('ink',JSON.stringify(d))}
+  load(){
+    let raw;
+    try{ raw=JSON.parse(Store.get('ink')||'{}'); }catch(e){ raw={}; }
+    raw.users    = raw.users    || [];
+    raw.chats    = raw.chats    || [];
+    raw.reports  = raw.reports  || [];
+    raw.theme    = raw.theme    || 'dark';
+    raw.notify   = raw.notify !== false;
+    raw.lastRead = raw.lastRead || {};  // {userId: {chatId: msgsLength}}
+    raw.me       = TabMe.get('ink_me') || null;  // ← per-tab!
+    return raw;
+  },
+  save(d){
+    const tabMe = d.me;
+    const shared = Object.assign({}, d, { me: null });
+    delete shared.unread; // legacy
+    Store.set('ink', JSON.stringify(shared));
+    if(tabMe) TabMe.set('ink_me', tabMe);
+    else TabMe.remove('ink_me');
+  }
 };
 
 function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return 'h'+h}
@@ -550,14 +519,58 @@ function applyTheme(){
   const ns=$('notifySwitch');if(ns)ns.classList.toggle('on',d.notify!==false);
   const st=$('browserPermState');
   if(st){
-    if(!('Notification' in window)) st.textContent='не поддерживается';
+    if(!('Notification' in window)) st.textContent='нет';
     else st.textContent={granted:'разрешено',denied:'запрещено',default:'спросить'}[Notification.permission]||'—';
   }
 }
 function toggleTheme(){const d=DB.load();d.theme=d.theme==='light'?'dark':'light';DB.save(d);applyTheme();}
 
 /* ============================================================
-   УВЕДОМЛЕНИЯ
+   НЕПРОЧИТАННЫЕ — per-user, считаем на лету
+   ============================================================ */
+function unreadCount(chat, meId){
+  const d = DB.load();
+  const readUp = (d.lastRead[meId] && d.lastRead[meId][chat.id]) || 0;
+  let n = 0;
+  for(let i = readUp; i < chat.msgs.length; i++){
+    const m = chat.msgs[i];
+    if(m.senderId === meId) continue;
+    if(m.deletedAll) continue;
+    if((m.deletedFor||[]).includes(meId)) continue;
+    n++;
+  }
+  return n;
+}
+function markRead(chatId){
+  const d = DB.load();
+  const meId = d.me; if(!meId) return;
+  const c = d.chats.find(x=>x.id===chatId); if(!c) return;
+  d.lastRead[meId] = d.lastRead[meId] || {};
+  d.lastRead[meId][chatId] = c.msgs.length;
+  DB.save(d);
+}
+function totalUnread(){
+  const d = DB.load();
+  const meId = d.me; if(!meId) return 0;
+  let n = 0;
+  d.chats.forEach(c=>{
+    if(c.type==='private' && !c.members.includes(meId)) return;
+    if(c.type!=='private' && !c.members.includes(meId) && c.id!=='official') return;
+    n += unreadCount(c, meId);
+  });
+  return n;
+}
+function renderBell(){
+  const btn=$('bellBtn');if(!btn)return;
+  const old=btn.querySelector('.bell-dot');if(old)old.remove();
+  if(totalUnread()>0){
+    const dot=document.createElement('span');dot.className='bell-dot';
+    btn.appendChild(dot);
+  }
+}
+
+/* ============================================================
+   УВЕДОМЛЕНИЯ + КРОСС-ВКЛАДОЧНАЯ СИНХРОНИЗАЦИЯ
    ============================================================ */
 const NotifyBus = (() => {
   let bc=null;
@@ -568,33 +581,71 @@ const NotifyBus = (() => {
   };
 })();
 
+/* Когда другой таб поменял localStorage — обновим UI */
+window.addEventListener('storage', e=>{
+  if(e.key !== 'ink') return;
+  renderChats();
+  renderBell();
+  if(currentChat) reloadCurrentChat();
+  if($('settings').classList.contains('open')) renderAccounts();
+});
+
+/* Когда другой таб прислал сообщение через BroadcastChannel */
+NotifyBus.on(msg=>{
+  if(!msg) return;
+
+  if(msg.type==='msg'){
+    const d = DB.load();
+    const meId = d.me;
+    if(!meId) return;
+    if(msg.fromUserId === meId) return; // это моё исходящее, не мне
+
+    const chat = d.chats.find(c => c.id === msg.chatId);
+    if(!chat) return;
+    // я должен иметь доступ к чату
+    if(chat.type==='private' && !chat.members.includes(meId)) return;
+    if(chat.type!=='private' && !chat.members.includes(meId) && chat.id!=='official') return;
+    // официальный канал: все видят
+    const sender = d.users.find(u=>u.id === msg.fromUserId);
+    const title  = sender ? sender.login : 'Кто-то';
+
+    if(chat.type==='channel'){
+      showBrowserNotify('Ink · '+chat.name, title + ': ' + msg.text.slice(0,80));
+      toast(chat.name, title+': '+msg.text.slice(0,50), chat.id);
+    } else {
+      showBrowserNotify('Ink · '+title, msg.text.slice(0,80));
+      toast(title, msg.text.slice(0,60), chat.id);
+    }
+
+    // обновляем список и (если открыт) сам чат
+    renderChats();renderBell();
+    if(currentChat && currentChat.id === chat.id){
+      reloadCurrentChat();
+    }
+  }
+});
+
 function toggleNotifications(){
   const d=DB.load();
   d.notify = d.notify === false ? true : false;
   DB.save(d);applyTheme();
   toast('Уведомления ' + (d.notify?'включены':'выключены'), '', '');
 }
-
 function requestBrowserPermission(){
   if(!('Notification' in window)) return alert('Браузер не поддерживает уведомления');
-  Notification.requestPermission().then(p=>{
-    applyTheme();
-    toast('Разрешение: '+p,'', '');
-  });
+  Notification.requestPermission().then(p=>{applyTheme();toast('Разрешение: '+p,'','');});
 }
-
 function showBrowserNotify(title, body){
   const d=DB.load();
   if(d.notify===false) return;
   if(!('Notification' in window)) return;
   if(Notification.permission!=='granted') return;
   try{
-    const n=new Notification(title,{body,icon:undefined,tag:'ink-'+(body||'').slice(0,20)});
+    const n=new Notification(title,{body,tag:'ink-'+(body||'').slice(0,20)});
     n.onclick=()=>{window.focus();n.close();};
     setTimeout(()=>n.close(),5000);
   }catch(e){console.warn(e);}
 }
-
 function toast(t1,t2,chatId){
   const d=DB.load();
   if(d.notify===false) return;
@@ -606,51 +657,6 @@ function toast(t1,t2,chatId){
   box.appendChild(el);
   setTimeout(()=>{ el.style.animation='toastOut .25s forwards'; setTimeout(()=>el.remove(),250); }, 4500);
 }
-
-/* Непрочитанные */
-function bumpUnread(chatId){
-  const d=DB.load();
-  d.unread=d.unread||{};
-  d.unread[chatId]=(d.unread[chatId]||0)+1;
-  DB.save(d);
-}
-function clearUnread(chatId){
-  const d=DB.load();
-  d.unread=d.unread||{};
-  delete d.unread[chatId];
-  DB.save(d);
-}
-function totalUnread(){const d=DB.load();return Object.values(d.unread||{}).reduce((a,b)=>a+b,0);}
-function renderBell(){
-  const btn=$('bellBtn');if(!btn)return;
-  const n=totalUnread();
-  // удалить старую точку
-  const old=btn.querySelector('.bell-dot');if(old)old.remove();
-  if(n>0){
-    const dot=document.createElement('span');dot.className='bell-dot';
-    btn.appendChild(dot);
-  }
-}
-
-/* Слушаем сообщения из других вкладок */
-NotifyBus.on(msg=>{
-  if(!msg||msg.type!=='msg') return;
-  const d=DB.load();
-  if(d.me!==msg.toUserId) return;   // сообщение не мне
-  if(msg.fromUserId===d.me) return; // сам себе
-  const sender=userById(msg.fromUserId);
-  const title=sender?sender.login:'Кто-то';
-  showBrowserNotify('Ink · '+title, msg.text.slice(0,80));
-  if(currentChat && currentChat.id===msg.chatId){
-    // уже открыт — просто перерисуем
-    reloadCurrentChat();
-  } else {
-    bumpUnread(msg.chatId);
-    const chat=d.chats.find(c=>c.id===msg.chatId);
-    toast(title, msg.text.slice(0,60), msg.chatId);
-    renderChats();renderBell();
-  }
-});
 
 /* ============================================================
    АВТОРИЗАЦИЯ
@@ -677,6 +683,7 @@ function doLogin(){
     d.me=u.id;DB.save(d);startApp();
   }catch(err){console.error(err);showMsg('authMsg','Ошибка: '+err.message,'err');}
 }
+
 function doRegister(){
   try{
     const lv=$('regLogin').value.trim(),p1=$('regPass').value,p2=$('regPass2').value;
@@ -706,20 +713,33 @@ function startApp(){
   $('auth').style.display='none';
   $('app').style.display='flex';
   const d=DB.load();
-  if(!d.chats||!d.chats.length)seedChats();
+  if(!d.me){ // защита: нет me — на логин
+    $('app').style.display='none';$('auth').style.display='flex';return;
+  }
+  ensureStartersFor(d.me);
   const me=meUser();
   $('adminSection').style.display=me&&me.isAdmin?'block':'none';
   renderChats();renderAccounts();renderMyProfileRow();applyTheme();renderBell();
 }
-function seedChats(){
-  const d=DB.load();const me=meUser();
-  d.chats=[
-    {id:'c1',name:'Избранное',type:'private',ownerId:me.id,members:[me.id],rights:{send:true,files:true,invite:true},
-      msgs:[{id:uid(),senderId:me.id,text:'Добро пожаловать в Ink.',t:now()}]},
-    {id:'official',name:OFFICIAL_CHANNEL_NAME,type:'channel',ownerId:null,locked:true,members:[],rights:{send:true,files:true,invite:false},
-      msgs:[{id:uid(),senderId:'system',text:'Официальный канал Ink. Для записи нужен пароль.',t:now()}]}
-  ];
-  d.unread={};
+
+/* У каждого пользователя — свой «Избранное», канал — один на всех */
+function ensureStartersFor(meId){
+  const d=DB.load();
+  const favId='fav_'+meId;
+  if(!d.chats.find(c=>c.id===favId)){
+    d.chats.push({
+      id:favId,name:'Избранное',type:'private',ownerId:meId,
+      members:[meId],rights:{send:true,files:true,invite:true},
+      msgs:[{id:uid(),senderId:meId,text:'Добро пожаловать в Ink.',t:now()}]
+    });
+  }
+  if(!d.chats.find(c=>c.id==='official')){
+    d.chats.push({
+      id:'official',name:OFFICIAL_CHANNEL_NAME,type:'channel',ownerId:null,
+      locked:true,members:[],rights:{send:true,files:true,invite:false},
+      msgs:[{id:uid(),senderId:'system',text:'Официальный канал Ink. Для записи нужен пароль.',t:now()}]
+    });
+  }
   DB.save(d);
 }
 
@@ -727,7 +747,9 @@ function seedChats(){
    ПОИСК + СПИСОК ЧАТОВ
    ============================================================ */
 function renderChats(){
-  const d=DB.load();const me=d.me;
+  const d=DB.load();
+  const me=d.me;
+  if(!me) return;
   const q=($('searchInput').value||'').trim().toLowerCase();
   const peopleResults=$('peopleResults');
   const listBox=$('chatListOnly');
@@ -759,7 +781,7 @@ function renderChats(){
   } else peopleResults.innerHTML='';
 
   const visible=(d.chats||[]).filter(c=>{
-    if(c.locked)return true;
+    if(c.id==='official')return true;
     return c.members.includes(me);
   });
   const list=visible.filter(c=>!q||c.name.toLowerCase().includes(q)||c.id.toLowerCase().includes(q));
@@ -773,7 +795,7 @@ function renderChats(){
   }
   list.forEach(c=>{
     const el=document.createElement('div');el.className='chat-item';
-    const unread=(d.unread&&d.unread[c.id])||0;
+    const unread=unreadCount(c,me);
     if(unread)el.classList.add('unread');
 
     const visibleMsgs=c.msgs.filter(m=>!m.deletedAll&&!(m.deletedFor||[]).includes(me));
@@ -805,11 +827,12 @@ function renderChats(){
    ============================================================ */
 function openChat(id){
   const d=DB.load();currentChat=d.chats.find(c=>c.id===id);
+  if(!currentChat)return;
   replyToId=null;
   document.body.classList.add('in-chat');
   $('backBtn').style.display='inline-block';
   $('hTitle').textContent=currentChat.name;
-  clearUnread(id);
+  markRead(id);
   cancelReply();renderMessages();updateComposer();renderChats();
 }
 function reloadCurrentChat(){
@@ -817,7 +840,7 @@ function reloadCurrentChat(){
   const d=DB.load();
   const fresh=d.chats.find(c=>c.id===currentChat.id);
   if(fresh){currentChat=fresh;renderMessages();}
-  clearUnread(currentChat.id);
+  markRead(currentChat.id);
   renderChats();
 }
 function updateComposer(){
@@ -830,7 +853,7 @@ function updateComposer(){
   const isMember=currentChat.members.includes(me);
   const banned=(currentChat.banned||[]).includes(me);
   if(banned){input.disabled=true;btn.disabled=true;input.placeholder='Вы забанены';return;}
-  if(!isMember&&!currentChat.locked){input.disabled=true;btn.disabled=true;input.placeholder='Вы не участник';return;}
+  if(!isMember&&currentChat.id!=='official'){input.disabled=true;btn.disabled=true;input.placeholder='Вы не участник';return;}
   const canSend=iAmOwner||currentChat.rights.send;
   if(!canSend){input.disabled=true;btn.disabled=true;input.placeholder='Только владелец может писать';return;}
   input.disabled=false;btn.disabled=false;input.placeholder='Сообщение...';
@@ -885,8 +908,8 @@ function renderMessages(){
 /* ============================================================
    РАЗБЛОКИРОВКА КАНАЛА
    ============================================================ */
-function isChannelUnlocked(chat){if(!chat.locked)return true;return Session.get('ink_unlocked_'+chat.id)==='1';}
-function unlockChannel(chat){Session.set('ink_unlocked_'+chat.id,'1');}
+function isChannelUnlocked(chat){if(!chat.locked)return true;return Unlocked.get(chat.id);}
+function unlockChannel(chat){Unlocked.set(chat.id);}
 function openPassModal(){$('passModal').style.display='flex';$('passInput').value='';$('passErr').textContent='';setTimeout(()=>$('passInput').focus(),100);}
 function closePassModal(){$('passModal').style.display='none';}
 function submitPass(){
@@ -898,7 +921,7 @@ document.addEventListener('click',e=>{
 });
 
 /* ============================================================
-   ОТПРАВКА + ОПОВЕЩЕНИЕ ДРУГИХ ВКЛАДОК
+   ОТПРАВКА + BROADCAST
    ============================================================ */
 function sendMsg(){
   if(!currentChat)return;
@@ -909,15 +932,19 @@ function sendMsg(){
   const c=d.chats.find(x=>x.id===currentChat.id);
   const msg={id:uid(),senderId:d.me,text:v,t:now()};
   if(replyToId)msg.replyTo=replyToId;
-  c.msgs.push(msg);DB.save(d);currentChat=c;
+  c.msgs.push(msg);
+  // помечаем как прочитанное для отправителя
+  d.lastRead[d.me] = d.lastRead[d.me] || {};
+  d.lastRead[d.me][c.id] = c.msgs.length;
+  DB.save(d);
+  currentChat=c;
   input.value='';cancelReply();renderMessages();renderChats();
 
-  // оповестить другие вкладки
+  // уведомить другие вкладки
   NotifyBus.send({
     type:'msg',
     chatId: c.id,
     fromUserId: d.me,
-    toUserId: null, // получатели сами фильтруют
     text: v
   });
 }
@@ -1028,6 +1055,8 @@ $('messages').addEventListener('dblclick',e=>{
 function openForward(mid){
   const d=DB.load();const box=$('fwdList');box.innerHTML='';
   d.chats.forEach(c=>{
+    if(c.type==='private' && !c.members.includes(d.me)) return;
+    if(c.type!=='private' && !c.members.includes(d.me) && c.id!=='official') return;
     const el=document.createElement('div');el.className='st-row';
     el.innerHTML=`<div class="icon">${c.name.replace(/^#/,'')[0].toUpperCase()}</div><div class="txt"><div class="t1">${c.name}</div></div>`;
     el.onclick=()=>{doForward(mid,c.id);closePanel('forwardModal');};
@@ -1044,7 +1073,7 @@ function doForward(mid,toChatId){
 }
 
 /* ============================================================
-   СОЗДАНИЕ ЧАТА + ОСТРОВКИ
+   СОЗДАНИЕ ЧАТА
    ============================================================ */
 let ccType='private';
 document.addEventListener('click',e=>{
@@ -1369,7 +1398,7 @@ function renderAccounts(){
         <div class="t1">${u.login} ${u.isAdmin?'👑':''} ${isDeleting?'· ⏳':''}</div>
         <div class="t2">ID: ${u.id}#</div>
       </div>
-      ${active?'<div class="check">✓</div>':''}`;
+      ${active?'<div class="check">✓ этот таб</div>':''}`;
     el.onclick=()=>{if(!active)switchAccount(u.id);else openProfileEdit();};
     box.appendChild(el);
   });
@@ -1380,8 +1409,20 @@ function switchAccount(id){
   $('backBtn').style.display='none';$('hTitle').textContent='Ink';
   closePanel('settings');startApp();
 }
-function addAccount(){const d=DB.load();d.me=null;DB.save(d);closePanel('settings');$('app').style.display='none';$('auth').style.display='flex';switchTo('reg');$('regLogin').focus();}
-function logout(){if(!confirm('Выйти?'))return;const d=DB.load();d.me=null;DB.save(d);closePanel('settings');$('app').style.display='none';$('auth').style.display='flex';switchTo('login');}
+function addAccount(){
+  const d=DB.load();
+  d.me=null;DB.save(d);
+  closePanel('settings');
+  $('app').style.display='none';$('auth').style.display='flex';
+  switchTo('reg');$('regLogin').focus();
+}
+function logout(){
+  if(!confirm('Выйти из аккаунта в ЭТОЙ вкладке?'))return;
+  const d=DB.load();d.me=null;DB.save(d);
+  closePanel('settings');
+  $('app').style.display='none';$('auth').style.display='flex';
+  switchTo('login');
+}
 function requestDeleteAccount(){
   const d=DB.load();const u=d.users.find(x=>x.id===d.me);if(!u)return;
   if(u.deletionScheduledAt){
@@ -1425,9 +1466,7 @@ function requestDeleteAccount(){
   });
 })();
 
-/* ============================================================
-   ДОП. БЕЗОПАСНОСТЬ + АВТОЛОГИН
-   ============================================================ */
+/* Escape закрывает окна */
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     closeCtx();
@@ -1436,12 +1475,21 @@ document.addEventListener('keydown',e=>{
   }
 });
 
+/* ============================================================
+   АВТОЛОГИН (в этой вкладке — по sessionStorage)
+   ============================================================ */
 (function auto(){
   try{
     applyTheme();
     const d=DB.load();
-    if(d.me&&d.users.find(u=>u.id===d.me))startApp();
-    else{if(d.me){d.me=null;DB.save(d);}$('auth').style.display='flex';$('app').style.display='none';}
+    if(d.me && d.users.find(u=>u.id===d.me)){
+      console.log('[Ink] auto-login as', d.me, '(storage:', Store.type, '/', TabMe.type, ')');
+      startApp();
+    } else {
+      console.log('[Ink] no session, show auth');
+      $('auth').style.display='flex';
+      $('app').style.display='none';
+    }
   }catch(err){console.error(err);}
 })();
 </script>
