@@ -4,8 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
 <meta name="theme-color" content="#0f1115"/>
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
 <title>Ink</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%234f8cff'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text></svg>"/>
 <style>
@@ -57,6 +57,9 @@ header button{background:transparent;border:0;color:var(--text);font-size:18px;c
 .msg .sname{display:block;font-size:11.5px;font-weight:700;color:var(--accent);margin-bottom:3px;cursor:pointer}
 .msg .time{display:block;font-size:10.5px;opacity:.7;margin-top:4px;text-align:right}
 .msg .replyQuote{border-left:3px solid var(--accent);padding:2px 8px;margin-bottom:5px;font-size:12px;color:var(--muted);background:rgba(127,127,127,.08);border-radius:4px}
+.reactions{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.reaction{background:rgba(127,127,127,.15);padding:2px 8px;border-radius:10px;font-size:12px;cursor:pointer}
+.reaction.mine{background:rgba(79,140,255,.3);border:1px solid var(--accent)}
 .composer{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);background:var(--panel);flex-shrink:0;align-items:flex-end}
 .composer input{flex:1;padding:12px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:22px;color:var(--text);outline:none;font-size:16px;min-height:var(--tap)}
 .composer button{width:var(--tap);height:var(--tap);border-radius:50%;border:0;cursor:pointer;font-size:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0}
@@ -133,7 +136,7 @@ header button{background:transparent;border:0;color:var(--text);font-size:18px;c
 .tag.admin{background:rgba(255,209,138,.2);color:var(--warn)}
 .tag.banned{background:rgba(255,92,92,.2);color:var(--danger)}
 .tag.flagged{background:rgba(255,209,138,.2);color:var(--warn)}
-.tag.premium{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.tag.premium{background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff}
 .tag.hidden{background:rgba(127,127,127,.2);color:var(--muted)}
 .tag.me{background:var(--accent);color:#fff}
 .quick-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
@@ -163,6 +166,22 @@ header button{background:transparent;border:0;color:var(--text);font-size:18px;c
 .pick-mark.checkbox{border-radius:6px}
 .pick-item.selected .pick-mark{border-color:var(--accent);background:var(--accent)}
 .pick-item.selected .pick-mark::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+
+/* ПРЕМИУМ */
+.premium-name{background:linear-gradient(135deg,#ffb84d,#ff5c8a,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
+.premium-badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;margin-left:4px;text-transform:uppercase;letter-spacing:.5px}
+.premium-avatar{border:2px solid transparent;background-image:linear-gradient(var(--panel),var(--panel)),linear-gradient(135deg,#ffb84d,#ff5c8a,#7c5cff);background-origin:border-box;background-clip:padding-box,border-box}
+.custom-status{font-size:12.5px;color:var(--muted);margin-top:4px;text-align:center;padding:4px 8px;background:rgba(127,127,127,.08);border-radius:8px;display:inline-block}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px;width:100%;max-width:340px}
+.gallery-item{aspect-ratio:1;border-radius:12px;background-size:cover;background-position:center;background-color:var(--panel2);position:relative;cursor:pointer;border:1px solid var(--border2)}
+.gallery-item.empty{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:20px;border:2px dashed var(--border2)}
+.gallery-item .del{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer}
+.premium-features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.premium-feature{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:10px;text-align:center}
+.premium-feature .ico{font-size:22px;margin-bottom:4px}
+.premium-feature .t{font-size:12px;font-weight:600;color:var(--text)}
+.premium-feature .d{font-size:10.5px;color:var(--muted);margin-top:2px}
+.expire-bar{background:rgba(255,184,77,.12);border:1px solid rgba(255,184,77,.35);color:#ffb84d;padding:10px 12px;border-radius:12px;font-size:12.5px;text-align:center;margin-top:8px}
 </style>
 </head>
 <body>
@@ -190,7 +209,7 @@ header button{background:transparent;border:0;color:var(--text);font-size:18px;c
       <p class="sub">Придумай логин и пароль.</p>
       <div id="regMsg" class="msg-ok"></div>
       <input id="regLogin" placeholder="Логин" autocapitalize="off"/>
-      <input id="regPass" type="password" placeholder="Пароль"/>
+      <input id="regPass" type="password" placeholder="Пароль (мин. 6)"/>
       <input id="regPass2" type="password" placeholder="Повтори пароль"/>
       <button class="btn" onclick="doRegister()">Создать аккаунт</button>
       <div class="row"><button class="btn ghost" onclick="switchTo('login')">Назад</button></div>
@@ -350,6 +369,9 @@ header button{background:transparent;border:0;color:var(--text);font-size:18px;c
     <input id="peLogin" placeholder="Логин"/>
     <textarea id="peDesc" placeholder="О себе" rows="3"></textarea>
     <input id="pePhone" placeholder="Телефон" type="tel"/>
+    <div id="premiumStatusBlock" style="display:none">
+      <button class="btn" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a);margin-bottom:10px" onclick="editCustomStatus()">✨ Изменить статус</button>
+    </div>
     <button class="btn" onclick="saveProfile()">Сохранить</button>
     <div class="row"><button class="btn ghost" onclick="closePanel('profileEdit')">Отмена</button></div>
   </div>
@@ -369,7 +391,6 @@ header button{background:transparent;border:0;color:var(--text);font-size:18px;c
   <div class="overlay" onclick="closePanel('broadcastModal')"></div>
   <div class="modalBox">
     <h3>📢 Рассылка</h3>
-    <p class="hint">Сообщение придёт в личку каждому</p>
     <textarea id="bcText" placeholder="Текст" rows="5"></textarea>
     <button class="btn" onclick="sendBroadcast()">Отправить</button>
     <div class="row"><button class="btn ghost" onclick="closePanel('broadcastModal')">Отмена</button></div>
@@ -389,83 +410,39 @@ header button{background:transparent;border:0;color:var(--text);font-size:18px;c
 
 <div id="toastBox"></div>
 
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     ⬇️⬇️⬇️  БЛОК SDK SUPABASE  ⬇️⬇️⬇️
-     ВСТАВЛЯТЬ ИМЕННО ЗДЕСЬ, ПЕРЕД ОСНОВНЫМ СКРИПТОМ.
-     Ничего не менять в этом блоке.
-     ═══════════════════════════════════════════════════════════════════ -->
-
-<!-- Основной CDN (UMD-версия создаёт глобальный `supabase`) -->
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-
-<!-- Fallback №1: если unpkg не ответил -->
 <script>
   if (typeof supabase === 'undefined') {
     document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"><\/script>');
   }
 </script>
 
-<!-- Fallback №2: если и jsdelivr не ответил -->
 <script>
-  if (typeof supabase === 'undefined') {
-    document.write('<script src="https://esm.sh/@supabase/supabase-js@2/dist/umd/supabase.js"><\/script>');
-  }
-</script>
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     ⬆️⬆️⬆️  КОНЕЦ БЛОКА SDK  ⬆️⬆️⬆️
-     ═══════════════════════════════════════════════════════════════════ -->
-
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     ОСНОВНОЙ СКРИПТ ПРИЛОЖЕНИЯ
-     ═══════════════════════════════════════════════════════════════════ -->
-<script>
-/* ═══════════════════════════════════════════════════════════════
-   1. ПРОВЕРКА, ЧТО SDK ЗАГРУЗИЛСЯ
-   ═══════════════════════════════════════════════════════════════ */
 if (typeof supabase === 'undefined') {
-  document.body.innerHTML = `
-    <div style="padding:40px;text-align:center;font-family:sans-serif;color:#fff;background:#0f1115;height:100vh;box-sizing:border-box">
-      <h2>⚠️ Не удалось загрузить Supabase</h2>
-      <p style="color:#8a93a5">Проверь интернет или попробуй VPN.</p>
-      <button onclick="location.reload()" style="margin-top:20px;padding:12px 24px;background:#4f8cff;color:#fff;border:0;border-radius:10px;font-size:15px;cursor:pointer">Обновить</button>
-    </div>`;
-  throw new Error('Supabase SDK не загрузился');
+  document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:sans-serif;color:#fff;background:#0f1115;height:100vh;box-sizing:border-box"><h2>⚠️ Supabase не загрузился</h2><p style="color:#8a93a5">Проверь интернет</p><button onclick="location.reload()" style="margin-top:20px;padding:12px 24px;background:#4f8cff;color:#fff;border:0;border-radius:10px;font-size:15px;cursor:pointer">Обновить</button></div>';
+  throw new Error('Supabase SDK not loaded');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   2. ⚠️⚠️⚠️ КЛЮЧИ SUPABASE — ЗАМЕНИТЬ ЗДЕСЬ ⚠️⚠️⚠️
-   ═══════════════════════════════════════════════════════════════ */
 const SUPABASE_URL = 'https://eycszimjsmgcodempxwd.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_ONJbvEjeKByhDrj1OX2nZw_Xj1wRJDv';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ═══════════════════════════════════════════════════════════════
-   3. УТИЛИТЫ
-   ═══════════════════════════════════════════════════════════════ */
-// ВАЖНО: function, а не const — чтобы не было "Cannot access before initialization"
-function $(id) { return document.getElementById(id); }
-
+function $(id){ return document.getElementById(id); }
 const PRESENCE_ONLINE = 30000;
 
 let state = { me:null, users:[], chats:[], messages:{}, deletions:{}, lastRead:{}, friendships:[] };
 let currentChat=null, replyToId=null, selectedMembers=[], ccType='private';
-let pendingPhoto=null, repTargetUid=null, exportChatTarget=null;
+let pendingPhoto=null, repTargetUid=null;
 let adminFilter='all', adminSearch='', notesTargetUid=null;
 
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function toEmail(l){
   const clean = l.toLowerCase().trim().replace(/[^a-z0-9_]/g,'_');
-  // Уникальный суффикс, чтобы 'Маша' и 'Петя' не схлопывались в одно
   let h = 0;
   for (let i = 0; i < l.toLowerCase().trim().length; i++) {
     h = ((h << 5) - h + l.toLowerCase().trim().charCodeAt(i)) | 0;
   }
-  const hashPart = Math.abs(h).toString(36);
-  // .app — валидный TLD, Supabase его принимает
-  return 'u' + hashPart + '_' + clean + '@ink-app.com';
+  return 'u' + Math.abs(h).toString(36) + '_' + clean + '@ink-app.com';
 }
 function fmtTime(iso){if(!iso)return '';const d=new Date(iso);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
 function isOnline(u){return u&&u.last_seen&&(Date.now()-new Date(u.last_seen).getTime())<PRESENCE_ONLINE;}
@@ -478,12 +455,28 @@ function statusText(u){
   const dd=Math.floor(d/86400000);if(dd<30)return 'был(а) '+dd+' дн назад';
   return 'давно';
 }
+function isPremium(u){
+  if(!u || !u.premium) return false;
+  if(!u.premium_until) return true;
+  return new Date(u.premium_until) > new Date();
+}
+function premiumBadge(u){return isPremium(u)?'<span class="premium-badge">💎 PRO</span>':'';}
+function nameHTML(u){
+  if(!u) return '';
+  const name = esc(u.username);
+  return isPremium(u) ? `<span class="premium-name">${name}</span>${premiumBadge(u)}` : esc(u.username);
+}
+function premiumDaysLeft(u){
+  if(!isPremium(u) || !u.premium_until) return null;
+  return Math.max(0, Math.ceil((new Date(u.premium_until).getTime() - Date.now())/86400000));
+}
 function avatarHTML(u,s){
   const sz=s?' '+s:'';
   if(!u)return `<div class="avatar${sz}">?</div>`;
   const on=isOnline(u)?' online':'';
-  if(u.avatar_url)return `<div class="avatar${sz}${on}" style="background-image:url('${u.avatar_url}');background-size:cover;background-position:center"></div>`;
-  return `<div class="avatar${sz}${on}">${(u.username||'?')[0].toUpperCase()}</div>`;
+  const prem = isPremium(u) ? ' premium-avatar' : '';
+  if(u.avatar_url)return `<div class="avatar${sz}${on}${prem}" style="background-image:url('${u.avatar_url}');background-size:cover;background-position:center"></div>`;
+  return `<div class="avatar${sz}${on}${prem}">${(u.username||'?')[0].toUpperCase()}</div>`;
 }
 function userById(id){return state.users.find(u=>u.id===id);}
 function chatMembers(c){return (c.chat_members||[]).map(m=>m.user_id);}
@@ -504,9 +497,7 @@ function hideLoading(){$('loadingOverlay').classList.remove('open');}
 function closePanel(id){$(id).classList.remove('open');}
 function openPanel(id){$(id).classList.add('open');}
 
-/* ═══════════════════════════════════════════════════════════════
-   4. АВТОРИЗАЦИЯ
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ АВТОРИЗАЦИЯ ═══ */
 async function doRegister(){
   try{
     const lv=$('regLogin').value.trim(),p1=$('regPass').value,p2=$('regPass2').value;
@@ -517,11 +508,11 @@ async function doRegister(){
     const email=toEmail(lv);
     const {data,error}=await sb.auth.signUp({email,password:p1,options:{data:{username:lv}}});
     if(error){
+      console.error('signUp error:',error);
       if(String(error.message).toLowerCase().includes('already'))return showMsg('regMsg','Логин занят','err');
       return showMsg('regMsg','Ошибка: '+error.message,'err');
     }
     if(!data.user)return showMsg('regMsg','Не удалось создать','err');
-    // Профиль создаётся триггером автоматически
     if(!data.session){
       const {error:se}=await sb.auth.signInWithPassword({email,password:p1});
       if(se)return showMsg('regMsg','Вход: '+se.message,'err');
@@ -541,9 +532,7 @@ async function doLogin(){
 }
 async function logout(){if(!confirm('Выйти?'))return;await sb.auth.signOut();location.reload();}
 
-/* ═══════════════════════════════════════════════════════════════
-   5. ЗАГРУЗКА ДАННЫХ
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ ЗАГРУЗКА ═══ */
 async function loadAll(){
   showLoading('Загрузка...');
   const {data:profiles}=await sb.from('profiles').select('*');
@@ -551,22 +540,12 @@ async function loadAll(){
   const {data:{user}}=await sb.auth.getUser();
   if(!user)return false;
   state.me=state.users.find(u=>u.id===user.id);
-  if(!state.me){
-    await sb.auth.signOut();
-    alert('Ваш аккаунт удалён');
-    location.reload();
-    return false;
-  }
-  // Force logout
+  if(!state.me){await sb.auth.signOut();alert('Аккаунт удалён');location.reload();return false;}
   if(state.me.force_logout_at){
     const saved=parseInt(localStorage.getItem('ink_logout_at')||'0');
-    const forced=new Date(state.me.force_logout_at).getTime();
-    if(forced>saved){
-      localStorage.setItem('ink_logout_at',String(forced));
-      await sb.auth.signOut();
-      alert('Сессия завершена администратором');
-      location.reload();
-      return false;
+    if(new Date(state.me.force_logout_at).getTime()>saved){
+      localStorage.setItem('ink_logout_at',String(new Date(state.me.force_logout_at).getTime()));
+      await sb.auth.signOut();alert('Сессия завершена');location.reload();return false;
     }
   }
   const {data:fs}=await sb.from('friendships').select('*').or(`user_a.eq.${user.id},user_b.eq.${user.id}`);
@@ -589,9 +568,7 @@ async function loadAll(){
   return true;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   6. REALTIME
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ REALTIME ═══ */
 function setupRealtime(){
   sb.channel('rt-messages')
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
@@ -615,8 +592,7 @@ function setupRealtime(){
       if(currentChat&&currentChat.id===m.chat_id)renderMessages();
     })
     .on('postgres_changes',{event:'DELETE',schema:'public',table:'messages'},payload=>{
-      const old=payload.old;
-      for(const cid in state.messages)state.messages[cid]=state.messages[cid].filter(m=>m.id!==old.id);
+      for(const cid in state.messages)state.messages[cid]=state.messages[cid].filter(m=>m.id!==payload.old.id);
       if(currentChat)renderMessages();
     })
     .subscribe();
@@ -663,9 +639,6 @@ async function updateMyPresence(){
   await sb.from('profiles').update({last_seen:new Date().toISOString()}).eq('id',state.me.id);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   7. ВХОД В ПРИЛОЖЕНИЕ
-   ═══════════════════════════════════════════════════════════════ */
 async function enterApp(){
   showLoading('Подключение...');
   const ok=await loadAll();
@@ -681,9 +654,7 @@ async function enterApp(){
   hideLoading();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   8. ДРУЗЬЯ
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ ДРУЗЬЯ ═══ */
 function friendState(uid){
   const f=state.friendships.find(x=>(x.user_a===state.me.id&&x.user_b===uid)||(x.user_b===state.me.id&&x.user_a===uid));
   if(!f)return 'none';
@@ -717,9 +688,7 @@ function myFriends(){return state.friendships.filter(f=>f.status==='accepted').m
 function incomingReq(){return state.friendships.filter(f=>f.status==='pending'&&f.requested_by!==state.me.id).map(f=>f.requested_by);}
 function outgoingReq(){return state.friendships.filter(f=>f.status==='pending'&&f.requested_by===state.me.id).map(f=>f.user_a===state.me.id?f.user_b:f.user_a);}
 
-/* ═══════════════════════════════════════════════════════════════
-   9. ЧАТЫ
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ ЧАТЫ ═══ */
 function unreadCount(c){
   const msgs=state.messages[c.id]||[];
   const lr=state.lastRead[c.id]||0;
@@ -778,7 +747,7 @@ function buildUserRow(u){
   else if(st==='pending-in')btn=`<button class="icon-btn pending" data-a="accept">✓</button>`;
   else btn=`<button class="icon-btn" data-a="add">➕</button>`;
   const on=isOnline(u)?' online':'';
-  el.innerHTML=`${avatarHTML(u,'sm')}<div class="info"><div class="uname" data-a="profile">${esc(u.username)}</div><div class="ustatus${on}">${statusText(u)}</div></div>
+  el.innerHTML=`${avatarHTML(u,'sm')}<div class="info"><div class="uname" data-a="profile">${nameHTML(u)}</div><div class="ustatus${on}">${statusText(u)}</div></div>
     <div class="actions"><button class="icon-btn" data-a="write">💬</button>${btn}<button class="icon-btn" data-a="report">⚠️</button></div>`;
   el.addEventListener('click',async e=>{
     const a=(e.target.closest('[data-a]')||{}).dataset.a;
@@ -793,9 +762,7 @@ function buildUserRow(u){
   return el;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   10. ЛЮДИ
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ ЛЮДИ ═══ */
 function openPeoplePage(){closePanel('settings');$('peopleSearch').value='';renderPeoplePage();openPanel('peoplePage');}
 function renderPeoplePage(){
   const q=($('peopleSearch').value||'').trim().toLowerCase();
@@ -806,7 +773,7 @@ function renderPeoplePage(){
     b.innerHTML=`<h3>📥 Заявки (${inReqs.length})</h3>`;
     inReqs.forEach(u=>{
       const r=document.createElement('div');r.className='req-row';
-      r.innerHTML=`${avatarHTML(u,'sm')}<div class="info"><div class="uname">${esc(u.username)}</div><div class="ustatus">${statusText(u)}</div></div>
+      r.innerHTML=`${avatarHTML(u,'sm')}<div class="info"><div class="uname">${nameHTML(u)}</div><div class="ustatus">${statusText(u)}</div></div>
         <button class="btn ok small-btn" data-a="y">✓</button><button class="btn ghost small-btn" data-a="n">✕</button>`;
       r.addEventListener('click',async e=>{
         const a=(e.target.closest('[data-a]')||{}).dataset.a;
@@ -837,9 +804,7 @@ function renderPeoplePage(){
   all.forEach(u=>body.appendChild(buildUserRow(u)));
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   11. ЧАТ — открытие / отправка
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ ЧАТ ═══ */
 async function openChat(id){
   const d=chatById(id);if(!d)return;
   currentChat=d;replyToId=null;
@@ -868,17 +833,44 @@ function renderMessages(){
     let h='';
     if(!isMine&&currentChat.type!=='private'){
       const u=userById(m.sender_id);
-      if(u)h=`<span class="sname" data-uid="${u.id}">${esc(u.username)}</span>`;
+      if(u)h=`<span class="sname" data-uid="${u.id}">${nameHTML(u)}</span>`;
     }
     let q='';
     if(m.reply_to){
       const qq=msgs.find(x=>x.id===m.reply_to);
       if(qq){const qu=userById(qq.sender_id);q=`<div class="replyQuote"><b>${qu?esc(qu.username):'—'}:</b> ${esc((qq.text||'').slice(0,80))}</div>`;}
     }
-    el.innerHTML=h+q+esc(m.text)+`<span class="time">${fmtTime(m.created_at)}</span>`;
+    let rx='';
+    const r=m.reactions||{};
+    if(Object.keys(r).length){
+      rx='<div class="reactions">';
+      Object.entries(r).forEach(([e,us])=>{
+        const mine=Array.isArray(us)&&us.includes(state.me.id);
+        rx+=`<span class="reaction ${mine?'mine':''}" data-mid="${m.id}" data-emo="${e}">${e} ${(us||[]).length}</span>`;
+      });
+      rx+='</div>';
+    }
+    el.innerHTML=h+q+esc(m.text)+rx+`<span class="time">${fmtTime(m.created_at)}</span>`;
     box.appendChild(el);
   });
   box.scrollTop=box.scrollHeight;
+  box.querySelectorAll('.reaction').forEach(el=>{
+    el.onclick=async()=>{await toggleReaction(parseInt(el.dataset.mid,10),el.dataset.emo);};
+  });
+}
+async function toggleReaction(mid,emo){
+  const msg=(state.messages[currentChat.id]||[]).find(x=>x.id===mid);
+  if(!msg)return;
+  const r={...(msg.reactions||{})};
+  const users=r[emo]||[];
+  const me=state.me.id;
+  if(users.includes(me)){
+    r[emo]=users.filter(x=>x!==me);
+    if(!r[emo].length)delete r[emo];
+  }else{
+    r[emo]=[...users,me];
+  }
+  await sb.from('messages').update({reactions:r}).eq('id',mid);
 }
 async function sendMsg(){
   if(!currentChat)return;
@@ -892,9 +884,7 @@ async function sendMsg(){
 }
 function cancelReply(){replyToId=null;$('replyBar').style.display='none';}
 
-/* ═══════════════════════════════════════════════════════════════
-   12. СОЗДАНИЕ ЧАТА
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ СОЗДАНИЕ ЧАТА ═══ */
 document.querySelectorAll('#ccType button').forEach(b=>b.addEventListener('click',()=>setChatType(b.dataset.t)));
 function setChatType(t){
   const prev=ccType;ccType=t;
@@ -932,7 +922,7 @@ function buildPickItem(u,isFriend){
   const el=document.createElement('div');
   el.className='pick-item'+(sel?' selected':'');
   const markCls=ccType==='private'?'pick-mark':'pick-mark checkbox';
-  el.innerHTML=`${avatarHTML(u,'sm')}<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${esc(u.username)}${isFriend?' ✓':''}</div><div style="font-size:11px;color:var(--muted)">${statusText(u)}</div></div><div class="${markCls}"></div>`;
+  el.innerHTML=`${avatarHTML(u,'sm')}<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${nameHTML(u)}${isFriend?' ✓':''}</div><div style="font-size:11px;color:var(--muted)">${statusText(u)}</div></div><div class="${markCls}"></div>`;
   el.onclick=()=>toggleMember(u.id);
   return el;
 }
@@ -967,6 +957,12 @@ async function createChat(){
   }
   if(!name)return alert('Введи название');
   if(!selectedMembers.length)return alert('Добавь хотя бы одного');
+  const prem=isPremium(state.me);
+  const groupLimit=prem?20:3;
+  const myGroups=state.chats.filter(c=>c.owner_id===state.me.id && (c.type==='group'||c.type==='channel')).length;
+  if(myGroups>=groupLimit){
+    return alert(`Лимит групп: ${groupLimit}.${prem?'':' Оформи Premium для 20.'}`);
+  }
   const cname=ccType==='channel'?'##'+name.replace(/^#+/,''):name;
   const {data:c,error}=await sb.from('chats').insert({name:cname,type:ccType,owner_id:state.me.id}).select().single();
   if(error)return toast('Ошибка',error.message);
@@ -975,29 +971,80 @@ async function createChat(){
   closePanel('createChat');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   13. ПРОФИЛЬ
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ ПРОФИЛЬ ═══ */
 function openProfile(uid){
   const u=userById(uid);if(!u)return;
   const isMe=u.id===state.me.id;
   const st=friendState(u.id);
+  const prem=isPremium(u);
   const view=$('profileView');
+
   let banHTML='';
   if(u.blocked_until){
     const a=Date.now()<new Date(u.blocked_until).getTime();
     banHTML=a?`<div class="ban-alert active"><b>🚫 В бане</b>${esc(u.block_reason||'—')}</div>`:`<div class="ban-alert past"><b>⚠️ Ранее был(а)</b>${esc(u.block_reason||'—')}</div>`;
   }
+  let premHTML='';
+  if(prem){
+    const left=premiumDaysLeft(u);
+    premHTML = left!==null
+      ? `<div class="expire-bar">💎 Premium · осталось ${left} дн.</div>`
+      : `<div class="expire-bar">💎 Premium · навсегда</div>`;
+  }
   const tags=[];
   if(u.is_admin)tags.push('<span class="tag admin">АДМИН</span>');
-  if(u.premium)tags.push('<span class="tag premium">PREMIUM</span>');
+  if(prem)tags.push('<span class="tag premium">PREMIUM</span>');
   if(u.is_flagged)tags.push('<span class="tag flagged">⚠️</span>');
   if(u.hidden)tags.push('<span class="tag hidden">СКРЫТ</span>');
-  view.innerHTML=`<div class="profileHero">${avatarHTML(u,'')}<div class="name">${esc(u.username)}</div>${tags.length?`<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">${tags.join('')}</div>`:''}<div class="status${isOnline(u)?' online':''}">${statusText(u)}</div>${u.description?`<div class="desc">${esc(u.description)}</div>`:''}${u.phone?`<div class="phone">📞 ${esc(u.phone)}</div>`:''}${banHTML}</div>`;
-  const av=view.querySelector('.avatar');if(av){av.style.width='96px';av.style.height='96px';av.style.fontSize='34px';}
+
+  const gallery=Array.isArray(u.gallery_urls)?u.gallery_urls:[];
+  let galleryHTML='';
+  if(gallery.length || isMe){
+    galleryHTML='<div class="gallery-grid">';
+    gallery.forEach((url,i)=>{
+      galleryHTML+=`<div class="gallery-item" style="background-image:url('${url}')">${isMe?`<div class="del" data-gal="${i}">✕</div>`:''}</div>`;
+    });
+    if(isMe && gallery.length < (prem?6:1)){
+      galleryHTML+=`<div class="gallery-item empty" data-add-gal="1">+</div>`;
+    }
+    galleryHTML+='</div>';
+  }
+  const customStatus = u.custom_status ? `<div class="custom-status">${esc(u.custom_status)}</div>` : '';
+
+  view.innerHTML=`
+    <div class="profileHero">
+      ${avatarHTML(u,'')}
+      <div class="name">${nameHTML(u)}</div>
+      ${tags.length?`<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">${tags.join('')}</div>`:''}
+      ${customStatus}
+      <div class="status${isOnline(u)?' online':''}">${statusText(u)}</div>
+      ${u.description?`<div class="desc">${esc(u.description)}</div>`:''}
+      ${u.phone?`<div class="phone">📞 ${esc(u.phone)}</div>`:''}
+      ${galleryHTML}
+      ${premHTML}
+      ${banHTML}
+    </div>`;
+
+  const av=view.querySelector('.avatar');
+  if(av){av.style.width='96px';av.style.height='96px';av.style.fontSize='34px';}
+
+  view.querySelectorAll('[data-gal]').forEach(el=>{
+    el.onclick=(e)=>{e.stopPropagation();removeGalleryPhoto(parseInt(el.dataset.gal,10));};
+  });
+  view.querySelectorAll('[data-add-gal]').forEach(el=>{
+    el.onclick=(e)=>{e.stopPropagation();addGalleryPhoto();};
+  });
+
   const actions=$('profileActions');actions.innerHTML='';
   if(isMe){
     actions.innerHTML=`<button class="btn" onclick="closePanel('profileModal');openProfileEdit()">Редактировать</button>`;
+    if(!prem){
+      const b=document.createElement('button');
+      b.className='btn';b.style.background='linear-gradient(135deg,#ffb84d,#ff5c8a)';
+      b.textContent='💎 Premium';
+      b.onclick=()=>{closePanel('profileModal');openPremiumInfo();};
+      actions.appendChild(b);
+    }
   }else if(st==='accepted'){
     actions.innerHTML=`<button class="btn" onclick="startPrivateWith('${u.id}')">Написать</button><button class="btn ghost" onclick="removeFriend('${u.id}');closePanel('profileModal')">Убрать из друзей</button>`;
   }else if(st==='pending-in'){
@@ -1023,11 +1070,93 @@ async function startPrivateWith(uid){
   await sb.from('chat_members').insert([{chat_id:c.id,user_id:state.me.id},{chat_id:c.id,user_id:uid}]);
   closePanel('profileModal');closePanel('peoplePage');
 }
+
+/* ═══ ГАЛЕРЕЯ ═══ */
+async function addGalleryPhoto(){
+  if(!state.me)return;
+  const prem=isPremium(state.me);
+  const limit=prem?6:1;
+  const gal=Array.isArray(state.me.gallery_urls)?state.me.gallery_urls:[];
+  if(gal.length>=limit){return alert(`Лимит: ${limit} фото. ${prem?'':'Оформи Premium для 6 фото.'}`);}
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';
+  inp.onchange=(e)=>{
+    const f=e.target.files&&e.target.files[0];if(!f)return;
+    if(f.size>1.5*1024*1024)return alert('Макс 1.5 МБ');
+    const r=new FileReader();
+    r.onload=async()=>{
+      const next=[...gal,r.result];
+      const {error}=await sb.from('profiles').update({gallery_urls:next}).eq('id',state.me.id);
+      if(error)return toast('Ошибка',error.message);
+      state.me.gallery_urls=next;
+      closePanel('profileModal');
+      openProfile(state.me.id);
+      toast('Фото добавлено','','');
+    };
+    r.readAsDataURL(f);
+  };
+  inp.click();
+}
+async function removeGalleryPhoto(idx){
+  if(!state.me)return;
+  const gal=Array.isArray(state.me.gallery_urls)?state.me.gallery_urls:[];
+  gal.splice(idx,1);
+  const {error}=await sb.from('profiles').update({gallery_urls:gal}).eq('id',state.me.id);
+  if(error)return toast('Ошибка',error.message);
+  state.me.gallery_urls=gal;
+  closePanel('profileModal');
+  openProfile(state.me.id);
+}
+
+/* ═══ ПРЕМИУМ-СТАТУС ═══ */
+async function editCustomStatus(){
+  if(!state.me)return;
+  if(!isPremium(state.me))return alert('Кастомный статус — Premium 💎');
+  const cur=state.me.custom_status||'';
+  const v=prompt('Твой статус (до 60 символов):',cur);
+  if(v===null)return;
+  const text=v.trim().slice(0,60);
+  const {error}=await sb.from('profiles').update({custom_status:text}).eq('id',state.me.id);
+  if(error)return toast('Ошибка',error.message);
+  state.me.custom_status=text;
+  toast('Статус обновлён','','');
+  closePanel('profileEdit');
+  openProfile(state.me.id);
+}
+
+/* ═══ ПРЕМИУМ СТРАНИЦА ═══ */
+function openPremiumInfo(){
+  closePanel('profileModal');
+  const view=$('profileView');
+  view.innerHTML=`
+    <div class="profileHero">
+      <div style="font-size:64px">💎</div>
+      <div class="name" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:26px">Ink Premium</div>
+      <div class="desc" style="margin-top:10px;max-width:320px">Открой все возможности</div>
+    </div>
+    <div class="premium-features">
+      <div class="premium-feature"><div class="ico">💎</div><div class="t">Бейдж PRO</div><div class="d">Градиент ника</div></div>
+      <div class="premium-feature"><div class="ico">✨</div><div class="t">Статус</div><div class="d">До 60 символов</div></div>
+      <div class="premium-feature"><div class="ico">🖼️</div><div class="t">6 фото</div><div class="d">Галерея</div></div>
+      <div class="premium-feature"><div class="ico">👥</div><div class="t">20 групп</div><div class="d">Вместо 3</div></div>
+      <div class="premium-feature"><div class="ico">📎</div><div class="t">Файлы 10 МБ</div><div class="d">Вместо 2</div></div>
+      <div class="premium-feature"><div class="ico">🌟</div><div class="t">Реакции</div><div class="d">Эксклюзивные</div></div>
+    </div>
+    <div style="text-align:center;color:var(--muted);font-size:12px;margin-top:20px;padding:14px;background:var(--panel2);border-radius:12px">
+      Premium выдаётся администратором.
+    </div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn ghost" onclick="closePanel('profileModal');openProfile(state.me.id)">Назад</button>
+    </div>`;
+  openPanel('profileModal');
+}
+
+/* ═══ РЕДАКТОР ПРОФИЛЯ ═══ */
 function renderMyProfileRow(){
   if(!state.me)return;
   const av=$('myProfileAvatar');
   av.innerHTML=state.me.avatar_url?`<div class="avatar" style="width:36px;height:36px;background-image:url('${state.me.avatar_url}');background-size:cover"></div>`:`<div class="avatar" style="width:36px;height:36px">${state.me.username[0].toUpperCase()}</div>`;
-  $('myProfileName').textContent=state.me.username+(state.me.is_admin?' 👑':'');
+  $('myProfileName').innerHTML=nameHTML(state.me)+(state.me.is_admin?' 👑':'');
   $('myProfileDesc').textContent=state.me.description||'';
 }
 function openProfileEdit(){
@@ -1037,11 +1166,14 @@ function openProfileEdit(){
   const av=$('editAvatar');
   if(state.me.avatar_url){av.style.backgroundImage=`url('${state.me.avatar_url}')`;av.textContent='';}
   else{av.style.backgroundImage='';av.textContent=state.me.username[0].toUpperCase();}
+  const prem=isPremium(state.me);
+  $('premiumStatusBlock').style.display=prem?'block':'none';
   closePanel('settings');openPanel('profileEdit');
 }
 function onPhotoPick(e){
   const f=e.target.files&&e.target.files[0];if(!f)return;
-  if(f.size>1.5*1024*1024)return alert('Макс 1.5 МБ');
+  const maxSize = isPremium(state.me) ? 10*1024*1024 : 2*1024*1024;
+  if(f.size>maxSize)return alert(`Макс ${isPremium(state.me)?'10':'2'} МБ${isPremium(state.me)?'':' (Premium — до 10 МБ)'}`);
   const r=new FileReader();
   r.onload=()=>{pendingPhoto=r.result;const av=$('editAvatar');av.style.backgroundImage=`url('${pendingPhoto}')`;av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';};
   r.readAsDataURL(f);
@@ -1056,9 +1188,7 @@ async function saveProfile(){
   pendingPhoto=null;closePanel('profileEdit');toast('Сохранено','','');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   14. ИНФО О ЧАТЕ
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ ИНФО О ЧАТЕ ═══ */
 function openChatInfo(){
   if(!currentChat)return;
   $('ciTitle').textContent=currentChat.name;
@@ -1067,7 +1197,7 @@ function openChatInfo(){
   body.innerHTML+=`<h3 style="font-size:12px;color:var(--muted)">УЧАСТНИКИ (${members.length})</h3>`;
   members.forEach(u=>{
     const el=document.createElement('div');el.className='st-row';
-    el.innerHTML=`${avatarHTML(u,'sm')}<div class="txt"><div class="t1">${esc(u.username)}</div><div class="t2">${statusText(u)}</div></div>`;
+    el.innerHTML=`${avatarHTML(u,'sm')}<div class="txt"><div class="t1">${nameHTML(u)}</div><div class="t2">${statusText(u)}</div></div>`;
     el.onclick=()=>{closePanel('chatInfo');openProfile(u.id);};
     body.appendChild(el);
   });
@@ -1095,9 +1225,7 @@ async function saveChatSettings(){
   closePanel('editChatModal');toast('Сохранено','','');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   15. АДМИН
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ АДМИН ═══ */
 function openAdmin(){
   if(!state.me.is_admin)return alert('Только для админа');
   adminFilter='all';adminSearch='';
@@ -1146,7 +1274,7 @@ function renderAdminList(){
   else if(adminFilter==='online')users=users.filter(isOnline);
   else if(adminFilter==='banned')users=users.filter(u=>u.blocked_until&&Date.now()<new Date(u.blocked_until).getTime());
   else if(adminFilter==='flagged')users=users.filter(u=>u.is_flagged);
-  else if(adminFilter==='premium')users=users.filter(u=>u.premium);
+  else if(adminFilter==='premium')users=users.filter(isPremium);
   else if(adminFilter==='hidden')users=users.filter(u=>u.hidden);
   users.sort((a,b)=>(b.is_admin?1:0)-(a.is_admin?1:0)||(a.username||'').localeCompare(b.username||''));
   if(!users.length){box.innerHTML='<div class="empty">Никого</div>';return;}
@@ -1156,7 +1284,7 @@ function renderAdminList(){
     const el=document.createElement('div');el.className=cls;
     const tags=[];
     if(u.is_admin)tags.push('<span class="tag admin">ADMIN</span>');
-    if(u.premium)tags.push('<span class="tag premium">PRO</span>');
+    if(isPremium(u))tags.push('<span class="tag premium">PRO</span>');
     if(u.is_flagged)tags.push('<span class="tag flagged">⚠️</span>');
     if(u.hidden)tags.push('<span class="tag hidden">👻</span>');
     if(u.id===state.me.id)tags.push('<span class="tag me">ВЫ</span>');
@@ -1171,6 +1299,7 @@ function openAdminTarget(uid){
   const body=$('adminBody');body.innerHTML='';
   const isMe=uid===state.me.id;
   const isBanned=u.blocked_until&&Date.now()<new Date(u.blocked_until).getTime();
+  const prem=isPremium(u);
   body.innerHTML+=`<div class="st-row" style="cursor:default">${avatarHTML(u,'sm')}<div class="txt"><div class="t1">${esc(u.username)}</div><div class="t2">ID: ${u.id.slice(0,8)}…</div></div></div>
     <div class="quick-actions" style="margin-bottom:14px">
       <div class="qa-btn" onclick="openAdmin()">← Назад</div>
@@ -1179,7 +1308,7 @@ function openAdminTarget(uid){
     <h3 style="font-size:12px;color:var(--muted);text-transform:uppercase;margin:16px 0 8px">ПРАВА</h3>
     <div class="quick-actions">
       <div class="qa-btn ${u.is_admin?'warn':'good'}" onclick="toggleAdmin('${uid}')">${u.is_admin?'⬇️ Снять админа':'⬆️ Сделать админом'}</div>
-      <div class="qa-btn ${u.premium?'warn':''}" onclick="togglePremium('${uid}')">${u.premium?'❌ Снять Premium':'💎 Выдать Premium'}</div>
+      <div class="qa-btn ${prem?'warn':'good'}" onclick="${prem?`revokePremium('${uid}')`:`grantPremium('${uid}')`}">${prem?'❌ Снять Premium':'💎 Выдать Premium'}</div>
     </div>
     <h3 style="font-size:12px;color:var(--muted);text-transform:uppercase;margin:16px 0 8px">МОДЕРАЦИЯ</h3>
     <div class="quick-actions">
@@ -1206,9 +1335,28 @@ async function toggleAdmin(uid){
   toast(next?'Права выданы':'Права сняты',u.username,'');
   openAdminTarget(uid);
 }
-async function togglePremium(uid){
+async function grantPremium(uid){
   const u=userById(uid);
-  await sb.from('profiles').update({premium:!u.premium}).eq('id',uid);
+  const days=prompt('На сколько дней выдать Premium?\n\nПустое поле = навсегда','30');
+  if(days===null)return;
+  const upd={premium:true};
+  if(days.trim()===''){
+    upd.premium_until=null;
+  }else{
+    const n=parseInt(days,10);
+    if(!n||n<1)return alert('Введи число дней');
+    upd.premium_until=new Date(Date.now()+n*86400000).toISOString();
+  }
+  const {error}=await sb.from('profiles').update(upd).eq('id',uid);
+  if(error)return toast('Ошибка',error.message);
+  toast('Premium выдан',u.username+' · '+(upd.premium_until?days+' дн.':'навсегда'),'');
+  openAdminTarget(uid);
+}
+async function revokePremium(uid){
+  const u=userById(uid);
+  if(!confirm(`Снять Premium с ${u.username}?`))return;
+  await sb.from('profiles').update({premium:false,premium_until:null}).eq('id',uid);
+  toast('Premium снят',u.username,'');
   openAdminTarget(uid);
 }
 async function toggleFlag(uid){
@@ -1293,9 +1441,7 @@ async function sendBroadcast(){
   toast('Отправлено','Юзеров: '+sent,'');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   16. ТЕМА / ЖАЛОБА / ПРОЧЕЕ
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ ТЕМА / ЖАЛОБА / НАВИГАЦИЯ ═══ */
 function applyTheme(){
   const t=localStorage.getItem('ink_theme')||'dark';
   document.body.classList.toggle('light',t==='light');
@@ -1321,9 +1467,14 @@ function navTo(w){
 }
 function openSettings(){closePanel('chatInfo');openPanel('settings');renderMyProfileRow();}
 
-/* ═══════════════════════════════════════════════════════════════
-   17. СТАРТ
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ ДВОЙНОЙ КЛИК — РЕАКЦИЯ ═══ */
+document.addEventListener('dblclick',e=>{
+  const t=e.target.closest('.msg');if(!t)return;
+  const emo = isPremium(state.me) ? '💎' : '👍';
+  toggleReaction(parseInt(t.dataset.mid,10), emo);
+});
+
+/* ═══ СТАРТ ═══ */
 (async function init(){
   showLoading('Подключение...');
   try{
