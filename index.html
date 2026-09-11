@@ -40,7 +40,6 @@ header .title:hover{background:rgba(127,127,127,.1)}
 header .spacer{flex:1}
 header button{background:transparent;border:0;color:var(--text);font-size:17px;cursor:pointer;padding:8px 10px;border-radius:12px;position:relative}
 header button:hover{background:rgba(127,127,127,.12)}
-
 #auth{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:radial-gradient(1200px 600px at 50% -10%,var(--panel2) 0%,var(--bg) 60%);padding:20px}
 #auth .card{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--border2);border-radius:22px;padding:26px 22px;box-shadow:var(--shadow);animation:pop .35s cubic-bezier(.2,.9,.3,1.4)}
 @keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
@@ -60,7 +59,6 @@ header button:hover{background:rgba(127,127,127,.12)}
 .msg-ok.err{background:rgba(255,92,92,.12);color:var(--danger);border:1px solid rgba(255,92,92,.35);display:block}
 .msg-ok.ok{background:rgba(74,222,128,.12);color:var(--ok);border:1px solid rgba(74,222,128,.35);display:block}
 .tab-note{font-size:11px;color:var(--accent);text-align:center;margin-top:10px;opacity:.85}
-
 .search{margin:10px 14px 0;padding:10px 12px;background:var(--panel2);border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:14px}
 .search:focus{border-color:var(--accent)}
 .chat-item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;cursor:pointer;position:relative}
@@ -78,7 +76,6 @@ header button:hover{background:rgba(127,127,127,.12)}
 .header-badge{position:absolute;top:0;right:2px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center;box-shadow:0 0 0 2px var(--panel)}
 .createBtn{margin:10px 14px 0;padding:11px;text-align:center;border-radius:14px;border:1px dashed var(--border2);color:var(--muted);cursor:pointer;font-size:14px}
 .createBtn:hover{color:var(--accent);border-color:var(--accent)}
-
 #messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .msg{max-width:78%;padding:9px 13px;border-radius:16px;font-size:14.5px;line-height:1.35;word-wrap:break-word;position:relative;cursor:pointer;user-select:none;transition:transform .1s}
 .msg:active{transform:scale(.99)}
@@ -158,21 +155,11 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .modalBox .chkRow input{width:auto;margin:0}
 .islands-title{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:6px 0 8px}
 .selected-strip{display:flex;gap:8px;flex-wrap:wrap;padding:10px;background:var(--panel2);border:1px dashed var(--border2);border-radius:14px;margin-bottom:12px;min-height:56px}
-.selected-strip.empty-strip::before{content:'Никого не добавлено';color:var(--muted);font-size:13px;margin:auto}
+.selected-strip.empty-strip::before{content:'Никого не выбрано';color:var(--muted);font-size:13px;margin:auto}
 .chip{display:flex;align-items:center;gap:6px;padding:5px 10px 5px 5px;background:var(--panel);border:1px solid var(--border2);border-radius:999px;font-size:13px;cursor:pointer;transition:all .15s}
 .chip:hover{border-color:var(--danger)}
 .chip .avatar{width:26px;height:26px;font-size:11px}
 .chip .x{color:var(--muted);font-weight:700;font-size:14px}
-.islands{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:8px}
-.island{position:relative;padding:14px 12px;border-radius:18px;background:var(--panel2);border:1px solid var(--border2);cursor:pointer;text-align:center;transition:transform .12s,border-color .15s,background .15s}
-.island:hover{transform:translateY(-2px);background:rgba(127,127,127,.12)}
-.island.selected{border-color:var(--accent);background:linear-gradient(180deg,rgba(79,140,255,.14),rgba(79,140,255,.04))}
-.island.selected::after{content:'✓';position:absolute;top:6px;right:8px;color:var(--accent);font-weight:700;font-size:14px}
-.island .avatar{margin:0 auto 8px;width:56px;height:56px;font-size:22px}
-.island .name{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.island .id{font-size:11px;color:var(--muted);margin-top:2px}
-.island .desc{font-size:11.5px;color:var(--muted);margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
-.island.friend .avatar{box-shadow:0 0 0 2px var(--ok)}
 .profileHero{display:flex;flex-direction:column;align-items:center;padding:16px 8px 22px;gap:8px}
 .profileHero .name{font-size:19px;font-weight:700}
 .profileHero .id{font-size:12.5px;color:var(--muted)}
@@ -197,7 +184,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 @keyframes toastIn{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
 @keyframes toastOut{from{transform:none;opacity:1}to{transform:translateY(30px);opacity:0}}
 .bell-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--danger);border-radius:50%;box-shadow:0 0 0 2px var(--panel)}
-
 .people-header{padding:14px}
 .people-search{width:100%;padding:12px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:14px;color:var(--text);font-size:14.5px;outline:none}
 .people-search:focus{border-color:var(--accent)}
@@ -214,7 +200,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .icon-btn.on:hover{filter:brightness(1.15)}
 .icon-btn.danger:hover{background:rgba(255,92,92,.15);border-color:var(--danger)}
 .icon-btn.pending{background:rgba(255,209,138,.15);border-color:var(--warn);color:var(--warn)}
-
 .req-block{background:var(--panel2);border:1px solid var(--border2);border-radius:16px;padding:12px;margin-bottom:14px}
 .req-block h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--warn);display:flex;align-items:center;gap:8px}
 .req-row{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;background:var(--panel);margin-bottom:6px}
@@ -225,10 +210,23 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .req-row .udescr{font-size:11.5px;color:var(--muted)}
 .btn.small-btn{padding:7px 12px;font-size:12.5px;width:auto;font-weight:600}
 
-/* поиск в островках */
-.islands-search{width:100%;padding:12px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:14px;outline:none;margin-bottom:12px}
-.islands-search:focus{border-color:var(--accent)}
-.islands-scroll{max-height:360px;overflow-y:auto;padding-right:4px}
+/* ============ ВЕРТИКАЛЬНЫЙ СПИСОК ВЫБОРА ============ */
+.pick-search{width:100%;padding:11px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:14px;outline:none;margin-bottom:10px}
+.pick-search:focus{border-color:var(--accent)}
+.pick-scroll{max-height:340px;overflow-y:auto;padding-right:4px}
+.pick-list{display:flex;flex-direction:column;gap:6px}
+.pick-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:var(--panel2);border:1px solid var(--border2);cursor:pointer;transition:all .15s}
+.pick-item:hover{background:rgba(127,127,127,.12)}
+.pick-item.selected{border-color:var(--accent);background:linear-gradient(180deg,rgba(79,140,255,.14),rgba(79,140,255,.04))}
+.pick-item .avatar{width:40px;height:40px;flex-shrink:0}
+.pick-item .info{flex:1;min-width:0}
+.pick-item .pname{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pick-item .pdesc{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.pick-item .friend-mark{font-size:11px;color:var(--ok);font-weight:700;margin-left:6px}
+.pick-mark{width:22px;height:22px;border:2px solid var(--border2);border-radius:50%;flex-shrink:0;position:relative;transition:all .15s}
+.pick-mark.checkbox{border-radius:6px}
+.pick-item.selected .pick-mark{border-color:var(--accent);background:var(--accent)}
+.pick-item.selected .pick-mark::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
 </style>
 </head>
 <body>
@@ -352,7 +350,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
         <div class="st-row danger simple" onclick="requestDeleteAccount()"><div class="txt"><span style="font-size:18px">🗑️</span><span class="t1" style="margin-left:10px">Удалить аккаунт</span></div></div>
       </div>
     </div>
-    <div class="st-footer">Ink · v1.0 · friends + remove</div>
+    <div class="st-footer">Ink · v1.1 · pick list</div>
   </div>
 </div>
 
@@ -391,25 +389,26 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
   <div class="overlay" onclick="closePanel('createChat')"></div>
   <div class="modalBox">
     <h3>Создать чат</h3>
-    <p class="hint">Выбери тип и добавь людей</p>
+    <p class="hint" id="ccHint">Выбери тип и добавь людей</p>
     <div class="seg" id="ccType">
       <button data-t="private" class="active">Личка</button>
       <button data-t="group">Группа</button>
       <button data-t="channel">Канал</button>
     </div>
-    <input id="ccName" placeholder="Название (для группы/канала)"/>
-    <div id="ccPrivateBlock"><input id="ccPrivateLogin" placeholder="Логин"/></div>
-    <div id="ccMembersBlock" style="display:none">
-      <div class="islands-title">Добавленные</div>
+    <input id="ccName" placeholder="Название (для группы/канала)" style="display:none"/>
+    <div id="ccMembersBlock">
+      <div class="islands-title">Выбранные</div>
       <div class="selected-strip empty-strip" id="selectedStrip"></div>
-      <input class="islands-search" id="islandSearch" placeholder="Поиск по имени" oninput="renderIslands()"/>
-      <div class="islands-scroll">
-        <div id="islandsGrid"></div>
+      <input class="pick-search" id="islandSearch" placeholder="Поиск по имени" oninput="renderPickList()"/>
+      <div class="pick-scroll">
+        <div id="pickList"></div>
       </div>
     </div>
-    <div class="chkRow"><input type="checkbox" id="ccSend" checked><label for="ccSend">Участники могут писать</label></div>
-    <div class="chkRow"><input type="checkbox" id="ccFiles" checked><label for="ccFiles">Участники могут отправлять файлы</label></div>
-    <div class="chkRow"><input type="checkbox" id="ccInvite"><label for="ccInvite">Участники могут приглашать</label></div>
+    <div id="ccRightsBlock" style="display:none">
+      <div class="chkRow"><input type="checkbox" id="ccSend" checked><label for="ccSend">Участники могут писать</label></div>
+      <div class="chkRow"><input type="checkbox" id="ccFiles" checked><label for="ccFiles">Участники могут отправлять файлы</label></div>
+      <div class="chkRow"><input type="checkbox" id="ccInvite"><label for="ccInvite">Участники могут приглашать</label></div>
+    </div>
     <button class="btn" onclick="createChat()">Создать</button>
     <div class="row"><button class="btn ghost" onclick="closePanel('createChat')">Отмена</button></div>
   </div>
@@ -502,7 +501,6 @@ const Store=(()=>{
     remove(k){if(backend==='localStorage'){try{localStorage.removeItem(k);return}catch(e){delete memory[k]}}else delete memory[k]}
   };
 })();
-
 const TabMe=(()=>{
   let backend='memory',memory={};
   try{sessionStorage.setItem('__t__','1');sessionStorage.removeItem('__t__');backend='sessionStorage';}
@@ -511,40 +509,30 @@ const TabMe=(()=>{
     type:backend,
     get(k){if(backend==='sessionStorage'){try{return sessionStorage.getItem(k)}catch(e){return memory[k]??null}}return memory[k]??null},
     set(k,v){if(backend==='sessionStorage'){try{sessionStorage.setItem(k,v);return}catch(e){memory[k]=v}}else memory[k]=v},
-    remove(k){if(backend==='sessionStorage'){try{sessionStorage.removeItem(k);return}catch(e){delete memory[k]}}else delete memory[k]}
+    remove(k){if(backend==='sessionStorage'){try{sessionStorage.removeItem(k);return}catch(e){delete memory[k]}}else memory[k]=null}
   };
 })();
-
-const Unlocked={
-  get(k){return TabMe.get('ink_unlocked_'+k)==='1';},
-  set(k){TabMe.set('ink_unlocked_'+k,'1');}
-};
+const Unlocked={get(k){return TabMe.get('ink_unlocked_'+k)==='1';},set(k){TabMe.set('ink_unlocked_'+k,'1');}};
 
 const DB={
   load(){
     let raw;
     try{ raw=JSON.parse(Store.get('ink')||'{}'); }catch(e){ raw={}; }
-    raw.users    = raw.users    || [];
-    raw.chats    = raw.chats    || [];
-    raw.reports  = raw.reports  || [];
-    raw.theme    = raw.theme    || 'dark';
-    raw.notify   = raw.notify !== false;
-    raw.lastRead = raw.lastRead || {};
-    raw.me       = TabMe.get('ink_me') || null;
+    raw.users=raw.users||[]; raw.chats=raw.chats||[]; raw.reports=raw.reports||[];
+    raw.theme=raw.theme||'dark'; raw.notify=raw.notify!==false;
+    raw.lastRead=raw.lastRead||{}; raw.me=TabMe.get('ink_me')||null;
     raw.users.forEach(u=>{
-      if(!Array.isArray(u.friends))   u.friends   = [];
-      if(!Array.isArray(u.reqIn))     u.reqIn     = [];
-      if(!Array.isArray(u.reqOut))    u.reqOut    = [];
+      if(!Array.isArray(u.friends))u.friends=[];
+      if(!Array.isArray(u.reqIn))u.reqIn=[];
+      if(!Array.isArray(u.reqOut))u.reqOut=[];
     });
     return raw;
   },
   save(d){
     const tabMe=d.me;
-    const shared=Object.assign({},d,{me:null});
-    delete shared.unread;
+    const shared=Object.assign({},d,{me:null}); delete shared.unread;
     Store.set('ink',JSON.stringify(shared));
-    if(tabMe)TabMe.set('ink_me',tabMe);
-    else TabMe.remove('ink_me');
+    if(tabMe)TabMe.set('ink_me',tabMe); else TabMe.remove('ink_me');
   }
 };
 
@@ -555,14 +543,12 @@ function mid(){return 'm'+Date.now()+Math.random().toString(36).slice(2,6)}
 function userByUid(uid){return DB.load().users.find(u=>u.uid===uid)}
 function meUser(){const d=DB.load();return d.users.find(u=>u.uid===d.me)}
 function normPhone(p){return (p||'').replace(/\D/g,'')}
-
 function avatarHTML(user,size){
   const sz=size?' '+size:'';
   if(!user)return `<div class="avatar${sz}">?</div>`;
   if(user.photo)return `<div class="avatar${sz}" style="background-image:url('${user.photo}');background-size:cover;background-position:center"></div>`;
   return `<div class="avatar${sz}">${(user.login||'?')[0].toUpperCase()}</div>`;
 }
-
 const CIPHER_MAP={'а':'✕','б':'✗','в':'✘','г':'⧉','д':'⋈','е':'✕','ё':'⧖','ж':'⧗','з':'⌛','и':'✕','й':'✕','к':'✕','л':'✕','м':'◪','н':'⧖','о':'⟁','п':'◭','р':'✕','с':'✕','т':'✕','у':'✕','ф':'✕','х':'✕','ц':'✕','ч':'✕','ш':'✕','щ':'✕','ъ':'⊓','ы':'⊓','ь':'⨅','э':'∨','ю':'✕','я':'■',' ':'·'};
 const encryptInk=t=>t.toLowerCase().split('').map(c=>CIPHER_MAP[c]||c).join('');
 
@@ -585,81 +571,51 @@ function toggleTheme(){const d=DB.load();d.theme=d.theme==='light'?'dark':'light
 /* ============================================================
    ДРУЗЬЯ
    ============================================================ */
-function areFriends(aUid,bUid){
-  const a=userByUid(aUid); if(!a) return false;
-  return a.friends.includes(bUid);
-}
-function hasIncoming(fromUid){
-  const me=meUser(); if(!me) return false;
-  return me.reqIn.includes(fromUid);
-}
-function hasOutgoing(toUid){
-  const me=meUser(); if(!me) return false;
-  return me.reqOut.includes(toUid);
-}
-function incomingCount(){
-  const me=meUser(); return me?me.reqIn.length:0;
-}
+function areFriends(aUid,bUid){const a=userByUid(aUid);return a?a.friends.includes(bUid):false;}
+function hasIncoming(fromUid){const me=meUser();return me?me.reqIn.includes(fromUid):false;}
+function hasOutgoing(toUid){const me=meUser();return me?me.reqOut.includes(toUid):false;}
+function incomingCount(){const me=meUser();return me?me.reqIn.length:0;}
 function sendFriendRequest(toUid){
-  const d=DB.load();
-  const me=d.users.find(u=>u.uid===d.me);
-  const other=d.users.find(u=>u.uid===toUid);
-  if(!me||!other) return;
-  if(me.friends.includes(toUid)) return;
-  if(me.reqOut.includes(toUid)) return;
-  if(me.reqIn.includes(toUid)){ acceptFriendRequest(toUid); return; }
-  me.reqOut.push(toUid);
-  other.reqIn.push(me.uid);
-  DB.save(d);
-  NotifyBus.send({type:'friend-req',fromUid:me.uid,toUid:toUid,login:me.login});
-  toast('Заявка отправлена', other.login, '');
-  renderPeoplePage(); renderHeaderBadge();
+  const d=DB.load();const me=d.users.find(u=>u.uid===d.me);const other=d.users.find(u=>u.uid===toUid);
+  if(!me||!other)return;
+  if(me.friends.includes(toUid)||me.reqOut.includes(toUid))return;
+  if(me.reqIn.includes(toUid)){acceptFriendRequest(toUid);return;}
+  me.reqOut.push(toUid); other.reqIn.push(me.uid); DB.save(d);
+  NotifyBus.send({type:'friend-req',fromUid:me.uid,toUid,login:me.login});
+  toast('Заявка отправлена',other.login,'');
+  renderPeoplePage();renderHeaderBadge();
 }
 function acceptFriendRequest(fromUid){
-  const d=DB.load();
-  const me=d.users.find(u=>u.uid===d.me);
-  const other=d.users.find(u=>u.uid===fromUid);
-  if(!me||!other) return;
-  me.reqIn = me.reqIn.filter(x=>x!==fromUid);
-  other.reqOut = other.reqOut.filter(x=>x!==me.uid);
-  if(!me.friends.includes(fromUid)) me.friends.push(fromUid);
-  if(!other.friends.includes(me.uid)) other.friends.push(me.uid);
+  const d=DB.load();const me=d.users.find(u=>u.uid===d.me);const other=d.users.find(u=>u.uid===fromUid);
+  if(!me||!other)return;
+  me.reqIn=me.reqIn.filter(x=>x!==fromUid); other.reqOut=other.reqOut.filter(x=>x!==me.uid);
+  if(!me.friends.includes(fromUid))me.friends.push(fromUid);
+  if(!other.friends.includes(me.uid))other.friends.push(me.uid);
   DB.save(d);
   NotifyBus.send({type:'friend-accepted',fromUid:me.uid,toUid:fromUid,login:me.login});
-  toast('Теперь вы друзья', other.login, '');
-  renderPeoplePage(); renderHeaderBadge();
+  toast('Теперь вы друзья',other.login,'');
+  renderPeoplePage();renderHeaderBadge();
 }
 function declineFriendRequest(fromUid){
-  const d=DB.load();
-  const me=d.users.find(u=>u.uid===d.me);
-  const other=d.users.find(u=>u.uid===fromUid);
-  if(!me||!other) return;
-  me.reqIn = me.reqIn.filter(x=>x!==fromUid);
-  other.reqOut = other.reqOut.filter(x=>x!==me.uid);
-  DB.save(d);
-  renderPeoplePage(); renderHeaderBadge();
+  const d=DB.load();const me=d.users.find(u=>u.uid===d.me);const other=d.users.find(u=>u.uid===fromUid);
+  if(!me||!other)return;
+  me.reqIn=me.reqIn.filter(x=>x!==fromUid); other.reqOut=other.reqOut.filter(x=>x!==me.uid);
+  DB.save(d); renderPeoplePage();renderHeaderBadge();
 }
 function cancelFriendRequest(toUid){
-  const d=DB.load();
-  const me=d.users.find(u=>u.uid===d.me);
-  const other=d.users.find(u=>u.uid===toUid);
-  if(!me||!other) return;
-  me.reqOut = me.reqOut.filter(x=>x!==toUid);
-  other.reqIn = other.reqIn.filter(x=>x!==me.uid);
-  DB.save(d);
-  renderPeoplePage(); renderHeaderBadge();
+  const d=DB.load();const me=d.users.find(u=>u.uid===d.me);const other=d.users.find(u=>u.uid===toUid);
+  if(!me||!other)return;
+  me.reqOut=me.reqOut.filter(x=>x!==toUid); other.reqIn=other.reqIn.filter(x=>x!==me.uid);
+  DB.save(d); renderPeoplePage();renderHeaderBadge();
 }
 function removeFriend(uid){
-  const d=DB.load();
-  const me=d.users.find(u=>u.uid===d.me);
-  const other=d.users.find(u=>u.uid===uid);
-  if(!me||!other) return;
-  me.friends = me.friends.filter(x=>x!==uid);
-  other.friends = other.friends.filter(x=>x!==me.uid);
+  const d=DB.load();const me=d.users.find(u=>u.uid===d.me);const other=d.users.find(u=>u.uid===uid);
+  if(!me||!other)return;
+  me.friends=me.friends.filter(x=>x!==uid); other.friends=other.friends.filter(x=>x!==me.uid);
   DB.save(d);
-  toast('Убрано из друзей', other.login, '');
+  toast('Убрано из друзей',other.login,'');
   NotifyBus.send({type:'friend-removed',fromUid:me.uid,toUid:uid,login:me.login});
-  renderPeoplePage(); renderChats();
+  renderPeoplePage();renderChats();
 }
 
 /* ============================================================
@@ -698,20 +654,13 @@ function totalUnread(){
 function renderBell(){
   const btn=$('bellBtn');if(!btn)return;
   const old=btn.querySelector('.bell-dot');if(old)old.remove();
-  if(totalUnread()>0){
-    const dot=document.createElement('span');dot.className='bell-dot';
-    btn.appendChild(dot);
-  }
+  if(totalUnread()>0){const dot=document.createElement('span');dot.className='bell-dot';btn.appendChild(dot);}
 }
 function renderHeaderBadge(){
   const btn=$('peopleBtn');if(!btn)return;
   const old=btn.querySelector('.header-badge');if(old)old.remove();
   const n=incomingCount();
-  if(n>0){
-    const b=document.createElement('span');b.className='header-badge';
-    b.textContent = n>9?'9+':n;
-    btn.appendChild(b);
-  }
+  if(n>0){const b=document.createElement('span');b.className='header-badge';b.textContent=n>9?'9+':n;btn.appendChild(b);}
 }
 
 /* ============================================================
@@ -720,10 +669,7 @@ function renderHeaderBadge(){
 const NotifyBus=(()=>{
   let bc=null;
   try{bc=new BroadcastChannel('ink');}catch(e){console.warn('BroadcastChannel недоступен');}
-  return{
-    send(msg){if(bc)bc.postMessage(msg);},
-    on(handler){if(bc)bc.onmessage=e=>handler(e.data);}
-  };
+  return{send(msg){if(bc)bc.postMessage(msg);},on(handler){if(bc)bc.onmessage=e=>handler(e.data);}};
 })();
 
 window.addEventListener('storage',e=>{
@@ -736,13 +682,10 @@ window.addEventListener('storage',e=>{
 
 NotifyBus.on(msg=>{
   if(!msg)return;
-
   if(msg.type==='msg'){
-    const d=DB.load();const meId=d.me;
-    if(!meId)return;
+    const d=DB.load();const meId=d.me;if(!meId)return;
     if(msg.fromUserId===meId)return;
-    const chat=d.chats.find(c=>c.id===msg.chatId);
-    if(!chat)return;
+    const chat=d.chats.find(c=>c.id===msg.chatId);if(!chat)return;
     if(chat.type==='private'&&!chat.members.includes(meId))return;
     if(chat.type!=='private'&&!chat.members.includes(meId)&&chat.id!=='official')return;
     const sender=d.users.find(u=>u.uid===msg.fromUserId);
@@ -757,34 +700,29 @@ NotifyBus.on(msg=>{
     renderChats();renderBell();
     if(currentChat&&currentChat.id===chat.id)reloadCurrentChat();
   }
-
   if(msg.type==='friend-req'){
     const d=DB.load();const meId=d.me;
-    if(!meId || msg.toUid!==meId) return;
-    toast('Заявка в друзья', msg.login||'—', '');
-    showBrowserNotify('Ink · Заявка в друзья', (msg.login||'—')+' хочет добавить вас');
-    renderPeoplePage(); renderHeaderBadge();
+    if(!meId||msg.toUid!==meId)return;
+    toast('Заявка в друзья',msg.login||'—','');
+    showBrowserNotify('Ink · Заявка в друзья',(msg.login||'—')+' хочет добавить вас');
+    renderPeoplePage();renderHeaderBadge();
   }
-
   if(msg.type==='friend-accepted'){
     const d=DB.load();const meId=d.me;
-    if(!meId || msg.toUid!==meId) return;
-    toast('Заявка принята', (msg.login||'—')+' теперь ваш друг', '');
-    showBrowserNotify('Ink · Заявка принята', (msg.login||'—')+' принял(а) вашу заявку');
+    if(!meId||msg.toUid!==meId)return;
+    toast('Заявка принята',(msg.login||'—')+' теперь ваш друг','');
+    showBrowserNotify('Ink · Заявка принята',(msg.login||'—')+' принял(а) вашу заявку');
     renderPeoplePage();
   }
-
   if(msg.type==='friend-removed'){
     const d=DB.load();const meId=d.me;
-    if(!meId || msg.toUid!==meId) return;
+    if(!meId||msg.toUid!==meId)return;
     renderPeoplePage();
   }
 });
 
 function toggleNotifications(){
-  const d=DB.load();
-  d.notify=d.notify===false?true:false;
-  DB.save(d);applyTheme();
+  const d=DB.load();d.notify=d.notify===false?true:false;DB.save(d);applyTheme();
   toast('Уведомления '+(d.notify?'включены':'выключены'),'','');
 }
 function requestBrowserPermission(){
@@ -828,21 +766,17 @@ function doLogin(){
     const u=d.users.find(x=>x.login.toLowerCase()===lv.toLowerCase()||(normPhone(x.phone)&&normPhone(x.phone)===normPhone(lv)));
     if(!u)return showMsg('authMsg','Пользователь не найден','err');
     if(u.pass!==hash(p))return showMsg('authMsg','Неверный пароль','err');
-
     if(u.deletedAt){
       const ageDays=(Date.now()-u.deletedAt)/86400000;
       if(ageDays>=RESTORE_WINDOW_DAYS){
         d.users=d.users.filter(x=>x.uid!==u.uid);DB.save(d);
-        return showMsg('authMsg','Аккаунт удалён окончательно (прошло больше '+RESTORE_WINDOW_DAYS+' дн.)','err');
+        return showMsg('authMsg','Аккаунт удалён окончательно','err');
       }
       const left=Math.ceil(RESTORE_WINDOW_DAYS-ageDays);
-      delete u.deletedAt;
-      d.me=u.uid;DB.save(d);
+      delete u.deletedAt; d.me=u.uid;DB.save(d);
       toast('Аккаунт восстановлен','Переписки на месте. Осталось было '+left+' дн.','');
-      startApp();
-      return;
+      startApp(); return;
     }
-
     if(u.blockedUntil&&Date.now()<u.blockedUntil){
       const days=Math.ceil((u.blockedUntil-Date.now())/86400000);
       return showMsg('authMsg',`Заблокирован ещё на ${days} дн. Причина: ${u.blockReason||'—'}`,'err');
@@ -850,7 +784,6 @@ function doLogin(){
     d.me=u.uid;DB.save(d);startApp();
   }catch(err){console.error(err);showMsg('authMsg','Ошибка: '+err.message,'err');}
 }
-
 function doRegister(){
   try{
     const lv=$('regLogin').value.trim(),p1=$('regPass').value,p2=$('regPass2').value;
@@ -886,29 +819,22 @@ function startApp(){
   $('adminSection').style.display=me&&me.isAdmin?'block':'none';
   renderChats();renderAccounts();renderMyProfileRow();applyTheme();renderBell();renderHeaderBadge();
 }
-
 function ensureStartersFor(meUid){
   const d=DB.load();
   const favId='fav_'+meUid;
   if(!d.chats.find(c=>c.id===favId)){
-    d.chats.push({
-      id:favId,name:'Избранное',type:'private',ownerId:meUid,
-      members:[meUid],rights:{send:true,files:true,invite:true},
-      msgs:[{id:mid(),senderId:meUid,text:'Добро пожаловать в Ink.',t:now()}]
-    });
+    d.chats.push({id:favId,name:'Избранное',type:'private',ownerId:meUid,members:[meUid],rights:{send:true,files:true,invite:true},
+      msgs:[{id:mid(),senderId:meUid,text:'Добро пожаловать в Ink.',t:now()}]});
   }
   if(!d.chats.find(c=>c.id==='official')){
-    d.chats.push({
-      id:'official',name:OFFICIAL_CHANNEL_NAME,type:'channel',ownerId:null,
-      locked:true,members:[],rights:{send:true,files:true,invite:false},
-      msgs:[{id:mid(),senderId:'system',text:'Официальный канал Ink. Для записи нужен пароль.',t:now()}]
-    });
+    d.chats.push({id:'official',name:OFFICIAL_CHANNEL_NAME,type:'channel',ownerId:null,locked:true,members:[],rights:{send:true,files:true,invite:false},
+      msgs:[{id:mid(),senderId:'system',text:'Официальный канал Ink. Для записи нужен пароль.',t:now()}]});
   }
   DB.save(d);
 }
 
 /* ============================================================
-   СПИСОК ЧАТОВ + ПОИСК
+   СПИСОК ЧАТОВ
    ============================================================ */
 function renderChats(){
   const d=DB.load();const me=d.me;if(!me)return;
@@ -932,20 +858,15 @@ function renderChats(){
     listBox.innerHTML+=`<div class="islands-title" style="margin-top:12px">Мои чаты</div>`;
   }
 
-  const visible=(d.chats||[]).filter(c=>{
-    if(c.id==='official')return true;
-    return c.members.includes(me);
-  });
+  const visible=(d.chats||[]).filter(c=>c.id==='official'?true:c.members.includes(me));
   const list=visible.filter(c=>!q||c.name.toLowerCase().includes(q));
-  if(!list.length && !q){
-    listBox.innerHTML+='<div class="empty">Чатов пока нет</div>';
-  }
+  if(!list.length&&!q)listBox.innerHTML+='<div class="empty">Чатов пока нет</div>';
   list.forEach(c=>{
     const el=document.createElement('div');el.className='chat-item';
     const unread=unreadCount(c,me);
     if(unread)el.classList.add('unread');
-    const visibleMsgs=c.msgs.filter(m=>!m.deletedAll&&!(m.deletedFor||[]).includes(me));
-    const lastMsg=visibleMsgs.length?visibleMsgs[visibleMsgs.length-1]:null;
+    const vm=c.msgs.filter(m=>!m.deletedAll&&!(m.deletedFor||[]).includes(me));
+    const lastMsg=vm.length?vm[vm.length-1]:null;
     let lastText='';
     if(lastMsg){
       const sender=userByUid(lastMsg.senderId);
@@ -969,33 +890,28 @@ function renderChats(){
 }
 
 /* ============================================================
-   СТРОКА ПОЛЬЗОВАТЕЛЯ С КНОПКАМИ
+   СТРОКА ПОЛЬЗОВАТЕЛЯ
    ============================================================ */
 function buildUserRow(u){
   const meUid=DB.load().me;
   const isFriend=areFriends(meUid,u.uid);
   const outgoing=hasOutgoing(u.uid);
   const incoming=hasIncoming(u.uid);
-
   const el=document.createElement('div');
-  el.className='user-row';
-  el.dataset.uid=u.uid;
+  el.className='user-row'; el.dataset.uid=u.uid;
 
   let friendBtns='';
   if(isFriend){
-    friendBtns=`
-      <button class="icon-btn on" title="Друзья" data-act="profile">✓</button>
-      <button class="icon-btn danger" title="Убрать из друзей" data-act="remove">✕</button>`;
+    friendBtns=`<button class="icon-btn on" title="Друзья" data-act="profile">✓</button>
+                <button class="icon-btn danger" title="Убрать из друзей" data-act="remove">✕</button>`;
   } else if(outgoing){
     friendBtns=`<button class="icon-btn pending" title="Заявка отправлена — отменить" data-act="cancel">⏳</button>`;
   } else if(incoming){
-    friendBtns=`
-      <button class="icon-btn pending" title="Принять заявку" data-act="accept">✓</button>
-      <button class="icon-btn danger" title="Отклонить" data-act="decline">✕</button>`;
+    friendBtns=`<button class="icon-btn pending" title="Принять заявку" data-act="accept">✓</button>
+                <button class="icon-btn danger" title="Отклонить" data-act="decline">✕</button>`;
   } else {
     friendBtns=`<button class="icon-btn" title="Добавить в друзья" data-act="add">➕</button>`;
   }
-
   el.innerHTML=`
     ${avatarHTML(u,'sm')}
     <div class="info">
@@ -1007,7 +923,6 @@ function buildUserRow(u){
       ${friendBtns}
       <button class="icon-btn danger" title="Пожаловаться" data-act="report">⚠️</button>
     </div>`;
-
   el.addEventListener('click',e=>{
     const a=(e.target.closest('[data-act]')||{}).dataset;
     if(!a||!a.act){openProfile(u.uid);return;}
@@ -1029,77 +944,58 @@ function buildUserRow(u){
    СТРАНИЦА ЛЮДЕЙ
    ============================================================ */
 function openPeoplePage(){
-  closePanel('settings');
-  $('peopleSearch').value='';
-  renderPeoplePage();
-  $('peoplePage').classList.add('open');
+  closePanel('settings'); $('peopleSearch').value='';
+  renderPeoplePage(); $('peoplePage').classList.add('open');
 }
-
 function renderPeoplePage(){
   const d=DB.load();const meUid=d.me;if(!meUid)return;
-  const me=d.users.find(u=>u.uid===meUid);
-  if(!me)return;
+  const me=d.users.find(u=>u.uid===meUid);if(!me)return;
   const q=($('peopleSearch').value||'').trim().toLowerCase();
   const qClean=normPhone(q);
-  const body=$('peopleBody');
-  body.innerHTML='';
+  const body=$('peopleBody'); body.innerHTML='';
 
   const incoming=me.reqIn.map(uid=>userByUid(uid)).filter(Boolean).filter(u=>!u.deletedAt);
   if(incoming.length){
-    const block=document.createElement('div');
-    block.className='req-block';
+    const block=document.createElement('div');block.className='req-block';
     block.innerHTML=`<h3>📥 Заявки в друзья (${incoming.length})</h3>`;
     incoming.forEach(u=>{
       const row=document.createElement('div');row.className='req-row';
-      row.innerHTML=`
-        ${avatarHTML(u,'sm')}
-        <div class="info">
-          <div class="uname">${u.login}</div>
-          <div class="udescr">${u.description||'хочет добавить вас в друзья'}</div>
-        </div>
+      row.innerHTML=`${avatarHTML(u,'sm')}
+        <div class="info"><div class="uname">${u.login}</div><div class="udescr">${u.description||'хочет добавить вас в друзья'}</div></div>
         <button class="btn ok small-btn" data-act="accept">Принять</button>
         <button class="btn ghost small-btn" data-act="decline">Отклонить</button>`;
       row.addEventListener('click',e=>{
         const a=(e.target.closest('[data-act]')||{}).dataset.act;
-        if(a==='accept') acceptFriendRequest(u.uid);
-        else if(a==='decline') declineFriendRequest(u.uid);
+        if(a==='accept')acceptFriendRequest(u.uid);
+        else if(a==='decline')declineFriendRequest(u.uid);
       });
       block.appendChild(row);
     });
     body.appendChild(block);
   }
-
   const outgoing=me.reqOut.map(uid=>userByUid(uid)).filter(Boolean).filter(u=>!u.deletedAt);
   if(outgoing.length){
-    const block=document.createElement('div');
-    block.className='req-block';
+    const block=document.createElement('div');block.className='req-block';
     block.innerHTML=`<h3 style="color:var(--accent)">📤 Отправленные (${outgoing.length})</h3>`;
     outgoing.forEach(u=>{
       const row=document.createElement('div');row.className='req-row';
-      row.innerHTML=`
-        ${avatarHTML(u,'sm')}
-        <div class="info">
-          <div class="uname">${u.login}</div>
-          <div class="udescr">заявка отправлена</div>
-        </div>
+      row.innerHTML=`${avatarHTML(u,'sm')}
+        <div class="info"><div class="uname">${u.login}</div><div class="udescr">заявка отправлена</div></div>
         <button class="btn ghost small-btn" data-act="cancel">Отменить</button>`;
       row.addEventListener('click',e=>{
         const a=(e.target.closest('[data-act]')||{}).dataset.act;
-        if(a==='cancel') cancelFriendRequest(u.uid);
+        if(a==='cancel')cancelFriendRequest(u.uid);
       });
       block.appendChild(row);
     });
     body.appendChild(block);
   }
-
   const friends=me.friends.map(uid=>userByUid(uid)).filter(Boolean).filter(u=>!u.deletedAt);
   if(friends.length && !q){
-    const t=document.createElement('div');
-    t.className='islands-title';t.textContent='Друзья ('+friends.length+')';
+    const t=document.createElement('div');t.className='islands-title';t.textContent='Друзья ('+friends.length+')';
     body.appendChild(t);
     friends.forEach(u=>body.appendChild(buildUserRow(u)));
   }
-
   const all=d.users.filter(u=>{
     if(u.uid===meUid||u.deletedAt)return false;
     if(me.friends.includes(u.uid))return false;
@@ -1109,19 +1005,14 @@ function renderPeoplePage(){
         ||(qClean&&normPhone(u.phone).includes(qClean))
         ||(u.description||'').toLowerCase().includes(q);
   });
-
-  const title=document.createElement('div');
-  title.className='islands-title';
-  title.style.marginTop = (friends.length&&!q)?'18px':'0';
-  title.textContent = q ? `Найдено: ${all.length}` : `Все пользователи (${all.length})`;
+  const title=document.createElement('div');title.className='islands-title';
+  title.style.marginTop=(friends.length&&!q)?'18px':'0';
+  title.textContent=q?`Найдено: ${all.length}`:`Все пользователи (${all.length})`;
   body.appendChild(title);
-
   if(!all.length){
-    const e=document.createElement('div');
-    e.className='empty';e.style.marginTop='20px';
-    e.textContent = q ? 'Никого не найдено' : 'Больше никого нет';
-    body.appendChild(e);
-    return;
+    const e=document.createElement('div');e.className='empty';e.style.marginTop='20px';
+    e.textContent=q?'Никого не найдено':'Больше никого нет';
+    body.appendChild(e);return;
   }
   all.forEach(u=>body.appendChild(buildUserRow(u)));
 }
@@ -1141,11 +1032,9 @@ function openChat(id){
 }
 function reloadCurrentChat(){
   if(!currentChat)return;
-  const d=DB.load();
-  const fresh=d.chats.find(c=>c.id===currentChat.id);
+  const d=DB.load();const fresh=d.chats.find(c=>c.id===currentChat.id);
   if(fresh){currentChat=fresh;renderMessages();}
-  markRead(currentChat.id);
-  renderChats();
+  markRead(currentChat.id); renderChats();
 }
 function updateComposer(){
   const input=$('msgInput'),btn=$('sendBtn');
@@ -1163,7 +1052,6 @@ function updateComposer(){
   input.disabled=false;btn.disabled=false;input.placeholder='Сообщение...';
 }
 function backToList(){currentChat=null;document.body.classList.remove('in-chat');$('backBtn').style.display='none';$('hTitle').textContent='Ink';}
-
 function renderMessages(){
   const box=$('messages');box.innerHTML='';
   const d=DB.load();const me=d.me;
@@ -1180,17 +1068,11 @@ function renderMessages(){
       if(u)header=`<span class="sname" data-uid="${u.uid}">${u.login}</span>`;
     }
     let fwd='';
-    if(m.forwardedFrom){
-      const fu=userByUid(m.forwardedFrom);
-      fwd=`<div class="fwd">↪ переслано от ${fu?fu.login:'—'}</div>`;
-    }
+    if(m.forwardedFrom){const fu=userByUid(m.forwardedFrom);fwd=`<div class="fwd">↪ переслано от ${fu?fu.login:'—'}</div>`;}
     let quote='';
     if(m.replyTo){
       const q=currentChat.msgs.find(x=>x.id===m.replyTo);
-      if(q){
-        const qu=userByUid(q.senderId);
-        quote=`<div class="replyQuote"><b>${qu?qu.login:'—'}:</b> ${(q.text||'').slice(0,80)}</div>`;
-      }
+      if(q){const qu=userByUid(q.senderId);quote=`<div class="replyQuote"><b>${qu?qu.login:'—'}:</b> ${(q.text||'').slice(0,80)}</div>`;}
     }
     let reactions='';
     if(m.reactions&&Object.keys(m.reactions).length){
@@ -1208,10 +1090,6 @@ function renderMessages(){
   });
   box.scrollTop=box.scrollHeight;
 }
-
-/* ============================================================
-   РАЗБЛОКИРОВКА КАНАЛА
-   ============================================================ */
 function isChannelUnlocked(chat){if(!chat.locked)return true;return Unlocked.get(chat.id);}
 function unlockChannel(chat){Unlocked.set(chat.id);}
 function openPassModal(){$('passModal').style.display='flex';$('passInput').value='';$('passErr').textContent='';setTimeout(()=>$('passInput').focus(),100);}
@@ -1239,8 +1117,7 @@ function sendMsg(){
   c.msgs.push(msg);
   d.lastRead[d.me]=d.lastRead[d.me]||{};
   d.lastRead[d.me][c.id]=c.msgs.length;
-  DB.save(d);
-  currentChat=c;
+  DB.save(d); currentChat=c;
   input.value='';cancelReply();renderMessages();renderChats();
   NotifyBus.send({type:'msg',chatId:c.id,fromUserId:d.me,text:v});
 }
@@ -1286,8 +1163,7 @@ function doReply(mid2){
   const m=currentChat.msgs.find(x=>x.id===mid2);
   const u=userByUid(m.senderId);
   $('replyPreview').textContent=`${u?u.login:'—'}: ${(m.text||'').slice(0,50)}`;
-  $('replyBar').classList.add('show');
-  $('msgInput').focus();
+  $('replyBar').classList.add('show'); $('msgInput').focus();
 }
 function doEdit(mid2){
   const m=currentChat.msgs.find(x=>x.id===mid2);
@@ -1309,16 +1185,12 @@ function doBlock(userId){
   c.blocked=c.blocked||[];if(!c.blocked.includes(userId))c.blocked.push(userId);
   DB.save(d);alert('Пользователь заблокирован в этом чате');
 }
-function openReactionPicker(x,y,mid2){
-  const pick=$('reactionPick');pick.classList.add('open');pick.dataset.mid=mid2;
-  pick.style.left=x+'px';pick.style.top=(y-60)+'px';
-}
+function openReactionPicker(x,y,mid2){const p=$('reactionPick');p.classList.add('open');p.dataset.mid=mid2;p.style.left=x+'px';p.style.top=(y-60)+'px';}
 function pickReaction(emo){const m2=$('reactionPick').dataset.mid;pickReactionOn(m2,emo);closeCtx();}
 function pickReactionOn(mid2,emo){
   const d=DB.load();const c=d.chats.find(x=>x.id===currentChat.id);
   const m=c.msgs.find(x=>x.id===mid2);
-  m.reactions=m.reactions||{};
-  m.reactions[emo]=m.reactions[emo]||[];
+  m.reactions=m.reactions||{};m.reactions[emo]=m.reactions[emo]||[];
   const i=m.reactions[emo].indexOf(d.me);
   if(i>=0)m.reactions[emo].splice(i,1);else m.reactions[emo].push(d.me);
   if(!m.reactions[emo].length)delete m.reactions[emo];
@@ -1369,47 +1241,42 @@ function doForward(mid2,toChatId){
 }
 
 /* ============================================================
-   СОЗДАНИЕ ЧАТА
+   СОЗДАНИЕ ЧАТА — ВЕРТИКАЛЬНЫЙ СПИСОК
    ============================================================ */
 let ccType='private';
+
 document.addEventListener('click',e=>{
   const b=e.target.closest('#ccType button');
   if(b){
+    const prev=ccType;
     ccType=b.dataset.t;
     document.querySelectorAll('#ccType button').forEach(x=>x.classList.toggle('active',x===b));
-    $('ccPrivateBlock').style.display=ccType==='private'?'block':'none';
-    $('ccMembersBlock').style.display=ccType==='private'?'none':'block';
-    if(ccType!=='private')renderIslands();
+    $('ccName').style.display = ccType==='private'?'none':'block';
+    $('ccRightsBlock').style.display = ccType==='private'?'none':'block';
+    $('ccHint').textContent = ccType==='private'
+      ? 'Выбери одного человека из списка'
+      : 'Выбери нескольких участников';
+    // сбрасываем выбор при смене типа
+    if(prev!==ccType){ selectedMembers=[]; }
+    renderPickList();
   }
 });
+
 function openCreateChat(){
-  $('ccName').value='';$('ccPrivateLogin').value='';
+  $('ccName').value='';
   $('ccSend').checked=true;$('ccFiles').checked=true;$('ccInvite').checked=false;
+  ccType='private';
+  document.querySelectorAll('#ccType button').forEach(x=>x.classList.toggle('active',x.dataset.t==='private'));
+  $('ccName').style.display='none';
+  $('ccRightsBlock').style.display='none';
+  $('ccHint').textContent='Выбери одного человека из списка';
   const s=$('islandSearch'); if(s) s.value='';
   selectedMembers=[];
-  renderIslands();
+  renderPickList();
   $('createChat').classList.add('open');
 }
 
-function buildIsland(u, isFriend){
-  const sel=selectedMembers.includes(u.uid);
-  const el=document.createElement('div');
-  el.className='island'+(sel?' selected':'')+(isFriend?' friend':'');
-  el.dataset.uid=u.uid;
-  el.innerHTML=`${avatarHTML(u)}<div class="name">${u.login}${isFriend?' ✓':''}</div>${u.description?`<div class="desc">${u.description}</div>`:''}`;
-  el.onclick=(e)=>{
-    if(e.shiftKey||e.altKey||e.metaKey){openProfile(u.uid);return;}
-    toggleMember(u.uid);
-  };
-  let lt=null;
-  el.addEventListener('touchstart',()=>{lt=setTimeout(()=>openProfile(u.uid),550);});
-  el.addEventListener('touchend',()=>clearTimeout(lt));
-  el.addEventListener('touchmove',()=>clearTimeout(lt));
-  el.addEventListener('contextmenu',e=>{e.preventDefault();openProfile(u.uid);});
-  return el;
-}
-
-function renderIslands(){
+function renderPickList(){
   const d=DB.load();const meUid=d.me;
   const me=d.users.find(u=>u.uid===meUid);
   if(!me)return;
@@ -1417,53 +1284,69 @@ function renderIslands(){
   const q=(sEl?sEl.value:'').trim().toLowerCase();
   const match=(u)=>!q || (u.login||'').toLowerCase().includes(q);
 
-  const friendsList = me.friends
-    .map(uid=>userByUid(uid))
-    .filter(u=>u&&!u.deletedAt)
-    .filter(match);
+  const friendsList = me.friends.map(uid=>userByUid(uid)).filter(u=>u&&!u.deletedAt).filter(match);
+  const othersList  = d.users.filter(u=>u.uid!==meUid && !u.deletedAt && !me.friends.includes(u.uid)).filter(match);
 
-  const othersList = d.users
-    .filter(u=>u.uid!==meUid && !u.deletedAt && !me.friends.includes(u.uid))
-    .filter(match);
-
-  const grid=$('islandsGrid');if(!grid)return;
+  const grid=$('pickList'); if(!grid)return;
   grid.innerHTML='';
 
   if(friendsList.length){
     const t=document.createElement('div');
     t.className='islands-title'; t.textContent='Друзья ('+friendsList.length+')';
     grid.appendChild(t);
-    const sub=document.createElement('div'); sub.className='islands';
-    friendsList.forEach(u=>sub.appendChild(buildIsland(u, true)));
-    grid.appendChild(sub);
+    const list=document.createElement('div'); list.className='pick-list';
+    friendsList.forEach(u=>list.appendChild(buildPickItem(u, true)));
+    grid.appendChild(list);
   }
-
   if(othersList.length){
     const t=document.createElement('div');
     t.className='islands-title';
     t.style.marginTop = friendsList.length ? '14px' : '0';
     t.textContent = (q?'Найдено':'Все пользователи')+' ('+othersList.length+')';
     grid.appendChild(t);
-    const sub=document.createElement('div'); sub.className='islands';
-    othersList.forEach(u=>sub.appendChild(buildIsland(u, false)));
-    grid.appendChild(sub);
+    const list=document.createElement('div'); list.className='pick-list';
+    othersList.forEach(u=>list.appendChild(buildPickItem(u, false)));
+    grid.appendChild(list);
   }
-
   if(!friendsList.length && !othersList.length){
     grid.innerHTML='<div class="empty" style="margin-top:10px">Никого не найдено</div>';
   }
-
   renderSelectedStrip();
 }
 
-function toggleMember(u){
-  const i=selectedMembers.indexOf(u);
-  if(i>=0)selectedMembers.splice(i,1);else selectedMembers.push(u);
-  document.querySelectorAll('.island').forEach(el=>{
+function buildPickItem(u, isFriend){
+  const sel=selectedMembers.includes(u.uid);
+  const el=document.createElement('div');
+  el.className='pick-item'+(sel?' selected':'');
+  el.dataset.uid=u.uid;
+  const markCls = ccType==='private' ? 'pick-mark' : 'pick-mark checkbox';
+  el.innerHTML=`
+    ${avatarHTML(u,'sm')}
+    <div class="info">
+      <div class="pname">${u.login}${isFriend?'<span class="friend-mark">✓ друг</span>':''}</div>
+      <div class="pdesc">${u.description||(u.phone?'📞 '+u.phone:'')}</div>
+    </div>
+    <div class="${markCls}"></div>`;
+  el.onclick=()=>toggleMember(u.uid);
+  el.addEventListener('contextmenu',e=>{e.preventDefault();openProfile(u.uid);});
+  return el;
+}
+
+function toggleMember(uid){
+  if(ccType==='private'){
+    // только один
+    if(selectedMembers.includes(uid)) selectedMembers=[];
+    else selectedMembers=[uid];
+  } else {
+    const i=selectedMembers.indexOf(uid);
+    if(i>=0)selectedMembers.splice(i,1); else selectedMembers.push(uid);
+  }
+  document.querySelectorAll('.pick-item').forEach(el=>{
     el.classList.toggle('selected', selectedMembers.includes(el.dataset.uid));
   });
   renderSelectedStrip();
 }
+
 function renderSelectedStrip(){
   const strip=$('selectedStrip');if(!strip)return;
   if(!selectedMembers.length){strip.classList.add('empty-strip');strip.innerHTML='';return;}
@@ -1478,17 +1361,16 @@ function renderSelectedStrip(){
     strip.appendChild(chip);
   });
 }
+
 function createChat(){
   const d=DB.load();const me=meUser();
   const name=$('ccName').value.trim();
 
   if(ccType==='private'){
-    const lv=($('ccPrivateLogin').value||'').trim();
-    if(!lv)return alert('Введи логин');
-    const qClean=normPhone(lv);
-    const other=d.users.find(u=>u.login.toLowerCase()===lv.toLowerCase()||(qClean&&normPhone(u.phone)===qClean));
-    if(!other)return alert('Пользователь не найден');
-    if(other.uid===me.uid)return alert('Нельзя с самим собой');
+    if(selectedMembers.length!==1) return alert('Выбери одного человека');
+    const other=userByUid(selectedMembers[0]);
+    if(!other||other.deletedAt) return alert('Пользователь недоступен');
+    if(other.uid===me.uid) return alert('Нельзя с самим собой');
     const ex=d.chats.find(c=>c.type==='private'&&c.members.includes(me.uid)&&c.members.includes(other.uid));
     if(ex){closePanel('createChat');openChat(ex.id);return;}
     const c={id:'c'+Date.now(),name:other.login,type:'private',ownerId:me.uid,
@@ -1498,6 +1380,7 @@ function createChat(){
   }
 
   if(!name)return alert('Введи название');
+  if(!selectedMembers.length)return alert('Добавь хотя бы одного человека');
   const members=[me.uid,...selectedMembers.filter(x=>x!==me.uid)];
   const c={
     id:'c'+Date.now(),
@@ -1527,15 +1410,13 @@ function openChatInfo(){
       const isOwner=uid===currentChat.ownerId;
       const isBanned=(currentChat.banned||[]).includes(uid);
       const el=document.createElement('div');el.className='st-row';
-      el.innerHTML=`
-        ${avatarHTML(u,'sm')}
+      el.innerHTML=`${avatarHTML(u,'sm')}
         <div class="txt">
           <div class="t1">${u.login} ${isOwner?'👑':''} ${isBanned?'🚫':''}</div>
           <div class="t2">${u.phone?'📞 '+u.phone:''}</div>
         </div>
         <span class="small-action" data-open="${u.uid}">профиль</span>
-        ${iAmOwner&&!isOwner?`
-          <span class="small-action" data-act="kick" data-uid="${uid}">кик</span>
+        ${iAmOwner&&!isOwner?`<span class="small-action" data-act="kick" data-uid="${uid}">кик</span>
           <span class="small-action" data-act="ban" data-uid="${uid}">${isBanned?'разбан':'бан'}</span>`:''}`;
       body.appendChild(el);
     });
@@ -1571,8 +1452,7 @@ document.addEventListener('click',e=>{
     if(!confirm('Кикнуть?'))return;
     c.members=c.members.filter(x=>x!==uid);
   } else if(act.dataset.act==='ban'){
-    c.banned=c.banned||[];
-    const i=c.banned.indexOf(uid);
+    c.banned=c.banned||[];const i=c.banned.indexOf(uid);
     if(i>=0)c.banned.splice(i,1);else c.banned.push(uid);
   }
   DB.save(d);currentChat=c;openChatInfo();
@@ -1582,8 +1462,7 @@ document.addEventListener('click',e=>{
   if(!currentChat)return;
   const key=sw.dataset.right;
   const d=DB.load();const c=d.chats.find(x=>x.id===currentChat.id);
-  c.rights[key]=!c.rights[key];
-  DB.save(d);currentChat=c;openChatInfo();
+  c.rights[key]=!c.rights[key];DB.save(d);currentChat=c;openChatInfo();
 });
 
 /* ============================================================
@@ -1595,7 +1474,6 @@ function openProfile(uid){
   const isFriend=areFriends(d.me,u.uid);
   const outgoing=hasOutgoing(u.uid);
   const incoming=hasIncoming(u.uid);
-
   const view=$('profileView');
   view.innerHTML=`
     <div class="profileHero">
@@ -1603,11 +1481,10 @@ function openProfile(uid){
       <div class="name">${u.login}${u.isAdmin?' 👑':''}${u.deletedAt?' 🗑️':''}${isFriend?' · друг':''}</div>
       ${u.description?`<div class="desc">${u.description}</div>`:''}
       ${u.phone?`<div class="phone">📞 ${u.phone}</div>`:''}
-      ${u.deletedAt?`<div class="desc" style="color:var(--danger);margin-top:8px">Аккаунт помечен на удаление. Восстановление доступно ${RESTORE_WINDOW_DAYS} дня.</div>`:''}
+      ${u.deletedAt?`<div class="desc" style="color:var(--danger);margin-top:8px">Аккаунт помечен на удаление. Восстановление ${RESTORE_WINDOW_DAYS} дня.</div>`:''}
     </div>`;
   const av=view.querySelector('.avatar');
   if(av){av.style.width='96px';av.style.height='96px';av.style.fontSize='34px';}
-
   const actions=$('profileActions');actions.innerHTML='';
   if(isMe){
     actions.innerHTML=`<button class="btn" onclick="closePanel('profileModal');openProfileEdit()">Редактировать</button>`;
@@ -1630,19 +1507,17 @@ function openProfile(uid){
       <button class="btn" onclick="startPrivateWith('${u.uid}')">Написать</button>
       <button class="btn ok" onclick="addFromProfile('${u.uid}')">Добавить в друзья</button>`;
     const rep=document.createElement('button');
-    rep.className='btn danger';
-    rep.textContent='Жалоба';
+    rep.className='btn danger';rep.textContent='Жалоба';
     rep.onclick=()=>openReport(u.uid);
     actions.appendChild(rep);
   }
   $('profileModal').classList.add('open');
 }
-function addFromProfile(uid){ sendFriendRequest(uid); closePanel('profileModal'); }
-function cancelFromProfile(uid){ cancelFriendRequest(uid); closePanel('profileModal'); }
-function acceptFromProfile(uid){ acceptFriendRequest(uid); closePanel('profileModal'); }
-function declineFromProfile(uid){ declineFriendRequest(uid); closePanel('profileModal'); }
-function removeFriendFromProfile(uid){ if(confirm('Убрать из друзей?')){ removeFriend(uid); closePanel('profileModal'); } }
-
+function addFromProfile(uid){sendFriendRequest(uid);closePanel('profileModal');}
+function cancelFromProfile(uid){cancelFriendRequest(uid);closePanel('profileModal');}
+function acceptFromProfile(uid){acceptFriendRequest(uid);closePanel('profileModal');}
+function declineFromProfile(uid){declineFriendRequest(uid);closePanel('profileModal');}
+function removeFriendFromProfile(uid){if(confirm('Убрать из друзей?')){removeFriend(uid);closePanel('profileModal');}}
 function startPrivateWith(uid2){
   const d=DB.load();const me=d.me;
   let c=d.chats.find(x=>x.type==='private'&&x.members.includes(me)&&x.members.includes(uid2));
@@ -1654,8 +1529,7 @@ function startPrivateWith(uid2){
       msgs:[{id:mid(),senderId:'system',text:'Диалог начат',t:now()}]};
     d.chats.push(c);DB.save(d);
   }
-  closePanel('profileModal');
-  closePanel('peoplePage');
+  closePanel('profileModal'); closePanel('peoplePage');
   renderChats();openChat(c.id);
 }
 function renderMyProfileRow(){
@@ -1730,8 +1604,7 @@ function renderAdmin(){
   d.users.forEach(u=>{
     const blocked=u.blockedUntil&&Date.now()<u.blockedUntil;
     const el=document.createElement('div');el.className='st-row'+(u.deletedAt?' deleted':'');
-    el.innerHTML=`
-      ${avatarHTML(u,'sm')}
+    el.innerHTML=`${avatarHTML(u,'sm')}
       <div class="txt">
         <div class="t1">${u.login} ${u.isAdmin?'👑':''} ${blocked?'🚫':''} ${u.deletedAt?'🗑️':''}</div>
         <div class="t2">хэш: ${u.pass}${u.phone?' · 📞 '+u.phone:''}${u.deletedAt?' · удалён':''} · друзей: ${(u.friends||[]).length}</div>
@@ -1763,7 +1636,6 @@ document.addEventListener('click',e=>{
 function openPanel(id){$(id).classList.add('open');}
 function closePanel(id){$(id).classList.remove('open');}
 function openSettings(){openPanel('settings');renderAccounts();renderMyProfileRow();applyTheme();}
-
 function renderAccounts(){
   const d=DB.load();const box=$('accountsList');if(!box)return;
   box.innerHTML='';
@@ -1777,16 +1649,10 @@ function renderAccounts(){
       const left=Math.max(0,RESTORE_WINDOW_DAYS-Math.floor((Date.now()-u.deletedAt)/86400000));
       sub2='🗑️ удалён · осталось '+left+' дн.';
     }
-    el.innerHTML=`
-      ${avatarHTML(u,'sm')}
-      <div class="txt">
-        <div class="t1">${u.login} ${u.isAdmin?'👑':''}</div>
-        <div class="t2">${sub2}</div>
-      </div>
-      ${isDeleted
-        ? `<span class="small-action" data-restore="${u.uid}" style="color:var(--ok);font-weight:700">восстановить</span>`
-        : (active ? '<div class="check">✓ этот таб</div>' : '')
-      }`;
+    el.innerHTML=`${avatarHTML(u,'sm')}
+      <div class="txt"><div class="t1">${u.login} ${u.isAdmin?'👑':''}</div><div class="t2">${sub2}</div></div>
+      ${isDeleted?`<span class="small-action" data-restore="${u.uid}" style="color:var(--ok);font-weight:700">восстановить</span>`
+        :(active?'<div class="check">✓ этот таб</div>':'')}`;
     el.onclick=(e)=>{
       if(e.target.dataset.restore){restoreAccount(e.target.dataset.restore);return;}
       if(isDeleted)return;
@@ -1796,10 +1662,8 @@ function renderAccounts(){
   });
 }
 function restoreAccount(uid){
-  const d=DB.load();
-  const u=d.users.find(x=>x.uid===uid);if(!u)return;
-  delete u.deletedAt;
-  DB.save(d);
+  const d=DB.load();const u=d.users.find(x=>x.uid===uid);if(!u)return;
+  delete u.deletedAt;DB.save(d);
   toast('Аккаунт восстановлен',u.login,'');
   renderAccounts();
 }
@@ -1810,8 +1674,7 @@ function switchAccount(uid){
   closePanel('settings');startApp();
 }
 function addAccount(){
-  const d=DB.load();
-  d.me=null;DB.save(d);
+  const d=DB.load();d.me=null;DB.save(d);
   closePanel('settings');
   $('app').style.display='none';$('auth').style.display='flex';
   switchTo('reg');$('regLogin').focus();
@@ -1825,27 +1688,17 @@ function logout(){
 }
 function requestDeleteAccount(){
   const d=DB.load();const u=d.users.find(x=>x.uid===d.me);if(!u)return;
-
   if(u.deletedAt){
     if(confirm('Аккаунт удалён. Восстановить сейчас?')){
-      delete u.deletedAt;
-      DB.save(d);
-      renderAccounts();
+      delete u.deletedAt;DB.save(d);renderAccounts();
       toast('Аккаунт восстановлен',u.login,'');
     }
     return;
   }
-
   if(!confirm('Удалить аккаунт? Переписки сохранятся. В течение '+RESTORE_WINDOW_DAYS+' дней можно восстановить.'))return;
-
-  u.deletedAt=Date.now();
-  d.me=null;
-  DB.save(d);
-
+  u.deletedAt=Date.now(); d.me=null; DB.save(d);
   closePanel('settings');
-  $('app').style.display='none';
-  $('auth').style.display='flex';
-  switchTo('login');
+  $('app').style.display='none'; $('auth').style.display='flex'; switchTo('login');
   setTimeout(()=>toast('Аккаунт удалён','Восстановить можно в течение '+RESTORE_WINDOW_DAYS+' дней — просто войди снова',''),300);
 }
 
@@ -1892,11 +1745,10 @@ document.addEventListener('keydown',e=>{
 /* Просроченные удаления */
 function cleanupExpiredDeletes(){
   const d=DB.load();
-  const t=Date.now();
-  const before=d.users.length;
+  const t=Date.now();const before=d.users.length;
   d.users=d.users.filter(u=>{
     if(!u.deletedAt)return true;
-    return (t-u.deletedAt) < RESTORE_WINDOW_DAYS*86400000;
+    return (t-u.deletedAt)<RESTORE_WINDOW_DAYS*86400000;
   });
   if(d.users.length!==before)DB.save(d);
 }
