@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>Ink</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%234f8cff'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text></svg>"/>
 <style>
 :root{
   --bg:#0f1115;--panel:#171a21;--panel2:#1f232c;--border:#222;--border2:#2a3040;
@@ -86,6 +87,7 @@ header button:hover{background:rgba(127,127,127,.12)}
 .msg.me .sname{color:#cfe0ff}
 .msg .time{display:block;font-size:10.5px;opacity:.7;margin-top:4px;text-align:right}
 .msg .edited{font-size:10px;opacity:.6;margin-right:4px}
+.msg .file-gone{font-size:11.5px;color:var(--muted);font-style:italic;margin-top:3px}
 .msg .replyQuote{border-left:3px solid var(--accent);padding:2px 8px;margin-bottom:5px;font-size:12px;color:var(--muted);background:rgba(127,127,127,.08);border-radius:4px}
 .msg.me .replyQuote{background:rgba(255,255,255,.15);color:#e6ecff;border-left-color:#fff}
 .msg .fwd{font-size:11.5px;color:var(--muted);font-style:italic;margin-bottom:3px}
@@ -109,8 +111,8 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 ::-webkit-scrollbar{width:8px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px}
 .empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px}
-#settings,#chatInfo,#admin,#createChat,#reportModal,#forwardModal,#profileModal,#profileEdit,#peoplePage{position:fixed;inset:0;z-index:70;display:none}
-#settings.open,#chatInfo.open,#admin.open,#createChat.open,#reportModal.open,#forwardModal.open,#profileModal.open,#profileEdit.open,#peoplePage.open{display:block}
+#settings,#chatInfo,#admin,#createChat,#reportModal,#forwardModal,#profileModal,#profileEdit,#peoplePage,#exportModal{position:fixed;inset:0;z-index:70;display:none}
+#settings.open,#chatInfo.open,#admin.open,#createChat.open,#reportModal.open,#forwardModal.open,#profileModal.open,#profileEdit.open,#peoplePage.open,#exportModal.open{display:block}
 .overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);animation:fade .2s}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 .panel{position:absolute;top:0;right:0;bottom:0;width:min(500px,94vw);background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;animation:slideIn .25s cubic-bezier(.2,.9,.3,1.1);overflow:hidden}
@@ -197,7 +199,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .icon-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--panel);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s}
 .icon-btn:hover{background:rgba(79,140,255,.15);border-color:var(--accent)}
 .icon-btn.on{background:linear-gradient(135deg,#22a55a,#15803d);border-color:transparent;color:#fff}
-.icon-btn.on:hover{filter:brightness(1.15)}
 .icon-btn.danger:hover{background:rgba(255,92,92,.15);border-color:var(--danger)}
 .icon-btn.pending{background:rgba(255,209,138,.15);border-color:var(--warn);color:var(--warn)}
 .req-block{background:var(--panel2);border:1px solid var(--border2);border-radius:16px;padding:12px;margin-bottom:14px}
@@ -209,8 +210,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .req-row .uname{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .req-row .udescr{font-size:11.5px;color:var(--muted)}
 .btn.small-btn{padding:7px 12px;font-size:12.5px;width:auto;font-weight:600}
-
-/* ============ ВЕРТИКАЛЬНЫЙ СПИСОК ВЫБОРА ============ */
 .pick-search{width:100%;padding:11px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:14px;outline:none;margin-bottom:10px}
 .pick-search:focus{border-color:var(--accent)}
 .pick-scroll{max-height:340px;overflow-y:auto;padding-right:4px}
@@ -227,6 +226,14 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .pick-mark.checkbox{border-radius:6px}
 .pick-item.selected .pick-mark{border-color:var(--accent);background:var(--accent)}
 .pick-item.selected .pick-mark::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+.cleanup-info{font-size:12.5px;color:var(--muted);padding:10px 12px;background:var(--panel2);border-radius:12px;line-height:1.5;margin-bottom:8px}
+.cleanup-info b{color:var(--accent)}
+.export-opt{display:flex;align-items:center;gap:14px;padding:14px;border-radius:14px;background:var(--panel2);margin-bottom:8px;cursor:pointer;border:1px solid var(--border2);transition:all .15s}
+.export-opt:hover{border-color:var(--accent);background:rgba(79,140,255,.08)}
+.export-opt .fmt{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.export-opt .info{flex:1}
+.export-opt .et1{font-weight:600;font-size:14.5px}
+.export-opt .et2{font-size:12px;color:var(--muted);margin-top:2px}
 </style>
 </head>
 <body>
@@ -273,9 +280,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
     <div class="sidebar">
       <input class="search" id="searchInput" placeholder="Поиск по логину" oninput="renderChats()"/>
       <div class="createBtn" onclick="openCreateChat()">+ Создать чат</div>
-      <div class="scroll-rubber" id="chatList">
-        <div id="chatListOnly"></div>
-      </div>
+      <div class="scroll-rubber" id="chatList"><div id="chatListOnly"></div></div>
     </div>
     <div class="chatpane">
       <div id="messages" class="scroll-rubber"></div>
@@ -312,10 +317,34 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
         </div>
       </div>
       <div class="st-section">
+        <h3>Автоочистка</h3>
+        <div class="cleanup-info">
+          Файлы удаляются через <b>24 часа</b>.<br/>
+          Сообщения — через <b>14 дней</b>.<br/>
+          Скачай переписку заранее, если она нужна.
+        </div>
+        <div class="st-row simple" onclick="toggleAutoCleanup()">
+          <div class="txt"><span style="font-size:18px">🧹</span><span class="t1" style="margin-left:10px">Автоочистка включена</span></div>
+          <div class="switch" id="autoCleanSwitch"></div>
+        </div>
+        <div class="st-row simple" onclick="cleanupNow()">
+          <div class="txt"><span style="font-size:18px">⚡</span><span class="t1" style="margin-left:10px">Очистить сейчас</span></div>
+          <span class="small-action" id="cleanupStats">—</span>
+        </div>
+        <div class="st-row" onclick="openExportModal(null)">
+          <div class="icon" style="background:#22a55a">📥</div>
+          <div class="txt"><div class="t1">Скачать все переписки</div><div class="t2">TXT · MD · JSON на выбор</div></div>
+        </div>
+      </div>
+      <div class="st-section">
         <h3>Уведомления</h3>
         <div class="st-row simple" onclick="toggleNotifications()">
           <div class="txt"><span style="font-size:18px">🔔</span><span class="t1" style="margin-left:10px">Показывать уведомления</span></div>
           <div class="switch" id="notifySwitch"></div>
+        </div>
+        <div class="st-row simple" onclick="toggleSound()">
+          <div class="txt"><span style="font-size:18px">🔊</span><span class="t1" style="margin-left:10px">Звук при сообщении</span></div>
+          <div class="switch" id="soundSwitch"></div>
         </div>
         <div class="st-row simple" onclick="requestBrowserPermission()">
           <div class="txt"><span style="font-size:18px">🌐</span><span class="t1" style="margin-left:10px">Разрешить браузерные</span></div>
@@ -350,7 +379,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
         <div class="st-row danger simple" onclick="requestDeleteAccount()"><div class="txt"><span style="font-size:18px">🗑️</span><span class="t1" style="margin-left:10px">Удалить аккаунт</span></div></div>
       </div>
     </div>
-    <div class="st-footer">Ink · v1.1 · pick list</div>
+    <div class="st-footer">Ink · v1.3 · push + readable export</div>
   </div>
 </div>
 
@@ -373,11 +402,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 <div id="peoplePage">
   <div class="overlay" onclick="closePanel('peoplePage')"></div>
   <div class="panel">
-    <div class="st-header">
-      <h2>👥 Люди</h2>
-      <div class="spacer"></div>
-      <button onclick="closePanel('peoplePage')">✕</button>
-    </div>
+    <div class="st-header"><h2>👥 Люди</h2><div class="spacer"></div><button onclick="closePanel('peoplePage')">✕</button></div>
     <div class="people-header">
       <input class="people-search" id="peopleSearch" placeholder="Поиск по логину или телефону" oninput="renderPeoplePage()"/>
     </div>
@@ -400,9 +425,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
       <div class="islands-title">Выбранные</div>
       <div class="selected-strip empty-strip" id="selectedStrip"></div>
       <input class="pick-search" id="islandSearch" placeholder="Поиск по имени" oninput="renderPickList()"/>
-      <div class="pick-scroll">
-        <div id="pickList"></div>
-      </div>
+      <div class="pick-scroll"><div id="pickList"></div></div>
     </div>
     <div id="ccRightsBlock" style="display:none">
       <div class="chkRow"><input type="checkbox" id="ccSend" checked><label for="ccSend">Участники могут писать</label></div>
@@ -436,6 +459,31 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
       <button class="btn ghost" onclick="removePhoto()">Убрать фото</button>
       <button class="btn ghost" onclick="closePanel('profileEdit')">Отмена</button>
     </div>
+  </div>
+</div>
+
+<div id="exportModal">
+  <div class="overlay" onclick="closePanel('exportModal')"></div>
+  <div class="modalBox">
+    <h3>Скачать переписку</h3>
+    <p class="hint" id="exportHint">Выбери формат</p>
+    <div class="export-opt" onclick="doExport('txt')">
+      <div class="fmt">TXT</div>
+      <div class="info"><div class="et1">Простой текст</div><div class="et2">Открывается в блокноте, читается как чат</div></div>
+    </div>
+    <div class="export-opt" onclick="doExport('md')">
+      <div class="fmt">MD</div>
+      <div class="info"><div class="et1">Markdown</div><div class="et2">Красиво в Obsidian, Notion, GitHub</div></div>
+    </div>
+    <div class="export-opt" onclick="doExport('html')">
+      <div class="fmt">HTML</div>
+      <div class="info"><div class="et1">Веб-страница</div><div class="et2">Пузыри как в чате, открывается в браузере</div></div>
+    </div>
+    <div class="export-opt" onclick="doExport('json')">
+      <div class="fmt">JSON</div>
+      <div class="info"><div class="et1">Резервная копия</div><div class="et2">Для восстановления, не для чтения</div></div>
+    </div>
+    <div class="row"><button class="btn ghost" onclick="closePanel('exportModal')">Отмена</button></div>
   </div>
 </div>
 
@@ -483,13 +531,18 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 
 <script>
 /* ============================================================
-   КОНСТАНТЫ, ХРАНИЛИЩА
+   КОНСТАНТЫ
    ============================================================ */
 const OFFICIAL_CHANNEL_PASS='ink2026';
 const OFFICIAL_CHANNEL_NAME='##ink_official';
 const RESTORE_WINDOW_DAYS=3;
+const FILE_TTL_MS = 24*60*60*1000;
+const MSG_TTL_MS  = 14*24*60*60*1000;
 const $=id=>document.getElementById(id);
 
+/* ============================================================
+   ХРАНИЛИЩА
+   ============================================================ */
 const Store=(()=>{
   let backend='memory',memory={};
   try{localStorage.setItem('__t__','1');localStorage.removeItem('__t__');backend='localStorage';}
@@ -520,6 +573,9 @@ const DB={
     try{ raw=JSON.parse(Store.get('ink')||'{}'); }catch(e){ raw={}; }
     raw.users=raw.users||[]; raw.chats=raw.chats||[]; raw.reports=raw.reports||[];
     raw.theme=raw.theme||'dark'; raw.notify=raw.notify!==false;
+    raw.sound=raw.sound!==false;
+    raw.autoCleanup=raw.autoCleanup!==false;
+    raw.lastCleanup=raw.lastCleanup||0;
     raw.lastRead=raw.lastRead||{}; raw.me=TabMe.get('ink_me')||null;
     raw.users.forEach(u=>{
       if(!Array.isArray(u.friends))u.friends=[];
@@ -553,6 +609,350 @@ const CIPHER_MAP={'а':'✕','б':'✗','в':'✘','г':'⧉','д':'⋈','е':'�
 const encryptInk=t=>t.toLowerCase().split('').map(c=>CIPHER_MAP[c]||c).join('');
 
 /* ============================================================
+   ЗВУК И ЗАГОЛОВОК — уведомления в фоне
+   ============================================================ */
+let audioCtx = null;
+function playPing(){
+  const d=DB.load();
+  if(d.sound===false) return;
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    const t = audioCtx.currentTime;
+    // две нотки — приятнее одиночного писка
+    [880, 1320].forEach((freq, i)=>{
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.type='sine'; osc.frequency.value=freq;
+      const start = t + i*0.12;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.15, start+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, start+0.18);
+      osc.start(start); osc.stop(start+0.2);
+    });
+  }catch(e){ console.warn('Звук недоступен:', e); }
+}
+
+let titleFlashTimer = null;
+let baseTitle = 'Ink';
+function startTitleFlash(){
+  if(titleFlashTimer) return;
+  let on=false;
+  titleFlashTimer=setInterval(()=>{
+    document.title = on ? baseTitle : '🔴 ' + baseTitle;
+    on=!on;
+  }, 700);
+}
+function stopTitleFlash(){
+  if(titleFlashTimer){ clearInterval(titleFlashTimer); titleFlashTimer=null; }
+  document.title = baseTitle;
+}
+
+// Favicon с точкой
+const faviconBase = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%234f8cff'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text></svg>";
+const faviconDot  = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%234f8cff'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text><circle cx='26' cy='6' r='6' fill='%23ff3b3b' stroke='white' stroke-width='1.5'/></svg>";
+function setFaviconDot(on){
+  let link=document.querySelector("link[rel*='icon']");
+  if(!link){ link=document.createElement('link'); link.rel='icon'; document.head.appendChild(link); }
+  link.href = on ? faviconDot : faviconBase;
+}
+
+// Если вернулись во вкладку — сбросить индикацию
+window.addEventListener('focus',()=>{
+  stopTitleFlash();
+  setFaviconDot(false);
+});
+
+/* ============================================================
+   ПРОСРОЧЕННЫЕ УДАЛЕНИЯ + АВТООЧИСТКА
+   ============================================================ */
+function cleanupOldData(silent){
+  const d=DB.load();
+  if(d.autoCleanup===false){ if(!silent) toast('Автоочистка выключена','Включи в настройках',''); return {files:0,msgs:0}; }
+  const nowTs=Date.now();
+  let filesRemoved=0, msgsRemoved=0;
+  d.chats.forEach(c=>{
+    const before=c.msgs.length;
+    c.msgs=c.msgs.filter(m=>{
+      if(!m.ts)return true;
+      if(nowTs-m.ts>MSG_TTL_MS){return false;}
+      return true;
+    });
+    msgsRemoved+=before-c.msgs.length;
+    c.msgs.forEach(m=>{
+      if(m.file && m.ts && (nowTs-m.ts)>FILE_TTL_MS){
+        delete m.file; m.fileDeleted=true; filesRemoved++;
+      }
+    });
+  });
+  d.users.forEach(u=>{
+    if(u.photo && u.photoTs && (nowTs-u.photoTs)>FILE_TTL_MS){
+      delete u.photo; delete u.photoTs; filesRemoved++;
+    }
+  });
+  d.lastCleanup=nowTs;
+  DB.save(d);
+  if(!silent){
+    toast('Автоочистка', `Файлов: ${filesRemoved}, сообщений: ${msgsRemoved}`, '');
+  }
+  return {files:filesRemoved,msgs:msgsRemoved};
+}
+function cleanupStats(){
+  const d=DB.load();
+  let totalMsgs=0, totalFiles=0;
+  d.chats.forEach(c=>{
+    totalMsgs+=c.msgs.length;
+    c.msgs.forEach(m=>{ if(m.file) totalFiles++; });
+  });
+  return {totalMsgs,totalFiles,lastCleanup:d.lastCleanup};
+}
+
+/* ============================================================
+   ЭКСПОРТ
+   ============================================================ */
+function getVisibleChats(chatIds){
+  const d=DB.load();
+  return d.chats.filter(c=>{
+    if(chatIds && !chatIds.includes(c.id)) return false;
+    if(c.id==='official') return true;
+    return c.members.includes(d.me);
+  });
+}
+function getVisibleMsgs(chat){
+  const d=DB.load();
+  return chat.msgs.filter(m=>!m.deletedAll && !(m.deletedFor||[]).includes(d.me));
+}
+function formatDateRu(ts){
+  if(!ts) return '';
+  const d=new Date(ts);
+  const dd=String(d.getDate()).padStart(2,'0');
+  const mm=String(d.getMonth()+1).padStart(2,'0');
+  const yyyy=d.getFullYear();
+  const hh=String(d.getHours()).padStart(2,'0');
+  const mi=String(d.getMinutes()).padStart(2,'0');
+  return `${dd}.${mm}.${yyyy} ${hh}:${mi}`;
+}
+
+function buildTXT(chatIds){
+  const d=DB.load();
+  const me=d.users.find(u=>u.uid===d.me);
+  const chats=getVisibleChats(chatIds);
+  let out='';
+  out+='╔══════════════════════════════════════════════════════╗\n';
+  out+='║            INK — АРХИВ ПЕРЕПИСОК                     ║\n';
+  out+='╚══════════════════════════════════════════════════════╝\n\n';
+  out+='Пользователь: '+(me?me.login:'—')+'\n';
+  out+='Дата выгрузки: '+new Date().toLocaleString('ru-RU')+'\n';
+  out+='Чатов в архиве: '+chats.length+'\n';
+  out+='\n';
+  chats.forEach(c=>{
+    out+='\n'+'█'.repeat(56)+'\n';
+    out+='  ЧАТ: '+c.name+'\n';
+    out+='  Тип: '+(c.type==='private'?'личный':c.type==='group'?'группа':'канал')+'\n';
+    const memberNames=c.members.map(uid=>{const u=d.users.find(x=>x.uid===uid);return u?u.login:'?'});
+    out+='  Участники: '+(memberNames.join(', ')||'—')+'\n';
+    out+='  Сообщений: '+getVisibleMsgs(c).length+'\n';
+    out+='█'.repeat(56)+'\n\n';
+    const msgs=getVisibleMsgs(c);
+    if(!msgs.length){ out+='  (сообщений нет)\n'; return; }
+    let lastDate='';
+    msgs.forEach(m=>{
+      const date = m.ts ? new Date(m.ts) : null;
+      const dateStr = date ? date.toLocaleDateString('ru-RU') : '';
+      if(dateStr && dateStr!==lastDate){
+        out+='\n  ─── '+dateStr+' ───\n\n';
+        lastDate=dateStr;
+      }
+      const sender=d.users.find(u=>u.uid===m.senderId);
+      const name=sender?sender.login:'система';
+      const time = date ? String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0') : (m.t||'');
+      const prefix='  ['+time+'] '+name+': ';
+      const body = m.text||'';
+      const lines = body.split('\n');
+      out+=prefix+lines[0]+'\n';
+      for(let i=1;i<lines.length;i++) out+=' '.repeat(prefix.length)+lines[i]+'\n';
+      if(m.fileDeleted) out+=' '.repeat(prefix.length)+'[📎 вложение удалено по сроку]\n';
+      else if(m.file)   out+=' '.repeat(prefix.length)+'[📎 вложение]\n';
+      if(m.reactions && Object.keys(m.reactions).length){
+        out+=' '.repeat(prefix.length)+'реакции: '+Object.entries(m.reactions).map(([e,u])=>e+' '+u.length).join(' ')+'\n';
+      }
+      if(m.edited) out+=' '.repeat(prefix.length)+'(изменено)\n';
+      if(m.forwardedFrom){ const f=d.users.find(u=>u.uid===m.forwardedFrom); out+=' '.repeat(prefix.length)+'[переслано от '+(f?f.login:'—')+']\n'; }
+      if(m.replyTo){
+        const q=chat.msgs.find(x=>x.id===m.replyTo);
+        if(q){ const qs=d.users.find(u=>u.uid===q.senderId); out+=' '.repeat(prefix.length)+'[↩ в ответ на: '+(qs?qs.login:'—')+': '+((q.text||'').slice(0,60))+']\n'; }
+      }
+    });
+  });
+  out+='\n\nКонец архива. Всего чатов: '+chats.length+'\n';
+  return out;
+}
+
+function buildMD(chatIds){
+  const d=DB.load();
+  const me=d.users.find(u=>u.uid===d.me);
+  const chats=getVisibleChats(chatIds);
+  let out='';
+  out+='# Ink — архив переписок\n\n';
+  out+='**Пользователь:** '+(me?me.login:'—')+'  \n';
+  out+='**Дата выгрузки:** '+new Date().toLocaleString('ru-RU')+'  \n';
+  out+='**Чатов:** '+chats.length+'\n\n';
+  out+='---\n';
+  chats.forEach(c=>{
+    out+='\n## '+(c.name.replace(/^#+/,'#'))+'\n\n';
+    out+='**Тип:** '+(c.type==='private'?'личный':c.type==='group'?'группа':'канал')+'  \n';
+    const memberNames=c.members.map(uid=>{const u=d.users.find(x=>x.uid===uid);return u?'`'+u.login+'`':'?'});
+    out+='**Участники:** '+(memberNames.join(', ')||'—')+'\n\n';
+    const msgs=getVisibleMsgs(c);
+    if(!msgs.length){ out+='_сообщений нет_\n\n'; return; }
+    let lastDate='';
+    msgs.forEach(m=>{
+      const date = m.ts ? new Date(m.ts) : null;
+      const dateStr = date ? date.toLocaleDateString('ru-RU') : '';
+      if(dateStr && dateStr!==lastDate){
+        out+='\n### 📅 '+dateStr+'\n\n';
+        lastDate=dateStr;
+      }
+      const sender=d.users.find(u=>u.uid===m.senderId);
+      const name=sender?sender.login:'система';
+      const time = date ? String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0') : (m.t||'');
+      let meta='';
+      if(m.edited) meta+=' _(изм.)_';
+      if(m.forwardedFrom){ const f=d.users.find(u=>u.uid===m.forwardedFrom); meta+=' _↪ переслано от '+(f?f.login:'—')+'_'; }
+      if(m.replyTo){
+        const q=chat.msgs.find(x=>x.id===m.replyTo);
+        if(q){ const qs=d.users.find(u=>u.uid===q.senderId); meta+=' _↩ '+(qs?qs.login:'—')+'_'; }
+      }
+      out+='**'+name+'** `'+time+'`'+meta+'  \n';
+      out+=m.text+'\n';
+      if(m.fileDeleted) out+='> 📎 вложение удалено по сроку\n';
+      else if(m.file)   out+='> 📎 вложение\n';
+      if(m.reactions && Object.keys(m.reactions).length){
+        out+='> реакции: '+Object.entries(m.reactions).map(([e,u])=>e+' '+u.length).join(' ')+'\n';
+      }
+      out+='\n';
+    });
+    out+='---\n';
+  });
+  return out;
+}
+
+function buildHTML(chatIds){
+  const d=DB.load();
+  const me=d.users.find(u=>u.uid===d.me);
+  const chats=getVisibleChats(chatIds);
+  let body='';
+  chats.forEach(c=>{
+    body+='<section class="chat"><h2>'+escapeHtml(c.name)+'</h2>';
+    body+='<div class="meta">Тип: '+({private:'личный',group:'группа',channel:'канал'}[c.type]||'—');
+    body+=' · Участники: '+escapeHtml(c.members.map(uid=>{const u=d.users.find(x=>x.uid===uid);return u?u.login:'?'}).join(', '))+'</div>';
+    const msgs=getVisibleMsgs(c);
+    let lastDate='';
+    msgs.forEach(m=>{
+      const date = m.ts ? new Date(m.ts) : null;
+      const dateStr = date ? date.toLocaleDateString('ru-RU') : '';
+      if(dateStr && dateStr!==lastDate){
+        body+='<div class="date">'+dateStr+'</div>';
+        lastDate=dateStr;
+      }
+      const sender=d.users.find(u=>u.uid===m.senderId);
+      const isMine = sender && sender.uid === d.me;
+      const name = sender ? sender.login : 'система';
+      const time = date ? String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0') : (m.t||'');
+      body+='<div class="msg '+(isMine?'me':'them')+'">';
+      if(!isMine) body+='<div class="nm">'+escapeHtml(name)+'</div>';
+      body+='<div class="txt">'+escapeHtml(m.text).replace(/\n/g,'<br/>')+'</div>';
+      if(m.fileDeleted) body+='<div class="fl">📎 вложение удалено по сроку</div>';
+      if(m.reactions && Object.keys(m.reactions).length){
+        body+='<div class="rx">'+Object.entries(m.reactions).map(([e,u])=>e+' '+u.length).join(' ')+'</div>';
+      }
+      body+='<div class="tm">'+time+'</div>';
+      body+='</div>';
+    });
+    body+='</section>';
+  });
+  return `<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"/>
+<title>Ink — архив переписок</title>
+<style>
+body{margin:0;padding:20px;background:#0f1115;color:#e8ecf3;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:760px;margin:0 auto}
+h1{font-size:22px}
+.sub{color:#8a93a5;font-size:13px;margin-bottom:22px}
+.chat{margin-bottom:36px;padding:16px;background:#171a21;border-radius:16px;border:1px solid #222}
+.chat h2{margin:0 0 6px;font-size:17px}
+.chat .meta{color:#8a93a5;font-size:12px;margin-bottom:16px}
+.date{text-align:center;color:#8a93a5;font-size:12px;margin:14px 0}
+.msg{max-width:78%;padding:9px 13px;border-radius:16px;margin-bottom:8px;position:relative;font-size:14.5px;line-height:1.35;word-wrap:break-word}
+.msg.them{background:#232936;border:1px solid #222;border-bottom-left-radius:4px}
+.msg.me{background:linear-gradient(135deg,#5b6cff,#8b5cff);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.msg .nm{font-size:11.5px;font-weight:700;color:#4f8cff;margin-bottom:3px}
+.msg .fl{font-size:11.5px;opacity:.7;font-style:italic;margin-top:4px}
+.msg .rx{margin-top:5px;font-size:12px;opacity:.85}
+.msg .tm{display:block;text-align:right;font-size:10.5px;opacity:.7;margin-top:4px}
+</style></head><body>
+<h1>Ink — архив переписок</h1>
+<div class="sub">Пользователь: ${escapeHtml(me?me.login:'—')} · Выгружено: ${new Date().toLocaleString('ru-RU')} · Чатов: ${chats.length}</div>
+${body}
+</body></html>`;
+}
+
+function escapeHtml(s){
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function downloadFile(content, filename, mime){
+  const blob = new Blob([content], {type: mime || 'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);}, 100);
+}
+
+let exportTarget = null; // null = все, иначе id чата
+function openExportModal(chatId){
+  exportTarget = chatId;
+  $('exportHint').textContent = chatId
+    ? 'Чат: '+((DB.load().chats.find(c=>c.id===chatId)||{}).name||'—')
+    : 'Все чаты текущего пользователя';
+  closePanel('settings'); closePanel('chatInfo');
+  $('exportModal').classList.add('open');
+}
+function doExport(format){
+  const chatIds = exportTarget ? [exportTarget] : null;
+  const dateStr = new Date().toISOString().slice(0,10);
+  const safeName = exportTarget
+    ? ((DB.load().chats.find(c=>c.id===exportTarget)||{}).name||'chat').replace(/[^a-zA-Zа-яА-Я0-9_-]/g,'_').slice(0,30)
+    : 'all';
+  let content, filename, mime;
+  if(format==='txt'){ content=buildTXT(chatIds); filename='ink-'+safeName+'-'+dateStr+'.txt'; mime='text/plain;charset=utf-8'; }
+  else if(format==='md'){ content=buildMD(chatIds); filename='ink-'+safeName+'-'+dateStr+'.md'; mime='text/markdown;charset=utf-8'; }
+  else if(format==='html'){ content=buildHTML(chatIds); filename='ink-'+safeName+'-'+dateStr+'.html'; mime='text/html;charset=utf-8'; }
+  else { content=buildJSON(chatIds); filename='ink-'+safeName+'-'+dateStr+'.json'; mime='application/json'; }
+  downloadFile(content, filename, mime);
+  closePanel('exportModal');
+  toast('Скачано', filename, '');
+}
+function buildJSON(chatIds){
+  const d=DB.load();
+  const me=d.users.find(u=>u.uid===d.me);
+  const chats=getVisibleChats(chatIds).map(c=>({
+    id:c.id, name:c.name, type:c.type,
+    members:c.members.map(uid=>{const u=d.users.find(x=>x.uid===uid);return u?u.login:'?'}),
+    messages: getVisibleMsgs(c).map(m=>{
+      const sender=d.users.find(u=>u.uid===m.senderId);
+      return {from:sender?sender.login:'система', time:m.t, date:m.ts?new Date(m.ts).toISOString():null,
+        text:m.text, file:m.file?'[вложение]':(m.fileDeleted?'[файл удалён]':null),
+        edited:!!m.edited, forwarded:!!m.forwardedFrom,
+        reactions:m.reactions?Object.fromEntries(Object.entries(m.reactions).map(([e,u])=>[e,u.length])):null
+      };
+    })
+  }));
+  return JSON.stringify({ink:'1.3', exportedAt:new Date().toISOString(), user:me?me.login:'—', chatsCount:chats.length, chats}, null, 2);
+}
+
+/* ============================================================
    ТЕМА
    ============================================================ */
 function applyTheme(){
@@ -560,13 +960,23 @@ function applyTheme(){
   document.body.classList.toggle('light',d.theme==='light');
   const sw=$('themeSwitch');if(sw)sw.classList.toggle('on',d.theme==='light');
   const ns=$('notifySwitch');if(ns)ns.classList.toggle('on',d.notify!==false);
+  const ss=$('soundSwitch');if(ss)ss.classList.toggle('on',d.sound!==false);
+  const ac=$('autoCleanSwitch');if(ac)ac.classList.toggle('on',d.autoCleanup!==false);
   const st=$('browserPermState');
   if(st){
     if(!('Notification' in window)) st.textContent='нет';
     else st.textContent={granted:'разрешено',denied:'запрещено',default:'спросить'}[Notification.permission]||'—';
   }
+  const cs=$('cleanupStats');
+  if(cs){
+    const s=cleanupStats();
+    cs.textContent = 'сейчас: '+s.totalMsgs+' сообщ. · '+s.totalFiles+' файлов';
+  }
 }
 function toggleTheme(){const d=DB.load();d.theme=d.theme==='light'?'dark':'light';DB.save(d);applyTheme();}
+function toggleAutoCleanup(){const d=DB.load();d.autoCleanup=d.autoCleanup===false?true:false;DB.save(d);applyTheme();toast('Автоочистка '+(d.autoCleanup?'включена':'выключена'),'','');}
+function cleanupNow(){ cleanupOldData(false); renderChats(); if(currentChat)renderMessages(); applyTheme(); }
+function toggleSound(){ const d=DB.load(); d.sound=d.sound===false?true:false; DB.save(d); applyTheme(); if(d.sound) playPing(); toast('Звук '+(d.sound?'включён':'выключен'),'',''); }
 
 /* ============================================================
    ДРУЗЬЯ
@@ -690,6 +1100,10 @@ NotifyBus.on(msg=>{
     if(chat.type!=='private'&&!chat.members.includes(meId)&&chat.id!=='official')return;
     const sender=d.users.find(u=>u.uid===msg.fromUserId);
     const title=sender?sender.login:'Кто-то';
+    // звук + индикаторы
+    playPing();
+    setFaviconDot(true);
+    startTitleFlash();
     if(chat.type==='channel'){
       showBrowserNotify('Ink · '+chat.name,title+': '+msg.text.slice(0,80));
       toast(chat.name,title+': '+msg.text.slice(0,50),chat.id);
@@ -703,6 +1117,7 @@ NotifyBus.on(msg=>{
   if(msg.type==='friend-req'){
     const d=DB.load();const meId=d.me;
     if(!meId||msg.toUid!==meId)return;
+    playPing(); setFaviconDot(true); startTitleFlash();
     toast('Заявка в друзья',msg.login||'—','');
     showBrowserNotify('Ink · Заявка в друзья',(msg.login||'—')+' хочет добавить вас');
     renderPeoplePage();renderHeaderBadge();
@@ -710,6 +1125,7 @@ NotifyBus.on(msg=>{
   if(msg.type==='friend-accepted'){
     const d=DB.load();const meId=d.me;
     if(!meId||msg.toUid!==meId)return;
+    playPing();
     toast('Заявка принята',(msg.login||'—')+' теперь ваш друг','');
     showBrowserNotify('Ink · Заявка принята',(msg.login||'—')+' принял(а) вашу заявку');
     renderPeoplePage();
@@ -724,6 +1140,10 @@ NotifyBus.on(msg=>{
 function toggleNotifications(){
   const d=DB.load();d.notify=d.notify===false?true:false;DB.save(d);applyTheme();
   toast('Уведомления '+(d.notify?'включены':'выключены'),'','');
+  // При включении — если разрешение default, сразу запросим
+  if(d.notify && 'Notification' in window && Notification.permission==='default'){
+    Notification.requestPermission().then(()=>applyTheme());
+  }
 }
 function requestBrowserPermission(){
   if(!('Notification' in window))return alert('Браузер не поддерживает уведомления');
@@ -735,9 +1155,15 @@ function showBrowserNotify(title,body){
   if(!('Notification' in window))return;
   if(Notification.permission!=='granted')return;
   try{
-    const n=new Notification(title,{body,tag:'ink-'+(body||'').slice(0,20)});
+    const n=new Notification(title,{
+      body,
+      tag:'ink-'+(body||'').slice(0,20),
+      icon: faviconBase,
+      badge: faviconBase,
+      silent: true  // чтобы не дублировать системный звук с нашим
+    });
     n.onclick=()=>{window.focus();n.close();};
-    setTimeout(()=>n.close(),5000);
+    setTimeout(()=>n.close(),8000);
   }catch(e){console.warn(e);}
 }
 function toast(t1,t2,chatId){
@@ -815,20 +1241,37 @@ function startApp(){
   const d=DB.load();
   if(!d.me){$('app').style.display='none';$('auth').style.display='flex';return;}
   ensureStartersFor(d.me);
+  let migrated=false;
+  d.chats.forEach(c=>c.msgs.forEach(m=>{ if(!m.ts){m.ts=Date.now();migrated=true;} }));
+  if(migrated) DB.save(d);
+  cleanupOldData(true);
+  // Автозапрос разрешения на уведомления (один раз)
+  if('Notification' in window && Notification.permission === 'default' && d.notify !== false){
+    setTimeout(()=>{ Notification.requestPermission().then(()=>applyTheme()); }, 1500);
+  }
   const me=meUser();
   $('adminSection').style.display=me&&me.isAdmin?'block':'none';
   renderChats();renderAccounts();renderMyProfileRow();applyTheme();renderBell();renderHeaderBadge();
+  if(window._cleanupTimer) clearInterval(window._cleanupTimer);
+  window._cleanupTimer = setInterval(()=>{
+    const res = cleanupOldData(true);
+    if(res.files || res.msgs){
+      renderChats();
+      if(currentChat) reloadCurrentChat();
+      applyTheme();
+    }
+  }, 60000);
 }
 function ensureStartersFor(meUid){
   const d=DB.load();
   const favId='fav_'+meUid;
   if(!d.chats.find(c=>c.id===favId)){
     d.chats.push({id:favId,name:'Избранное',type:'private',ownerId:meUid,members:[meUid],rights:{send:true,files:true,invite:true},
-      msgs:[{id:mid(),senderId:meUid,text:'Добро пожаловать в Ink.',t:now()}]});
+      msgs:[{id:mid(),senderId:meUid,text:'Добро пожаловать в Ink.',t:now(),ts:Date.now()}]});
   }
   if(!d.chats.find(c=>c.id==='official')){
     d.chats.push({id:'official',name:OFFICIAL_CHANNEL_NAME,type:'channel',ownerId:null,locked:true,members:[],rights:{send:true,files:true,invite:false},
-      msgs:[{id:mid(),senderId:'system',text:'Официальный канал Ink. Для записи нужен пароль.',t:now()}]});
+      msgs:[{id:mid(),senderId:'system',text:'Официальный канал Ink. Для записи нужен пароль.',t:now(),ts:Date.now()}]});
   }
   DB.save(d);
 }
@@ -841,7 +1284,6 @@ function renderChats(){
   const q=($('searchInput').value||'').trim().toLowerCase();
   const listBox=$('chatListOnly');
   listBox.innerHTML='';
-
   if(q){
     const qClean=normPhone(q);
     const found=d.users.filter(u=>{
@@ -857,7 +1299,6 @@ function renderChats(){
     }
     listBox.innerHTML+=`<div class="islands-title" style="margin-top:12px">Мои чаты</div>`;
   }
-
   const visible=(d.chats||[]).filter(c=>c.id==='official'?true:c.members.includes(me));
   const list=visible.filter(c=>!q||c.name.toLowerCase().includes(q));
   if(!list.length&&!q)listBox.innerHTML+='<div class="empty">Чатов пока нет</div>';
@@ -865,7 +1306,7 @@ function renderChats(){
     const el=document.createElement('div');el.className='chat-item';
     const unread=unreadCount(c,me);
     if(unread)el.classList.add('unread');
-    const vm=c.msgs.filter(m=>!m.deletedAll&&!(m.deletedFor||[]).includes(me));
+    const vm=getVisibleMsgs(c);
     const lastMsg=vm.length?vm[vm.length-1]:null;
     let lastText='';
     if(lastMsg){
@@ -899,7 +1340,6 @@ function buildUserRow(u){
   const incoming=hasIncoming(u.uid);
   const el=document.createElement('div');
   el.className='user-row'; el.dataset.uid=u.uid;
-
   let friendBtns='';
   if(isFriend){
     friendBtns=`<button class="icon-btn on" title="Друзья" data-act="profile">✓</button>
@@ -953,7 +1393,6 @@ function renderPeoplePage(){
   const q=($('peopleSearch').value||'').trim().toLowerCase();
   const qClean=normPhone(q);
   const body=$('peopleBody'); body.innerHTML='';
-
   const incoming=me.reqIn.map(uid=>userByUid(uid)).filter(Boolean).filter(u=>!u.deletedAt);
   if(incoming.length){
     const block=document.createElement('div');block.className='req-block';
@@ -1028,6 +1467,8 @@ function openChat(id){
   $('backBtn').style.display='inline-block';
   $('hTitle').textContent=currentChat.name;
   markRead(id);
+  stopTitleFlash();
+  setFaviconDot(totalUnread()>0);
   cancelReply();renderMessages();updateComposer();renderChats();
 }
 function reloadCurrentChat(){
@@ -1052,6 +1493,7 @@ function updateComposer(){
   input.disabled=false;btn.disabled=false;input.placeholder='Сообщение...';
 }
 function backToList(){currentChat=null;document.body.classList.remove('in-chat');$('backBtn').style.display='none';$('hTitle').textContent='Ink';}
+
 function renderMessages(){
   const box=$('messages');box.innerHTML='';
   const d=DB.load();const me=d.me;
@@ -1074,6 +1516,9 @@ function renderMessages(){
       const q=currentChat.msgs.find(x=>x.id===m.replyTo);
       if(q){const qu=userByUid(q.senderId);quote=`<div class="replyQuote"><b>${qu?qu.login:'—'}:</b> ${(q.text||'').slice(0,80)}</div>`;}
     }
+    let fileRow='';
+    if(m.file){ fileRow=`<div class="file-gone">📎 вложение (удалится через 24 ч)</div>`; }
+    else if(m.fileDeleted){ fileRow=`<div class="file-gone">📎 вложение удалено по сроку</div>`; }
     let reactions='';
     if(m.reactions&&Object.keys(m.reactions).length){
       reactions='<div class="reactions">';
@@ -1085,7 +1530,7 @@ function renderMessages(){
     }
     const edited=m.edited?'<span class="edited">изм.</span>':'';
     const text=currentChat.ink?encryptInk(m.text):m.text;
-    el.innerHTML=header+fwd+quote+text+reactions+`<span class="time">${edited}${m.t}</span>`;
+    el.innerHTML=header+fwd+quote+text+fileRow+reactions+`<span class="time">${edited}${m.t}</span>`;
     box.appendChild(el);
   });
   box.scrollTop=box.scrollHeight;
@@ -1112,13 +1557,15 @@ function sendMsg(){
   if(!v)return;
   const d=DB.load();
   const c=d.chats.find(x=>x.id===currentChat.id);
-  const msg={id:mid(),senderId:d.me,text:v,t:now()};
+  const msg={id:mid(),senderId:d.me,text:v,t:now(),ts:Date.now()};
   if(replyToId)msg.replyTo=replyToId;
   c.msgs.push(msg);
   d.lastRead[d.me]=d.lastRead[d.me]||{};
   d.lastRead[d.me][c.id]=c.msgs.length;
   DB.save(d); currentChat=c;
   input.value='';cancelReply();renderMessages();renderChats();
+  // локальный звук-подтверждение для отправителя
+  playPing();
   NotifyBus.send({type:'msg',chatId:c.id,fromUserId:d.me,text:v});
 }
 function cancelReply(){replyToId=null;$('replyBar').classList.remove('show');}
@@ -1236,32 +1683,26 @@ function doForward(mid2,toChatId){
   const d=DB.load();const src=d.chats.find(c=>c.id===currentChat.id);
   const m=src.msgs.find(x=>x.id===mid2);
   const dst=d.chats.find(c=>c.id===toChatId);
-  dst.msgs.push({id:mid(),senderId:d.me,text:m.text,t:now(),forwardedFrom:m.senderId});
+  dst.msgs.push({id:mid(),senderId:d.me,text:m.text,t:now(),ts:Date.now(),forwardedFrom:m.senderId});
   DB.save(d);alert('Переслано в '+dst.name);
 }
 
 /* ============================================================
-   СОЗДАНИЕ ЧАТА — ВЕРТИКАЛЬНЫЙ СПИСОК
+   СОЗДАНИЕ ЧАТА
    ============================================================ */
 let ccType='private';
-
 document.addEventListener('click',e=>{
   const b=e.target.closest('#ccType button');
   if(b){
-    const prev=ccType;
-    ccType=b.dataset.t;
+    const prev=ccType; ccType=b.dataset.t;
     document.querySelectorAll('#ccType button').forEach(x=>x.classList.toggle('active',x===b));
     $('ccName').style.display = ccType==='private'?'none':'block';
     $('ccRightsBlock').style.display = ccType==='private'?'none':'block';
-    $('ccHint').textContent = ccType==='private'
-      ? 'Выбери одного человека из списка'
-      : 'Выбери нескольких участников';
-    // сбрасываем выбор при смене типа
+    $('ccHint').textContent = ccType==='private'?'Выбери одного человека из списка':'Выбери нескольких участников';
     if(prev!==ccType){ selectedMembers=[]; }
     renderPickList();
   }
 });
-
 function openCreateChat(){
   $('ccName').value='';
   $('ccSend').checked=true;$('ccFiles').checked=true;$('ccInvite').checked=false;
@@ -1275,37 +1716,30 @@ function openCreateChat(){
   renderPickList();
   $('createChat').classList.add('open');
 }
-
 function renderPickList(){
   const d=DB.load();const meUid=d.me;
-  const me=d.users.find(u=>u.uid===meUid);
-  if(!me)return;
+  const me=d.users.find(u=>u.uid===meUid); if(!me)return;
   const sEl=$('islandSearch');
   const q=(sEl?sEl.value:'').trim().toLowerCase();
   const match=(u)=>!q || (u.login||'').toLowerCase().includes(q);
-
   const friendsList = me.friends.map(uid=>userByUid(uid)).filter(u=>u&&!u.deletedAt).filter(match);
   const othersList  = d.users.filter(u=>u.uid!==meUid && !u.deletedAt && !me.friends.includes(u.uid)).filter(match);
-
   const grid=$('pickList'); if(!grid)return;
   grid.innerHTML='';
-
   if(friendsList.length){
-    const t=document.createElement('div');
-    t.className='islands-title'; t.textContent='Друзья ('+friendsList.length+')';
+    const t=document.createElement('div');t.className='islands-title';t.textContent='Друзья ('+friendsList.length+')';
     grid.appendChild(t);
     const list=document.createElement('div'); list.className='pick-list';
-    friendsList.forEach(u=>list.appendChild(buildPickItem(u, true)));
+    friendsList.forEach(u=>list.appendChild(buildPickItem(u,true)));
     grid.appendChild(list);
   }
   if(othersList.length){
-    const t=document.createElement('div');
-    t.className='islands-title';
-    t.style.marginTop = friendsList.length ? '14px' : '0';
-    t.textContent = (q?'Найдено':'Все пользователи')+' ('+othersList.length+')';
+    const t=document.createElement('div');t.className='islands-title';
+    t.style.marginTop=friendsList.length?'14px':'0';
+    t.textContent=(q?'Найдено':'Все пользователи')+' ('+othersList.length+')';
     grid.appendChild(t);
     const list=document.createElement('div'); list.className='pick-list';
-    othersList.forEach(u=>list.appendChild(buildPickItem(u, false)));
+    othersList.forEach(u=>list.appendChild(buildPickItem(u,false)));
     grid.appendChild(list);
   }
   if(!friendsList.length && !othersList.length){
@@ -1313,7 +1747,6 @@ function renderPickList(){
   }
   renderSelectedStrip();
 }
-
 function buildPickItem(u, isFriend){
   const sel=selectedMembers.includes(u.uid);
   const el=document.createElement('div');
@@ -1331,10 +1764,8 @@ function buildPickItem(u, isFriend){
   el.addEventListener('contextmenu',e=>{e.preventDefault();openProfile(u.uid);});
   return el;
 }
-
 function toggleMember(uid){
   if(ccType==='private'){
-    // только один
     if(selectedMembers.includes(uid)) selectedMembers=[];
     else selectedMembers=[uid];
   } else {
@@ -1346,7 +1777,6 @@ function toggleMember(uid){
   });
   renderSelectedStrip();
 }
-
 function renderSelectedStrip(){
   const strip=$('selectedStrip');if(!strip)return;
   if(!selectedMembers.length){strip.classList.add('empty-strip');strip.innerHTML='';return;}
@@ -1361,11 +1791,9 @@ function renderSelectedStrip(){
     strip.appendChild(chip);
   });
 }
-
 function createChat(){
   const d=DB.load();const me=meUser();
   const name=$('ccName').value.trim();
-
   if(ccType==='private'){
     if(selectedMembers.length!==1) return alert('Выбери одного человека');
     const other=userByUid(selectedMembers[0]);
@@ -1375,10 +1803,9 @@ function createChat(){
     if(ex){closePanel('createChat');openChat(ex.id);return;}
     const c={id:'c'+Date.now(),name:other.login,type:'private',ownerId:me.uid,
       members:[me.uid,other.uid],rights:{send:true,files:true,invite:true},
-      msgs:[{id:mid(),senderId:'system',text:'Диалог начат',t:now()}]};
+      msgs:[{id:mid(),senderId:'system',text:'Диалог начат',t:now(),ts:Date.now()}]};
     d.chats.push(c);DB.save(d);closePanel('createChat');renderChats();openChat(c.id);return;
   }
-
   if(!name)return alert('Введи название');
   if(!selectedMembers.length)return alert('Добавь хотя бы одного человека');
   const members=[me.uid,...selectedMembers.filter(x=>x!==me.uid)];
@@ -1387,7 +1814,7 @@ function createChat(){
     name: ccType==='channel'?'##'+name.replace(/^#+/,''):name,
     type:ccType,ownerId:me.uid,members,banned:[],
     rights:{send:$('ccSend').checked,files:$('ccFiles').checked,invite:$('ccInvite').checked},
-    msgs:[{id:mid(),senderId:'system',text:ccType==='channel'?'Канал создан':'Группа создана',t:now()}]
+    msgs:[{id:mid(),senderId:'system',text:ccType==='channel'?'Канал создан':'Группа создана',t:now(),ts:Date.now()}]
   };
   d.chats.push(c);DB.save(d);closePanel('createChat');renderChats();openChat(c.id);
 }
@@ -1403,6 +1830,10 @@ function openChatInfo(){
   const body=$('ciBody');body.innerHTML='';
   const typeLabel={private:'Личный диалог',group:'Группа',channel:'Канал'}[currentChat.type]||'';
   body.innerHTML+=`<div class="st-row simple"><div class="txt"><div class="t1">Тип</div></div><div>${typeLabel}</div></div>`;
+  body.innerHTML+=`<div class="st-row" onclick="openExportModal('${currentChat.id}')">
+    <div class="icon" style="background:#22a55a">📥</div>
+    <div class="txt"><div class="t1">Скачать переписку</div><div class="t2">TXT · MD · HTML · JSON</div></div>
+  </div>`;
   if(currentChat.type!=='private'){
     body.innerHTML+=`<h3 style="margin-top:16px;font-size:12px;color:var(--muted);letter-spacing:1.2px">УЧАСТНИКИ (${currentChat.members.length})</h3>`;
     currentChat.members.forEach(uid=>{
@@ -1526,7 +1957,7 @@ function startPrivateWith(uid2){
     if(!other||other.deletedAt){alert('Аккаунт удалён');return;}
     c={id:'c'+Date.now(),name:other.login,type:'private',ownerId:me,
       members:[me,uid2],rights:{send:true,files:true,invite:true},
-      msgs:[{id:mid(),senderId:'system',text:'Диалог начат',t:now()}]};
+      msgs:[{id:mid(),senderId:'system',text:'Диалог начат',t:now(),ts:Date.now()}]};
     d.chats.push(c);DB.save(d);
   }
   closePanel('profileModal'); closePanel('peoplePage');
@@ -1563,8 +1994,8 @@ function saveProfile(){
   const clash=d.users.find(u=>u.uid!==me.uid&&u.login.toLowerCase()===newLogin.toLowerCase());
   if(clash)return alert('Этот логин уже занят');
   me.login=newLogin;me.description=$('peDesc').value.trim();me.phone=$('pePhone').value.trim();
-  if(pendingPhoto==='__remove__')me.photo=null;
-  else if(pendingPhoto)me.photo=pendingPhoto;
+  if(pendingPhoto==='__remove__'){me.photo=null;delete me.photoTs;}
+  else if(pendingPhoto){me.photo=pendingPhoto;me.photoTs=Date.now();}
   pendingPhoto=null;DB.save(d);closePanel('profileEdit');
   renderMyProfileRow();renderAccounts();renderChats();
   if(currentChat)renderMessages();
@@ -1631,7 +2062,7 @@ document.addEventListener('click',e=>{
 });
 
 /* ============================================================
-   НАСТРОЙКИ
+   НАСТРОЙКИ — АККАУНТЫ
    ============================================================ */
 function openPanel(id){$(id).classList.add('open');}
 function closePanel(id){$(id).classList.remove('open');}
@@ -1733,16 +2164,14 @@ function requestDeleteAccount(){
   });
 })();
 
-/* Escape закрывает окна */
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     closeCtx();
-    ['settings','chatInfo','admin','createChat','reportModal','forwardModal','profileModal','profileEdit','peoplePage'].forEach(closePanel);
+    ['settings','chatInfo','admin','createChat','reportModal','forwardModal','profileModal','profileEdit','peoplePage','exportModal'].forEach(closePanel);
     closePassModal();
   }
 });
 
-/* Просроченные удаления */
 function cleanupExpiredDeletes(){
   const d=DB.load();
   const t=Date.now();const before=d.users.length;
@@ -1752,6 +2181,15 @@ function cleanupExpiredDeletes(){
   });
   if(d.users.length!==before)DB.save(d);
 }
+
+/* Разблокировка звука после первого взаимодействия */
+document.addEventListener('click', function unlockAudio(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
+    catch(e){}
+  }
+  if(audioCtx && audioCtx.state==='suspended') audioCtx.resume();
+}, {once:false});
 
 /* ============================================================
    АВТОЛОГИН
