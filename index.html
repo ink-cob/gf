@@ -537,19 +537,26 @@ async function retry(fn, attempts, delayMs, label){
   throw lastErr;
 }
 async function waitForSupabase(maxSeconds){
-  maxSeconds = maxSeconds || 90;
+  maxSeconds = maxSeconds || 30;
   const start = Date.now();
   while(Date.now() - start < maxSeconds * 1000){
     try{
       const res = await withTimeout(
-        fetch(SUPABASE_URL + '/rest/v1/', { method: 'HEAD', headers: { 'apikey': SUPABASE_KEY } }),
+        fetch(SUPABASE_URL + '/rest/v1/profiles?select=id&limit=1', {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY
+          }
+        }),
         8000
       );
+      // 200, 401, 403 — сервер отвечает. 404 — таблицы нет, но связь есть
       if(res.status < 500) return true;
     } catch(e){
       console.warn('[Ink] Supabase недоступен, пробую ещё:', e.message);
     }
-    await new Promise(r => setTimeout(r, 2500));
+    await new Promise(r => setTimeout(r, 2000));
   }
   return false;
 }
@@ -1652,11 +1659,11 @@ document.addEventListener('dblclick', e => {
       throw new Error('SDK не загрузился. Файл supabase.js не найден');
     }
 
-    showLoading('Соединение с сервером... (до 90 сек)');
-    const ok = await waitForSupabase(90);
-    if(!ok){
-      throw new Error('Не удалось соединиться с Supabase за 90 секунд. Проверь интернет.');
-    }
+    showLoading('Соединение с сервером...');
+const ok = await waitForSupabase(30);
+if(!ok){
+  throw new Error('Не удалось соединиться с сервером. Проверь интернет.');
+}
     console.log('[Ink] Supabase OK');
 
     showLoading('Проверка сессии...');
