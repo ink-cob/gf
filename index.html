@@ -92,8 +92,8 @@ header button:active{background:rgba(127,127,127,.15)}
 .mobile-nav .nav-btn.active{color:var(--accent)}
 .header-badge{position:absolute;top:2px;right:2px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center;box-shadow:0 0 0 2px var(--panel)}
 .empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px;padding:0 20px;line-height:1.5}
-#settings,#chatInfo,#admin,#createChat,#reportModal,#profileModal,#profileEdit,#peoplePage,#tokensModal,#donateModal,#giftModal,#notesModal,#premiumInfo,#donateThanks,#domainPoll{position:fixed;inset:0;z-index:70;display:none}
-#settings.open,#chatInfo.open,#admin.open,#createChat.open,#reportModal.open,#profileModal.open,#profileEdit.open,#peoplePage.open,#tokensModal.open,#donateModal.open,#giftModal.open,#notesModal.open,#premiumInfo.open,#donateThanks.open,#domainPoll.open{display:block}
+#settings,#chatInfo,#admin,#createChat,#reportModal,#profileModal,#profileEdit,#peoplePage,#tokensModal,#donateModal,#giftModal,#notesModal,#premiumInfo,#donateThanks{position:fixed;inset:0;z-index:70;display:none}
+#settings.open,#chatInfo.open,#admin.open,#createChat.open,#reportModal.open,#profileModal.open,#profileEdit.open,#peoplePage.open,#tokensModal.open,#donateModal.open,#giftModal.open,#notesModal.open,#premiumInfo.open,#donateThanks.open{display:block}
 .overlay{position:absolute;inset:0;background:rgba(0,0,0,.5)}
 .panel{position:absolute;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)}
 @media (max-width:600px){.panel{width:100vw;border-left:0}}
@@ -201,7 +201,7 @@ header button:active{background:rgba(127,127,127,.15)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px}
 ::-webkit-scrollbar-track{background:transparent}
 
-/* ───── Донатер-префиксы ───── */
+/* Донатер-префиксы */
 .smile-prefix{margin-right:3px;font-size:1.05em;vertical-align:middle}
 .text-prefix{background:linear-gradient(135deg,#ff5c8a,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;letter-spacing:.3px;font-size:.95em;margin-right:3px}
 .donate-thanks-text{text-align:left;font-size:14px;line-height:1.6;margin:12px 0}
@@ -332,18 +332,10 @@ header button:active{background:rgba(127,127,127,.15)}
         <h3>Поддержать серверы</h3>
         <div class="st-row" onclick="openDonate()">
           <div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">❤️</div>
-          <div class="txt"><div class="t1">Поддержать Ink</div><div class="t2">Оплата картой, от 25 ₽</div></div>
-        </div>
-      </div>
-      <div class="st-section">
-        <h3>Развитие</h3>
-        <div class="st-row" onclick="openDomainPoll()">
-          <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">🌐</div>
           <div class="txt">
-            <div class="t1">Свой домен для Ink?</div>
-            <div class="t2">Опрос — стоит ли менять адрес</div>
+            <div class="t1">Поддержать Ink</div>
+            <div class="t2">Помощь на домен и сервер · от 25 ₽</div>
           </div>
-          <span class="small-action">пройти</span>
         </div>
       </div>
       <div class="st-section" id="adminSection" style="display:none">
@@ -462,7 +454,18 @@ header button:active{background:rgba(127,127,127,.15)}
   <div class="overlay" onclick="closePanel('donateModal')"></div>
   <div class="modalBox">
     <h3>❤️ Поддержать Ink</h3>
-    <p class="hint">Донат идёт на оплату серверов. Минимум 25 ₽.</p>
+    <p class="hint">Минимум 25 ₽. Оплата на карту.</p>
+
+    <div style="background:linear-gradient(135deg,rgba(255,92,138,.12),rgba(124,92,255,.12));border:1px solid rgba(255,92,138,.4);color:#ffb3c9;padding:12px 14px;border-radius:12px;font-size:13.5px;line-height:1.6;margin-bottom:14px">
+      <div style="font-weight:700;margin-bottom:6px">💜 Просьба о помощи</div>
+      <p style="margin:0 0 8px">Ink живёт только за счёт поддержки. Каждый месяц уходят деньги на:</p>
+      <ul style="margin:0 0 8px;padding-left:18px">
+        <li>🌐 домен <b>ink-chat.ru</b></li>
+        <li>🖥️ аренду сервера на reg.ru</li>
+        <li>🔒 SSL-сертификат и инфраструктуру</li>
+      </ul>
+      <p style="margin:0">Если ты пользуешься мессенджером и хочешь, чтобы он жил — поддержи проект донатом. Любая сумма помогает.</p>
+    </div>
 
     <input id="donateAmount" type="number" min="25" value="25" placeholder="Сумма, ₽"/>
 
@@ -474,7 +477,7 @@ header button:active{background:rgba(127,127,127,.15)}
     </div>
 
     <div style="background:rgba(255,209,138,.1);border:1px solid rgba(255,209,138,.3);color:var(--warn);padding:10px 12px;border-radius:12px;font-size:12.5px;margin-bottom:10px">
-      ⚠️ Деньги не возвращаются. Донат — добровольная помощь на серверы.
+      ⚠️ Деньги не возвращаются. Донат — добровольная помощь проекту.
     </div>
 
     <button class="btn gold" onclick="submitDonate()">Я оплатил</button>
@@ -488,6 +491,7 @@ header button:active{background:rgba(127,127,127,.15)}
     <div style="font-size:56px;line-height:1">❤️</div>
     <h3 style="text-align:center;margin-top:8px">Спасибо за поддержку!</h3>
     <div class="donate-thanks-text">
+      <p>Твой донат помогает оплачивать <b>домен, сервер и SSL</b>. Без таких людей Ink бы не жил.</p>
       <p>🌟 Тебе выдан <b>особый смайл-префикс</b> до конца месяца.</p>
       <p>💰 Начислено <b id="donateTokensGained">1</b> токен(а) — случайно от 1 до 5.</p>
       <p>💜 Текстовый префикс <b>«Спасink»</b> активирован.</p>
@@ -502,41 +506,6 @@ header button:active{background:rgba(127,127,127,.15)}
   <div class="panel">
     <div class="st-header"><h2>💎 Premium</h2><div class="spacer"></div><button onclick="closePanel('premiumInfo')">✕</button></div>
     <div class="st-body" id="premiumInfoBody"></div>
-  </div>
-</div>
-
-<div id="domainPoll">
-  <div class="overlay" onclick="closePanel('domainPoll')"></div>
-  <div class="modalBox">
-    <h3>🌐 Свой домен для Ink?</h3>
-    <p class="hint">Сейчас мессенджер открывается по длинному адресу. Свой домен — это возможность сделать проект удобнее и солиднее.</p>
-
-    <div style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:12px;font-size:13.5px;line-height:1.6">
-      <div style="font-weight:700;margin-bottom:6px">Что даст свой домен</div>
-      <ul style="margin:0;padding-left:18px">
-        <li>Короткая и запоминающаяся ссылка (например, <b>ink.chat</b>)</li>
-        <li>Солидный вид — проекту будут больше доверять</li>
-        <li>Возможность включить безопасное соединение (HTTPS)</li>
-        <li>Независимость от текущего хостинга</li>
-      </ul>
-    </div>
-
-    <div style="background:linear-gradient(135deg,rgba(255,92,138,.12),rgba(124,92,255,.12));border:1px solid rgba(255,92,138,.4);color:#ffb3c9;padding:12px;border-radius:12px;font-size:13px;line-height:1.6;margin-bottom:12px">
-      <div style="font-weight:700;margin-bottom:6px">💜 Усиленная помощь донатами</div>
-      <p style="margin:0 0 6px">Домен — это не роскошь, а возможность. Но он требует регулярных платежей: покупка адреса, продление, SSL-сертификат, привязка к серверу.</p>
-      <p style="margin:0">Мы не просим много, но если ты хочешь, чтобы у Ink был красивый адрес — от тебя потребуется <b>усиленная помощь донатами</b>. Каждый рубль идёт на домен, серверы и развитие проекта.</p>
-    </div>
-
-    <div class="islands-title">Стоит ли добавлять домен?</div>
-    <button class="btn" onclick="pollVote('yes')">✅ Да, я готов помочь донатами</button>
-    <div class="row">
-      <button class="btn ghost" onclick="pollVote('no')">❌ Нет, оставим как есть</button>
-    </div>
-    <div class="row">
-      <button class="btn ghost" onclick="pollVote('later')">⏳ Позже, сначала доделаем функции</button>
-    </div>
-
-    <div id="pollResult" style="text-align:center;font-size:13px;color:var(--muted);margin-top:12px"></div>
   </div>
 </div>
 
@@ -579,7 +548,7 @@ header button:active{background:rgba(127,127,127,.15)}
 /* ═══════════════════════════════════════════════════════════════
    НАСТРОЙКА
    ═══════════════════════════════════════════════════════════════ */
-const API_URL = 'http://195.19.202.232/api';
+const API_URL = 'https://api.ink-chat.ru/api';
 let authToken = localStorage.getItem('ink_token') || null;
 
 async function api(path, method, body) {
@@ -598,8 +567,8 @@ async function api(path, method, body) {
 
 const $ = id => document.getElementById(id);
 
-/* ───────── Время по Москве (защита от перевода локальных часов) ───────── */
-let timeOffset = 0; // server - local, ms
+/* ───────── Время по Москве ───────── */
+let timeOffset = 0;
 
 async function syncTime() {
   try {
@@ -680,10 +649,6 @@ function statusText(u) {
   if (dd < 30) return 'был(а) ' + dd + ' дн назад';
   return 'давно';
 }
-
-/* Premium: активен, если premium=true и (нет premium_until ИЛИ premium_until > now).
-   Как только истекает — isPremium() возвращает false, и все премиум-фичи
-   мгновенно становятся недоступны (обратимость). */
 function isPremium(u) {
   if (!u || !u.premium) return false;
   if (!u.premium_until) return true;
@@ -696,10 +661,6 @@ function premiumDaysLeft(u) {
   if (!isPremium(u) || !u.premium_until) return null;
   return Math.max(0, Math.ceil((new Date(u.premium_until) - nowServer()) / 86400000));
 }
-
-/* Префиксы донатера: активны, пока donor активен (или всегда).
-   Если is_donor пропадает или префиксы скрыты — не отображаются.
-   Всегда обратимо, зависит только от флагов show_*. */
 function nameHTML(u) {
   if (!u) return '';
   let prefix = '';
@@ -725,7 +686,7 @@ function avatarHTML(u, s) {
   const sz = s ? ' ' + s : '';
   if (!u) return `<div class="avatar${sz}">?</div>`;
   const on = isOnline(u) ? ' online' : '';
-  const prem = isPremium(u) ? ' premium-avatar' : ''; // ← премиум-рамка исчезнет при истечении
+  const prem = isPremium(u) ? ' premium-avatar' : '';
   if (u.avatar_url)
     return `<div class="avatar${sz}${on}${prem}" style="background-image:url('${u.avatar_url}');background-size:cover;background-position:center"></div>`;
   return `<div class="avatar${sz}${on}${prem}">${(u.username || '?')[0].toUpperCase()}</div>`;
@@ -1457,7 +1418,6 @@ function openProfileEdit() {
     av.textContent = state.me.username[0].toUpperCase();
   }
 
-  // Premium-блок показывается только при активном Premium
   const prem = isPremium(state.me);
   $('premiumStatusBlock').style.display = prem ? 'block' : 'none';
   if (prem) {
@@ -1520,7 +1480,6 @@ function renderGalleryEdit() {
 function onPhotoPick(e) {
   const f = e.target.files && e.target.files[0];
   if (!f) return;
-  // Лимит файла зависит от Premium, и возвращается обратно, если Premium истёк
   const maxSize = isPremium(state.me) ? 10 * 1024 * 1024 : 2 * 1024 * 1024;
   if (f.size > maxSize) return alert(`Макс ${isPremium(state.me) ? '10' : '2'} МБ`);
   const r = new FileReader();
@@ -1543,7 +1502,6 @@ async function saveProfile() {
     phone: $('pePhone').value.trim()
   };
   if (pendingPhoto) upd.avatar_url = pendingPhoto;
-  // Галерея отправляется только при активном Premium
   if (isPremium(state.me)) upd.gallery_urls = galleryPending;
 
   try {
@@ -1777,7 +1735,7 @@ async function toggleTextPrefix() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   PREMIUM ИНФО (20 функций, все обратимые)
+   PREMIUM ИНФО (20 функций)
    ═══════════════════════════════════════════════════════════════ */
 const PREMIUM_FEATURES = [
   ['📝','Кастомный статус','Подпись под именем до 60 символов'],
@@ -1840,38 +1798,6 @@ function openPremiumInfo() {
     </p>
   `;
   openPanel('premiumInfo');
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   ОПРОС ПРО ДОМЕН
-   ═══════════════════════════════════════════════════════════════ */
-function openDomainPoll() {
-  closePanel('settings');
-  openPanel('domainPoll');
-  const saved = localStorage.getItem('ink_domain_poll');
-  const res = $('pollResult');
-  if (saved === 'yes')        res.textContent = 'Ты выбрал: ✅ Да, готов помочь донатами';
-  else if (saved === 'no')    res.textContent = 'Ты выбрал: ❌ Нет, оставить как есть';
-  else if (saved === 'later') res.textContent = 'Ты выбрал: ⏳ Позже';
-  else res.textContent = '';
-}
-
-function pollVote(v) {
-  localStorage.setItem('ink_domain_poll', v);
-
-  const stats = JSON.parse(localStorage.getItem('ink_domain_poll_stats') || '{"yes":0,"no":0,"later":0}');
-  stats[v] = (stats[v] || 0) + 1;
-  localStorage.setItem('ink_domain_poll_stats', JSON.stringify(stats));
-
-  const total = stats.yes + stats.no + stats.later;
-  const pct = n => total ? Math.round(n / total * 100) : 0;
-
-  $('pollResult').innerHTML = `
-    <div>Спасибо за ответ!</div>
-    <div style="margin-top:6px">✅ ${stats.yes} (${pct(stats.yes)}%) · ❌ ${stats.no} (${pct(stats.no)}%) · ⏳ ${stats.later} (${pct(stats.later)}%)</div>
-  `;
-
-  setTimeout(() => closePanel('domainPoll'), 1500);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2176,11 +2102,6 @@ async function enterApp() {
     renderPrefixSection();
     $('adminSection').style.display = state.me.is_admin ? 'block' : 'none';
     startPresence();
-
-    // Автопоказ опроса про домен — один раз
-    if (!localStorage.getItem('ink_domain_poll')) {
-      setTimeout(() => openDomainPoll(), 2500);
-    }
   } catch (e) {
     console.error(e);
     hideLoading();
