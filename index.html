@@ -59,8 +59,8 @@ body.in-chat .chatpane{display:flex}
 .archive-bar{padding:10px 14px;background:linear-gradient(135deg,rgba(255,184,77,.12),rgba(255,92,138,.12));border-bottom:1px solid rgba(255,184,77,.35);font-size:13px;display:none;flex-shrink:0}
 .archive-bar.show{display:block}
 .archive-bar .line{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.archive-bar .warn{padding:8px 14px;background:rgba(255,92,92,.1);border-bottom:1px solid rgba(255,92,92,.3);color:#ffb3b3;font-size:12.5px;display:none}
-.archive-bar .warn.show{display:block}
+.archive-bar.warn{padding:8px 14px;background:rgba(255,92,92,.1);border-bottom:1px solid rgba(255,92,92,.3);color:#ffb3b3;font-size:12.5px;display:none}
+.archive-bar.warn.show{display:block}
 .archive-bar button{padding:6px 10px;border-radius:8px;border:0;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
 #messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:82%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.4;word-wrap:break-word;position:relative}
@@ -254,6 +254,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
    НАСТРОЙКА
    ============================================================ */
 const API = 'https://api.ink-chat.ru/api';
+const CARD_NUMBER = '2200 1536 8967 4803';
 let TOKEN = localStorage.getItem('ink_token') || null;
 let ME = null, USERS = [], CHATS = [], MSGS = {}, CLANS = [], RATING = [], TX = [];
 let CURRENT_CHAT = null, CURRENT_CLAN = null;
@@ -261,6 +262,7 @@ let STACK = [];
 let NOTIF_GLOBAL = true, NOTIF_CHATS = {};
 let DRAFT_INFO = null;
 let REPORT_SCREENS = [];
+let SHOP_PAGE = 'main';
 
 async function api(path, method, body){
   const opt = { method: method || 'GET', headers: {'Content-Type':'application/json'} };
@@ -281,7 +283,7 @@ function showMsg(id,t,k){ const el=$(id); if(!el) return; el.textContent=t; el.c
 function switchTo(w){ $('authMode').style.display=w==='login'?'block':'none'; $('regMode').style.display=w==='reg'?'block':'none'; $('authMsg').className='msg-ok'; $('regMsg').className='msg-ok' }
 
 /* ============================================================
-   ПАНЕЛИ (стек)
+   ПАНЕЛИ
    ============================================================ */
 function openPanel(id){
   const el=document.getElementById(id); if(!el) return;
@@ -330,7 +332,7 @@ async function doLogin(){
   } catch(e){ showMsg('authMsg', e.message, 'err'); }
 }
 function logout(){
-  if(!confirm('Выйти?')) return;
+  if(!confirm('Выйти из аккаунта?')) return;
   localStorage.removeItem('ink_token'); TOKEN = null;
   location.reload();
 }
@@ -390,10 +392,7 @@ async function initPush(){
     if(perm !== 'granted') return;
     let sub = await reg.pushManager.getSubscription();
     if(!sub){
-      sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlB64ToUint8Array(keyRes.key)
-      });
+      sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: urlB64ToUint8Array(keyRes.key) });
     }
     await api('/push/subscribe','POST',{ subscription: sub });
   } catch(e){ console.warn('[push]', e.message); }
@@ -409,10 +408,7 @@ function urlB64ToUint8Array(base64){
 async function toggleNotifications(){
   NOTIF_GLOBAL = !NOTIF_GLOBAL;
   renderNotifBtn();
-  try {
-    await api('/push/settings','POST',{ global: NOTIF_GLOBAL });
-    toast(NOTIF_GLOBAL ? 'Уведомления включены' : 'Уведомления выключены','');
-  } catch(e){ toast('Ошибка', e.message); }
+  try { await api('/push/settings','POST',{ global: NOTIF_GLOBAL }); toast(NOTIF_GLOBAL ? 'Уведомления включены' : 'Уведомления выключены',''); } catch(e){ toast('Ошибка', e.message); }
 }
 
 /* ============================================================
@@ -477,24 +473,21 @@ function backToList(){
 function openChatInfo(){ if(CURRENT_CHAT) openChatSettings(); }
 
 /* ============================================================
-   АРХИВ + СООБЩЕНИЯ
+   АРХИВ
    ============================================================ */
 async function renderMessagesAndArchive(){
   if(!CURRENT_CHAT) return;
   DRAFT_INFO = null;
   try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){ DRAFT_INFO = null }
-
   const box = $('messages'); box.innerHTML = '';
   const msgs = (MSGS[CURRENT_CHAT.id] || []).slice();
   const today = DRAFT_INFO && DRAFT_INFO.today ? DRAFT_INFO.today : new Date().toISOString().slice(0,10);
   const myConv = DRAFT_INFO && DRAFT_INFO.myConverted;
-
   const visible = msgs.filter(m => {
     const d = m.created_at ? m.created_at.slice(0,10) : '';
     if(!myConv) return true;
     return d.startsWith(today);
   });
-
   visible.forEach(m => {
     if(m.deleted_for_all) return;
     const isMe = m.sender_id === ME.id;
@@ -524,7 +517,6 @@ async function renderMessagesAndArchive(){
 function updateArchiveBar(){
   const bar = $('archiveBar'), warn = $('archiveWarn');
   if(!DRAFT_INFO){ bar.classList.remove('show'); warn.classList.remove('show'); return; }
-
   if(DRAFT_INFO.myConverted){
     bar.classList.remove('show');
   } else if(DRAFT_INFO.draftCount > 0){
@@ -533,19 +525,14 @@ function updateArchiveBar(){
   } else {
     bar.classList.remove('show');
   }
-
   if(CURRENT_CHAT.type === 'private'){
     const other = (DRAFT_INFO.others||[])[0];
-    if(other && !other.converted){
-      warn.innerHTML = `⚠️ <b>${esc(other.login)}</b> не сохранил архив за ${DRAFT_INFO.month}`;
-      warn.classList.add('show');
-    } else warn.classList.remove('show');
+    if(other && !other.converted){ warn.innerHTML = `⚠️ <b>${esc(other.login)}</b> не сохранил архив за ${DRAFT_INFO.month}`; warn.classList.add('show'); }
+    else warn.classList.remove('show');
   } else {
     const notConv = (DRAFT_INFO.others||[]).filter(o => !o.converted);
-    if(notConv.length){
-      warn.innerHTML = `⚠️ Не сохранили: ${notConv.map(o=>esc(o.login)).join(', ')}`;
-      warn.classList.add('show');
-    } else warn.classList.remove('show');
+    if(notConv.length){ warn.innerHTML = `⚠️ Не сохранили: ${notConv.map(o=>esc(o.login)).join(', ')}`; warn.classList.add('show'); }
+    else warn.classList.remove('show');
   }
 }
 async function downloadArchive(){
@@ -575,10 +562,7 @@ async function toggleReaction(mid, emo){
   const arr = r[emo] || [];
   if(arr.includes(ME.id)){ r[emo] = arr.filter(x => x !== ME.id); if(!r[emo].length) delete r[emo]; }
   else r[emo] = [...arr, ME.id];
-  try {
-    await api('/messages/' + mid, 'PUT', { reactions: r });
-    m.reactions = r; renderMessagesAndArchive();
-  } catch(e){ toast('Ошибка', e.message); }
+  try { await api('/messages/' + mid, 'PUT', { reactions: r }); m.reactions = r; renderMessagesAndArchive(); } catch(e){ toast('Ошибка', e.message); }
 }
 async function sendMsg(){
   const v = $('msgInput').value.trim();
@@ -618,12 +602,7 @@ async function toggleChatNotif(){
   const id = CURRENT_CHAT.id;
   const enabled = NOTIF_CHATS[id] !== false;
   const next = !enabled;
-  try {
-    await api('/push/settings','POST',{ chatId: id, enabled: next });
-    NOTIF_CHATS[id] = next;
-    openChatSettings();
-    toast(next ? 'Уведомления включены' : 'Уведомления выключены','');
-  } catch(e){ toast('Ошибка', e.message); }
+  try { await api('/push/settings','POST',{ chatId: id, enabled: next }); NOTIF_CHATS[id] = next; openChatSettings(); toast(next ? 'Уведомления включены' : 'Уведомления выключены',''); } catch(e){ toast('Ошибка', e.message); }
 }
 
 /* ============================================================
@@ -675,7 +654,7 @@ async function createChatFinal(){
 }
 
 /* ============================================================
-   НАСТРОЙКИ
+   НАСТРОЙКИ (главное меню)
    ============================================================ */
 function openSettings(){ renderSettingsBody(); openPanel('settings'); }
 function renderSettingsBody(){
@@ -688,6 +667,30 @@ function renderSettingsBody(){
         <div class="txt"><div class="t1">${nameHTML(ME)}</div><div class="t2">${ME.description || 'Настрой профиль'}</div></div>
       </div>
     </div>
+    <div class="st-section"><h3>🛒 Покупки и Premium</h3>
+      <div class="st-row" onclick="openShop('premium')">
+        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div>
+        <div class="txt"><div class="t1">Premium</div><div class="t2">${isPremium(ME) ? 'Активен' : '30 токенов = 30 дней'}</div></div>
+      </div>
+      <div class="st-row" onclick="openShop('inkognito')">
+        <div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div>
+        <div class="txt"><div class="t1">Inkognito</div><div class="t2">${inkActive ? 'Активен' : '2 токена / день'}</div></div>
+      </div>
+      <div class="st-row" onclick="openShop('tokens')">
+        <div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">💳</div>
+        <div class="txt"><div class="t1">Купить токены</div><div class="t2">30 токенов = 50 ₽ · 1 токен = 5 ₽</div></div>
+      </div>
+    </div>
+    <div class="st-section"><h3>💰 Токены</h3>
+      <div class="st-row" onclick="openWallet()">
+        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💰</div>
+        <div class="txt"><div class="t1">Мой кошелёк: ${fmt(ME.tokens)}</div><div class="t2">Баланс и переводы</div></div>
+      </div>
+      <div class="st-row" onclick="openTransactions()">
+        <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">📜</div>
+        <div class="txt"><div class="t1">История транзакций</div></div>
+      </div>
+    </div>
     <div class="st-section"><h3>🛡️ Кланы</h3>
       <div class="st-row" onclick="openClansList()">
         <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">🛡️</div>
@@ -698,24 +701,14 @@ function renderSettingsBody(){
         <div class="txt"><div class="t1">Рейтинг кланов</div><div class="t2">Кто больше — тот выше</div></div>
       </div>
     </div>
-    <div class="st-section"><h3>💰 Токены</h3>
-      <div class="st-row" onclick="openWallet()">
-        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💰</div>
-        <div class="txt"><div class="t1">Мой кошелёк</div><div class="t2">Баланс и переводы</div></div>
-      </div>
-      <div class="st-row" onclick="openTransactions()">
-        <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">📜</div>
-        <div class="txt"><div class="t1">История транзакций</div><div class="t2">Все переводы</div></div>
-      </div>
-    </div>
     <div class="st-section"><h3>🎨 Кастомизация</h3>
       <div class="st-row" onclick="openEmojiCustomize()">
         <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">😊</div>
         <div class="txt"><div class="t1">Эмодзи и префиксы</div><div class="t2">Свой набор</div></div>
       </div>
     </div>
-    <div class="st-section" id="prefixSection" style="display:${ME.is_donor ? 'block' : 'none'}">
-      <h3>Префиксы</h3>
+    ${ME.is_donor ? `
+    <div class="st-section"><h3>Префиксы</h3>
       <div class="st-row" onclick="toggleSmilePrefix()">
         <div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">🌟</div>
         <div class="txt"><div class="t1">Смайл-префикс</div><div class="t2">${ME.show_smile_prefix !== false ? 'Показан' : 'Скрыт'}</div></div>
@@ -726,7 +719,7 @@ function renderSettingsBody(){
         <div class="txt"><div class="t1">«Спасink»</div><div class="t2">${ME.show_text_prefix !== false ? 'Показан' : 'Скрыт'}</div></div>
         <div class="switch ${ME.show_text_prefix !== false ? 'on' : ''}"></div>
       </div>
-    </div>
+    </div>` : ''}
     <div class="st-section"><h3>🔔 Уведомления</h3>
       <div class="st-row" onclick="toggleNotifications()">
         <div class="icon">${NOTIF_GLOBAL ? '🔔' : '🔕'}</div>
@@ -734,16 +727,10 @@ function renderSettingsBody(){
         <div class="switch ${NOTIF_GLOBAL ? 'on' : ''}"></div>
       </div>
     </div>
-    <div class="st-section"><h3>🕶️ Inkognito</h3>
-      <div class="st-row" onclick="toggleInkognito()">
-        <div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div>
-        <div class="txt"><div class="t1">${inkActive ? 'Активен' : 'Не активен'}</div><div class="t2">Статус «Не в сети»</div></div>
-      </div>
-    </div>
     <div class="st-section"><h3>Обратная связь</h3>
       <div class="st-row" onclick="openReportToAdmin()">
         <div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">⚠️</div>
-        <div class="txt"><div class="t1">Жалоба админу</div><div class="t2">Нарушение правил</div></div>
+        <div class="txt"><div class="t1">Жалоба админу</div><div class="t2">Полезная жалоба = 5 токенов</div></div>
       </div>
       <div class="st-row" onclick="openWriteToAdmin()">
         <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">✉️</div>
@@ -763,21 +750,64 @@ function renderSettingsBody(){
 }
 async function toggleSmilePrefix(){
   const next = !(ME.show_smile_prefix !== false);
-  try { await api('/users/me/donor-prefixes','PUT',{ show_smile: next }); ME.show_smile_prefix = next; renderSettingsBody(); renderChats(); }
-  catch(e){ toast('Ошибка', e.message) }
+  try { await api('/users/me/donor-prefixes','PUT',{ show_smile: next }); ME.show_smile_prefix = next; renderSettingsBody(); renderChats(); } catch(e){ toast('Ошибка', e.message) }
 }
 async function toggleTextPrefix(){
   const next = !(ME.show_text_prefix !== false);
-  try { await api('/users/me/donor-prefixes','PUT',{ show_text: next }); ME.show_text_prefix = next; renderSettingsBody(); renderChats(); }
-  catch(e){ toast('Ошибка', e.message) }
+  try { await api('/users/me/donor-prefixes','PUT',{ show_text: next }); ME.show_text_prefix = next; renderSettingsBody(); renderChats(); } catch(e){ toast('Ошибка', e.message) }
 }
+
+/* ============================================================
+   МОЙ ПРОФИЛЬ (с аватаром, паролем, аккаунтами)
+   ============================================================ */
 function openEditProfile(){
+  const av = ME.avatar_url
+    ? `<div class="avatar" style="width:96px;height:96px;font-size:34px;margin:0 auto 12px;background-image:url('${ME.avatar_url}');background-size:cover;background-position:center" onclick="document.getElementById('pePhoto').click()"></div>`
+    : `<div class="avatar" style="width:96px;height:96px;font-size:34px;margin:0 auto 12px" onclick="document.getElementById('pePhoto').click()">${ME.login[0].toUpperCase()}</div>`;
   $('editProfileBody').innerHTML = `
-    <label class="field-label">Логин</label><input id="peLogin" class="report-input" value="${esc(ME.login)}"/>
-    <label class="field-label">О себе</label><textarea id="peDesc" rows="3" class="report-input">${esc(ME.description||'')}</textarea>
-    <label class="field-label">Телефон</label><input id="pePhone" class="report-input" value="${esc(ME.phone||'')}"/>
-    <label class="field-label">Дата рождения</label><input id="peBirthday" type="date" class="report-input" value="${esc(ME.birthday||'')}"/>
-    <button class="btn" style="margin-top:14px" onclick="saveProfile()">Сохранить</button>`;
+    <div style="text-align:center;margin-bottom:8px">
+      ${av}
+      <div style="color:var(--muted);font-size:12px">Нажми на аватар, чтобы изменить</div>
+      <input type="file" id="pePhoto" accept="image/*" style="display:none" onchange="onAvatarPick(event)"/>
+    </div>
+    <label class="field-label">Логин</label>
+    <input id="peLogin" class="report-input" value="${esc(ME.login)}"/>
+    <label class="field-label">О себе</label>
+    <textarea id="peDesc" rows="3" class="report-input">${esc(ME.description||'')}</textarea>
+    <label class="field-label">Телефон</label>
+    <input id="pePhone" class="report-input" value="${esc(ME.phone||'')}"/>
+    <label class="field-label">Дата рождения</label>
+    <input id="peBirthday" type="date" class="report-input" value="${esc(ME.birthday||'')}"/>
+    <button class="btn" style="margin-top:16px" onclick="saveProfile()">Сохранить профиль</button>
+
+    <div class="st-section" style="margin-top:20px;border-top:1px solid var(--border2);padding-top:16px">
+      <h3>Смена пароля</h3>
+      <label class="field-label">Новый пароль</label>
+      <input id="peNewPass" type="password" class="report-input" placeholder="Минимум 6"/>
+      <label class="field-label">Повтор нового пароля</label>
+      <input id="peNewPass2" type="password" class="report-input" placeholder="Ещё раз"/>
+      <button class="btn ok" style="margin-top:12px" onclick="changePassword()">Сменить пароль</button>
+    </div>
+
+    <div class="st-section" style="border-top:1px solid var(--border2);padding-top:16px">
+      <h3>Аккаунт</h3>
+      <div class="st-row" onclick="addAnotherAccount()">
+        <div class="icon" style="background:linear-gradient(135deg,#22a55a,#15803d)">＋</div>
+        <div class="txt"><div class="t1">Добавить аккаунт</div><div class="t2">Создать новый и войти в него</div></div>
+      </div>
+      <div class="st-row" onclick="switchAccount()">
+        <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">🔄</div>
+        <div class="txt"><div class="t1">Сменить аккаунт</div><div class="t2">Войти под другим логином</div></div>
+      </div>
+      <div class="st-row" onclick="logout()">
+        <div class="icon" style="background:rgba(255,209,138,.2);color:var(--warn)">🚪</div>
+        <div class="txt"><div class="t1">Выйти из аккаунта</div></div>
+      </div>
+      <div class="st-row" onclick="deleteMyAccount()" style="background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.35)">
+        <div class="icon" style="background:rgba(255,92,92,.2);color:#ff8a8a">🗑️</div>
+        <div class="txt"><div class="t1" style="color:#ffb3b3">Удалить аккаунт</div><div class="t2">Безвозвратно</div></div>
+      </div>
+    </div>`;
   openPanel('editProfile');
 }
 async function saveProfile(){
@@ -792,6 +822,37 @@ async function saveProfile(){
     toast('Сохранено','');
   } catch(e){ toast('Ошибка', e.message) }
 }
+function onAvatarPick(ev){
+  const f = ev.target.files && ev.target.files[0];
+  if(!f) return;
+  if(!f.type.startsWith('image/')) return alert('Только изображения');
+  if(f.size > 2*1024*1024) return alert('Максимум 2 МБ');
+  const r = new FileReader();
+  r.onload = async () => {
+    try { await api('/users/me','PUT',{ avatar_url: r.result }); await loadAll(); toast('✓ Аватар обновлён',''); openEditProfile(); }
+    catch(e){ toast('Ошибка', e.message) }
+  };
+  r.readAsDataURL(f);
+}
+async function changePassword(){
+  const p1 = ($('peNewPass').value || '').trim();
+  const p2 = ($('peNewPass2').value || '').trim();
+  if(!p1 || p1.length < 6) return toast('Пароль минимум 6','');
+  if(p1 !== p2) return toast('Пароли не совпадают','');
+  try {
+    await api('/users/me/password','PUT',{ newPassword: p1 });
+    $('peNewPass').value = ''; $('peNewPass2').value = '';
+    toast('✓ Пароль изменён','');
+  } catch(e){ toast('Ошибка', e.message) }
+}
+function addAnotherAccount(){ if(!confirm('Выйти и создать новый аккаунт?')) return; localStorage.removeItem('ink_token'); TOKEN = null; location.reload(); }
+function switchAccount(){ if(!confirm('Выйти и войти под другим логином?')) return; localStorage.removeItem('ink_token'); TOKEN = null; location.reload(); }
+async function deleteMyAccount(){
+  if(!confirm('Удалить аккаунт? Необратимо.')) return;
+  if(!confirm('Точно удалить? Все данные пропадут.')) return;
+  try { await api('/users/me','DELETE'); localStorage.removeItem('ink_token'); TOKEN = null; location.reload(); }
+  catch(e){ toast('Сервер не поддерживает удаление','Сообщите админу') }
+}
 
 /* ============================================================
    INKOGNITO
@@ -803,8 +864,7 @@ async function toggleInkognito(){
     if((ME.tokens||0) < 2) return toast('Мало токенов','');
     try {
       await api('/admin/credit-tokens','POST',{ user_id: ME.id, amount: -2 });
-      ME.tokens -= 2; ME.inkUntil = new Date(Date.now() + 86400000).toISOString();
-      renderTokensBadge();
+      ME.tokens -= 2; ME.inkUntil = new Date(Date.now() + 86400000).toISOString(); renderTokensBadge();
     } catch(e){ toast('Ошибка', e.message); return }
   }
   document.body.classList.toggle('inkognito');
@@ -883,40 +943,101 @@ function openEmojiCustomize(){
     </div>`;
   openPanel('emojiCustomize');
 }
-async function saveMyPrefix(){
-  if(!isPremium(ME)) return alert('Только Premium');
-  try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: ($('myPrefixInput').value||'').trim().slice(0,4) }); await loadAll(); renderSettingsBody(); renderChats(); toast('Сохранено',''); }
-  catch(e){ toast('Ошибка', e.message) }
-}
+async function saveMyPrefix(){ if(!isPremium(ME)) return alert('Только Premium'); try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: ($('myPrefixInput').value||'').trim().slice(0,4) }); await loadAll(); renderSettingsBody(); renderChats(); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function clearMyPrefix(){ try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix:'' }); await loadAll(); renderSettingsBody(); renderChats(); } catch(e){} }
-async function addMyEmoji(){
-  if(!isPremium(ME)) return alert('Только Premium');
-  const v = ($('myEmojiInput').value||'').trim().slice(0,4);
-  if(!v) return;
-  const list = [...(ME.custom_emoji||[]), v].slice(0,20);
-  try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); }
-  catch(e){ toast('Ошибка', e.message) }
+async function addMyEmoji(){ if(!isPremium(ME)) return alert('Только Premium'); const v = ($('myEmojiInput').value||'').trim().slice(0,4); if(!v) return; const list = [...(ME.custom_emoji||[]), v].slice(0,20); try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
+async function removeMyEmoji(i){ const list = (ME.custom_emoji||[]).slice(); list.splice(i,1); try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
+async function toggleHideEmoji(e){ const list = (ME.hidden_emoji||[]).slice(); const i = list.indexOf(e); if(i>=0) list.splice(i,1); else list.push(e); try { await api('/users/me/emoji','PUT',{ hidden_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
+
+/* ============================================================
+   МАГАЗИН (ПОКУПКИ)
+   ============================================================ */
+function openShop(page){
+  SHOP_PAGE = page || 'main';
+  renderShop();
+  openPanel('shop');
 }
-async function removeMyEmoji(i){
-  const list = (ME.custom_emoji||[]).slice(); list.splice(i,1);
-  try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); }
-  catch(e){ toast('Ошибка', e.message) }
+function renderShop(){
+  if(SHOP_PAGE === 'premium') return renderShopPremium();
+  if(SHOP_PAGE === 'inkognito') return renderShopInkognito();
+  if(SHOP_PAGE === 'tokens') return renderShopTokens();
+  // main
+  const inkActive = ME.inkUntil && new Date(ME.inkUntil) > new Date();
+  $('shopBody').innerHTML = `
+    <div class="balance-card"><div class="lbl">Баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
+    <div class="st-section"><h3>💎 Premium</h3>
+      <div class="st-row" onclick="openShop('premium')"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div><div class="txt"><div class="t1">${isPremium(ME) ? 'Активен' : 'Купить Premium'}</div><div class="t2">30 токенов = 30 дней</div></div></div>
+    </div>
+    <div class="st-section"><h3>🕶️ Inkognito</h3>
+      <div class="st-row" onclick="openShop('inkognito')"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">${inkActive ? 'Активен' : 'Купить'}</div><div class="t2">2 токена / день</div></div></div>
+    </div>
+    <div class="st-section"><h3>💳 Токены</h3>
+      <div class="st-row" onclick="openShop('tokens')"><div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">💳</div><div class="txt"><div class="t1">Купить токены</div><div class="t2">30 токенов = 50 ₽ · 1 токен = 5 ₽</div></div></div>
+    </div>`;
 }
-async function toggleHideEmoji(e){
-  const list = (ME.hidden_emoji||[]).slice();
-  const i = list.indexOf(e);
-  if(i>=0) list.splice(i,1); else list.push(e);
-  try { await api('/users/me/emoji','PUT',{ hidden_emoji: list }); await loadAll(); openEmojiCustomize(); }
-  catch(e){ toast('Ошибка', e.message) }
+function renderShopPremium(){
+  const prem = isPremium(ME);
+  const left = prem && ME.premium_until ? Math.max(0, Math.ceil((new Date(ME.premium_until)-new Date())/86400000)) : null;
+  $('shopBody').innerHTML = `
+    <button class="btn ghost" onclick="openShop('main')">← К покупкам</button>
+    <div class="balance-card" style="margin-top:12px"><div class="lbl">Premium</div><div class="num">${prem ? '✓' : '—'}</div><div class="lbl">${prem ? (left!==null?'осталось '+left+' дн.':'навсегда') : 'не активен'}</div></div>
+    <button class="btn gold" onclick="buyPremiumSelf()">${prem ? 'Продлить' : 'Купить'} за 30 токенов</button>
+    <div class="st-section" style="margin-top:14px"><h3>Возможности Premium</h3>
+      <div class="prem-feature"><div class="ico">📝</div><div class="txt"><div class="t1">Кастомный статус</div><div class="t2">До 60 символов</div></div></div>
+      <div class="prem-feature"><div class="ico">🎨</div><div class="txt"><div class="t1">Свой префикс</div><div class="t2">Значок перед ником</div></div></div>
+      <div class="prem-feature"><div class="ico">😊</div><div class="txt"><div class="t1">Свои эмодзи</div><div class="t2">До 20 штук</div></div></div>
+      <div class="prem-feature"><div class="ico">💎</div><div class="txt"><div class="t1">Значок PRO</div><div class="t2">Рядом с ником</div></div></div>
+      <div class="prem-feature"><div class="ico">✨</div><div class="txt"><div class="t1">Эксклюзивные реакции</div><div class="t2">💎 ✨ 🔥</div></div></div>
+    </div>`;
+}
+function renderShopInkognito(){
+  const inkActive = ME.inkUntil && new Date(ME.inkUntil) > new Date();
+  const left = inkActive ? Math.max(0, Math.ceil((new Date(ME.inkUntil)-new Date())/3600000)) : 0;
+  $('shopBody').innerHTML = `
+    <button class="btn ghost" onclick="openShop('main')">← К покупкам</button>
+    <div class="balance-card" style="margin-top:12px"><div class="lbl">Inkognito</div><div class="num">${inkActive ? '✓' : '—'}</div><div class="lbl">${inkActive ? 'осталось ~' + left + ' ч' : 'не активен'}</div></div>
+    <div class="st-section"><h3>Что даёт</h3>
+      <div class="prem-feature"><div class="ico">🟣</div><div class="txt"><div class="t1">Статус «Не в сети»</div></div></div>
+      <div class="prem-feature"><div class="ico">👀</div><div class="txt"><div class="t1">Призрачное прочтение</div></div></div>
+      <div class="prem-feature"><div class="ico">✍️</div><div class="txt"><div class="t1">Видна строка печати собеседника в реальном времени</div></div></div>
+    </div>
+    <button class="btn gold" onclick="buyInkDay()">${inkActive ? 'Продлить' : 'Купить'} за 2 токена</button>`;
+}
+function renderShopTokens(){
+  $('shopBody').innerHTML = `
+    <button class="btn ghost" onclick="openShop('main')">← К покупкам</button>
+    <div class="card-info" style="margin-top:12px">
+      <div style="font-weight:700;margin-bottom:6px">Помощь проекту</div>
+      <p style="margin:0 0 8px;font-size:13px;color:var(--muted)">Деньги идут на домен, сервер и SSL.</p>
+      <div class="num">${CARD_NUMBER}</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:6px">Самозанятый · чек по запросу</div>
+    </div>
+    <div class="st-section"><h3>Тарифы</h3>
+      <div class="prem-feature"><div class="ico">💰</div><div class="txt"><div class="t1">Пакет 30 токенов — 50 ₽</div></div></div>
+      <div class="prem-feature"><div class="ico">💎</div><div class="txt"><div class="t1">1 токен — 5 ₽</div></div></div>
+    </div>
+    <div style="color:var(--muted);font-size:12.5px;padding:12px 0">После перевода напишите админу в разделе «Обратная связь», указав сумму и последние 4 цифры карты. Заявка обрабатывается в админ-панели.</div>`;
+}
+async function buyPremiumSelf(){
+  if(!confirm('Списать 30 токенов и активировать Premium на 30 дней?')) return;
+  try { await api('/premium/purchase','POST',{ days: 30 }); await loadAll(); renderTokensBadge(); renderShop(); toast('💎 Premium активирован','30 дней'); } catch(e){ toast('Ошибка', e.message) }
+}
+async function buyInkDay(){
+  if((ME.tokens||0) < 2) return toast('Мало токенов','');
+  if(!confirm('Списать 2 токена и открыть Inkognito на 1 день?')) return;
+  try {
+    await api('/admin/credit-tokens','POST',{ user_id: ME.id, amount: -2 });
+    ME.tokens -= 2;
+    ME.inkUntil = new Date(Date.now() + 86400000).toISOString();
+    renderTokensBadge(); renderShop();
+    toast('🕶️ Inkognito куплен','24 часа');
+  } catch(e){ toast('Ошибка', e.message) }
 }
 
 /* ============================================================
    КЛАНЫ
    ============================================================ */
-async function openClansList(){
-  try { CLANS = await api('/clans'); } catch(e){ CLANS = [] }
-  renderClansList(); openPanel('clansList');
-}
+async function openClansList(){ try { CLANS = await api('/clans'); } catch(e){ CLANS = [] } renderClansList(); openPanel('clansList'); }
 function renderClansList(){
   const myIds = CLANS.filter(c => (c.members||[]).some(m => m.userId === ME.id)).map(c => c.id);
   $('clansListBody').innerHTML = `
@@ -937,15 +1058,11 @@ function clanCard(c){
               myRole ? '<span class="role-tag role-member">Участник</span>' : '';
   return `<div class="st-row" onclick="openClan(${c.id})">
     <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff);font-size:20px">${c.prefix || c.name[0].toUpperCase()}</div>
-    <div class="txt"><div class="t1">${esc(c.name)} ${tag}</div>
-    <div class="t2">👥 ${(c.members||[]).length} · 💰 ${fmt(c.wallet)} токенов</div></div>
+    <div class="txt"><div class="t1">${esc(c.name)} ${tag}</div><div class="t2">👥 ${(c.members||[]).length} · 💰 ${fmt(c.wallet)} токенов</div></div>
     <span style="color:var(--accent);font-size:12px">${inClan ? 'открыть' : 'войти'}</span>
   </div>`;
 }
-async function openClan(id){
-  try { CURRENT_CLAN = await api('/clans/' + id); } catch(e){ toast('Ошибка', e.message); return }
-  await renderClanBody(); openPanel('clanCard');
-}
+async function openClan(id){ try { CURRENT_CLAN = await api('/clans/' + id); } catch(e){ toast('Ошибка', e.message); return } await renderClanBody(); openPanel('clanCard'); }
 async function renderClanBody(){
   const c = CURRENT_CLAN; if(!c) return;
   const inClan = (c.members||[]).some(m => m.userId === ME.id);
@@ -956,7 +1073,6 @@ async function renderClanBody(){
   const frozen = c.frozenUntil && new Date(c.frozenUntil) > new Date();
   let proposals = [];
   if(isOwner){ try { proposals = await api('/clans/' + c.id + '/proposals'); } catch(e){} }
-
   $('clanTitle').textContent = (c.prefix || '') + ' ' + c.name;
   $('clanBody').innerHTML = `
     <div class="hero">
@@ -980,11 +1096,10 @@ async function renderClanBody(){
       ` : ''}
       <div class="st-row" onclick="reportClan(${c.id})"><div class="icon" style="background:rgba(255,209,138,.2);color:var(--warn)">⚠️</div><div class="txt"><div class="t1">Жалоба на клан</div></div></div>
     </div>
-    ${isOwner ? `
-    <div class="st-section"><h3>💡 Предложения участников (${proposals.length})</h3>
+    ${isOwner ? `<div class="st-section"><h3>💡 Предложения (${proposals.length})</h3>
       ${proposals.length ? proposals.map(p => proposalCard(c, p)).join('') : '<div class="empty">Предложений нет</div>'}
     </div>` : ''}
-    <div class="st-section"><h3>Голосования (${(c.votes||[]).filter(v => v.status === 'active').length})</h3>
+    <div class="st-section"><h3>Голосования</h3>
       ${(c.votes||[]).length ? c.votes.slice().reverse().map(v => voteCard(c, v)).join('') : '<div class="empty">Голосований нет</div>'}
     </div>
     <div class="st-section"><h3>Участники (${(c.members||[]).length})</h3>
@@ -1041,14 +1156,8 @@ function voteCard(c, v){
   </div>`;
 }
 async function joinClan(id){ try { await api('/clans/'+id+'/join','POST'); await openClan(id); renderClansList(); toast('Ты вошёл в клан','') } catch(e){ toast('Ошибка', e.message) } }
-async function leaveClan(id){
-  if(!confirm('Выйти из клана? Доля вернётся.')) return;
-  try { const r = await api('/clans/'+id+'/leave','POST'); await loadAll(); closePanel('clanCard'); renderClansList(); toast('Вышел', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) }
-}
-async function kickMem(uid){
-  if(!confirm('Исключить?')) return;
-  try { const r = await api('/clans/'+CURRENT_CLAN.id+'/kick','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id); toast('Исключён', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) }
-}
+async function leaveClan(id){ if(!confirm('Выйти из клана?')) return; try { const r = await api('/clans/'+id+'/leave','POST'); await loadAll(); closePanel('clanCard'); renderClansList(); toast('Вышел', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) } }
+async function kickMem(uid){ if(!confirm('Исключить?')) return; try { const r = await api('/clans/'+CURRENT_CLAN.id+'/kick','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id); toast('Исключён', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) } }
 async function promoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/promote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
 async function demoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/demote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
 function openClanCreate(){
@@ -1056,7 +1165,7 @@ function openClanCreate(){
     <label class="field-label">Название</label><input id="ccName" class="report-input"/>
     <label class="field-label">Описание</label><textarea id="ccDesc" rows="3" class="report-input"></textarea>
     <label class="field-label">Префикс (до 4 символов)</label><input id="ccPrefix" maxlength="4" class="report-input"/>
-    <div style="background:rgba(255,209,138,.1);border:1px solid rgba(255,209,138,.3);color:var(--warn);padding:12px;border-radius:12px;font-size:12.5px;margin-top:14px">Создание — 30 токенов. Ежемесячный сбор — 4 за каждого участника.</div>
+    <div style="background:rgba(255,209,138,.1);border:1px solid rgba(255,209,138,.3);color:var(--warn);padding:12px;border-radius:12px;font-size:12.5px;margin-top:14px">Создание — 30 токенов. Сбор — 4 за каждого участника в месяц.</div>
     <button class="btn gold" style="margin-top:14px" onclick="doCreateClan()">Создать за 30 токенов</button>`;
   openPanel('clanCreate');
 }
@@ -1075,9 +1184,7 @@ function openEditClan(){
     <label class="field-label">Префикс</label><input id="ecPrefix" class="report-input" maxlength="4" value="${esc(c.prefix||'')}"/>
     <div class="row" style="margin-top:14px"><button class="btn ghost" onclick="renderClanBody()">Отмена</button><button class="btn" onclick="saveClanEdit()">Сохранить</button></div>`;
 }
-async function saveClanEdit(){
-  try { await api('/clans/'+CURRENT_CLAN.id,'PUT',{ name: $('ecName').value.trim(), desc: $('ecDesc').value.trim(), prefix: $('ecPrefix').value.trim() }); await openClan(CURRENT_CLAN.id); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) }
-}
+async function saveClanEdit(){ try { await api('/clans/'+CURRENT_CLAN.id,'PUT',{ name: $('ecName').value.trim(), desc: $('ecDesc').value.trim(), prefix: $('ecPrefix').value.trim() }); await openClan(CURRENT_CLAN.id); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
 function openClanProposal(){
   const c = CURRENT_CLAN;
   const pcost = 10 * c.members.length, icost = 2 * c.members.length;
@@ -1089,9 +1196,7 @@ function openClanProposal(){
     <label class="field-label">Комментарий</label><textarea id="propNote" rows="3" class="report-input"></textarea>`;
   openPanel('clanProposal');
 }
-async function submitProp(type){
-  try { const note = ($('propNote') && $('propNote').value || '').trim(); await api('/clans/'+CURRENT_CLAN.id+'/propose','POST',{ type, note }); closePanel('clanProposal'); toast('💡 Предложение отправлено',''); } catch(e){ toast('Ошибка', e.message) }
-}
+async function submitProp(type){ try { const note = ($('propNote') && $('propNote').value || '').trim(); await api('/clans/'+CURRENT_CLAN.id+'/propose','POST',{ type, note }); closePanel('clanProposal'); toast('💡 Предложение отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function startVoteFromProp(clanId, pid){ try { await api('/clans/'+clanId+'/proposals/'+pid+'/start-vote','POST'); await openClan(clanId); toast('🗳️ Голосование запущено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function declineProp(clanId, pid){ if(!confirm('Отклонить?')) return; try { await api('/clans/'+clanId+'/proposals/'+pid+'/decline','POST'); await openClan(clanId) } catch(e){ toast('Ошибка', e.message) } }
 async function castVote(clanId, vid, choice){ try { const r = await api('/clans/'+clanId+'/votes/'+vid+'/vote','POST',{ choice }); await openClan(clanId); if(r.vote && r.vote.status === 'passed') toast('✓ Одобрено',''); else if(r.vote && r.vote.status === 'rejected') toast('✕ Отклонено',''); } catch(e){ toast('Ошибка', e.message) } }
@@ -1128,24 +1233,14 @@ async function openClansRating(){
   try { RATING = await api('/clans/rating'); } catch(e){ RATING = [] }
   $('clanRatingBody').innerHTML = `
     <div style="color:var(--muted);font-size:12.5px;margin-bottom:10px">Обновляется каждый месяц. Топ-1 получает токены = числу участников.</div>
-    ${RATING.length ? RATING.map((c,i) => `
-      <div class="st-row" onclick="openClan(${c.id})">
-        <div class="icon" style="background:${i===0?'linear-gradient(135deg,#ffb84d,#ff5c8a)':(i===1?'linear-gradient(135deg,#c0c8d4,#7a8598)':(i===2?'linear-gradient(135deg,#c98a4a,#8a5a2a)':'linear-gradient(135deg,#4f8cff,#7c5cff)'))}">${i+1}</div>
-        <div class="txt"><div class="t1">${esc(c.prefix||'')} ${esc(c.name)}</div><div class="t2">👥 ${(c.members||[]).length} · 💰 ${fmt(c.wallet)}</div></div>
-      </div>`).join('') : '<div class="empty">Кланов нет</div>'}`;
+    ${RATING.length ? RATING.map((c,i) => `<div class="st-row" onclick="openClan(${c.id})"><div class="icon" style="background:${i===0?'linear-gradient(135deg,#ffb84d,#ff5c8a)':(i===1?'linear-gradient(135deg,#c0c8d4,#7a8598)':(i===2?'linear-gradient(135deg,#c98a4a,#8a5a2a)':'linear-gradient(135deg,#4f8cff,#7c5cff)'))}">${i+1}</div><div class="txt"><div class="t1">${esc(c.prefix||'')} ${esc(c.name)}</div><div class="t2">👥 ${(c.members||[]).length} · 💰 ${fmt(c.wallet)}</div></div></div>`).join('') : '<div class="empty">Кланов нет</div>'}`;
   openPanel('clanRating');
 }
 
 /* ============================================================
    КОШЕЛЁК / ПЕРЕВОДЫ
    ============================================================ */
-async function openWallet(){
-  try { ME = await api('/users/me'); } catch(e){}
-  $('walletBody').innerHTML = `
-    <div class="balance-card"><div class="lbl">Твой баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
-    <button class="btn gold" onclick="openSendTokens()">📤 Перевести токены</button>`;
-  openPanel('wallet');
-}
+async function openWallet(){ try { ME = await api('/users/me'); } catch(e){} $('walletBody').innerHTML = `<div class="balance-card"><div class="lbl">Твой баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div><button class="btn gold" onclick="openSendTokens()">📤 Перевести токены</button>`; openPanel('wallet'); }
 function openSendTokens(){
   $('sendTokensBody').innerHTML = `
     <label class="field-label">Получатель (логин)</label><input id="sendTo" class="report-input"/>
@@ -1158,44 +1253,22 @@ async function doSendTokens(){
   const to = $('sendTo').value.trim(), amt = parseInt($('sendAmt').value, 10), reason = $('sendReason').value.trim();
   if(!to) return toast('Укажи логин','');
   if(!amt || amt <= 0) return toast('Укажи сумму','');
-  try { const r = await api('/transfers','POST',{ to_login: to, amount: amt, reason }); ME.tokens = r.balance; renderTokensBadge(); closePanel('sendTokens'); toast('✓ Перевод выполнен',''); }
-  catch(e){ toast('Ошибка', e.message) }
+  try { const r = await api('/transfers','POST',{ to_login: to, amount: amt, reason }); ME.tokens = r.balance; renderTokensBadge(); closePanel('sendTokens'); toast('✓ Перевод выполнен',''); } catch(e){ toast('Ошибка', e.message) }
 }
 async function openTransactions(){
   try { TX = await api('/transactions'); } catch(e){ TX = [] }
   $('transactionsBody').innerHTML = TX.length ? TX.map(t => {
     const isIn = t.to === ME.id;
-    return `<div class="tx-row">
-      <div class="ico ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div>
+    return `<div class="tx-row"><div class="ico ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div>
       <div class="info"><div class="t1">${esc(t.from_login||'—')} → ${esc(t.to_login||'—')}</div>
       <div class="t2">${esc(t.reason||'')} · ${new Date(t.at).toLocaleString('ru-RU')}</div></div>
-      <div class="amount ${isIn ? 'pos' : 'neg'}">${isIn ? '+' : '−'}${fmt(t.amount)}</div>
-    </div>`;
+      <div class="amount ${isIn ? 'pos' : 'neg'}">${isIn ? '+' : '−'}${fmt(t.amount)}</div></div>`;
   }).join('') : '<div class="empty">Транзакций нет</div>';
   openPanel('transactions');
 }
 
 /* ============================================================
-   МАГАЗИН
-   ============================================================ */
-function openShop(){
-  $('shopBody').innerHTML = `
-    <div class="balance-card"><div class="lbl">Баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
-    <div class="st-section"><h3>💎 Premium</h3>
-      <div class="st-row" onclick="buyPremium()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div><div class="txt"><div class="t1">Купить Premium</div><div class="t2">30 токенов = 30 дней</div></div></div>
-    </div>
-    <div class="st-section"><h3>🕶️ Inkognito</h3>
-      <div class="st-row" onclick="toggleInkognito()"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">${ME.inkUntil && new Date(ME.inkUntil) > new Date() ? 'Активен' : 'Купить 1 день'}</div><div class="t2">2 токена</div></div></div>
-    </div>`;
-  openPanel('shop');
-}
-async function buyPremium(){
-  if(!confirm('Списать 30 токенов и активировать Premium на 30 дней?')) return;
-  try { await api('/premium/purchase','POST',{ days: 30 }); await loadAll(); renderTokensBadge(); closePanel('shop'); toast('💎 Premium активирован','30 дней'); } catch(e){ toast('Ошибка', e.message) }
-}
-
-/* ============================================================
-   ЖАЛОБЫ
+   ЖАЛОБЫ / INBOX
    ============================================================ */
 function openReportToAdmin(){
   $('reportTitle').textContent = '⚠️ Жалоба админу';
@@ -1240,10 +1313,7 @@ function addScreenshot(file){
   r.readAsDataURL(file);
 }
 function removeScreenshot(i){ REPORT_SCREENS.splice(i,1); renderReportPreview() }
-function renderReportPreview(){
-  const b = $('reportPreview'); if(!b) return;
-  b.innerHTML = REPORT_SCREENS.map((src,i)=>`<div class="thumb" style="background-image:url('${src}')"><div class="rm" onclick="removeScreenshot(${i})">✕</div></div>`).join('');
-}
+function renderReportPreview(){ const b = $('reportPreview'); if(!b) return; b.innerHTML = REPORT_SCREENS.map((src,i)=>`<div class="thumb" style="background-image:url('${src}')"><div class="rm" onclick="removeScreenshot(${i})">✕</div></div>`).join(''); }
 function pasteFromClipboard(){
   if(!navigator.clipboard || !navigator.clipboard.read) return alert('Ctrl+V прямо в окне');
   navigator.clipboard.read().then(items=>{
@@ -1252,8 +1322,7 @@ function pasteFromClipboard(){
   }).catch(()=>alert('Ctrl+V прямо в окне'));
 }
 document.addEventListener('paste', e=>{
-  const p = $('reportPanel');
-  if(!p || !p.classList.contains('open')) return;
+  const p = $('reportPanel'); if(!p || !p.classList.contains('open')) return;
   const items = e.clipboardData && e.clipboardData.items; if(!items) return;
   for(const it of items) if(it.type.startsWith('image/')) addScreenshot(it.getAsFile());
 });
@@ -1261,15 +1330,13 @@ async function sendGeneralReport(){
   const target_login = ($('reportTargetLogin').value||'').trim();
   const reason = ($('reportReason').value||'').trim();
   if(!target_login || !reason) return alert('Заполни логин и причину');
-  try { await api('/reports','POST',{ target_login, reason, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('⚠️ Жалоба отправлена',''); }
-  catch(e){ toast('Ошибка', e.message) }
+  try { await api('/reports','POST',{ target_login, reason, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('⚠️ Жалоба отправлена',''); } catch(e){ toast('Ошибка', e.message) }
 }
 async function sendToAdminInbox(){
   const subject = ($('msgSubject').value||'').trim();
   const text = ($('msgText').value||'').trim();
   if(!text) return alert('Напиши сообщение');
-  try { await api('/inbox','POST',{ subject, text, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('✉️ Отправлено',''); }
-  catch(e){ toast('Ошибка', e.message) }
+  try { await api('/inbox','POST',{ subject, text, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('✉️ Отправлено',''); } catch(e){ toast('Ошибка', e.message) }
 }
 
 /* ============================================================
@@ -1395,11 +1462,7 @@ async function adminTabHelpers(){
       ${helpers.map(h=>`<div class="st-row"><div class="icon">👤</div><div class="txt"><div class="t1">${esc(h.login)}</div></div><span style="color:var(--danger);cursor:pointer;font-size:13px" onclick="removeHelper(${h.id})">удалить</span></div>`).join('')}
     </div>`;
 }
-async function createHelper(){
-  const login = prompt('Логин помощника:'); if(!login) return;
-  const password = prompt('Пароль (мин. 6):'); if(!password || password.length<6) return alert('Минимум 6');
-  try { await api('/admin/helpers','POST',{ login, password }); toast('👤 Создан',''); adminTabHelpers(); } catch(e){ toast('Ошибка', e.message) }
-}
+async function createHelper(){ const login = prompt('Логин помощника:'); if(!login) return; const password = prompt('Пароль (мин. 6):'); if(!password || password.length<6) return alert('Минимум 6'); try { await api('/admin/helpers','POST',{ login, password }); toast('👤 Создан',''); adminTabHelpers(); } catch(e){ toast('Ошибка', e.message) } }
 async function removeHelper(id){ if(!confirm('Удалить?')) return; try { await api('/admin/helpers/'+id,'DELETE'); adminTabHelpers(); } catch(e){ toast('Ошибка', e.message) } }
 async function adminTabUsers(){
   $('adminBody').innerHTML = `
@@ -1430,22 +1493,10 @@ async function adminUserPanel(uid){
       ${u.banned ? `<div class="st-row" onclick="adminUnban(${uid})"><div class="txt"><div class="t1">✅ Разбанить</div></div></div>` : `<div class="st-row" onclick="adminBan(${uid})"><div class="txt"><div class="t1">🚫 Забанить</div></div></div>`}
     </div>`;
 }
-async function adminToggle(uid, field){
-  const u = userById(uid);
-  try { await api('/admin/users/'+uid,'PUT',{ [field]: !u[field] }); await loadAll(); adminUserPanel(uid); toast('Изменено',''); } catch(e){ toast('Ошибка', e.message) }
-}
-async function applyGiveTokens(uid, sign){
-  const amount = parseInt($('giveAmount').value, 10);
-  if(!amount || amount <= 0) return alert('Введи число');
-  try { await api('/admin/credit-tokens','POST',{ user_id: uid, amount: sign*amount }); await loadAll(); adminUserPanel(uid); toast(sign>0?'💰 +'+amount:'Списано '+amount,''); } catch(e){ toast('Ошибка', e.message) }
-}
-async function adminBan(uid){
-  const reason = prompt('Причина:', 'нарушение правил'); if(reason === null) return;
-  try { await api('/admin/users/'+uid,'PUT',{ banned:true, banReason:reason }); await loadAll(); adminUserPanel(uid); toast('🚫 Забанен',''); } catch(e){ toast('Ошибка', e.message) }
-}
-async function adminUnban(uid){
-  try { await api('/admin/users/'+uid,'PUT',{ banned:false, banReason:'' }); await loadAll(); adminUserPanel(uid); toast('Разбанен',''); } catch(e){ toast('Ошибка', e.message) }
-}
+async function adminToggle(uid, field){ const u = userById(uid); try { await api('/admin/users/'+uid,'PUT',{ [field]: !u[field] }); await loadAll(); adminUserPanel(uid); toast('Изменено',''); } catch(e){ toast('Ошибка', e.message) } }
+async function applyGiveTokens(uid, sign){ const amount = parseInt($('giveAmount').value, 10); if(!amount || amount <= 0) return alert('Введи число'); try { await api('/admin/credit-tokens','POST',{ user_id: uid, amount: sign*amount }); await loadAll(); adminUserPanel(uid); toast(sign>0?'💰 +'+amount:'Списано '+amount,''); } catch(e){ toast('Ошибка', e.message) } }
+async function adminBan(uid){ const reason = prompt('Причина:', 'нарушение правил'); if(reason === null) return; try { await api('/admin/users/'+uid,'PUT',{ banned:true, banReason:reason }); await loadAll(); adminUserPanel(uid); toast('🚫 Забанен',''); } catch(e){ toast('Ошибка', e.message) } }
+async function adminUnban(uid){ try { await api('/admin/users/'+uid,'PUT',{ banned:false, banReason:'' }); await loadAll(); adminUserPanel(uid); toast('Разбанен',''); } catch(e){ toast('Ошибка', e.message) } }
 
 /* ============================================================
    СТАРТ
