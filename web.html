@@ -1090,8 +1090,27 @@ function renderSettingsBody(){
       <div class="st-row" onclick="openAdmin()"><div class="icon" style="background:linear-gradient(135deg,#c8410f,#a02020)">🛡️</div><div class="txt"><div class="t1">Админ-панель</div><div class="t2">Управление и модерация</div></div></div>
     </div>` : ''}
     <div class="st-section"><h3>Аккаунт</h3>
-      <div class="st-row" onclick="logout()"><div class="txt"><span style="font-size:18px">🚪</span><span class="t1" style="margin-left:10px">Выйти</span></div></div>
-    </div>`;
+  <div class="st-row" onclick="openChangePassword()">
+    <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">🔑</div>
+    <div class="txt"><div class="t1">Сменить пароль</div><div class="t2">Текущий и новый</div></div>
+  </div>
+  <div class="st-row" onclick="addAnotherAccount()">
+    <div class="icon" style="background:linear-gradient(135deg,#22a55a,#15803d)">＋</div>
+    <div class="txt"><div class="t1">Добавить аккаунт</div><div class="t2">Войти другим</div></div>
+  </div>
+  <div class="st-row" onclick="switchAccount()">
+    <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">🔄</div>
+    <div class="txt"><div class="t1">Сменить аккаунт</div><div class="t2">Выйти и войти заново</div></div>
+  </div>
+  <div class="st-row" onclick="logout()">
+    <div class="icon" style="background:rgba(255,209,138,.2);color:var(--warn)">🚪</div>
+    <div class="txt"><div class="t1">Выйти</div></div>
+  </div>
+  <div class="st-row" onclick="deleteMyAccount()" style="background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.35)">
+    <div class="icon" style="background:rgba(255,92,92,.2);color:#ff8a8a">🗑️</div>
+    <div class="txt"><div class="t1" style="color:#ffb3b3">Удалить аккаунт</div><div class="t2">Навсегда, без возврата</div></div>
+  </div>
+</div>`;
 }
 async function toggleSmilePrefix(){
   const next = !(ME.show_smile_prefix !== false);
