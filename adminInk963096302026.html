@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Ink — Мастер-панель</title>
+<title>Ink Мастер</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23c8410f'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='18' font-weight='bold' font-family='sans-serif'>A</text></svg>"/>
 <style>
 :root{
@@ -13,221 +13,119 @@
   --text:#e8ecf3; --muted:#8a93a5;
   --ok:#4ade80; --danger:#ff5c5c; --warn:#ffd18a; --gold:#ffb84d;
 }
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{
-  margin:0; background:var(--bg); color:var(--text);
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  font-size:14px;
-}
-button{font-family:inherit; cursor:pointer}
-input,textarea,select{font-family:inherit}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit;font-size:14px}
 
-/* ================= ЛОГИН ================= */
-#login{
-  position:fixed; inset:0; z-index:100;
-  display:flex; align-items:center; justify-content:center;
-  background:radial-gradient(800px 500px at 50% -10%, #2a1512 0%, var(--bg) 60%);
-  padding:20px;
-}
-#login .box{
-  width:100%; max-width:400px;
-  background:var(--panel); border:1px solid var(--border2);
-  border-radius:20px; padding:26px 22px;
-  box-shadow:0 20px 60px #000a;
-}
-#login h1{margin:0 0 4px; font-size:24px}
-#login p{margin:0 0 18px; color:var(--muted); font-size:13px}
-#login input{
-  width:100%; padding:13px 14px; margin-bottom:10px;
-  background:var(--panel2); border:1px solid var(--border2);
-  border-radius:12px; color:var(--text); font-size:15px; outline:none;
-}
+/* ── ЛОГИН ── */
+#login{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:radial-gradient(800px 500px at 50% -10%,#2a1512 0%,var(--bg) 60%);padding:20px}
+#login.on{display:flex}
+#login .box{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--border2);border-radius:20px;padding:26px 22px;box-shadow:0 20px 60px #000a}
+#login h1{margin:0 0 4px;font-size:24px}
+#login p{margin:0 0 18px;color:var(--muted);font-size:13px}
+#login input{width:100%;padding:13px 14px;margin-bottom:10px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:15px;outline:none;letter-spacing:1px}
 #login input:focus{border-color:var(--accent)}
-#login .btn{width:100%; padding:13px}
-.err{
-  background:rgba(255,92,92,.1); border:1px solid rgba(255,92,92,.4);
-  color:#ffb3b3; padding:10px 12px; border-radius:10px;
-  font-size:13px; margin-bottom:10px; display:none;
-}
-.err.show{display:block}
+#login .btn{width:100%;padding:13px;margin-top:6px}
+.err{background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.4);color:#ffb3b3;padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:10px;display:none}
+.err.on{display:block}
 
-/* ================= ОБЩЕЕ ================= */
-.btn{
-  padding:10px 14px; border:0; border-radius:10px;
-  font-size:13.5px; font-weight:600;
-  background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;
-  transition:transform .1s;
-}
+/* ── КНОПКИ ── */
+.btn{padding:10px 14px;border:0;border-radius:10px;font-size:13.5px;font-weight:600;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;transition:transform .1s}
 .btn:active{transform:scale(.97)}
-.btn.ghost{background:var(--panel2); color:var(--text); border:1px solid var(--border2)}
+.btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--border2)}
 .btn.ghost:hover{background:var(--border2)}
 .btn.danger{background:linear-gradient(135deg,#e04343,#a02020)}
 .btn.ok{background:linear-gradient(135deg,#22a55a,#15803d)}
 .btn.gold{background:linear-gradient(135deg,#ffb84d,#ff5c8a)}
-.btn.sm{padding:6px 10px; font-size:12px; border-radius:8px}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:8px}
 
-/* ================= ШАПКА ================= */
-#app{display:none; min-height:100vh}
+/* ── ОБЩЕЕ ── */
+#app{display:none}
 #app.on{display:block}
-
-header{
-  position:sticky; top:0; z-index:10;
-  background:var(--panel); border-bottom:1px solid var(--border);
-  padding:12px 18px; display:flex; align-items:center; gap:14px;
-}
-header .logo{
-  width:34px; height:34px; border-radius:9px; flex-shrink:0;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  display:flex; align-items:center; justify-content:center;
-  font-weight:800; font-size:16px; color:#fff;
-}
-header .t1{font-weight:700; font-size:15px}
-header .t2{font-size:11.5px; color:var(--muted); margin-top:1px}
+header{position:sticky;top:0;z-index:10;background:var(--panel);border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:14px}
+header .logo{width:34px;height:34px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff}
+header .t1{font-weight:700;font-size:15px}
+header .t2{font-size:11.5px;color:var(--muted);margin-top:1px}
 header .spacer{flex:1}
-header .btn{padding:8px 12px; font-size:12.5px}
+header .btn{padding:8px 12px;font-size:12.5px}
 
-/* ================= ТАБЫ ================= */
-.tabs{
-  display:flex; gap:4px; padding:12px 18px 0;
-  border-bottom:1px solid var(--border); overflow-x:auto;
-  background:var(--panel);
-}
-.tabs button{
-  background:transparent; border:0; color:var(--muted);
-  padding:10px 14px; font-size:13.5px; font-weight:600;
-  border-bottom:2px solid transparent; white-space:nowrap;
-}
-.tabs button.on{color:var(--text); border-bottom-color:var(--accent)}
+.tabs{display:flex;gap:4px;padding:12px 18px 0;border-bottom:1px solid var(--border);overflow-x:auto;background:var(--panel)}
+.tabs button{background:transparent;border:0;color:var(--muted);padding:10px 14px;font-size:13.5px;font-weight:600;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs button.on{color:var(--text);border-bottom-color:var(--accent)}
 
-/* ================= КОНТЕНТ ================= */
-main{padding:18px; max-width:1400px; margin:0 auto}
+main{padding:18px;max-width:1400px;margin:0 auto}
 .section{display:none}
 .section.on{display:block}
 
-.stats{
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
-  gap:10px; margin-bottom:18px;
-}
-.stats .card{
-  background:var(--panel); border:1px solid var(--border2);
-  border-radius:12px; padding:14px; text-align:center;
-}
-.stats .num{font-size:22px; font-weight:700}
-.stats .lbl{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-top:3px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px}
+.stats .card{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:14px;text-align:center}
+.stats .num{font-size:22px;font-weight:700}
+.stats .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
 
-/* ================= ТАБЛИЦА ================= */
-.tbl-wrap{
-  background:var(--panel); border:1px solid var(--border2);
-  border-radius:14px; overflow:hidden; overflow-x:auto;
-}
-table{width:100%; border-collapse:collapse; min-width:700px}
-th{
-  text-align:left; padding:10px 12px;
-  background:var(--panel2); font-size:11px;
-  color:var(--muted); text-transform:uppercase; letter-spacing:1px;
-  font-weight:600; position:sticky; top:0;
-}
-td{padding:10px 12px; border-top:1px solid var(--border); font-size:13px}
+.tbl-wrap{background:var(--panel);border:1px solid var(--border2);border-radius:14px;overflow:hidden;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:700px}
+th{text-align:left;padding:10px 12px;background:var(--panel2);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+td{padding:10px 12px;border-top:1px solid var(--border);font-size:13px}
 tr:hover td{background:#ffffff05}
 tr.banned td{background:rgba(255,92,92,.05)}
 
-.tag{
-  display:inline-block; font-size:10px; font-weight:700;
-  padding:2px 7px; border-radius:6px; text-transform:uppercase;
-  margin-right:3px; letter-spacing:.5px;
-}
-.tag.admin{background:linear-gradient(135deg,#ffb84d,#ff5c8a); color:#fff}
-.tag.donor{background:rgba(255,92,138,.2); color:#ff8ab0}
-.tag.prem{background:linear-gradient(135deg,#ffb84d,#ff5c8a); color:#fff}
-.tag.verify{background:rgba(79,140,255,.25); color:#8ab6ff}
-.tag.ban{background:rgba(255,92,92,.25); color:#ff8a8a}
-.tag.muted{background:rgba(127,127,127,.15); color:var(--muted)}
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;text-transform:uppercase;margin-right:3px;letter-spacing:.5px}
+.tag.admin{background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff}
+.tag.donor{background:rgba(255,92,138,.2);color:#ff8ab0}
+.tag.prem{background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff}
+.tag.ban{background:rgba(255,92,92,.25);color:#ff8a8a}
+.tag.muted{background:rgba(127,127,127,.15);color:var(--muted)}
 
-.actions{display:flex; gap:4px; flex-wrap:wrap}
+.actions{display:flex;gap:4px;flex-wrap:wrap}
 
-/* ================= ЛОГИ ================= */
-.log-row{
-  display:grid; grid-template-columns:170px 150px 1fr;
-  gap:10px; padding:10px 12px; border-top:1px solid var(--border);
-  font-size:13px; align-items:start;
-}
-.log-row:first-child{border-top:0}
-.log-row .time{color:var(--muted); font-size:12px; font-family:ui-monospace,Menlo,monospace}
-.log-row .who{font-weight:600}
-.log-row .what{color:var(--text)}
-.log-row .what .act{color:var(--accent); font-weight:700}
-.log-row .what .det{color:var(--muted); font-size:12px; margin-top:2px; word-break:break-word}
-.log-row.warn .act{color:var(--warn)}
-.log-row.bad  .act{color:var(--danger)}
-.log-row.good .act{color:var(--ok)}
+.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:14px}
+.muted{color:var(--muted)}
+.row{padding:10px 12px;border-top:1px solid var(--border)}
+.row:first-child{border-top:0}
+.row .t1{font-weight:600}
+.row .t2{font-size:12px;color:var(--muted);margin-top:2px}
+.row .quote{background:rgba(255,92,138,.08);border-left:3px solid #ff5c8a;padding:6px 10px;border-radius:6px;margin-top:6px;font-size:12.5px;color:#ffb3c9}
 
-/* ================= МОДАЛКА ================= */
-#modal{
-  position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.7);
-  display:none; align-items:center; justify-content:center; padding:20px;
-}
+.card-info{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px;margin-bottom:10px;font-size:13px;line-height:1.6}
+
+/* ── МОДАЛКА ── */
+#modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:20px}
 #modal.on{display:flex}
-#modal .box{
-  background:var(--panel); border:1px solid var(--border2);
-  border-radius:16px; padding:20px; width:100%; max-width:440px;
-  max-height:90vh; overflow-y:auto;
-}
-#modal h2{margin:0 0 14px; font-size:18px}
-#modal label{
-  display:block; font-size:11px; color:var(--muted);
-  text-transform:uppercase; letter-spacing:1px;
-  margin:12px 0 5px; font-weight:600;
-}
-#modal input,#modal select,#modal textarea{
-  width:100%; padding:11px 12px;
-  background:var(--panel2); border:1px solid var(--border2);
-  border-radius:10px; color:var(--text); font-size:14px; outline:none;
-}
+#modal .box{background:var(--panel);border:1px solid var(--border2);border-radius:16px;padding:20px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
+#modal h2{margin:0 0 14px;font-size:18px}
+#modal label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:12px 0 5px;font-weight:600}
+#modal input,#modal select,#modal textarea{width:100%;padding:11px 12px;background:var(--panel2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;outline:none}
 #modal input:focus,#modal select:focus,#modal textarea:focus{border-color:var(--accent)}
-#modal .row{display:flex; gap:8px; margin-top:14px}
-#modal .row .btn{flex:1}
+#modal .row-btns{display:flex;gap:8px;margin-top:14px}
+#modal .row-btns .btn{flex:1}
 
-/* ================= TOAST ================= */
-#toasts{
-  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-  z-index:300; display:flex; flex-direction:column; gap:8px;
-  width:min(420px,calc(100vw - 24px)); pointer-events:none;
-}
-.toast{
-  background:var(--panel); border:1px solid var(--border2);
-  border-radius:12px; padding:11px 14px; font-size:13.5px;
-  box-shadow:0 10px 30px #0008;
-}
+#toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;width:min(420px,calc(100vw - 24px));pointer-events:none}
+.toast{background:var(--panel);border:1px solid var(--border2);border-radius:12px;padding:11px 14px;font-size:13.5px;box-shadow:0 10px 30px #0008}
 .toast.ok{border-color:rgba(74,222,128,.5)}
 .toast.bad{border-color:rgba(255,92,92,.5)}
-.toast .t2{color:var(--muted); font-size:12px; margin-top:2px}
-
-.muted{color:var(--muted)}
-.empty{
-  padding:40px 20px; text-align:center; color:var(--muted); font-size:14px;
-}
+.toast .t2{color:var(--muted);font-size:12px;margin-top:2px}
 </style>
 </head>
 <body>
 
-<!-- ================= ЛОГИН ================= -->
-<div id="login">
+<!-- ЛОГИН -->
+<div id="login" class="on">
   <div class="box">
     <h1>🛡️ Ink Мастер</h1>
-    <p>Вход по мастер-ключу. Действия логируются.</p>
+    <p>Вход только по мастер-коду. Действия логируются.</p>
     <div class="err" id="loginErr"></div>
-    <input id="loginKey" type="password" placeholder="Мастер-ключ" autofocus onkeydown="if(event.key==='Enter')doLogin()"/>
+    <input id="inKey" type="password" placeholder="Мастер-код" autofocus onkeydown="if(event.key==='Enter')doLogin()"/>
     <button class="btn" onclick="doLogin()">Войти</button>
   </div>
 </div>
 
-<!-- ================= ПАНЕЛЬ ================= -->
+<!-- ПАНЕЛЬ -->
 <div id="app">
   <header>
     <div class="logo">A</div>
     <div>
-      <div class="t1">Мастер-панель</div>
+      <div class="t1">Ink Мастер</div>
       <div class="t2" id="connInfo">api.ink-chat.ru</div>
     </div>
     <div class="spacer"></div>
@@ -236,517 +134,356 @@ tr.banned td{background:rgba(255,92,92,.05)}
   </header>
 
   <div class="tabs">
-    <button class="on" data-tab="users"      onclick="switchTab('users')">👥 Пользователи</button>
-    <button      data-tab="logs"       onclick="switchTab('logs')">📜 Логи</button>
-    <button      data-tab="admins"     onclick="switchTab('admins')">👑 Админы</button>
-    <button      data-tab="danger"     onclick="switchTab('danger')">⚠️ Действия</button>
-    <button      data-tab="system"     onclick="switchTab('system')">⚙️ Система</button>
+    <button class="on" data-tab="users" onclick="switchTab('users')">👥 Пользователи</button>
+    <button data-tab="donations" onclick="switchTab('donations')">❤️ Донаты</button>
+    <button data-tab="reports" onclick="switchTab('reports')">⚠️ Жалобы</button>
+    <button data-tab="inbox" onclick="switchTab('inbox')">✉️ Входящие</button>
+    <button data-tab="system" onclick="switchTab('system')">⚙️ Система</button>
   </div>
 
   <main>
-
-    <!-- ============== ПОЛЬЗОВАТЕЛИ ============== -->
     <section class="section on" id="sec-users">
       <div class="stats" id="stats"></div>
-      <input id="search" placeholder="Поиск по логину или ID..." oninput="renderUsers()" style="width:100%; padding:11px 14px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); font-size:14px; outline:none; margin-bottom:14px"/>
+      <input id="search" placeholder="Поиск по логину или ID..." oninput="renderUsers()" style="width:100%;padding:11px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;outline:none;margin-bottom:14px"/>
       <div class="tbl-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>ID</th><th>Логин</th><th>Токены</th><th>Статус</th><th>Активность</th><th>Действия</th>
-            </tr>
-          </thead>
+          <thead><tr><th>ID</th><th>Логин</th><th>Токены</th><th>Статус</th><th>Действия</th></tr></thead>
           <tbody id="usersBody"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- ============== ЛОГИ ============== -->
-    <section class="section" id="sec-logs">
-      <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap">
-        <input id="logSearch" placeholder="Поиск по логам..." oninput="renderLogs()" style="flex:1; min-width:200px; padding:10px 14px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); font-size:13.5px; outline:none"/>
-        <select id="logFilter" onchange="renderLogs()" style="padding:10px 12px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); font-size:13.5px; outline:none">
-          <option value="">Все действия</option>
-          <option value="login">Входы</option>
-          <option value="register">Регистрации</option>
-          <option value="admin">Действия админов</option>
-          <option value="donation">Донаты</option>
-          <option value="premium">Premium</option>
-          <option value="token">Токены</option>
-          <option value="master">Мастер-панель</option>
-        </select>
-      </div>
-      <div class="tbl-wrap" id="logsWrap">
-        <div id="logsBody"></div>
-      </div>
+    <section class="section" id="sec-donations">
+      <div class="tbl-wrap" id="donationsBody"></div>
     </section>
 
-    <!-- ============== АДМИНЫ ============== -->
-    <section class="section" id="sec-admins">
-      <div style="background:var(--panel); border:1px solid var(--border2); border-radius:14px; padding:16px; margin-bottom:14px">
-        <h3 style="margin:0 0 12px; font-size:15px">Создать нового админа</h3>
-        <p class="muted" style="margin:0 0 12px; font-size:12.5px">Создаст аккаунт с флагом администратора, верификацией и 100 токенами. Используй, если потерял доступ к основному или тебя забанили.</p>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
-          <input id="newAdminLogin" placeholder="Логин" style="padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-          <input id="newAdminPass" type="password" placeholder="Пароль (мин. 6)" style="padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-        </div>
-        <button class="btn" style="margin-top:12px; width:100%" onclick="createAdmin()">👑 Создать админа</button>
-      </div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>ID</th><th>Логин</th><th>Роль</th><th>Последний вход</th></tr></thead>
-          <tbody id="adminsBody"></tbody>
-        </table>
-      </div>
+    <section class="section" id="sec-reports">
+      <div class="tbl-wrap" id="reportsBody"></div>
     </section>
 
-    <!-- ============== ОПАСНЫЕ ДЕЙСТВИЯ ============== -->
-    <section class="section" id="sec-danger">
-      <div style="background:rgba(255,92,92,.06); border:1px solid rgba(255,92,92,.3); border-radius:14px; padding:16px; margin-bottom:14px">
-        <h3 style="margin:0 0 6px; font-size:15px; color:#ffb3b3">🚨 Аварийный доступ</h3>
-        <p class="muted" style="margin:0; font-size:12.5px">Используй, если основной аккаунт угнали, забанили или ты потерял к нему доступ.</p>
-      </div>
-
-      <div style="background:var(--panel); border:1px solid var(--border2); border-radius:14px; padding:16px; margin-bottom:14px">
-        <h4 style="margin:0 0 10px; font-size:14px">Забанить пользователя</h4>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
-          <input id="banTarget" placeholder="Логин или ID" style="padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-          <input id="banReason" placeholder="Причина (необязательно)" style="padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-        </div>
-        <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap">
-          <button class="btn danger" onclick="banUser(1)">🚫 Забанить на 1 день</button>
-          <button class="btn danger" onclick="banUser(7)">🚫 Забанить на 7 дней</button>
-          <button class="btn danger" onclick="banUser(30)">🚫 Забанить на 30 дней</button>
-          <button class="btn danger" onclick="banUser(36500)">🚫 Забанить навсегда</button>
-        </div>
-      </div>
-
-      <div style="background:var(--panel); border:1px solid var(--border2); border-radius:14px; padding:16px; margin-bottom:14px">
-        <h4 style="margin:0 0 10px; font-size:14px">Разбанить</h4>
-        <div style="display:flex; gap:8px">
-          <input id="unbanTarget" placeholder="Логин или ID" style="flex:1; padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-          <button class="btn ok" onclick="unbanUser()">✅ Разбанить</button>
-        </div>
-      </div>
-
-      <div style="background:var(--panel); border:1px solid var(--border2); border-radius:14px; padding:16px; margin-bottom:14px">
-        <h4 style="margin:0 0 10px; font-size:14px">Сменить пароль</h4>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
-          <input id="passTarget" placeholder="Логин или ID" style="padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-          <input id="passNew" type="password" placeholder="Новый пароль (мин. 6)" style="padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-        </div>
-        <button class="btn" style="margin-top:12px; width:100%" onclick="setPassword()">🔑 Сменить пароль</button>
-      </div>
-
-      <div style="background:var(--panel); border:1px solid var(--border2); border-radius:14px; padding:16px; margin-bottom:14px">
-        <h4 style="margin:0 0 10px; font-size:14px">Выдать ресурсы</h4>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
-          <input id="grantTarget" placeholder="Логин или ID" style="padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-          <input id="grantTokens" type="number" placeholder="Токены (+/-)" value="100" style="padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-          <input id="grantPremium" type="number" placeholder="Premium дней" value="0" style="padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-          <select id="grantVerify" style="padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none">
-            <option value="">Верификация — не менять</option>
-            <option value="true">Выдать верификацию</option>
-            <option value="false">Снять верификацию</option>
-          </select>
-        </div>
-        <button class="btn gold" style="margin-top:12px; width:100%" onclick="grantUser()">💰 Выдать</button>
-      </div>
-
-      <div style="background:var(--panel); border:1px solid rgba(255,92,92,.4); border-radius:14px; padding:16px">
-        <h4 style="margin:0 0 10px; font-size:14px; color:#ffb3b3">🗑️ Удалить пользователя</h4>
-        <div style="display:flex; gap:8px">
-          <input id="delTarget" placeholder="Логин или ID" style="flex:1; padding:11px; background:var(--panel2); border:1px solid var(--border2); border-radius:10px; color:var(--text); outline:none"/>
-          <button class="btn danger" onclick="deleteUser()">Удалить</button>
-        </div>
-      </div>
+    <section class="section" id="sec-inbox">
+      <div class="tbl-wrap" id="inboxBody"></div>
     </section>
 
-    <!-- ============== СИСТЕМА ============== -->
     <section class="section" id="sec-system">
       <div class="stats" id="sysStats"></div>
-      <div style="background:var(--panel); border:1px solid var(--border2); border-radius:14px; padding:16px; margin-top:14px">
-        <h4 style="margin:0 0 10px; font-size:14px">О сервере</h4>
-        <div id="sysInfo" class="muted" style="font-size:13px; line-height:1.7"></div>
+      <div class="card-info" style="margin-top:14px">
+        <b>API:</b> <span id="sysApi"></span><br>
+        <b>Пользователей:</b> <span id="sysUsers"></span><br>
+        <b>Донатов:</b> <span id="sysDon"></span><br>
+        <b>Жалоб:</b> <span id="sysRep"></span><br>
+        <b>Входящих:</b> <span id="sysInbox"></span>
       </div>
-      <div style="background:rgba(255,209,138,.08); border:1px solid rgba(255,209,138,.3); border-radius:14px; padding:16px; margin-top:14px; font-size:12.5px; line-height:1.6">
+      <div style="background:rgba(255,209,138,.08);border:1px solid rgba(255,209,138,.3);border-radius:14px;padding:14px;margin-top:14px;font-size:12.5px;line-height:1.6">
         <b style="color:var(--warn)">⚠️ Безопасность:</b><br>
-        • Мастер-ключ хранится в localStorage и передаётся в заголовке <code>x-master-key</code>.<br>
-        • Все действия в этой панели пишутся в логи.<br>
-        • Не открывай панель с чужих устройств — ключ останется в браузере.<br>
-        • Если ключ утёк — смени константу <code>ADMIN_MASTER_KEY</code> в <code>server.js</code> и перезапусти сервер.
+        • Мастер-код зашит в клиенте — любой, кто откроет исходник страницы, увидит его.<br>
+        • Если хочешь реальную защиту — нужен отдельный эндпоинт на сервере или Basic Auth в nginx.<br>
+        • Не открывай панель с чужих устройств.
       </div>
     </section>
-
   </main>
 </div>
 
-<!-- ================= МОДАЛКА ================= -->
-<div id="modal">
-  <div class="box" id="modalBox"></div>
-</div>
-
+<div id="modal"></div>
 <div id="toasts"></div>
 
 <script>
 /* ============================================================
-   НАСТРОЙКИ
+   НАСТРОЙКА
    ============================================================ */
-const API = location.origin + '/api';
-let KEY  = localStorage.getItem('ink_master_key') || '';
-let USERS = [];
-let LOGS  = [];
+const API = 'https://api.ink-chat.ru/api';
+const MASTER_KEY = 'Max_092010_m';   // мастер-код зашит в клиенте
+let ME = null, USERS = [], DONATIONS = [], REPORTS = [], INBOX = [];
 
 const $ = id => document.getElementById(id);
-
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+function fmt(n){ return Number(n||0).toLocaleString('ru-RU') }
+function fmtDate(iso){ if(!iso) return '—'; try{ return new Date(iso).toLocaleString('ru-RU') }catch(e){ return iso } }
 function toast(msg, sub, type){
   const el = document.createElement('div');
   el.className = 'toast ' + (type || '');
   el.innerHTML = '<div>' + esc(msg) + '</div>' + (sub ? '<div class="t2">' + esc(sub) + '</div>' : '');
   $('toasts').appendChild(el);
-  setTimeout(() => el.remove(), 3500);
-}
-function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function fmt(n){ return Number(n||0).toLocaleString('ru-RU'); }
-function fmtDate(iso){
-  if(!iso) return '—';
-  try { return new Date(iso).toLocaleString('ru-RU'); } catch(e){ return iso; }
-}
-
-async function api(path, opts){
-  opts = opts || {};
-  opts.headers = Object.assign({
-    'Content-Type': 'application/json',
-    'x-master-key': KEY
-  }, opts.headers || {});
-  if(opts.body && typeof opts.body !== 'string') opts.body = JSON.stringify(opts.body);
-  const r = await fetch(API + path, opts);
-  let d = {};
-  try { d = await r.json(); } catch(e){}
-  if(!r.ok) throw new Error(d.error || ('HTTP ' + r.status));
-  return d;
+  setTimeout(()=>el.remove(), 3500);
 }
 
 /* ============================================================
-   ВХОД
+   ВХОД ПО МАСТЕР-КОДУ
    ============================================================ */
-async function doLogin(){
-  const key = $('loginKey').value.trim();
-  if(!key) return;
-  KEY = key;
-  try {
-    await api('/master/login', { method:'POST' });
-    localStorage.setItem('ink_master_key', KEY);
-    $('login').style.display = 'none';
-    $('app').classList.add('on');
-    $('connInfo').textContent = API.replace('/api','');
-    reloadAll();
-  } catch(e){
-    $('loginErr').textContent = e.message;
-    $('loginErr').classList.add('show');
+function doLogin(){
+  const k = $('inKey').value.trim();
+  if(k !== MASTER_KEY){
+    $('loginErr').textContent = 'Неверный мастер-код';
+    $('loginErr').classList.add('on');
+    return;
   }
+  sessionStorage.setItem('ink_master_ok', '1');
+  enterPanel();
 }
 function logout(){
-  if(!confirm('Выйти из мастер-панели?')) return;
-  localStorage.removeItem('ink_master_key');
-  KEY = '';
+  if(!confirm('Выйти из панели?')) return;
+  sessionStorage.removeItem('ink_master_ok');
   location.reload();
+}
+function enterPanel(){
+  $('login').classList.remove('on');
+  $('app').classList.add('on');
+  $('connInfo').textContent = API.replace('/api','');
+  reloadAll();
+}
+
+/* ============================================================
+   API — без токена, "как админ" нельзя — значит, через локальный список.
+   Раз сервер не трогаем, панель работает как просмотрщик:
+   - USERS берём из публичного /users (нужен токен) — не доступно без логина.
+   - Поэтому панель показывает: если сервер вернул данные — показать,
+     иначе — красную плашку с объяснением.
+   ============================================================ */
+async function tryFetch(path){
+  try {
+    const r = await fetch(API + path, { headers: { 'Content-Type':'application/json' } });
+    if(!r.ok) return { error: 'HTTP ' + r.status };
+    return { data: await r.json() };
+  } catch(e){ return { error: e.message }; }
+}
+
+async function reloadAll(){
+  // Панель не имеет JWT, поэтому используем только то, что сервер отдаёт без авторизации.
+  // /users — требует токен, поэтому не сработает. Пробуем, но если ошибка — покажем плашку.
+  const u = await tryFetch('/users');
+  if(u.error){
+    showAuthNeeded(u.error);
+    return;
+  }
+  USERS = u.data || [];
+
+  const d = await tryFetch('/admin/donations');
+  DONATIONS = d.data || [];
+  const rp = await tryFetch('/admin/reports');
+  REPORTS = rp.data || [];
+  const ib = await tryFetch('/admin/inbox');
+  INBOX = ib.data || [];
+
+  renderUsers(); renderDonations(); renderReports(); renderInbox(); renderSystem();
+}
+
+function showAuthNeeded(err){
+  $('usersBody').innerHTML = `
+    <tr><td colspan="5"><div class="empty">
+      <b style="color:var(--danger)">Сервер требует авторизацию.</b><br><br>
+      Панель без JWT-токена не может получить список пользователей.<br>
+      Ответ сервера: <code>${esc(err)}</code><br><br>
+      Варианты:<br>
+      1. Открывать эту панель под сессией обычного Ink (тогда добавь в URL <code>?token=JWT</code>).<br>
+      2. Либо дописать на сервере мастер-эндпоинт — тогда всё заведётся сразу.<br><br>
+      Пока панель показывает только то, что сервер отдаёт без авторизации.
+    </div></td></tr>`;
 }
 
 /* ============================================================
    ТАБЫ
    ============================================================ */
-function switchTab(tab){
-  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+function switchTab(t){
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
   document.querySelectorAll('.section').forEach(s => s.classList.remove('on'));
-  $('sec-' + tab).classList.add('on');
-  if(tab === 'logs') renderLogs();
-  if(tab === 'admins') renderAdmins();
-  if(tab === 'system') renderSystem();
-}
-
-/* ============================================================
-   ЗАГРУЗКА
-   ============================================================ */
-async function reloadAll(){
-  try {
-    USERS = await api('/master/users');
-    renderUsers();
-  } catch(e){ toast('Ошибка загрузки', e.message, 'bad'); }
-  try {
-    LOGS = await api('/master/logs');
-    renderLogs();
-  } catch(e){}
+  $('sec-' + t).classList.add('on');
 }
 
 /* ============================================================
    ПОЛЬЗОВАТЕЛИ
    ============================================================ */
-function isAdmin(u){ return u.is_admin === true || u.is_admin === 'true' || u.isAdmin === true || u.isAdmin === 'true'; }
-function isBanned(u){ return u.blocked_until && new Date(u.blocked_until) > new Date(); }
-function isPrem(u){ return u.premium && (!u.premium_until || new Date(u.premium_until) > new Date()); }
+function isPrem(u){ return u.premium && (!u.premium_until || new Date(u.premium_until) > new Date()) }
+function isBan(u){ return u.blocked_until && new Date(u.blocked_until) > new Date() }
+function isAdmin(u){ return u.is_admin === true || u.isAdmin === true || u.is_admin === 'true' || u.isAdmin === 'true' }
 
 function renderUsers(){
+  if(!USERS.length){ $('usersBody').innerHTML = '<tr><td colspan="5"><div class="empty">Пользователей нет</div></td></tr>'; return }
   const q = ($('search').value || '').trim().toLowerCase();
-  const list = USERS.filter(u =>
-    !q || String(u.login||'').toLowerCase().includes(q) || String(u.id) === q
-  ).sort((a,b) => a.id - b.id);
+  const list = USERS.filter(u => !q || String(u.login).toLowerCase().includes(q) || String(u.id) === q).sort((a,b)=>a.id-b.id);
 
-  // статистика
   $('stats').innerHTML = `
     <div class="card"><div class="num">${USERS.length}</div><div class="lbl">Всего</div></div>
     <div class="card"><div class="num" style="color:var(--gold)">${USERS.filter(isAdmin).length}</div><div class="lbl">Админов</div></div>
     <div class="card"><div class="num" style="color:#ff8ab0">${USERS.filter(u=>u.is_donor||u.donated_total>0).length}</div><div class="lbl">Донатеров</div></div>
     <div class="card"><div class="num" style="color:var(--gold)">${USERS.filter(isPrem).length}</div><div class="lbl">Premium</div></div>
-    <div class="card"><div class="num" style="color:var(--danger)">${USERS.filter(isBanned).length}</div><div class="lbl">Забанено</div></div>
-    <div class="card"><div class="num" style="color:var(--accent)">${USERS.reduce((s,u)=>s+(u.tokens||0),0)}</div><div class="lbl">Токенов</div></div>
-  `;
-
-  if(!list.length){
-    $('usersBody').innerHTML = '<tr><td colspan="6"><div class="empty">Ничего не найдено</div></td></tr>';
-    return;
-  }
+    <div class="card"><div class="num" style="color:var(--danger)">${USERS.filter(isBan).length}</div><div class="lbl">Забанено</div></div>
+    <div class="card"><div class="num" style="color:var(--accent)">${USERS.reduce((s,u)=>s+(u.tokens||0),0)}</div><div class="lbl">Токенов</div></div>`;
 
   $('usersBody').innerHTML = list.map(u => {
     const tags = [];
     if(isAdmin(u)) tags.push('<span class="tag admin">👑 Админ</span>');
-    if(u.is_verified) tags.push('<span class="tag verify">✔️ Верифиц.</span>');
     if(isPrem(u)) tags.push('<span class="tag prem">💎 Premium</span>');
     if(u.is_donor) tags.push('<span class="tag donor">❤️ Донатер</span>');
-    if(isBanned(u)) tags.push('<span class="tag ban">🚫 Бан</span>');
+    if(isBan(u)) tags.push('<span class="tag ban">🚫 Бан</span>');
     if(!tags.length) tags.push('<span class="tag muted">—</span>');
-
-    return `
-      <tr class="${isBanned(u) ? 'banned' : ''}">
-        <td>${u.id}</td>
-        <td><b>${esc(u.login)}</b></td>
-        <td>${fmt(u.tokens)}</td>
-        <td>${tags.join(' ')}</td>
-        <td class="muted" style="font-size:12px">${fmtDate(u.last_seen)}</td>
-        <td>
-          <div class="actions">
-            <button class="btn sm ghost" onclick="editUser(${u.id})">✏️</button>
-            ${isBanned(u)
-              ? `<button class="btn sm ok" onclick="quickUnban('${esc(u.login)}')">✅</button>`
-              : `<button class="btn sm danger" onclick="quickBan('${esc(u.login)}')">🚫</button>`}
-            <button class="btn sm ghost" onclick="quickGrant('${esc(u.login)}')">💰</button>
-          </div>
-        </td>
-      </tr>`;
+    return `<tr class="${isBan(u)?'banned':''}">
+      <td>${u.id}</td>
+      <td><b>${esc(u.login)}</b></td>
+      <td>${fmt(u.tokens)}</td>
+      <td>${tags.join(' ')}</td>
+      <td><div class="actions">
+        <button class="btn sm ghost" onclick="openUserModal(${u.id})">✏️</button>
+      </div></td>
+    </tr>`;
   }).join('');
 }
 
-/* ============================================================
-   ЛОГИ
-   ============================================================ */
-const LOG_COLORS = {
-  login: 'good', register: 'good',
-  master_create_admin: 'warn', master_ban: 'bad', master_unban: 'good',
-  master_set_password: 'warn', master_delete_user: 'bad', master_grant: 'warn',
-  admin_credit_tokens: 'warn', admin_update_user: 'warn', admin_delete_user: 'bad',
-  donation_request: '', donation_confirm: 'good',
-  premium_purchase: 'warn',
-  token_earned_daily: 'good',
-  password_change: 'warn', username_change: ''
-};
-function logClass(a){
-  if(!a) return '';
-  if(LOG_COLORS[a] !== undefined) return LOG_COLORS[a];
-  if(a.startsWith('master_')) return 'warn';
-  if(a.startsWith('admin_')) return 'warn';
-  if(a.startsWith('token_')) return 'good';
-  return '';
+function openUserModal(id){
+  const u = USERS.find(x => x.id === id); if(!u) return;
+  $('modal').innerHTML = `
+    <div class="box" onclick="event.stopPropagation()">
+      <h2>✏️ ${esc(u.login)} <span class="muted" style="font-weight:400;font-size:14px">ID ${u.id}</span></h2>
+      <label>Токены</label>
+      <input id="muTokens" type="number" value="${u.tokens||0}"/>
+      <label>Premium дней (0 = не менять)</label>
+      <input id="muPremDays" type="number" value="0"/>
+      <label>Бан (пусто = снять)</label>
+      <input id="muBan" placeholder="дата ISO или пусто" value="${u.blocked_until ? new Date(u.blocked_until).toISOString().slice(0,10) : ''}"/>
+      <label>Причина бана</label>
+      <input id="muReason" value="${esc(u.block_reason||'')}"/>
+      <div class="row-btns">
+        <button class="btn ghost" onclick="closeModal()">Отмена</button>
+        <button class="btn" onclick="saveUserModal(${u.id})">Сохранить</button>
+      </div>
+    </div>`;
+  $('modal').classList.add('on');
+  $('modal').onclick = closeModal;
 }
-function renderLogs(){
-  const q = ($('logSearch').value || '').trim().toLowerCase();
-  const f = $('logFilter').value;
-  let list = LOGS.slice();
-  if(f === 'admin') list = list.filter(l => l.action.startsWith('admin_') || l.action.startsWith('master_'));
-  else if(f === 'master') list = list.filter(l => l.action.startsWith('master_'));
-  else if(f === 'donation') list = list.filter(l => l.action.includes('donation'));
-  else if(f === 'premium') list = list.filter(l => l.action.includes('premium'));
-  else if(f === 'token') list = list.filter(l => l.action.includes('token'));
-  else if(f) list = list.filter(l => l.action === f);
+function closeModal(){ $('modal').classList.remove('on'); }
 
-  if(q) list = list.filter(l =>
-    String(l.login||'').toLowerCase().includes(q) ||
-    String(l.action||'').toLowerCase().includes(q) ||
-    String(JSON.stringify(l.details||{})).toLowerCase().includes(q)
-  );
+async function saveUserModal(id){
+  const tokens = Number($('muTokens').value);
+  const premDays = Number($('muPremDays').value);
+  const ban = $('muBan').value.trim();
+  const reason = $('muReason').value.trim();
 
-  if(!list.length){
-    $('logsBody').innerHTML = '<div class="empty">Логов нет</div>';
+  // Все действия — через серверные эндпоинты, которые требуют JWT.
+  // Без токена они вернут 401/403. Поэтому показываем что делаем, но выполняем
+  // только если в браузере есть ink_token (ты залогинен в Ink в той же вкладке).
+  const JWT = localStorage.getItem('ink_token');
+  if(!JWT){
+    toast('Нет JWT', 'Сначала зайди в Ink в этом браузере', 'bad');
     return;
   }
-
-  $('logsBody').innerHTML = list.slice(0, 1000).map(l => `
-    <div class="log-row ${logClass(l.action)}">
-      <div class="time">${fmtDate(l.at)}</div>
-      <div class="who">${esc(l.login || '—')}<div class="muted" style="font-size:11px">${l.user_id ? 'ID '+l.user_id : ''} ${l.ip ? '· '+esc(l.ip) : ''}</div></div>
-      <div class="what">
-        <span class="act">${esc(l.action)}</span>
-        ${l.details ? '<div class="det">' + esc(JSON.stringify(l.details)) + '</div>' : ''}
-      </div>
-    </div>
-  `).join('');
-}
-
-/* ============================================================
-   АДМИНЫ
-   ============================================================ */
-function renderAdmins(){
-  const list = USERS.filter(isAdmin).sort((a,b) => a.id - b.id);
-  $('adminsBody').innerHTML = list.length ? list.map(u => `
-    <tr>
-      <td>${u.id}</td>
-      <td><b>${esc(u.login)}</b></td>
-      <td><span class="tag admin">👑 Админ</span></td>
-      <td class="muted" style="font-size:12px">${fmtDate(u.last_seen)}</td>
-    </tr>
-  `).join('') : '<tr><td colspan="4"><div class="empty">Нет админов</div></td></tr>';
-}
-
-async function createAdmin(){
-  const login = $('newAdminLogin').value.trim();
-  const password = $('newAdminPass').value;
-  if(login.length < 3) return toast('Логин минимум 3', '', 'bad');
-  if(password.length < 6) return toast('Пароль минимум 6', '', 'bad');
-  if(!confirm('Создать админа "' + login + '"?')) return;
   try {
-    const r = await api('/master/create-admin', { method:'POST', body: { login, password } });
-    toast('👑 Админ создан', 'ID: ' + r.id, 'ok');
-    $('newAdminLogin').value = '';
-    $('newAdminPass').value = '';
-    await reloadAll();
-  } catch(e){ toast('Ошибка', e.message, 'bad'); }
-}
-
-/* ============================================================
-   ОПАСНЫЕ ДЕЙСТВИЯ
-   ============================================================ */
-async function quickBan(login){
-  if(!confirm('Забанить "' + login + '" навсегда?')) return;
-  try { await api('/master/ban', { method:'POST', body: { target: login, until: null, reason: 'Бан из мастер-панели' } }); toast('🚫 Забанен', login, 'ok'); reloadAll(); }
-  catch(e){ toast('Ошибка', e.message, 'bad'); }
-}
-async function quickUnban(login){
-  try { await api('/master/unban', { method:'POST', body: { target: login } }); toast('✅ Разбанен', login, 'ok'); reloadAll(); }
-  catch(e){ toast('Ошибка', e.message, 'bad'); }
-}
-async function quickGrant(login){
-  const n = prompt('Сколько токенов выдать?', '100');
-  if(!n) return;
-  try { await api('/master/grant', { method:'POST', body: { target: login, tokens: Number(n) } }); toast('💰 Выдано ' + n, login, 'ok'); reloadAll(); }
-  catch(e){ toast('Ошибка', e.message, 'bad'); }
-}
-
-async function banUser(days){
-  const t = $('banTarget').value.trim();
-  const r = $('banReason').value.trim();
-  if(!t) return toast('Укажи логин или ID', '', 'bad');
-  const until = days >= 36500 ? null : new Date(Date.now() + days * 86400000).toISOString();
-  if(!confirm('Забанить "' + t + '"' + (days >= 36500 ? ' навсегда' : ' на ' + days + ' дн.') + '?')) return;
-  try { const res = await api('/master/ban', { method:'POST', body: { target: t, until, reason: r } }); toast('🚫 Забанен', res.banned, 'ok'); $('banTarget').value=''; $('banReason').value=''; reloadAll(); }
-  catch(e){ toast('Ошибка', e.message, 'bad'); }
-}
-async function unbanUser(){
-  const t = $('unbanTarget').value.trim();
-  if(!t) return toast('Укажи логин или ID', '', 'bad');
-  try { await api('/master/unban', { method:'POST', body: { target: t } }); toast('✅ Разбанен', t, 'ok'); $('unbanTarget').value=''; reloadAll(); }
-  catch(e){ toast('Ошибка', e.message, 'bad'); }
-}
-async function setPassword(){
-  const t = $('passTarget').value.trim();
-  const p = $('passNew').value;
-  if(!t) return toast('Укажи логин или ID', '', 'bad');
-  if(p.length < 6) return toast('Пароль минимум 6', '', 'bad');
-  if(!confirm('Сменить пароль для "' + t + '"?')) return;
-  try { const res = await api('/master/set-password', { method:'POST', body: { target: t, newPassword: p } }); toast('🔑 Пароль сменён', res.login, 'ok'); $('passTarget').value=''; $('passNew').value=''; reloadAll(); }
-  catch(e){ toast('Ошибка', e.message, 'bad'); }
-}
-async function grantUser(){
-  const t = $('grantTarget').value.trim();
-  if(!t) return toast('Укажи логин или ID', '', 'bad');
-  const body = { target: t };
-  const tk = $('grantTokens').value;
-  if(tk !== '') body.tokens = Number(tk);
-  const pd = $('grantPremium').value;
-  if(pd !== '') body.premium_days = Number(pd);
-  const v = $('grantVerify').value;
-  if(v === 'true') body.verify = true;
-  if(v === 'false') body.verify = false;
-  try { await api('/master/grant', { method:'POST', body }); toast('💰 Выдано', t, 'ok'); reloadAll(); }
-  catch(e){ toast('Ошибка', e.message, 'bad'); }
-}
-async function deleteUser(){
-  const t = $('delTarget').value.trim();
-  if(!t) return toast('Укажи логин или ID', '', 'bad');
-  if(!confirm('Удалить "' + t + '" БЕЗВОЗВРАТНО?')) return;
-  if(!confirm('Точно? Это не отменить.')) return;
-  try { await api('/master/delete-user', { method:'POST', body: { target: t } }); toast('🗑️ Удалён', t, 'ok'); $('delTarget').value=''; reloadAll(); }
-  catch(e){ toast('Ошибка', e.message, 'bad'); }
-}
-
-/* ============================================================
-   РЕДАКТОР ПОЛЬЗОВАТЕЛЯ
-   ============================================================ */
-function editUser(id){
-  const u = USERS.find(x => x.id === id);
-  if(!u) return;
-  $('modalBox').innerHTML = `
-    <h2>✏️ ${esc(u.login)} <span class="muted" style="font-weight:400;font-size:14px">ID ${u.id}</span></h2>
-    <label>Токены</label>
-    <input id="euTokens" type="number" value="${u.tokens||0}"/>
-    <label>Premium дней (0 = не менять)</label>
-    <input id="euPremDays" type="number" value="0"/>
-    <label>Верификация</label>
-    <select id="euVerify">
-      <option value="">Не менять (${u.is_verified ? 'сейчас ✔️' : 'сейчас —'})</option>
-      <option value="true">Выдать ✔️</option>
-      <option value="false">Снять</option>
-    </select>
-    <label>Админ</label>
-    <select id="euAdmin">
-      <option value="">Не менять (${isAdmin(u) ? 'сейчас 👑' : 'сейчас —'})</option>
-      <option value="true">Сделать админом</option>
-      <option value="false">Снять админа</option>
-    </select>
-    <label>Бан (до)</label>
-    <input id="euBanUntil" placeholder="ISO-дата или пусто" value="${u.blocked_until ? new Date(u.blocked_until).toISOString().slice(0,10) : ''}"/>
-    <label>Причина бана</label>
-    <input id="euBanReason" value="${esc(u.block_reason||'')}"/>
-    <div class="row">
-      <button class="btn ghost" onclick="closeModal()">Отмена</button>
-      <button class="btn" onclick="saveUserEdit(${u.id})">Сохранить</button>
-    </div>
-  `;
-  $('modal').classList.add('on');
-}
-async function saveUserEdit(id){
-  try {
-    const tokens = Number($('euTokens').value);
-    const premDays = Number($('euPremDays').value);
-    const verify = $('euVerify').value;
-    const admin = $('euAdmin').value;
-    const banUntil = $('euBanUntil').value;
-    const banReason = $('euBanReason').value;
-
-    if(!isNaN(tokens)) await api('/master/grant', { method:'POST', body: { target: id, tokens: tokens - (USERS.find(x=>x.id===id).tokens||0) } });
-    if(premDays > 0) await api('/master/grant', { method:'POST', body: { target: id, premium_days: premDays } });
-    if(verify !== '') await api('/master/grant', { method:'POST', body: { target: id, verify: verify === 'true' } });
-    if(banUntil) await api('/master/ban', { method:'POST', body: { target: id, until: banUntil, reason: banReason } });
-    else if(USERS.find(x=>x.id===id).blocked_until) await api('/master/unban', { method:'POST', body: { target: id } });
-
-    if(admin !== ''){
-      const u = USERS.find(x=>x.id===id);
-      if(admin === 'true' && !isAdmin(u)) await api('/master/grant', { method:'POST', body: { target: id, tokens: 0 } });
+    if(tokens !== (USERS.find(x=>x.id===id).tokens || 0)){
+      const diff = tokens - (USERS.find(x=>x.id===id).tokens || 0);
+      await fetch(API + '/admin/credit-tokens', {
+        method:'POST',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT},
+        body: JSON.stringify({ user_id: id, amount: diff })
+      });
     }
-    toast('✓ Сохранено', '', 'ok');
+    if(premDays > 0){
+      await fetch(API + '/premium/purchase', {
+        method:'POST',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT},
+        body: JSON.stringify({ target_user_id: id, days: premDays })
+      });
+    }
+    if(ban){
+      await fetch(API + '/admin/users/'+id, {
+        method:'PUT',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT},
+        body: JSON.stringify({ blocked_until: new Date(ban).toISOString(), block_reason: reason })
+      });
+    } else if(USERS.find(x=>x.id===id).blocked_until){
+      await fetch(API + '/admin/users/'+id, {
+        method:'PUT',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT},
+        body: JSON.stringify({ blocked_until: null, block_reason: '' })
+      });
+    }
+    toast('✓ Сохранено','','ok');
     closeModal();
     reloadAll();
   } catch(e){ toast('Ошибка', e.message, 'bad'); }
 }
-function closeModal(){ $('modal').classList.remove('on'); }
+
+/* ============================================================
+   ДОНАТЫ
+   ============================================================ */
+function renderDonations(){
+  if(!DONATIONS.length){ $('donationsBody').innerHTML = '<div class="empty">Донатов нет</div>'; return }
+  const pending = DONATIONS.filter(x => x.status === 'pending' || !x.status);
+  const done = DONATIONS.filter(x => x.status && x.status !== 'pending');
+  $('donationsBody').innerHTML = `
+    <div class="row" style="background:var(--panel2);font-weight:700">Ожидают (${pending.length})</div>
+    ${pending.length ? pending.map(x=>`
+      <div class="row">
+        <div class="t1">${esc(x.login||x.username||'—')} · ${x.amount} ₽</div>
+        <div class="t2">Цель: <b>${esc(x.purpose_text || (x.purpose === 'tokens' ? 'Купить токены' : 'Поддержать проект'))}</b> · карта ****${esc(x.contact||'')}</div>
+        ${x.message ? `<div class="quote">✉️ «${esc(x.message)}»</div>` : ''}
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+          <button class="btn sm ok" onclick="donateAction(${x.id},'confirm')">✓ Подтвердить</button>
+          <button class="btn sm ghost" onclick="donateAction(${x.id},'thanks')">❤️ Спасибо</button>
+          <button class="btn sm danger" onclick="donateAction(${x.id},'reject')">✕</button>
+        </div>
+      </div>`).join('') : '<div class="row muted">Пусто</div>'}
+    <div class="row" style="background:var(--panel2);font-weight:700;margin-top:10px">История (${done.length})</div>
+    ${done.slice(-40).reverse().map(x=>`
+      <div class="row">
+        <div class="t1">${esc(x.login||x.username||'—')} · ${x.amount} ₽</div>
+        <div class="t2">${esc(x.purpose_text||'—')} · ${x.status}</div>
+      </div>`).join('')}`;
+}
+
+async function donateAction(id, action){
+  const JWT = localStorage.getItem('ink_token');
+  if(!JWT) return toast('Нет JWT','Сначала зайди в Ink','bad');
+  try {
+    await fetch(API + '/admin/donations/'+id+'/'+action, {
+      method:'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT}
+    });
+    toast('✓ Готово','','ok');
+    reloadAll();
+  } catch(e){ toast('Ошибка', e.message, 'bad'); }
+}
+
+/* ============================================================
+   ЖАЛОБЫ
+   ============================================================ */
+function renderReports(){
+  if(!REPORTS.length){ $('reportsBody').innerHTML = '<div class="empty">Жалоб нет</div>'; return }
+  $('reportsBody').innerHTML = REPORTS.map(x=>`
+    <div class="row">
+      <div class="t1">${esc(x.reporter||'—')} → ${esc(x.target||'—')}</div>
+      <div class="t2">${esc(x.reason||'')} · ${x.status||'pending'}</div>
+      ${x.screens && x.screens.length ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${x.screens.map(src=>`<img src="${src}" style="width:64px;height:64px;border-radius:8px;cursor:pointer;border:1px solid var(--border2)" onclick="window.open('${src}')"/>`).join('')}</div>`:''}
+      ${x.status==='pending' ? `<div style="display:flex;gap:6px;margin-top:8px">
+        <button class="btn sm ok" onclick="verdict(${x.id},'useful')">✅ Полезная</button>
+        <button class="btn sm danger" onclick="verdict(${x.id},'rejected')">✖ Отклонить</button>
+        <button class="btn sm danger" onclick="verdict(${x.id},'ban')">🚫 Забанить</button>
+      </div>` : ''}
+    </div>`).join('');
+}
+async function verdict(id, v){
+  const JWT = localStorage.getItem('ink_token');
+  if(!JWT) return toast('Нет JWT','Сначала зайди в Ink','bad');
+  try {
+    await fetch(API + '/admin/reports/'+id+'/verdict', {
+      method:'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT},
+      body: JSON.stringify({ verdict: v })
+    });
+    toast('✓ Вердикт','','ok');
+    reloadAll();
+  } catch(e){ toast('Ошибка', e.message, 'bad'); }
+}
+
+/* ============================================================
+   ВХОДЯЩИЕ
+   ============================================================ */
+function renderInbox(){
+  if(!INBOX.length){ $('inboxBody').innerHTML = '<div class="empty">Входящих нет</div>'; return }
+  $('inboxBody').innerHTML = INBOX.map(m=>`
+    <div class="row">
+      <div class="t1">${esc(m.from||'—')} · ${esc(m.subject||'—')}</div>
+      <div class="t2">${fmtDate(m.at)}</div>
+      <div class="quote">${esc(m.text||'')}</div>
+    </div>`).join('');
+}
 
 /* ============================================================
    СИСТЕМА
@@ -754,34 +491,24 @@ function closeModal(){ $('modal').classList.remove('on'); }
 function renderSystem(){
   $('sysStats').innerHTML = `
     <div class="card"><div class="num">${USERS.length}</div><div class="lbl">Пользователей</div></div>
-    <div class="card"><div class="num">${LOGS.length}</div><div class="lbl">Записей логов</div></div>
-    <div class="card"><div class="num">${USERS.reduce((s,u)=>s+(u.tokens||0),0)}</div><div class="lbl">Токенов всего</div></div>
-    <div class="card"><div class="num">${USERS.filter(u=>u.is_donor).length}</div><div class="lbl">Донатеров</div></div>
-  `;
-  $('sysInfo').innerHTML = `
-    <b>API:</b> ${API}<br>
-    <b>Ключ:</b> ${KEY ? '••••••' + KEY.slice(-4) : '—'}<br>
-    <b>Пользователей:</b> ${USERS.length}<br>
-    <b>Логов:</b> ${LOGS.length}<br>
-    <b>Время:</b> ${new Date().toLocaleString('ru-RU')}
-  `;
+    <div class="card"><div class="num">${DONATIONS.length}</div><div class="lbl">Донатов</div></div>
+    <div class="card"><div class="num">${REPORTS.length}</div><div class="lbl">Жалоб</div></div>
+    <div class="card"><div class="num">${INBOX.length}</div><div class="lbl">Входящих</div></div>`;
+  $('sysApi').textContent = API;
+  $('sysUsers').textContent = USERS.length;
+  $('sysDon').textContent = DONATIONS.length;
+  $('sysRep').textContent = REPORTS.length;
+  $('sysInbox').textContent = INBOX.length;
 }
 
 /* ============================================================
-   АВТОЛОГИН
+   СТАРТ
    ============================================================ */
-(async function init(){
-  if(!KEY){ $('login').style.display = 'flex'; return; }
-  try {
-    await api('/master/login', { method:'POST' });
-    $('login').style.display = 'none';
-    $('app').classList.add('on');
-    $('connInfo').textContent = API.replace('/api','');
-    reloadAll();
-  } catch(e){
-    localStorage.removeItem('ink_master_key');
-    KEY = '';
-    $('login').style.display = 'flex';
+(function init(){
+  if(sessionStorage.getItem('ink_master_ok') === '1'){
+    enterPanel();
+  } else {
+    $('login').classList.add('on');
   }
 })();
 </script>
