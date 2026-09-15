@@ -631,17 +631,14 @@ function shouldShowSaveBar(){
 function renderSaveBar(){
   const bar = $('saveBar'); if(!bar) return;
   if(!shouldShowSaveBar()){ bar.classList.remove('show'); return; }
-  bar.classList.add('show');
   const saved = DRAFT_INFO && DRAFT_INFO.myConverted;
+  // Уже сохранено — плашку НЕ показываем
+  if(saved){ bar.classList.remove('show'); return; }
+  bar.classList.add('show');
   const btn = $('saveBarBtn'); const savedEl = $('saveBarSaved'); const txt = $('saveBarText');
-  if(saved){
-    btn.style.display = 'none'; savedEl.style.display = 'inline';
-    txt.innerHTML = '✅ Переписка за <b>' + ((DRAFT_INFO && DRAFT_INFO.month) || 'этот месяц') + '</b> сохранена у тебя в загрузках. <b>1-го числа</b> сервер очистит её.';
-  } else {
-    btn.style.display = 'inline'; btn.disabled = false; savedEl.style.display = 'none';
-    const draft = DRAFT_INFO && DRAFT_INFO.draftCount ? DRAFT_INFO.draftCount : 0;
-    txt.innerHTML = '⚠️ <b>1-го числа</b> переписка будет очищена с сервера. ' + (draft ? 'Сообщений: <b>' + draft + '</b>. ' : '') + 'Нажми <b>💾 Сохранить</b> — файл скачается в загрузки.';
-  }
+  btn.style.display = 'inline'; btn.disabled = false; savedEl.style.display = 'none';
+  const draft = DRAFT_INFO && DRAFT_INFO.draftCount ? DRAFT_INFO.draftCount : 0;
+  txt.innerHTML = '⚠️ <b>1-го числа</b> переписка будет очищена с сервера. ' + (draft ? 'Сообщений: <b>' + draft + '</b>. ' : '') + 'Нажми <b>💾 Сохранить</b> — файл скачается в загрузки.';
 }
 async function saveConversation(){
   if(!CURRENT_CHAT) return;
