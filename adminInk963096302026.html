@@ -18,19 +18,21 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-appl
 button{font-family:inherit;cursor:pointer}
 input,textarea,select{font-family:inherit;font-size:14px}
 
-/* ── ЛОГИН ── */
 #login{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:radial-gradient(800px 500px at 50% -10%,#2a1512 0%,var(--bg) 60%);padding:20px}
 #login.on{display:flex}
-#login .box{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--border2);border-radius:20px;padding:26px 22px;box-shadow:0 20px 60px #000a}
+#login .box{width:100%;max-width:460px;background:var(--panel);border:1px solid var(--border2);border-radius:20px;padding:26px 22px;box-shadow:0 20px 60px #000a}
 #login h1{margin:0 0 4px;font-size:24px}
-#login p{margin:0 0 18px;color:var(--muted);font-size:13px}
-#login input{width:100%;padding:13px 14px;margin-bottom:10px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:15px;outline:none;letter-spacing:1px}
-#login input:focus{border-color:var(--accent)}
+#login p{margin:0 0 18px;color:var(--muted);font-size:13px;line-height:1.5}
+#login input,#login textarea{width:100%;padding:13px 14px;margin-bottom:10px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:15px;outline:none;letter-spacing:1px}
+#login textarea{font-family:ui-monospace,Menlo,monospace;font-size:12px;height:70px;resize:vertical;letter-spacing:0}
+#login input:focus,#login textarea:focus{border-color:var(--accent)}
 #login .btn{width:100%;padding:13px;margin-top:6px}
+#login .hint{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5;background:var(--panel2);padding:10px 12px;border-radius:10px}
 .err{background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.4);color:#ffb3b3;padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:10px;display:none}
 .err.on{display:block}
+.ok-msg{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.4);color:#a6f0c0;padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:10px;display:none}
+.ok-msg.on{display:block}
 
-/* ── КНОПКИ ── */
 .btn{padding:10px 14px;border:0;border-radius:10px;font-size:13.5px;font-weight:600;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;transition:transform .1s}
 .btn:active{transform:scale(.97)}
 .btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--border2)}
@@ -40,7 +42,6 @@ input,textarea,select{font-family:inherit;font-size:14px}
 .btn.gold{background:linear-gradient(135deg,#ffb84d,#ff5c8a)}
 .btn.sm{padding:6px 10px;font-size:12px;border-radius:8px}
 
-/* ── ОБЩЕЕ ── */
 #app{display:none}
 #app.on{display:block}
 header{position:sticky;top:0;z-index:10;background:var(--panel);border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:14px}
@@ -89,7 +90,6 @@ tr.banned td{background:rgba(255,92,92,.05)}
 
 .card-info{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px;margin-bottom:10px;font-size:13px;line-height:1.6}
 
-/* ── МОДАЛКА ── */
 #modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:20px}
 #modal.on{display:flex}
 #modal .box{background:var(--panel);border:1px solid var(--border2);border-radius:16px;padding:20px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
@@ -109,18 +109,31 @@ tr.banned td{background:rgba(255,92,92,.05)}
 </head>
 <body>
 
-<!-- ЛОГИН -->
+<!-- ================= ЛОГИН ================= -->
 <div id="login" class="on">
   <div class="box">
     <h1>🛡️ Ink Мастер</h1>
-    <p>Вход только по мастер-коду. Действия логируются.</p>
+    <p>Панель пытается войти автоматически:</p>
+    <p style="font-size:12.5px;margin-top:-8px">
+      <b>1.</b> Если ты залогинен в Ink в этом браузере — войдёт сама.<br>
+      <b>2.</b> Если открыл с <code>?token=...</code> — возьмёт токен из URL.<br>
+      <b>3.</b> Иначе — вставь токен вручную ниже.
+    </p>
     <div class="err" id="loginErr"></div>
-    <input id="inKey" type="password" placeholder="Мастер-код" autofocus onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div class="ok-msg" id="loginOk"></div>
+    <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;display:block;margin:8px 0 5px">Мастер-код</label>
+    <input id="inKey" type="password" placeholder="Max_092010_m" autocomplete="off"/>
+    <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;display:block;margin:8px 0 5px">JWT-токен (если нет авто-входа)</label>
+    <textarea id="inToken" placeholder="eyJhbGciOi..."></textarea>
     <button class="btn" onclick="doLogin()">Войти</button>
+    <div class="hint">
+      Где взять JWT: открой Ink → F12 → Application → Local Storage → <code>ink_token</code>.<br>
+      Или: войди в Ink в этом же браузере, и панель подхватит токен сама.
+    </div>
   </div>
 </div>
 
-<!-- ПАНЕЛЬ -->
+<!-- ================= ПАНЕЛЬ ================= -->
 <div id="app">
   <header>
     <div class="logo">A</div>
@@ -169,16 +182,18 @@ tr.banned td{background:rgba(255,92,92,.05)}
       <div class="stats" id="sysStats"></div>
       <div class="card-info" style="margin-top:14px">
         <b>API:</b> <span id="sysApi"></span><br>
+        <b>Способ авторизации:</b> <span id="sysAuth"></span><br>
         <b>Пользователей:</b> <span id="sysUsers"></span><br>
         <b>Донатов:</b> <span id="sysDon"></span><br>
         <b>Жалоб:</b> <span id="sysRep"></span><br>
         <b>Входящих:</b> <span id="sysInbox"></span>
       </div>
       <div style="background:rgba(255,209,138,.08);border:1px solid rgba(255,209,138,.3);border-radius:14px;padding:14px;margin-top:14px;font-size:12.5px;line-height:1.6">
-        <b style="color:var(--warn)">⚠️ Безопасность:</b><br>
-        • Мастер-код зашит в клиенте — любой, кто откроет исходник страницы, увидит его.<br>
-        • Если хочешь реальную защиту — нужен отдельный эндпоинт на сервере или Basic Auth в nginx.<br>
-        • Не открывай панель с чужих устройств.
+        <b style="color:var(--warn)">⚠️ Способы авторизации:</b><br>
+        • <b>JWT из Ink</b> — если залогинен в этом браузере, панель работает автоматически.<br>
+        • <b>JWT из URL</b> — <code>?token=eyJ...</code>, для другого устройства.<br>
+        • <b>Мастер-ключ</b> — если сервер поддерживает <code>x-master-key</code> (нужна правка server.js).<br>
+        • Действия (банить, выдавать токены) работают через JWT — нужен действующий токен.
       </div>
     </section>
   </main>
@@ -192,7 +207,10 @@ tr.banned td{background:rgba(255,92,92,.05)}
    НАСТРОЙКА
    ============================================================ */
 const API = 'https://api.ink-chat.ru/api';
-const MASTER_KEY = 'Max_092010_m';   // мастер-код зашит в клиенте
+const MASTER_KEY = 'Max_092010_m';
+
+let JWT = '';             // текущий рабочий токен
+let AUTH_MODE = '';       // 'url' | 'storage' | 'manual' | 'master'
 let ME = null, USERS = [], DONATIONS = [], REPORTS = [], INBOX = [];
 
 const $ = id => document.getElementById(id);
@@ -208,23 +226,103 @@ function toast(msg, sub, type){
 }
 
 /* ============================================================
-   ВХОД ПО МАСТЕР-КОДУ
+   АВТО-ОПРЕДЕЛЕНИЕ ТОКЕНА
    ============================================================ */
-function doLogin(){
-  const k = $('inKey').value.trim();
-  if(k !== MASTER_KEY){
-    $('loginErr').textContent = 'Неверный мастер-код';
-    $('loginErr').classList.add('on');
+function detectToken(){
+  // 1. Из URL
+  const urlT = new URLSearchParams(location.search).get('token');
+  if(urlT){ JWT = urlT; AUTH_MODE = 'url'; localStorage.setItem('ink_admin_token', urlT); return true; }
+  // 2. Из localStorage Ink (мы залогинены в Ink в этом же браузере)
+  const inkT = localStorage.getItem('ink_token');
+  if(inkT){ JWT = inkT; AUTH_MODE = 'storage'; return true; }
+  // 3. Из сохранённого admin-токена
+  const admT = localStorage.getItem('ink_admin_token');
+  if(admT){ JWT = admT; AUTH_MODE = 'storage'; return true; }
+  return false;
+}
+
+/* ============================================================
+   ЗАПРОСЫ (с авто-фоллбэком)
+   ============================================================ */
+async function fetchWithJWT(path){
+  const headers = { 'Content-Type': 'application/json' };
+  if(JWT) headers['Authorization'] = 'Bearer ' + JWT;
+  const r = await fetch(API + path, { headers });
+  let d = {};
+  try { d = await r.json(); } catch(e){}
+  return { ok: r.ok, status: r.status, data: d };
+}
+async function fetchWithMaster(path){
+  const headers = { 'Content-Type': 'application/json', 'x-master-key': MASTER_KEY };
+  const r = await fetch(API + path, { headers });
+  let d = {};
+  try { d = await r.json(); } catch(e){}
+  return { ok: r.ok, status: r.status, data: d };
+}
+async function apiGet(path){
+  // Пробуем сначала мастер-ключ, потом JWT
+  let r = await fetchWithMaster(path);
+  if(r.ok) return { ok: true, data: r.data };
+  if(JWT){
+    r = await fetchWithJWT(path);
+    if(r.ok) return { ok: true, data: r.data };
+    return { ok: false, error: 'HTTP ' + r.status };
+  }
+  return { ok: false, error: 'Нет токена' };
+}
+async function apiAction(path, method, body){
+  // Действия — только с JWT (мастер-ключ не принимает PUT/POST)
+  if(!JWT){
+    return { ok: false, error: 'Действия требуют JWT. Войди в Ink в этом браузере или вставь токен вручную.' };
+  }
+  const headers = { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + JWT };
+  const r = await fetch(API + path, { method: method || 'POST', headers, body: body ? JSON.stringify(body) : undefined });
+  let d = {};
+  try { d = await r.json(); } catch(e){}
+  if(!r.ok) return { ok: false, error: d.error || ('HTTP ' + r.status) };
+  return { ok: true, data: d };
+}
+
+/* ============================================================
+   ЛОГИН
+   ============================================================ */
+function showErr(text){ const el = $('loginErr'); el.textContent = text; el.classList.add('on'); $('loginOk').classList.remove('on'); }
+function showOk(text){ const el = $('loginOk'); el.textContent = text; el.classList.add('on'); $('loginErr').classList.remove('on'); }
+
+async function doLogin(){
+  const key = $('inKey').value.trim();
+  const manualToken = $('inToken').value.trim();
+
+  // Мастер-ключ — если совпал локально и сервер поддерживает
+  if(key && key !== MASTER_KEY){
+    showErr('Неверный мастер-код');
     return;
   }
-  sessionStorage.setItem('ink_master_ok', '1');
+
+  // Если ввели JWT вручную — используем его
+  if(manualToken){
+    JWT = manualToken;
+    AUTH_MODE = 'manual';
+    localStorage.setItem('ink_admin_token', JWT);
+  }
+
+  // Проверим, что токен/мастер работает
+  const r = await apiGet('/users');
+  if(!r.ok){
+    showErr('Сервер: ' + r.error + '. Проверь токен или залогинься в Ink в этом браузере.');
+    return;
+  }
+
+  showOk('✓ Доступ разрешён');
   enterPanel();
 }
+
 function logout(){
   if(!confirm('Выйти из панели?')) return;
-  sessionStorage.removeItem('ink_master_ok');
-  location.reload();
+  localStorage.removeItem('ink_admin_token');
+  location.href = location.pathname;
 }
+
 function enterPanel(){
   $('login').classList.remove('on');
   $('app').classList.add('on');
@@ -233,51 +331,26 @@ function enterPanel(){
 }
 
 /* ============================================================
-   API — без токена, "как админ" нельзя — значит, через локальный список.
-   Раз сервер не трогаем, панель работает как просмотрщик:
-   - USERS берём из публичного /users (нужен токен) — не доступно без логина.
-   - Поэтому панель показывает: если сервер вернул данные — показать,
-     иначе — красную плашку с объяснением.
+   ЗАГРУЗКА ДАННЫХ
    ============================================================ */
-async function tryFetch(path){
-  try {
-    const r = await fetch(API + path, { headers: { 'Content-Type':'application/json' } });
-    if(!r.ok) return { error: 'HTTP ' + r.status };
-    return { data: await r.json() };
-  } catch(e){ return { error: e.message }; }
-}
-
 async function reloadAll(){
-  // Панель не имеет JWT, поэтому используем только то, что сервер отдаёт без авторизации.
-  // /users — требует токен, поэтому не сработает. Пробуем, но если ошибка — покажем плашку.
-  const u = await tryFetch('/users');
-  if(u.error){
-    showAuthNeeded(u.error);
+  const u = await apiGet('/users');
+  if(!u.ok){
+    toast('Ошибка', u.error, 'bad');
     return;
   }
   USERS = u.data || [];
 
-  const d = await tryFetch('/admin/donations');
-  DONATIONS = d.data || [];
-  const rp = await tryFetch('/admin/reports');
-  REPORTS = rp.data || [];
-  const ib = await tryFetch('/admin/inbox');
-  INBOX = ib.data || [];
+  const d = await apiGet('/admin/donations');
+  DONATIONS = d.ok ? (d.data || []) : [];
+  const rp = await apiGet('/admin/reports');
+  REPORTS = rp.ok ? (rp.data || []) : [];
+  const ib = await apiGet('/admin/inbox');
+  INBOX = ib.ok ? (ib.data || []) : [];
+
+  try { ME = await apiGet('/users/me').then(r => r.ok ? r.data : null); } catch(e){}
 
   renderUsers(); renderDonations(); renderReports(); renderInbox(); renderSystem();
-}
-
-function showAuthNeeded(err){
-  $('usersBody').innerHTML = `
-    <tr><td colspan="5"><div class="empty">
-      <b style="color:var(--danger)">Сервер требует авторизацию.</b><br><br>
-      Панель без JWT-токена не может получить список пользователей.<br>
-      Ответ сервера: <code>${esc(err)}</code><br><br>
-      Варианты:<br>
-      1. Открывать эту панель под сессией обычного Ink (тогда добавь в URL <code>?token=JWT</code>).<br>
-      2. Либо дописать на сервере мастер-эндпоинт — тогда всё заведётся сразу.<br><br>
-      Пока панель показывает только то, что сервер отдаёт без авторизации.
-    </div></td></tr>`;
 }
 
 /* ============================================================
@@ -297,9 +370,12 @@ function isBan(u){ return u.blocked_until && new Date(u.blocked_until) > new Dat
 function isAdmin(u){ return u.is_admin === true || u.isAdmin === true || u.is_admin === 'true' || u.isAdmin === 'true' }
 
 function renderUsers(){
-  if(!USERS.length){ $('usersBody').innerHTML = '<tr><td colspan="5"><div class="empty">Пользователей нет</div></td></tr>'; return }
+  if(!USERS.length){
+    $('usersBody').innerHTML = '<tr><td colspan="5"><div class="empty">Пусто</div></td></tr>';
+    return;
+  }
   const q = ($('search').value || '').trim().toLowerCase();
-  const list = USERS.filter(u => !q || String(u.login).toLowerCase().includes(q) || String(u.id) === q).sort((a,b)=>a.id-b.id);
+  const list = USERS.filter(u => !q || String(u.login||'').toLowerCase().includes(q) || String(u.id) === q).sort((a,b)=>a.id-b.id);
 
   $('stats').innerHTML = `
     <div class="card"><div class="num">${USERS.length}</div><div class="lbl">Всего</div></div>
@@ -323,11 +399,42 @@ function renderUsers(){
       <td>${tags.join(' ')}</td>
       <td><div class="actions">
         <button class="btn sm ghost" onclick="openUserModal(${u.id})">✏️</button>
+        ${isBan(u)
+          ? `<button class="btn sm ok" onclick="quickUnban(${u.id})">✅</button>`
+          : `<button class="btn sm danger" onclick="quickBan(${u.id})">🚫</button>`}
+        <button class="btn sm gold" onclick="quickGrant(${u.id})">💰</button>
       </div></td>
     </tr>`;
   }).join('');
 }
 
+async function quickBan(id){
+  const u = USERS.find(x => x.id === id); if(!u) return;
+  if(!confirm('Забанить ' + u.login + '?')) return;
+  const reason = prompt('Причина:', 'нарушение правил') || 'нарушение правил';
+  const r = await apiAction('/admin/users/' + id, 'PUT', { blocked_until: new Date(Date.now()+86400000).toISOString(), block_reason: reason, banned: true });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('🚫 Забанен', u.login, 'ok');
+  reloadAll();
+}
+async function quickUnban(id){
+  const r = await apiAction('/admin/users/' + id, 'PUT', { blocked_until: null, block_reason: '', banned: false });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('✅ Разбанен', '', 'ok');
+  reloadAll();
+}
+async function quickGrant(id){
+  const n = prompt('Сколько токенов выдать?', '100');
+  if(!n) return;
+  const r = await apiAction('/admin/credit-tokens', 'POST', { user_id: id, amount: Number(n) });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('💰 +' + n, '', 'ok');
+  reloadAll();
+}
+
+/* ============================================================
+   МОДАЛКА РЕДАКТИРОВАНИЯ ПОЛЬЗОВАТЕЛЯ
+   ============================================================ */
 function openUserModal(id){
   const u = USERS.find(x => x.id === id); if(!u) return;
   $('modal').innerHTML = `
@@ -352,49 +459,30 @@ function openUserModal(id){
 function closeModal(){ $('modal').classList.remove('on'); }
 
 async function saveUserModal(id){
+  const cur = USERS.find(x => x.id === id); if(!cur) return;
   const tokens = Number($('muTokens').value);
   const premDays = Number($('muPremDays').value);
   const ban = $('muBan').value.trim();
   const reason = $('muReason').value.trim();
 
-  // Все действия — через серверные эндпоинты, которые требуют JWT.
-  // Без токена они вернут 401/403. Поэтому показываем что делаем, но выполняем
-  // только если в браузере есть ink_token (ты залогинен в Ink в той же вкладке).
-  const JWT = localStorage.getItem('ink_token');
-  if(!JWT){
-    toast('Нет JWT', 'Сначала зайди в Ink в этом браузере', 'bad');
-    return;
-  }
   try {
-    if(tokens !== (USERS.find(x=>x.id===id).tokens || 0)){
-      const diff = tokens - (USERS.find(x=>x.id===id).tokens || 0);
-      await fetch(API + '/admin/credit-tokens', {
-        method:'POST',
-        headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT},
-        body: JSON.stringify({ user_id: id, amount: diff })
-      });
+    if(tokens !== (cur.tokens || 0)){
+      const diff = tokens - (cur.tokens || 0);
+      const r = await apiAction('/admin/credit-tokens', 'POST', { user_id: id, amount: diff });
+      if(!r.ok) throw new Error(r.error);
     }
     if(premDays > 0){
-      await fetch(API + '/premium/purchase', {
-        method:'POST',
-        headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT},
-        body: JSON.stringify({ target_user_id: id, days: premDays })
-      });
+      const r = await apiAction('/premium/purchase', 'POST', { target_user_id: id, days: premDays });
+      if(!r.ok) throw new Error(r.error);
     }
     if(ban){
-      await fetch(API + '/admin/users/'+id, {
-        method:'PUT',
-        headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT},
-        body: JSON.stringify({ blocked_until: new Date(ban).toISOString(), block_reason: reason })
-      });
-    } else if(USERS.find(x=>x.id===id).blocked_until){
-      await fetch(API + '/admin/users/'+id, {
-        method:'PUT',
-        headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT},
-        body: JSON.stringify({ blocked_until: null, block_reason: '' })
-      });
+      const r = await apiAction('/admin/users/' + id, 'PUT', { blocked_until: new Date(ban).toISOString(), block_reason: reason });
+      if(!r.ok) throw new Error(r.error);
+    } else if(cur.blocked_until){
+      const r = await apiAction('/admin/users/' + id, 'PUT', { blocked_until: null, block_reason: '' });
+      if(!r.ok) throw new Error(r.error);
     }
-    toast('✓ Сохранено','','ok');
+    toast('✓ Сохранено', '', 'ok');
     closeModal();
     reloadAll();
   } catch(e){ toast('Ошибка', e.message, 'bad'); }
@@ -427,18 +515,11 @@ function renderDonations(){
         <div class="t2">${esc(x.purpose_text||'—')} · ${x.status}</div>
       </div>`).join('')}`;
 }
-
 async function donateAction(id, action){
-  const JWT = localStorage.getItem('ink_token');
-  if(!JWT) return toast('Нет JWT','Сначала зайди в Ink','bad');
-  try {
-    await fetch(API + '/admin/donations/'+id+'/'+action, {
-      method:'POST',
-      headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT}
-    });
-    toast('✓ Готово','','ok');
-    reloadAll();
-  } catch(e){ toast('Ошибка', e.message, 'bad'); }
+  const r = await apiAction('/admin/donations/'+id+'/'+action, 'POST');
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('✓ Готово', '', 'ok');
+  reloadAll();
 }
 
 /* ============================================================
@@ -459,17 +540,10 @@ function renderReports(){
     </div>`).join('');
 }
 async function verdict(id, v){
-  const JWT = localStorage.getItem('ink_token');
-  if(!JWT) return toast('Нет JWT','Сначала зайди в Ink','bad');
-  try {
-    await fetch(API + '/admin/reports/'+id+'/verdict', {
-      method:'POST',
-      headers: {'Content-Type':'application/json','Authorization':'Bearer '+JWT},
-      body: JSON.stringify({ verdict: v })
-    });
-    toast('✓ Вердикт','','ok');
-    reloadAll();
-  } catch(e){ toast('Ошибка', e.message, 'bad'); }
+  const r = await apiAction('/admin/reports/'+id+'/verdict', 'POST', { verdict: v });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('✓ Вердикт', '', 'ok');
+  reloadAll();
 }
 
 /* ============================================================
@@ -489,12 +563,17 @@ function renderInbox(){
    СИСТЕМА
    ============================================================ */
 function renderSystem(){
+  const authLabel = AUTH_MODE === 'url'      ? 'JWT из URL'
+                  : AUTH_MODE === 'storage' ? 'JWT из localStorage Ink'
+                  : AUTH_MODE === 'manual'  ? 'JWT введён вручную'
+                  : 'мастер-ключ';
   $('sysStats').innerHTML = `
     <div class="card"><div class="num">${USERS.length}</div><div class="lbl">Пользователей</div></div>
     <div class="card"><div class="num">${DONATIONS.length}</div><div class="lbl">Донатов</div></div>
     <div class="card"><div class="num">${REPORTS.length}</div><div class="lbl">Жалоб</div></div>
     <div class="card"><div class="num">${INBOX.length}</div><div class="lbl">Входящих</div></div>`;
   $('sysApi').textContent = API;
+  $('sysAuth').textContent = authLabel;
   $('sysUsers').textContent = USERS.length;
   $('sysDon').textContent = DONATIONS.length;
   $('sysRep').textContent = REPORTS.length;
@@ -504,12 +583,18 @@ function renderSystem(){
 /* ============================================================
    СТАРТ
    ============================================================ */
-(function init(){
-  if(sessionStorage.getItem('ink_master_ok') === '1'){
-    enterPanel();
-  } else {
-    $('login').classList.add('on');
+(async function init(){
+  const hasToken = detectToken();
+  if(hasToken){
+    // Пробуем сразу войти
+    const r = await apiGet('/users');
+    if(r.ok){
+      enterPanel();
+      return;
+    }
   }
+  // Показываем форму логина
+  $('login').classList.add('on');
 })();
 </script>
 </body>
