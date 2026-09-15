@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Ink</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%234f8cff'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text></svg>"/>
+<style>
+:root{--bg:#0f1115;--panel:#171a21;--panel2:#1f232c;--border:#222;--border2:#2a3040;--accent:#4f8cff;--accent2:#7c5cff;--text:#e8ecf3;--muted:#8a93a5;--danger:#ff5c5c;--ok:#4ade80;--warn:#ffd18a;--mine:#5b6cff;--mine2:#8b5cff;--them:#232936;--tap:44px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html,body{height:100%;margin:0;overflow:hidden}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-user-select:none;user-select:none}
+input,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
+button{font-family:inherit}
+#auth{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:radial-gradient(1200px 600px at 50% -10%,var(--panel2) 0%,var(--bg) 60%);padding:16px;overflow:auto}
+#auth .card{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--border2);border-radius:22px;padding:26px 22px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+#auth h1{margin:0 0 6px;font-size:26px}
+#auth p.sub{margin:0 0 18px;color:var(--muted);font-size:13px}
+#auth input{width:100%;padding:14px;margin-bottom:10px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:16px;outline:none;min-height:var(--tap)}
+#auth input:focus{border-color:var(--accent)}
+.btn{width:100%;padding:14px;border:0;border-radius:12px;cursor:pointer;font-size:15px;font-weight:600;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;transition:transform .12s;min-height:var(--tap)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--muted)}
+.btn.danger{background:linear-gradient(135deg,#e04343,#a02020)}
+.btn.ok{background:linear-gradient(135deg,#22a55a,#15803d)}
+.btn.gold{background:linear-gradient(135deg,#ffb84d,#ff5c8a)}
+.btn.sm{padding:8px 12px;font-size:13px;width:auto;min-height:36px}
+.row{display:flex;gap:8px;margin-top:8px}.row .btn{flex:1}
+.msg-ok{padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:10px;display:none}
+.msg-ok.err{background:rgba(255,92,92,.12);color:var(--danger);border:1px solid rgba(255,92,92,.35);display:block}
+.msg-ok.ok{background:rgba(74,222,128,.12);color:var(--ok);border:1px solid rgba(74,222,128,.35);display:block}
+#loading{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#loading.open{display:flex}
+.spinner{width:44px;height:44px;border:4px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#app{display:none;flex-direction:column;height:100dvh;overflow:hidden}
+#app.open{display:flex}
+header{height:58px;display:flex;align-items:center;gap:2px;padding:0 8px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;padding-top:env(safe-area-inset-top,0)}
+header .title{font-weight:700;font-size:17px;padding:8px 10px;cursor:pointer;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+header .spacer{flex:1}
+header button{background:transparent;border:0;color:var(--text);font-size:18px;cursor:pointer;padding:8px;border-radius:12px;min-width:var(--tap);min-height:var(--tap);display:flex;align-items:center;justify-content:center;position:relative}
+header button:active{background:rgba(127,127,127,.15)}
+.layout{flex:1;display:flex;overflow:hidden;min-height:0}
+.sidebar{display:flex;flex-direction:column;width:100%;height:100%;background:var(--panel);min-width:0}
+.chatpane{display:none;flex-direction:column;width:100%;height:100%;background:var(--bg);min-width:0}
+body.in-chat .sidebar{display:none}
+body.in-chat .chatpane{display:flex}
+
+/* ── ПК: диалог на весь экран при заходе в чат ── */
+@media(min-width:820px){
+  .layout{display:grid;grid-template-columns:minmax(280px,340px) 1fr;transition:grid-template-columns .18s ease}
+  .sidebar{display:flex;border-right:1px solid var(--border);min-width:0}
+  .chatpane{display:flex;min-width:0}
+  body.in-chat .layout{grid-template-columns:1fr}
+  body.in-chat .sidebar{display:none}
+  body.in-chat .chatpane{display:flex;width:100%}
+  body.in-chat #backBtn{display:inline-flex !important}
+}
+
+.search{margin:10px 14px 0;padding:12px;background:var(--panel2);border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:16px}
+.createBtn{margin:10px 14px 0;padding:12px;text-align:center;border-radius:14px;border:1px dashed var(--border2);color:var(--muted);cursor:pointer;font-size:14px}
+.chatList{flex:1;overflow-y:auto;padding:8px 8px 14px}
+.chat-item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;cursor:pointer;min-height:64px}
+.chat-item:active{background:rgba(127,127,127,.15)}
+.avatar{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;overflow:hidden;background-size:cover;background-position:center}
+.avatar.sm{width:34px;height:34px;font-size:13px}
+.chat-item .meta{flex:1;min-width:0}
+.chat-item .name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-item .last{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── Полоска собеседника ── */
+.peer-bar{
+  display:none;
+  align-items:center;
+  gap:10px;
+  padding:8px 14px;
+  background:var(--panel);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  cursor:pointer;
+  min-height:54px;
+  transition:background .15s;
+}
+.peer-bar.show{display:flex}
+.peer-bar:active{background:rgba(127,127,127,.1)}
+.peer-bar .avatar{width:38px;height:38px;font-size:15px}
+.peer-bar .meta{flex:1;min-width:0}
+.peer-bar .name{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.peer-bar .status{font-size:12px;color:var(--muted);margin-top:1px}
+.peer-bar .status.online{color:var(--ok)}
+.peer-bar .status.typing{color:var(--accent)}
+.peer-bar .arrow{color:var(--muted);font-size:16px}
+
+.live-typing{
+  display:none;
+  padding:8px 14px;
+  background:linear-gradient(135deg,rgba(124,92,255,.12),rgba(79,140,255,.08));
+  border-bottom:1px solid rgba(124,92,255,.35);
+  font-size:13px;
+  color:#c7b3ff;
+  flex-shrink:0;
+  font-family:ui-monospace,Menlo,monospace;
+  word-break:break-word;
+  line-height:1.4;
+  max-height:80px;
+  overflow-y:auto;
+}
+.live-typing.show{display:block}
+.live-typing .lbl{color:#8a7cff;font-weight:600;margin-right:6px}
+
+.archive-bar{padding:10px 14px;background:linear-gradient(135deg,rgba(255,184,77,.12),rgba(255,92,138,.12));border-bottom:1px solid rgba(255,184,77,.35);font-size:13px;display:none;flex-shrink:0}
+.archive-bar.show{display:block}
+.archive-bar .line{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.archive-bar.warn{padding:8px 14px;background:rgba(255,92,92,.1);border-bottom:1px solid rgba(255,92,92,.3);color:#ffb3b3;font-size:12.5px;display:none}
+.archive-bar.warn.show{display:block}
+.archive-bar button{padding:6px 10px;border-radius:8px;border:0;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.save-bar{padding:10px 14px;background:linear-gradient(135deg,rgba(255,184,77,.15),rgba(255,92,138,.15));border-bottom:1px solid rgba(255,184,77,.4);font-size:13px;display:none;flex-shrink:0;align-items:center;gap:10px}
+.save-bar.show{display:flex}
+.save-bar .txt{flex:1;min-width:0;line-height:1.4}
+.save-bar .txt b{color:#ffb84d}
+.save-bar button{padding:8px 12px;border-radius:9px;border:0;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
+.save-bar button:disabled{opacity:.5;cursor:default}
+.save-bar .saved{color:#4ade80;font-weight:700;font-size:12.5px;white-space:nowrap}
+
+#messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:82%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.4;word-wrap:break-word;position:relative}
+.msg.them{align-self:flex-start;background:var(--them);border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg.me{align-self:flex-end;background:linear-gradient(135deg,var(--mine),var(--mine2));color:#fff;border-bottom-right-radius:4px}
+.msg .time{display:block;font-size:10.5px;opacity:.7;margin-top:4px;text-align:right}
+.msg .hashtag{color:#7cb8ff;cursor:pointer;font-weight:600}
+.msg .sname{display:block;font-size:11.5px;font-weight:700;color:var(--accent);margin-bottom:3px}
+.reactions{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.reaction{background:rgba(127,127,127,.15);padding:2px 8px;border-radius:10px;font-size:12px;cursor:pointer}
+.composer{display:flex;gap:10px;padding:12px 14px;border-top:1px solid var(--border);background:var(--panel);flex-shrink:0;align-items:center}
+.composer input{flex:1;min-width:0;padding:12px 16px;background:var(--panel2);border:1px solid var(--border2);border-radius:24px;color:var(--text);outline:none;font-size:15px}
+.composer .send-btn{width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;font-size:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0}
+.composer .emoji-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-size:18px;flex-shrink:0}
+.empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px;padding:0 20px}
+.panel{position:fixed;inset:0;z-index:70;display:none;background:rgba(0,0,0,.5)}
+.panel.open{display:block}
+.panel .box{position:absolute;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--panel);display:flex;flex-direction:column;overflow:hidden}
+@media(max-width:600px){.panel .box{width:100vw}}
+.st-header{height:58px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.st-header h2{margin:0;font-size:17px}
+.st-header .spacer{flex:1}
+.st-header button{background:transparent;border:0;color:var(--text);font-size:22px;cursor:pointer;padding:6px;min-width:var(--tap)}
+.st-back{background:transparent;border:0;color:var(--text);font-size:22px;cursor:pointer;padding:6px;min-width:var(--tap)}
+.st-body{flex:1;overflow-y:auto;padding:14px}
+.st-section{margin-bottom:20px}
+.st-section h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted)}
+.st-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--panel2);margin-bottom:8px;cursor:pointer;min-height:56px}
+.st-row:active{background:rgba(127,127,127,.2)}
+.st-row .icon{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:18px}
+.st-row .txt{flex:1;min-width:0}
+.st-row .t1{font-weight:600;font-size:14.5px}
+.st-row .t2{font-size:12px;color:var(--muted)}
+.switch{position:relative;width:46px;height:26px;border-radius:14px;background:var(--border2);cursor:pointer;flex-shrink:0;transition:background .2s}
+.switch.on{background:var(--accent)}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.switch.on::after{transform:translateX(20px)}
+.balance-card{background:linear-gradient(135deg,rgba(255,184,77,.12),rgba(255,92,138,.12));border:1px solid rgba(255,184,77,.35);border-radius:16px;padding:16px;text-align:center;margin-bottom:14px}
+.balance-card .num{font-size:32px;font-weight:700;color:#ffb84d;margin:4px 0}
+.balance-card .lbl{font-size:12.5px;color:var(--muted)}
+.card-info{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:10px;font-size:14px;line-height:1.7}
+.card-info .num{font-family:ui-monospace,Menlo,monospace;font-size:16px;letter-spacing:1.5px;color:var(--accent);font-weight:700;margin:4px 0;cursor:pointer;transition:color .15s}
+.card-info .num:hover{color:#7cb8ff}
+.card-info .num:active{color:#fff}
+.card-info .num.copied{color:#4ade80 !important}
+.card-info .num .copy-hint{font-size:11px;color:var(--muted);font-weight:400;margin-left:8px;font-family:system-ui,sans-serif;letter-spacing:0}
+.prem-feature{display:flex;gap:10px;padding:10px 12px;border-radius:12px;background:var(--panel2);margin-bottom:6px;align-items:center}
+.prem-feature .ico{font-size:20px;width:32px;text-align:center;flex-shrink:0}
+.prem-feature .txt{flex:1;min-width:0}
+.prem-feature .t1{font-weight:600;font-size:14px}
+.prem-feature .t2{font-size:12px;color:var(--muted);margin-top:2px}
+#toastBox{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:min(420px,calc(100vw - 24px))}
+.toast{background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:12px 14px}
+.toast .t1{font-weight:700;font-size:14px}
+.toast .t2{font-size:12.5px;color:var(--muted);margin-top:2px}
+.tokens-badge{background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;margin-left:4px}
+.premium-name{background:linear-gradient(135deg,#ffb84d,#ff5c8a,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
+.premium-badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;margin-left:4px}
+.smile-prefix{margin-right:3px}
+.text-prefix{background:linear-gradient(135deg,#ff5c8a,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;margin-right:3px}
+body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:#000a;color:#c7b3ff;padding:4px 12px;border-radius:999px;font-size:11px;letter-spacing:1.5px;z-index:40;pointer-events:none}
+.hero{text-align:center;padding:20px 14px;background:linear-gradient(135deg,rgba(79,140,255,.12),rgba(124,92,255,.12));border:1px solid rgba(79,140,255,.35);border-radius:18px;margin-bottom:14px}
+.hero .name{font-size:20px;font-weight:700}
+.hero .prefix{color:#ffb84d;font-weight:700;margin-right:4px}
+.hero .sub{font-size:12.5px;color:var(--muted);margin-top:4px}
+.btn-mini{padding:6px 12px;font-size:12.5px;border-radius:8px;border:1px solid var(--border2);background:var(--panel2);color:var(--text);cursor:pointer;font-family:inherit}
+.btn-mini.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#fff}
+.btn-mini.bad{background:rgba(255,92,92,.12);border-color:rgba(255,92,92,.4);color:var(--danger)}
+.btn-mini.good{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.4);color:var(--ok)}
+.role-tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;text-transform:uppercase;margin-left:4px}
+.role-owner{background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff}
+.role-coowner{background:rgba(79,140,255,.3);color:#8ab6ff}
+.role-member{background:rgba(127,127,127,.2);color:var(--muted)}
+.vote-row{background:var(--panel2);border:1px solid var(--border2);border-radius:14px;padding:12px;margin-bottom:10px}
+.vote-row .title{font-weight:600;font-size:14px;margin-bottom:6px}
+.vote-row .desc{font-size:12.5px;color:var(--muted);margin-bottom:8px;line-height:1.4}
+.vote-row .prog{height:8px;background:var(--border2);border-radius:4px;overflow:hidden;margin:8px 0}
+.vote-row .prog .fill{height:100%;background:linear-gradient(90deg,#22a55a,#4ade80)}
+.vote-row .actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.tx-row{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--panel2);margin-bottom:6px;font-size:13.5px}
+.tx-row .ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tx-row .ico.in{background:rgba(74,222,128,.15);color:var(--ok)}
+.tx-row .ico.out{background:rgba(255,92,92,.15);color:var(--danger)}
+.tx-row .info{flex:1;min-width:0}
+.tx-row .t1{font-weight:600}
+.tx-row .t2{font-size:11.5px;color:var(--muted);margin-top:1px}
+.tx-row .amount{font-weight:700;white-space:nowrap}
+.tx-row .amount.pos{color:var(--ok)}
+.tx-row .amount.neg{color:var(--danger)}
+.report-input{width:100%;padding:13px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);outline:none;font-size:15px;resize:vertical;font-family:inherit}
+.field-label{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:14px 0 6px;font-weight:600}
+.admin-stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:14px}
+.admin-stat .card{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:10px;text-align:center}
+.admin-stat .num{font-size:20px;font-weight:700;color:var(--accent)}
+.admin-stat .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.attach-row{display:flex;gap:8px;margin-top:10px}
+.attach-btn{flex:1;padding:12px;border-radius:12px;border:1px dashed var(--border2);background:var(--panel2);color:var(--text);cursor:pointer;font-size:13.5px;text-align:center;font-family:inherit}
+.attach-preview{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.attach-preview .thumb{position:relative;width:72px;height:72px;border-radius:10px;background-size:cover;background-position:center;border:1px solid var(--border2)}
+.attach-preview .thumb .rm{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
+.emoji-panel{position:absolute;bottom:60px;left:12px;right:12px;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:10px;z-index:60;display:none}
+.emoji-panel.open{display:block}
+.emoji-panel .tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.emoji-panel .tab{padding:4px 10px;border-radius:8px;font-size:12px;background:var(--panel2);border:1px solid var(--border2);cursor:pointer;color:var(--muted)}
+.emoji-panel .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.emoji-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px;max-height:200px;overflow-y:auto}
+.emoji-grid .e{font-size:22px;text-align:center;padding:6px;border-radius:8px;cursor:pointer;background:transparent;border:0;color:inherit}
+
+/* ── Меню действий с сообщением ── */
+.msg .msg-menu-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:6px;background:rgba(0,0,0,.45);color:#fff;border:0;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;line-height:1}
+.msg:hover .msg-menu-btn{display:flex}
+.msg.me .msg-menu-btn{background:rgba(0,0,0,.25)}
+.msg-menu{position:fixed;z-index:200;background:var(--panel);border:1px solid var(--border2);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.6);padding:6px;min-width:220px;display:none;font-size:14px}
+.msg-menu.open{display:block}
+.msg-menu .mi{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--text);white-space:nowrap}
+.msg-menu .mi:hover{background:var(--panel2)}
+.msg-menu .mi.danger{color:#ff8a8a}
+.msg-menu .sep{height:1px;background:var(--border);margin:4px 2px}
+.msg-menu .row-emojis{display:flex;gap:4px;padding:4px 6px 6px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.msg-menu .row-emojis span{font-size:20px;cursor:pointer;padding:4px 6px;border-radius:8px}
+.msg-menu .row-emojis span:hover{background:var(--panel2)}
+
+#peerProfile{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px}
+#peerProfile.open{display:flex}
+#peerProfile .box{background:var(--panel);border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:380px;text-align:center}
+#peerProfile .avatar{width:96px;height:96px;font-size:34px;margin:0 auto 12px}
+#peerProfile .name{font-size:20px;font-weight:700}
+#peerProfile .status{font-size:13px;color:var(--muted);margin-top:4px}
+#peerProfile .desc{font-size:13.5px;color:var(--text);margin-top:12px;line-height:1.5;padding:10px 12px;background:var(--panel2);border-radius:12px;text-align:left;min-height:50px}
+#peerProfile .row{margin-top:14px}
+
+@media(max-width:600px){.msg-menu{left:12px !important;right:12px;bottom:12px;top:auto !important;max-height:70vh;overflow-y:auto;border-radius:16px;min-width:0}}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px}
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="spinner"></div><div style="color:var(--muted);font-size:13px">Подключение...</div></div>
+
+<div id="auth">
+  <div class="card">
+    <div id="authMode">
+      <h1>Ink</h1>
+      <p class="sub">Войди по логину и паролю</p>
+      <div id="authMsg" class="msg-ok"></div>
+      <input id="inLogin" placeholder="Логин" autocapitalize="off"/>
+      <input id="inPass" type="password" placeholder="Пароль"/>
+      <button class="btn" onclick="doLogin()">Войти</button>
+      <div class="row"><button class="btn ghost" onclick="switchTo('reg')">Регистрация</button></div>
+    </div>
+    <div id="regMode" style="display:none">
+      <h1>Регистрация</h1>
+      <p class="sub">Придумай логин и пароль</p>
+      <div id="regMsg" class="msg-ok"></div>
+      <input id="regLogin" placeholder="Логин (мин. 3)" autocapitalize="off"/>
+      <input id="regPass" type="password" placeholder="Пароль (мин. 6)"/>
+      <input id="regPass2" type="password" placeholder="Повтори пароль"/>
+      <button class="btn" onclick="doRegister()">Создать аккаунт</button>
+      <div class="row"><button class="btn ghost" onclick="switchTo('login')">Назад</button></div>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <button id="backBtn" style="display:none" onclick="backToList()">←</button>
+    <div class="title" id="hTitle" onclick="openChatInfo()">Ink</div>
+    <div class="spacer"></div>
+    <button id="notifBtn" onclick="toggleNotifications()" title="Уведомления">🔔</button>
+    <button onclick="openShop()">💰<span class="tokens-badge" id="tokensCount">0</span></button>
+    <button onclick="toggleInkognito()">🕶️</button>
+    <button onclick="openSettings()">⚙️</button>
+  </header>
+  <div class="layout">
+    <div class="sidebar">
+      <input class="search" id="searchInput" placeholder="Поиск:" oninput="renderChats()"/>
+      <div class="createBtn" onclick="openCreateChatPanel()">+ Создать чат</div>
+      <div class="chatList" id="chatList"></div>
+    </div>
+    <div class="chatpane">
+      <div class="peer-bar" id="peerBar">
+        <div class="avatar" id="peerAvatar"></div>
+        <div class="meta">
+          <div class="name" id="peerName">—</div>
+          <div class="status" id="peerStatus">—</div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="live-typing" id="liveTyping">
+        <span class="lbl">🕶️ печатает:</span><span id="liveTypingText"></span>
+      </div>
+      <div class="save-bar" id="saveBar">
+        <div class="txt" id="saveBarText">⚠️ <b>1-го числа</b> переписка будет очищена. Сохрани до конца месяца.</div>
+        <span class="saved" id="saveBarSaved" style="display:none">✅ Сохранено</span>
+        <button id="saveBarBtn" onclick="saveConversation()">💾 Сохранить</button>
+      </div>
+      <div class="archive-bar" id="archiveBar">
+        <div class="line">
+          <span id="archiveLine">Архив за месяц</span>
+          <button onclick="downloadArchive()">📥 Скачать и очистить</button>
+        </div>
+      </div>
+      <div class="archive-bar warn" id="archiveWarn"></div>
+      <div id="messages"></div>
+      <div class="emoji-panel" id="emojiPanel"></div>
+      <div class="composer">
+        <button class="emoji-btn" onclick="toggleEmojiPanel()">😊</button>
+        <input id="msgInput" placeholder="Сообщение..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}" oninput="onTypingInput()"/>
+        <button class="send-btn" onclick="sendMsg()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="settings"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Настройки</h2><div class="spacer"></div><button onclick="closePanel('settings')">✕</button></div><div class="st-body" id="settingsBody"></div></div></div>
+<div class="panel" id="editProfile"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Мой профиль</h2><div class="spacer"></div><button onclick="closePanel('editProfile')">✕</button></div><div class="st-body" id="editProfileBody"></div></div></div>
+<div class="panel" id="createChat"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Новый чат</h2><div class="spacer"></div><button onclick="closePanel('createChat')">✕</button></div><div class="st-body" id="createChatBody"></div></div></div>
+<div class="panel" id="shop"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛒 Покупки</h2><div class="spacer"></div><button onclick="closePanel('shop')">✕</button></div><div class="st-body" id="shopBody"></div></div></div>
+<div class="panel" id="clansList"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Кланы</h2><div class="spacer"></div><button onclick="closePanel('clansList')">✕</button></div><div class="st-body" id="clansListBody"></div></div></div>
+<div class="panel" id="clanCard"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="clanTitle">Клан</h2><div class="spacer"></div><button onclick="closePanel('clanCard')">✕</button></div><div class="st-body" id="clanBody"></div></div></div>
+<div class="panel" id="clanCreate"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Создать клан</h2><div class="spacer"></div><button onclick="closePanel('clanCreate')">✕</button></div><div class="st-body" id="clanCreateBody"></div></div></div>
+<div class="panel" id="clanProposal"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>💡 Предложить покупку</h2><div class="spacer"></div><button onclick="closePanel('clanProposal')">✕</button></div><div class="st-body" id="clanProposalBody"></div></div></div>
+<div class="panel" id="clanInkStock"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🗄️ Хранилище Inkognito</h2><div class="spacer"></div><button onclick="closePanel('clanInkStock')">✕</button></div><div class="st-body" id="clanInkStockBody"></div></div></div>
+<div class="panel" id="clanRating"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🏆 Рейтинг кланов</h2><div class="spacer"></div><button onclick="closePanel('clanRating')">✕</button></div><div class="st-body" id="clanRatingBody"></div></div></div>
+<div class="panel" id="wallet"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>💰 Мой кошелёк</h2><div class="spacer"></div><button onclick="closePanel('wallet')">✕</button></div><div class="st-body" id="walletBody"></div></div></div>
+<div class="panel" id="sendTokens"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>📤 Перевести токены</h2><div class="spacer"></div><button onclick="closePanel('sendTokens')">✕</button></div><div class="st-body" id="sendTokensBody"></div></div></div>
+<div class="panel" id="transactions"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>📜 Транзакции</h2><div class="spacer"></div><button onclick="closePanel('transactions')">✕</button></div><div class="st-body" id="transactionsBody"></div></div></div>
+<div class="panel" id="chatSettings"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Настройки чата</h2><div class="spacer"></div><button onclick="closePanel('chatSettings')">✕</button></div><div class="st-body" id="chatSettingsBody"></div></div></div>
+<div class="panel" id="emojiCustomize"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🎨 Эмодзи и префиксы</h2><div class="spacer"></div><button onclick="closePanel('emojiCustomize')">✕</button></div><div class="st-body" id="emojiCustomizeBody"></div></div></div>
+<div class="panel" id="reportPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="reportTitle">⚠️ Жалоба</h2><div class="spacer"></div><button onclick="closePanel('reportPanel')">✕</button></div><div class="st-body" id="reportBody"></div></div></div>
+<div class="panel" id="adminPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Админ-панель</h2><div class="spacer"></div><button onclick="closePanel('adminPanel')">✕</button></div><div class="st-body" id="adminBody"></div></div></div>
+
+<div id="peerProfile"><div class="box" onclick="event.stopPropagation()">
+  <div class="avatar" id="ppAvatar"></div>
+  <div class="name" id="ppName">—</div>
+  <div class="status" id="ppStatus">—</div>
+  <div class="desc" id="ppDesc">—</div>
+  <div class="row"><button class="btn ghost" onclick="closePeerProfile()">Закрыть</button></div>
+</div></div>
+
+<div class="msg-menu" id="msgMenu"></div>
+<div id="toastBox"></div>
+
+<script>
+/* ============================================================
+   НАСТРОЙКА
+   ============================================================ */
+const API = 'https://api.ink-chat.ru/api';
+const CARD_NUMBER = '2200 1536 8967 4803';
+let TOKEN = localStorage.getItem('ink_token') || null;
+let ME = null, USERS = [], CHATS = [], MSGS = {}, CLANS = [], RATING = [], TX = [];
+let CURRENT_CHAT = null, CURRENT_CLAN = null;
+let STACK = [];
+let NOTIF_GLOBAL = true, NOTIF_CHATS = {};
+let DRAFT_INFO = null;
+let REPORT_SCREENS = [];
+let PEER_STATUS_TIMER = null;
+let TYPING_TIMER = null;
+let LAST_TYPING_SENT = 0;
+
+async function api(path, method, body){
+  const opt = { method: method || 'GET', headers: {'Content-Type':'application/json'} };
+  if(TOKEN) opt.headers['Authorization'] = 'Bearer ' + TOKEN;
+  if(body) opt.body = JSON.stringify(body);
+  const r = await fetch(API + path, opt);
+  let d = {};
+  try { d = await r.json(); } catch(e){}
+  if(!r.ok) throw new Error(d.error || ('HTTP ' + r.status));
+  return d;
+}
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+function toast(a,b){ const el=document.createElement('div'); el.className='toast'; el.innerHTML=`<div class="t1">${esc(a)}</div><div class="t2">${esc(b||'')}</div>`; $('toastBox').appendChild(el); setTimeout(()=>el.remove(),3500) }
+function fmt(n){ return Number(n||0).toLocaleString('ru-RU') }
+function showLoading(on){ const el=$('loading'); if(!el) return; on ? el.classList.add('open') : el.classList.remove('open') }
+function showMsg(id,t,k){ const el=$(id); if(!el) return; el.textContent=t; el.className='msg-ok '+k }
+function switchTo(w){ $('authMode').style.display=w==='login'?'block':'none'; $('regMode').style.display=w==='reg'?'block':'none'; $('authMsg').className='msg-ok'; $('regMsg').className='msg-ok' }
+
+/* ============================================================
+   ПАНЕЛИ
+   ============================================================ */
+function openPanel(id){ const el=document.getElementById(id); if(!el) return; if(!el.classList.contains('open')) STACK.push(id); el.classList.add('open'); }
+function closePanel(id){ const el=document.getElementById(id); if(el) el.classList.remove('open'); STACK = STACK.filter(x => x !== id); }
+function goBack(){ if(!STACK.length) return; const cur = STACK.pop(); const curEl = document.getElementById(cur); if(curEl) curEl.classList.remove('open'); const prev = STACK[STACK.length-1]; if(prev){ const p = document.getElementById(prev); if(p) p.classList.add('open'); } }
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+async function doRegister(){
+  const l = $('regLogin').value.trim(); const p1 = $('regPass').value, p2 = $('regPass2').value;
+  if(l.length<3) return showMsg('regMsg','Логин минимум 3','err');
+  if(p1.length<6) return showMsg('regMsg','Пароль минимум 6','err');
+  if(p1!==p2) return showMsg('regMsg','Пароли не совпадают','err');
+  try { showMsg('regMsg','Создаю...','ok'); const r = await api('/auth/register','POST',{ username:l, password:p1 }); TOKEN = r.token; localStorage.setItem('ink_token', TOKEN); showMsg('regMsg','Готово!','ok'); setTimeout(enterApp, 400); }
+  catch(e){ showMsg('regMsg', e.message, 'err'); }
+}
+async function doLogin(){
+  const l = $('inLogin').value.trim(), p = $('inPass').value;
+  if(!l || !p) return showMsg('authMsg','Заполни','err');
+  try { showMsg('authMsg','Вход...','ok'); const r = await api('/auth/login','POST',{ username:l, password:p }); TOKEN = r.token; localStorage.setItem('ink_token', TOKEN); showMsg('authMsg','Успех!','ok'); setTimeout(enterApp, 300); }
+  catch(e){ showMsg('authMsg', e.message, 'err'); }
+}
+function logout(){ if(!confirm('Выйти?')) return; localStorage.removeItem('ink_token'); TOKEN = null; location.reload(); }
+
+/* ============================================================
+   ЗАГРУЗКА
+   ============================================================ */
+async function loadAll(){
+  showLoading(true);
+  try {
+    ME = await api('/users/me');
+    USERS = await api('/users');
+    CHATS = await api('/chats');
+    MSGS = {};
+    for(const c of CHATS){ try { MSGS[c.id] = await api('/messages/' + c.id); } catch(e){ MSGS[c.id] = []; } }
+    try { CLANS = await api('/clans'); } catch(e){ CLANS = []; }
+    try { TX = await api('/transactions'); } catch(e){ TX = []; }
+    try { const s = await api('/push/settings'); NOTIF_GLOBAL = s.global !== false; NOTIF_CHATS = s.chats || {}; } catch(e){}
+  } finally { showLoading(false); }
+}
+async function enterApp(){
+  try { await loadAll(); $('auth').style.display = 'none'; $('app').classList.add('open'); renderChats(); renderTokensBadge(); renderNotifBtn(); startPresence(); initPush(); }
+  catch(e){ toast('Ошибка', e.message); $('auth').style.display = 'flex'; }
+}
+function renderTokensBadge(){ const el = $('tokensCount'); if(el) el.textContent = (ME && ME.tokens) || 0 }
+function renderNotifBtn(){ const el = $('notifBtn'); if(el) el.textContent = NOTIF_GLOBAL ? '🔔' : '🔕' }
+let presenceTimer = null;
+function startPresence(){
+  if(presenceTimer) clearInterval(presenceTimer);
+  presenceTimer = setInterval(() => { api('/presence','POST').then(r => { ME.tokens = r.tokens; renderTokensBadge(); }).catch(()=>{}); }, 60000);
+  api('/presence','POST').then(r => { ME.tokens = r.tokens; renderTokensBadge(); }).catch(()=>{});
+}
+
+/* ============================================================
+   PUSH
+   ============================================================ */
+async function initPush(){
+  if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+    const reg = await navigator.serviceWorker.register('sw.js');
+    const keyRes = await api('/push/key');
+    if(!keyRes.key) return;
+    if(Notification.permission === 'denied') return;
+    let perm = Notification.permission;
+    if(perm === 'default') perm = await Notification.requestPermission();
+    if(perm !== 'granted') return;
+    let sub = await reg.pushManager.getSubscription();
+    if(!sub){ sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: urlB64ToUint8Array(keyRes.key) }); }
+    await api('/push/subscribe','POST',{ subscription: sub });
+  } catch(e){ console.warn('[push]', e.message); }
+}
+function urlB64ToUint8Array(base64){
+  const padding = '='.repeat((4 - base64.length % 4) % 4);
+  const b64 = (base64 + padding).replace(/-/g,'+').replace(/_/g,'/');
+  const raw = atob(b64); const arr = new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++) arr[i] = raw.charCodeAt(i);
+  return arr;
+}
+async function toggleNotifications(){
+  NOTIF_GLOBAL = !NOTIF_GLOBAL; renderNotifBtn();
+  try { await api('/push/settings','POST',{ global: NOTIF_GLOBAL }); toast(NOTIF_GLOBAL ? 'Уведомления включены' : 'Уведомления выключены',''); }
+  catch(e){ toast('Ошибка', e.message); }
+}
+
+/* ============================================================
+   ИМЯ / АВАТАР / ПРОФИЛЬ
+   ============================================================ */
+function isPremium(u){ if(!u || !u.premium) return false; if(!u.premium_until) return true; return new Date(u.premium_until) > new Date() }
+function userById(id){ return USERS.find(u => u.id === id) }
+function nameHTML(u){
+  if(!u) return '';
+  let pre = '';
+  if(u.is_donor){
+    if(u.show_smile_prefix !== false && u.donor_smile_prefix) pre += `<span class="smile-prefix">${u.donor_smile_prefix}</span>`;
+    if(u.show_text_prefix !== false && u.donor_text_prefix) pre += `<span class="text-prefix">${esc(u.donor_text_prefix)}</span>`;
+  }
+  if(u.custom_prefix && isPremium(u)) pre += `<span class="smile-prefix">${esc(u.custom_prefix)}</span>`;
+  const n = esc(u.login);
+  return pre + (isPremium(u) ? `<span class="premium-name">${n}</span><span class="premium-badge">💎 PRO</span>` : n);
+}
+function avatarHTML(u, cls){
+  const c = cls || '';
+  if(!u) return `<div class="avatar ${c}">?</div>`;
+  if(u.avatar_url) return `<div class="avatar ${c}" style="background-image:url('${u.avatar_url}')"></div>`;
+  return `<div class="avatar ${c}">${(u.login||'?')[0].toUpperCase()}</div>`;
+}
+
+function openPeerProfile(uid){
+  const u = userById(uid);
+  if(!u) return;
+  const av = $('ppAvatar');
+  if(u.avatar_url){ av.style.backgroundImage = `url('${u.avatar_url}')`; av.textContent = ''; }
+  else { av.style.backgroundImage = ''; av.textContent = (u.login||'?')[0].toUpperCase(); }
+  $('ppName').innerHTML = nameHTML(u);
+  $('ppStatus').textContent = statusText(u);
+  $('ppDesc').textContent = u.description || 'О себе пока ничего не написал.';
+  $('peerProfile').classList.add('open');
+}
+function closePeerProfile(){ $('peerProfile').classList.remove('open'); }
+$('peerProfile').addEventListener('click', closePeerProfile);
+
+/* ============================================================
+   СТАТУС
+   ============================================================ */
+function statusText(u){
+  if(!u) return '—';
+  const last = u.last_seen ? new Date(u.last_seen).getTime() : 0;
+  const diff = Date.now() - last;
+  if(diff < 120000) return 'в сети';
+  if(diff < 3600000) return 'был(а) ' + Math.floor(diff/60000) + ' мин назад';
+  if(diff < 86400000) return 'был(а) ' + Math.floor(diff/3600000) + ' ч назад';
+  return 'не в сети';
+}
+function isOnline(u){ if(!u || !u.last_seen) return false; return (Date.now() - new Date(u.last_seen).getTime()) < 120000; }
+
+/* ============================================================
+   ПОЛОСКА СОБЕСЕДНИКА
+   ============================================================ */
+function renderPeerBar(){
+  const bar = $('peerBar');
+  if(!bar) return;
+  if(!CURRENT_CHAT || CURRENT_CHAT.type !== 'private'){ bar.classList.remove('show'); stopPeerStatusTimer(); return; }
+  const otherId = (CURRENT_CHAT.memberIds||[]).find(x => x !== ME.id);
+  const u = userById(otherId);
+  if(!u){ bar.classList.remove('show'); return; }
+  bar.classList.add('show');
+  const av = $('peerAvatar');
+  if(u.avatar_url){ av.style.backgroundImage = `url('${u.avatar_url}')`; av.textContent = ''; }
+  else { av.style.backgroundImage = ''; av.textContent = (u.login||'?')[0].toUpperCase(); }
+  $('peerName').innerHTML = nameHTML(u);
+  const st = $('peerStatus');
+  const online = isOnline(u);
+  st.className = 'status' + (online ? ' online' : '');
+  st.textContent = statusText(u);
+  bar.onclick = () => openPeerProfile(otherId);
+}
+function startPeerStatusTimer(){
+  stopPeerStatusTimer();
+  PEER_STATUS_TIMER = setInterval(() => {
+    if(!CURRENT_CHAT || CURRENT_CHAT.type !== 'private') return;
+    if(document.hidden) return;
+    renderPeerBar();
+  }, 3000);
+}
+function stopPeerStatusTimer(){ if(PEER_STATUS_TIMER){ clearInterval(PEER_STATUS_TIMER); PEER_STATUS_TIMER = null; } }
+
+/* ============================================================
+   ЧАТЫ
+   ============================================================ */
+function renderChats(){
+  const box = $('chatList'); box.innerHTML = '';
+  if(!CHATS.length){ box.innerHTML = '<div class="empty">Чатов пока нет</div>'; return }
+  CHATS.forEach(c => {
+    const msgs = MSGS[c.id] || []; const last = msgs[msgs.length-1];
+    const isGroup = c.type === 'group' || c.type === 'channel';
+    const el = document.createElement('div');
+    el.className = 'chat-item';
+    el.innerHTML = `<div class="avatar">${c.name.replace(/^#+/,'')[0].toUpperCase()}</div>
+      <div class="meta"><div class="name">${esc(c.name)} ${isGroup ? '<span style="font-size:10px;color:var(--muted)">'+c.type+'</span>' : ''}</div>
+      <div class="last">${last ? esc(last.text||'').slice(0,40) : ''}</div></div>`;
+    el.onclick = () => openChat(c.id);
+    box.appendChild(el);
+  });
+}
+async function openChat(id){
+  CURRENT_CHAT = CHATS.find(c => c.id === id);
+  if(!CURRENT_CHAT) return;
+  document.body.classList.add('in-chat');
+  $('backBtn').style.display = 'inline-block';
+  $('hTitle').textContent = CURRENT_CHAT.name;
+  try { MSGS[id] = await api('/messages/' + id); } catch(e){}
+  await renderMessagesAndArchive();
+  renderPeerBar();
+  startPeerStatusTimer();
+  startSilentPolling();
+  startTypingPolling();
+}
+function backToList(){
+  CURRENT_CHAT = null;
+  document.body.classList.remove('in-chat');
+  $('backBtn').style.display = 'none';
+  $('hTitle').textContent = 'Ink';
+  $('archiveBar').classList.remove('show');
+  $('archiveWarn').classList.remove('show');
+  $('saveBar').classList.remove('show');
+  $('peerBar').classList.remove('show');
+  $('liveTyping').classList.remove('show');
+  stopSilentPolling();
+  stopTypingPolling();
+  stopPeerStatusTimer();
+}
+function openChatInfo(){ if(CURRENT_CHAT) openChatSettings(); }
+
+/* ============================================================
+   СОХРАНЕНИЕ ПЕРЕПИСКИ (кнопка с 14 числа)
+   Удаление — только 1-го числа сервером.
+   ============================================================ */
+function shouldShowSaveBar(){
+  if(!CURRENT_CHAT) return false;
+  if(CURRENT_CHAT.type !== 'private') return false;
+  const day = new Date().getDate();
+  if(day < 14) return false;
+  return true;
+}
+function renderSaveBar(){
+  const bar = $('saveBar'); if(!bar) return;
+  if(!shouldShowSaveBar()){ bar.classList.remove('show'); return; }
+  bar.classList.add('show');
+  const saved = DRAFT_INFO && DRAFT_INFO.myConverted;
+  const btn = $('saveBarBtn'); const savedEl = $('saveBarSaved'); const txt = $('saveBarText');
+  if(saved){
+    btn.style.display = 'none'; savedEl.style.display = 'inline';
+    txt.innerHTML = '✅ Переписка за <b>' + ((DRAFT_INFO && DRAFT_INFO.month) || 'этот месяц') + '</b> сохранена у тебя в загрузках. <b>1-го числа</b> сервер очистит её.';
+  } else {
+    btn.style.display = 'inline'; btn.disabled = false; savedEl.style.display = 'none';
+    const draft = DRAFT_INFO && DRAFT_INFO.draftCount ? DRAFT_INFO.draftCount : 0;
+    txt.innerHTML = '⚠️ <b>1-го числа</b> переписка будет очищена с сервера. ' +
+                    (draft ? 'Сообщений: <b>' + draft + '</b>. ' : '') +
+                    'Нажми <b>💾 Сохранить</b> — файл скачается в загрузки, чтобы не потерять.';
+  }
+}
+async function saveConversation(){
+  if(!CURRENT_CHAT) return;
+  const btn = $('saveBarBtn'); if(btn) btn.disabled = true;
+  const month = (DRAFT_INFO && DRAFT_INFO.month) || new Date().toISOString().slice(0,7);
+  try {
+    const data = await api('/chats/' + CURRENT_CHAT.id + '/draft/' + month);
+    const otherId = (CURRENT_CHAT.memberIds||[]).find(x => x !== ME.id);
+    const other = userById(otherId);
+    const otherName = other ? other.login : 'chat';
+    const fileName = 'ink-' + otherName + '-' + month + '.json';
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 500);
+    await api('/chats/' + CURRENT_CHAT.id + '/convert/' + month, 'POST');
+    try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){}
+    renderSaveBar();
+    updateArchiveBar();
+    toast('💾 Файл скачан', fileName + ' — 1-го числа сервер очистит переписку');
+  } catch(e){
+    toast('Ошибка сохранения', e.message);
+    if(btn) btn.disabled = false;
+  }
+}
+
+/* ============================================================
+   АРХИВ + СООБЩЕНИЯ
+   ============================================================ */
+async function renderMessagesAndArchive(){
+  if(!CURRENT_CHAT) return;
+  DRAFT_INFO = null;
+  try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){ DRAFT_INFO = null }
+  const box = $('messages'); box.innerHTML = '';
+  const msgs = (MSGS[CURRENT_CHAT.id] || []).slice();
+  const today = DRAFT_INFO && DRAFT_INFO.today ? DRAFT_INFO.today : new Date().toISOString().slice(0,10);
+  const myConv = DRAFT_INFO && DRAFT_INFO.myConverted;
+  const visible = msgs.filter(m => {
+    const d = m.created_at ? m.created_at.slice(0,10) : '';
+    if(!myConv) return true;
+    return d.startsWith(today);
+  });
+  visible.forEach(m => {
+    if(m.deleted_for_all) return;
+    const isMe = m.sender_id === ME.id;
+    const el = document.createElement('div');
+    el.className = 'msg ' + (isMe ? 'me' : 'them');
+    el.dataset.mid = m.id;
+    let head = '';
+    if(!isMe && CURRENT_CHAT.type !== 'private'){
+      const u = userById(m.sender_id);
+      if(u) head = `<span class="sname">${nameHTML(u)}</span>`;
+    }
+    let rx = '';
+    if(m.reactions && Object.keys(m.reactions).length){
+      rx = '<div class="reactions">';
+      for(const [e, list] of Object.entries(m.reactions)){
+        rx += `<span class="reaction" onclick="toggleReaction(${m.id},'${e}')">${e} ${(list||[]).length}</span>`;
+      }
+      rx += '</div>';
+    }
+    const text = esc(m.text || '').replace(/#([\wа-яё]+)/gi, (x,tag)=>`<span class="hashtag">#${tag}</span>`);
+    el.innerHTML = head + text + rx +
+      `<button class="msg-menu-btn" onclick="event.stopPropagation();openMsgMenu(event, ${m.id})" title="Действия">⋯</button>` +
+      `<span class="time">${m.created_at ? new Date(m.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : ''}</span>`;
+    el.ondblclick = () => toggleReaction(m.id, '👍');
+    el.oncontextmenu = (e) => { e.preventDefault(); openMsgMenu(e, m.id); };
+    attachLongPress(el, m.id);
+    box.appendChild(el);
+  });
+  box.scrollTop = box.scrollHeight;
+  updateArchiveBar();
+  renderSaveBar();
+}
+function updateArchiveBar(){
+  const bar = $('archiveBar'), warn = $('archiveWarn');
+  if(!DRAFT_INFO){ bar.classList.remove('show'); warn.classList.remove('show'); return; }
+  if(DRAFT_INFO.myConverted){ bar.classList.remove('show'); }
+  else if(DRAFT_INFO.draftCount > 0){ $('archiveLine').innerHTML = `📦 Архив за <b>${DRAFT_INFO.month}</b>: ${DRAFT_INFO.draftCount} сообщений`; bar.classList.add('show'); }
+  else { bar.classList.remove('show'); }
+  if(CURRENT_CHAT.type === 'private'){
+    const other = (DRAFT_INFO.others||[])[0];
+    if(other && !other.converted){ warn.innerHTML = `⚠️ <b>${esc(other.login)}</b> не сохранил архив за ${DRAFT_INFO.month}`; warn.classList.add('show'); }
+    else warn.classList.remove('show');
+  } else {
+    const notConv = (DRAFT_INFO.others||[]).filter(o => !o.converted);
+    if(notConv.length){ warn.innerHTML = `⚠️ Не сохранили: ${notConv.map(o=>esc(o.login)).join(', ')}`; warn.classList.add('show'); }
+    else warn.classList.remove('show');
+  }
+}
+async function downloadArchive(){
+  if(!DRAFT_INFO || !CURRENT_CHAT) return;
+  try {
+    const month = DRAFT_INFO.month;
+    const data = await api('/chats/' + CURRENT_CHAT.id + '/draft/' + month);
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ink-' + CURRENT_CHAT.id + '-' + month + '.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    await api('/chats/' + CURRENT_CHAT.id + '/convert/' + month, 'POST');
+    toast('📦 Архив сохранён', month);
+    await renderMessagesAndArchive();
+  } catch(e){ toast('Ошибка', e.message); }
+}
+
+/* ============================================================
+   TYPING — отправка и приём
+   ============================================================ */
+function onTypingInput(){
+  if(!CURRENT_CHAT) return;
+  const now = Date.now();
+  if(now - LAST_TYPING_SENT < 400) return;
+  LAST_TYPING_SENT = now;
+  const text = $('msgInput').value;
+  clearTimeout(TYPING_TIMER);
+  TYPING_TIMER = setTimeout(() => {
+    api('/typing', 'POST', { chat_id: CURRENT_CHAT.id, text }).catch(()=>{});
+  }, 200);
+  if(!text) api('/typing', 'POST', { chat_id: CURRENT_CHAT.id, text: '' }).catch(()=>{});
+}
+let typingPollTimer = null;
+function startTypingPolling(){
+  stopTypingPolling();
+  typingPollTimer = setInterval(async () => {
+    if(!CURRENT_CHAT || CURRENT_CHAT.type !== 'private') return;
+    if(document.hidden) return;
+    try {
+      const list = await api('/typing/' + CURRENT_CHAT.id);
+      const box = $('liveTyping');
+      const txt = $('liveTypingText');
+      const otherId = (CURRENT_CHAT.memberIds||[]).find(x => x !== ME.id);
+      const other = userById(otherId);
+      const inkActive = other && other.inkUntil && new Date(other.inkUntil) > new Date();
+      if(list && list.length && inkActive){
+        box.classList.add('show');
+        txt.textContent = list[0].text || '';
+      } else if(list && list.length && !inkActive){
+        box.classList.remove('show');
+        const st = $('peerStatus');
+        if(st){ st.className = 'status typing'; st.textContent = 'печатает…'; }
+      } else {
+        box.classList.remove('show');
+        renderPeerBar();
+      }
+    } catch(e){}
+  }, 1000);
+}
+function stopTypingPolling(){ if(typingPollTimer){ clearInterval(typingPollTimer); typingPollTimer = null; } }
+
+/* ============================================================
+   ТИХИЙ ОПРОС СООБЩЕНИЙ
+   ============================================================ */
+let silentPollTimer = null;
+let lastMsgSignature = '';
+function startSilentPolling(){
+  stopSilentPolling(); lastMsgSignature = '';
+  silentPollTimer = setInterval(async () => {
+    if(!CURRENT_CHAT) return;
+    if(document.hidden) return;
+    if(!$('messages')) return;
+    try {
+      const fresh = await api('/messages/' + CURRENT_CHAT.id);
+      const sig = JSON.stringify(fresh.map(m => [m.id, m.text, m.reactions || null, m.deleted_for_all || false]));
+      if(sig === lastMsgSignature) return;
+      lastMsgSignature = sig;
+      MSGS[CURRENT_CHAT.id] = fresh;
+      softUpdateMessages(fresh);
+    } catch(e){}
+  }, 1000);
+}
+function stopSilentPolling(){ if(silentPollTimer){ clearInterval(silentPollTimer); silentPollTimer = null; } }
+function buildReactionsHTML(m){
+  if(!m.reactions || !Object.keys(m.reactions).length) return '';
+  let rx = '<div class="reactions">';
+  for(const [e, list] of Object.entries(m.reactions)){ rx += `<span class="reaction" onclick="toggleReaction(${m.id},'${e}')">${e} ${(list||[]).length}</span>`; }
+  rx += '</div>';
+  return rx;
+}
+function softUpdateMessages(fresh){
+  const box = $('messages'); if(!box) return;
+  const today = DRAFT_INFO && DRAFT_INFO.today ? DRAFT_INFO.today : new Date().toISOString().slice(0,10);
+  const myConv = DRAFT_INFO && DRAFT_INFO.myConverted;
+  const visible = fresh.filter(m => {
+    if(m.deleted_for_all) return false;
+    const d = m.created_at ? m.created_at.slice(0,10) : '';
+    if(!myConv) return true;
+    return d.startsWith(today);
+  });
+  const wasAtBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+  const existing = Array.from(box.querySelectorAll('.msg'));
+  const idsMatch = existing.length === visible.length && existing.every((el, i) => Number(el.dataset.mid) === Number(visible[i].id));
+  if(idsMatch){
+    existing.forEach((el, i) => {
+      const m = visible[i];
+      const rxHtml = buildReactionsHTML(m);
+      const rxEl = el.querySelector('.reactions');
+      if(rxEl){ if(rxHtml !== rxEl.outerHTML) rxEl.outerHTML = rxHtml; }
+      else if(rxHtml){ el.insertAdjacentHTML('beforeend', rxHtml); }
+    });
+    if(wasAtBottom) box.scrollTop = box.scrollHeight;
+    return;
+  }
+  renderMessagesAndArchive();
+  if(wasAtBottom) box.scrollTop = box.scrollHeight;
+}
+
+/* ============================================================
+   МЕНЮ ДЕЙСТВИЙ С СООБЩЕНИЕМ
+   ============================================================ */
+let LP_TIMER = null;
+function attachLongPress(el, mid){
+  el.addEventListener('touchstart', () => { LP_TIMER = setTimeout(() => { openMsgMenu({clientX:window.innerWidth/2, clientY:window.innerHeight/2}, mid); }, 500); }, { passive: true });
+  el.addEventListener('touchend', () => { clearTimeout(LP_TIMER); });
+  el.addEventListener('touchmove', () => { clearTimeout(LP_TIMER); });
+}
+function openMsgMenu(e, mid){
+  const menu = $('msgMenu'); if(!menu) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
+  const mine = m.sender_id === ME.id;
+  const isAdmin = !!(ME.is_admin || ME.isAdmin);
+  const canDeleteAll = mine || isAdmin;
+  const quick = ['👍','❤️','🔥','😂','💯','💖'];
+  let html = '<div class="row-emojis">';
+  quick.forEach(em => { html += `<span onclick="toggleReaction(${mid},'${em}');closeMsgMenu()">${em}</span>`; });
+  html += '</div>';
+  html += `<div class="mi" onclick="replyToMsg(${mid});closeMsgMenu()">↩️ Ответить</div>`;
+  html += `<div class="mi" onclick="copyMsg(${mid});closeMsgMenu()">📋 Копировать</div>`;
+  if(mine) html += `<div class="mi" onclick="editMsg(${mid});closeMsgMenu()">✏️ Изменить</div>`;
+  html += `<div class="sep"></div>`;
+  html += `<div class="mi danger" onclick="deleteMsg(${mid}, false);closeMsgMenu()">🗑️ Удалить у себя</div>`;
+  if(canDeleteAll){ html += `<div class="mi danger" onclick="deleteMsg(${mid}, true);closeMsgMenu()">🗑️ Удалить у всех</div>`; }
+  menu.innerHTML = html;
+  menu.classList.add('open');
+  if(window.innerWidth > 600){
+    const x = (e.clientX || 0); const y = (e.clientY || 0);
+    const w = 240, h = menu.offsetHeight || 300;
+    menu.style.left = Math.min(x, window.innerWidth - w - 10) + 'px';
+    menu.style.top  = Math.min(y, window.innerHeight - h - 10) + 'px';
+    menu.style.bottom = 'auto';
+  } else { menu.style.left = ''; menu.style.top = ''; menu.style.bottom = ''; }
+}
+function closeMsgMenu(){ const menu = $('msgMenu'); if(menu) menu.classList.remove('open'); }
+document.addEventListener('click', (e) => { const menu = $('msgMenu'); if(menu && menu.classList.contains('open') && !menu.contains(e.target)) closeMsgMenu(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeMsgMenu(); });
+function replyToMsg(mid){
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
+  const u = userById(m.sender_id) || { login: '?' };
+  $('msgInput').value = `[${u.login}: ${(m.text||'').slice(0,40)}] ` + $('msgInput').value;
+  $('msgInput').focus();
+}
+function copyMsg(mid){
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
+  const text = m.text || '';
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=> toast('📋 Скопировано','')).catch(()=>fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); toast('📋 Скопировано',''); } catch(e){ toast('Не удалось скопировать',''); }
+  document.body.removeChild(ta);
+}
+function editMsg(mid){
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid);
+  if(!m || m.sender_id !== ME.id) return;
+  const newText = prompt('Изменить сообщение:', m.text || '');
+  if(newText === null) return;
+  api('/messages/' + mid, 'PUT', { text: newText })
+    .then(() => { m.text = newText; renderMessagesAndArchive(); toast('✓ Изменено',''); })
+    .catch(e => toast('Ошибка', e.message));
+}
+async function deleteMsg(mid, forAll){
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
+  if(!confirm(forAll ? 'Удалить у всех?' : 'Удалить у себя?')) return;
+  try {
+    if(forAll){ await api('/messages/' + mid, 'PUT', { deleted_for_all: true }); m.deleted_for_all = true; }
+    else { MSGS[CURRENT_CHAT.id] = MSGS[CURRENT_CHAT.id].filter(x => x.id !== mid); }
+    renderMessagesAndArchive();
+    toast('🗑️ Удалено','');
+  } catch(e){ toast('Ошибка', e.message); }
+}
+
+/* ============================================================
+   СООБЩЕНИЯ
+   ============================================================ */
+async function toggleReaction(mid, emo){
+  if(!CURRENT_CHAT) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
+  const r = { ...(m.reactions || {}) };
+  const arr = r[emo] || [];
+  if(arr.includes(ME.id)){ r[emo] = arr.filter(x => x !== ME.id); if(!r[emo].length) delete r[emo]; }
+  else r[emo] = [...arr, ME.id];
+  try { await api('/messages/' + mid, 'PUT', { reactions: r }); m.reactions = r; renderMessagesAndArchive(); }
+  catch(e){ toast('Ошибка', e.message); }
+}
+async function sendMsg(){
+  const v = $('msgInput').value.trim();
+  if(!v || !CURRENT_CHAT) return;
+  $('msgInput').value = '';
+  api('/typing', 'POST', { chat_id: CURRENT_CHAT.id, text: '' }).catch(()=>{});
+  try {
+    await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: v });
+    MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
+    renderMessagesAndArchive(); renderChats();
+  } catch(e){ toast('Ошибка', e.message); }
+}
+
+/* ============================================================
+   НАСТРОЙКИ ЧАТА
+   ============================================================ */
+function openChatSettings(){
+  if(!CURRENT_CHAT) return;
+  const c = CURRENT_CHAT; const enabled = NOTIF_CHATS[c.id] !== false;
+  $('chatSettingsBody').innerHTML = `
+    <div class="st-section"><h3>Информация</h3>
+      <div class="st-row" style="cursor:default">
+        <div class="icon">${c.name[0].toUpperCase()}</div>
+        <div class="txt"><div class="t1">${esc(c.name)}</div><div class="t2">${c.type} · ${(c.memberIds||[]).length} участников</div></div>
+      </div>
+    </div>
+    <div class="st-section"><h3>Уведомления</h3>
+      <div class="st-row" onclick="toggleChatNotif()">
+        <div class="icon">🔔</div>
+        <div class="txt"><div class="t1">Уведомления в этом чате</div><div class="t2">${enabled ? 'Включены' : 'Выключены'}</div></div>
+        <div class="switch ${enabled ? 'on' : ''}"></div>
+      </div>
+    </div>`;
+  openPanel('chatSettings');
+}
+async function toggleChatNotif(){
+  const id = CURRENT_CHAT.id; const enabled = NOTIF_CHATS[id] !== false; const next = !enabled;
+  try { await api('/push/settings','POST',{ chatId: id, enabled: next }); NOTIF_CHATS[id] = next; openChatSettings(); toast(next ? 'Уведомления включены' : 'Уведомления выключены',''); }
+  catch(e){ toast('Ошибка', e.message); }
+}
+
+/* ============================================================
+   СОЗДАНИЕ ЧАТА
+   ============================================================ */
+let CC_TYPE = 'private', CC_SEL = [];
+function openCreateChatPanel(){ CC_TYPE = 'private'; CC_SEL = []; renderCreateChatBody(); openPanel('createChat'); }
+function renderCreateChatBody(){
+  const list = USERS.filter(u => u.id !== ME.id);
+  $('createChatBody').innerHTML = `
+    <div style="display:flex;gap:6px;margin-bottom:12px">
+      <button class="btn ${CC_TYPE==='private'?'':'ghost'}" style="flex:1" onclick="setCCT('private')">Личка</button>
+      <button class="btn ${CC_TYPE==='group'?'':'ghost'}" style="flex:1" onclick="setCCT('group')">Группа</button>
+      <button class="btn ${CC_TYPE==='channel'?'':'ghost'}" style="flex:1" onclick="setCCT('channel')">Канал</button>
+    </div>
+    ${CC_TYPE !== 'private' ? '<label class="field-label">Название</label><input id="ccName" class="report-input"/>' : ''}
+    <label class="field-label">Участники</label>
+    ${list.map(u => `
+      <div class="st-row" onclick="toggleCC(${u.id})" style="background:${CC_SEL.includes(u.id)?'rgba(79,140,255,.15)':'var(--panel2)'}">
+        ${avatarHTML(u,'sm')}
+        <div class="txt"><div class="t1">${nameHTML(u)}</div><div class="t2">ID: ${u.id}</div></div>
+        <div style="width:24px;height:24px;border-radius:6px;border:2px solid ${CC_SEL.includes(u.id)?'var(--accent)':'var(--border2)'};background:${CC_SEL.includes(u.id)?'var(--accent)':'transparent'};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">${CC_SEL.includes(u.id)?'✓':''}</div>
+      </div>`).join('')}
+    <button class="btn" style="margin-top:14px" onclick="createChatFinal()">Создать</button>`;
+}
+function setCCT(t){ CC_TYPE = t; CC_SEL = []; renderCreateChatBody() }
+function toggleCC(uid){
+  if(CC_TYPE === 'private') CC_SEL = CC_SEL.includes(uid) ? [] : [uid];
+  else { const i = CC_SEL.indexOf(uid); if(i>=0) CC_SEL.splice(i,1); else CC_SEL.push(uid); }
+  renderCreateChatBody();
+}
+async function createChatFinal(){
+  try {
+    if(CC_TYPE === 'private'){
+      if(CC_SEL.length !== 1) return alert('Выбери одного');
+      const u = userById(CC_SEL[0]);
+      const ex = CHATS.find(c => c.type === 'private' && (c.memberIds||[]).includes(u.id));
+      if(ex){ closePanel('createChat'); return openChat(ex.id); }
+      const r = await api('/chats','POST',{ name:u.login, type:'private', members:[u.id] });
+      await loadAll(); renderChats(); closePanel('createChat'); openChat(r.id);
+      return;
+    }
+    const name = ($('ccName') && $('ccName').value || '').trim();
+    if(!name) return alert('Введи название');
+    if(!CC_SEL.length) return alert('Добавь участников');
+    const r = await api('/chats','POST',{ name, type:CC_TYPE, members:CC_SEL });
+    await loadAll(); renderChats(); closePanel('createChat'); openChat(r.id);
+  } catch(e){ toast('Ошибка', e.message); }
+}
+
+/* ============================================================
+   НАСТРОЙКИ
+   ============================================================ */
+function openSettings(){ renderSettingsBody(); openPanel('settings'); }
+function renderSettingsBody(){
+  const inkActive = ME.inkUntil && new Date(ME.inkUntil) > new Date();
+  const isAdmin = !!(ME.is_admin || ME.isAdmin);
+  $('settingsBody').innerHTML = `
+    <div class="st-section"><h3>Профиль</h3>
+      <div class="st-row" onclick="openEditProfile()">
+        ${avatarHTML(ME,'sm')}
+        <div class="txt"><div class="t1">${nameHTML(ME)}</div><div class="t2">${ME.description || 'Настрой профиль'}</div></div>
+      </div>
+    </div>
+    <div class="st-section"><h3>🛡️ Кланы</h3>
+      <div class="st-row" onclick="openClansList()"><div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">🛡️</div><div class="txt"><div class="t1">Кланы</div><div class="t2">Мои и все существующие</div></div></div>
+      <div class="st-row" onclick="openClansRating()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">🏆</div><div class="txt"><div class="t1">Рейтинг кланов</div><div class="t2">Кто больше — тот выше</div></div></div>
+    </div>
+    <div class="st-section"><h3>💰 Токены</h3>
+      <div class="st-row" onclick="openWallet()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💰</div><div class="txt"><div class="t1">Мой кошелёк</div><div class="t2">Баланс и переводы</div></div></div>
+      <div class="st-row" onclick="openTransactions()"><div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">📜</div><div class="txt"><div class="t1">История транзакций</div><div class="t2">Все переводы</div></div></div>
+    </div>
+    <div class="st-section"><h3>🎨 Кастомизация</h3>
+      <div class="st-row" onclick="openEmojiCustomize()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">😊</div><div class="txt"><div class="t1">Эмодзи и префиксы</div><div class="t2">Свой набор</div></div></div>
+    </div>
+    <div class="st-section" id="prefixSection" style="display:${ME.is_donor ? 'block' : 'none'}">
+      <h3>Префиксы</h3>
+      <div class="st-row" onclick="toggleSmilePrefix()">
+        <div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">🌟</div>
+        <div class="txt"><div class="t1">Смайл-префикс</div><div class="t2">${ME.show_smile_prefix !== false ? 'Показан' : 'Скрыт'}</div></div>
+        <div class="switch ${ME.show_smile_prefix !== false ? 'on' : ''}"></div>
+      </div>
+      <div class="st-row" onclick="toggleTextPrefix()">
+        <div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">💜</div>
+        <div class="txt"><div class="t1">«Спасink»</div><div class="t2">${ME.show_text_prefix !== false ? 'Показан' : 'Скрыт'}</div></div>
+        <div class="switch ${ME.show_text_prefix !== false ? 'on' : ''}"></div>
+      </div>
+    </div>
+    <div class="st-section"><h3>🔔 Уведомления</h3>
+      <div class="st-row" onclick="toggleNotifications()">
+        <div class="icon">${NOTIF_GLOBAL ? '🔔' : '🔕'}</div>
+        <div class="txt"><div class="t1">Уведомления</div><div class="t2">${NOTIF_GLOBAL ? 'Включены' : 'Отключены'}</div></div>
+        <div class="switch ${NOTIF_GLOBAL ? 'on' : ''}"></div>
+      </div>
+    </div>
+    <div class="st-section"><h3>🕶️ Inkognito</h3>
+      <div class="st-row" onclick="toggleInkognito()"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">${inkActive ? 'Активен' : 'Не активен'}</div><div class="t2">Статус «Не в сети»</div></div></div>
+    </div>
+    <div class="st-section"><h3>❤️ Поддержать проект</h3>
+      <div class="st-row" onclick="openDonate()"><div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">❤️</div><div class="txt"><div class="t1">Донат</div><div class="t2">Помощь на домен и сервер · от 25 ₽</div></div></div>
+    </div>
+    <div class="st-section"><h3>Обратная связь</h3>
+      <div class="st-row" onclick="openReportToAdmin()"><div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">⚠️</div><div class="txt"><div class="t1">Жалоба админу</div><div class="t2">Нарушение правил</div></div></div>
+      <div class="st-row" onclick="openWriteToAdmin()"><div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">✉️</div><div class="txt"><div class="t1">Написать админу</div><div class="t2">Вопрос, идея, предложение</div></div></div>
+    </div>
+    ${isAdmin ? `<div class="st-section"><h3>🛡️ Администрирование</h3>
+      <div class="st-row" onclick="openAdmin()"><div class="icon" style="background:linear-gradient(135deg,#c8410f,#a02020)">🛡️</div><div class="txt"><div class="t1">Админ-панель</div><div class="t2">Управление и модерация</div></div></div>
+    </div>` : ''}
+    <div class="st-section"><h3>Аккаунт</h3>
+      <div class="st-row" onclick="logout()"><div class="txt"><span style="font-size:18px">🚪</span><span class="t1" style="margin-left:10px">Выйти</span></div></div>
+    </div>`;
+}
+async function toggleSmilePrefix(){
+  const next = !(ME.show_smile_prefix !== false);
+  try { await api('/users/me/donor-prefixes','PUT',{ show_smile: next }); ME.show_smile_prefix = next; renderSettingsBody(); renderChats(); }
+  catch(e){ toast('Ошибка', e.message) }
+}
+async function toggleTextPrefix(){
+  const next = !(ME.show_text_prefix !== false);
+  try { await api('/users/me/donor-prefixes','PUT',{ show_text: next }); ME.show_text_prefix = next; renderSettingsBody(); renderChats(); }
+  catch(e){ toast('Ошибка', e.message) }
+}
+function openEditProfile(){
+  $('editProfileBody').innerHTML = `
+    <label class="field-label">Логин</label><input id="peLogin" class="report-input" value="${esc(ME.login)}"/>
+    <label class="field-label">О себе</label><textarea id="peDesc" rows="3" class="report-input">${esc(ME.description||'')}</textarea>
+    <label class="field-label">Телефон</label><input id="pePhone" class="report-input" value="${esc(ME.phone||'')}"/>
+    <label class="field-label">Дата рождения</label><input id="peBirthday" type="date" class="report-input" value="${esc(ME.birthday||'')}"/>
+    <button class="btn" style="margin-top:14px" onclick="saveProfile()">Сохранить</button>`;
+  openPanel('editProfile');
+}
+async function saveProfile(){
+  try {
+    await api('/users/me','PUT',{ username: $('peLogin').value.trim(), description: $('peDesc').value.trim(), phone: $('pePhone').value.trim(), birthday: $('peBirthday').value });
+    await loadAll(); renderSettingsBody(); closePanel('editProfile'); toast('Сохранено','');
+  } catch(e){ toast('Ошибка', e.message) }
+}
+
+/* ============================================================
+   INKOGNITO
+   ============================================================ */
+async function toggleInkognito(){
+  const active = ME.inkUntil && new Date(ME.inkUntil) > new Date();
+  if(!active){
+    if(!confirm('Нет активного доступа. Купить на 1 день за 2 токена?')) return;
+    if((ME.tokens||0) < 2) return toast('Мало токенов','');
+    try { await api('/admin/credit-tokens','POST',{ user_id: ME.id, amount: -2 }); ME.tokens -= 2; ME.inkUntil = new Date(Date.now() + 86400000).toISOString(); renderTokensBadge(); }
+    catch(e){ toast('Ошибка', e.message); return }
+  }
+  document.body.classList.toggle('inkognito');
+  toast(document.body.classList.contains('inkognito') ? '🕶️ Inkognito включён' : 'Inkognito выключен','');
+}
+
+/* ============================================================
+   ЭМОДЗИ
+   ============================================================ */
+const EMOJI_BASE = ['😀','😁','😂','🤣','😊','😍','😎','🤔','😴','😢','😭','😡','🥺','👍','👎','🙏','👏','🤝','💪','❤️','🧡','💛','💚','💙','🖤','🤍','💯','✨','🎉','🎁','🔥','⚡','🌈','☀️','🌙','⭐','🍀','🌸','🌺','🐱','🐶','🦊','🍕','🍔','🍎','☕','🍺','⚽','🏀','🎮','🎵','🚀','✈️','🏠'];
+const EMOJI_PREMIUM = ['💎','👑','🏆','🥇','💫','🌠','🦄','🐉','🍾','🥂','💐','🎊','🎈','🔮'];
+const EMOJI_DONOR = ['💖','💜','🤍','💝','💘','💗'];
+let emojiTab = 'base';
+function toggleEmojiPanel(){ const p = $('emojiPanel'); p.classList.toggle('open'); if(p.classList.contains('open')) renderEmojiPanel(); }
+function renderEmojiPanel(){
+  const hidden = ME.hidden_emoji || []; const custom = ME.custom_emoji || [];
+  const tabs = [
+    { id:'base', name:'Базовые', list: EMOJI_BASE.filter(e=>!hidden.includes(e)) },
+    { id:'premium', name:'💎 Premium', list: EMOJI_PREMIUM.filter(e=>!hidden.includes(e)), need:()=>isPremium(ME) },
+    { id:'donor', name:'❤️ Донатер', list: EMOJI_DONOR.filter(e=>!hidden.includes(e)), need:()=>ME.is_donor },
+    { id:'custom', name:'⭐ Мои', list: custom, need:()=>isPremium(ME) || custom.length>0 }
+  ];
+  let html = '<div class="tabs">';
+  tabs.forEach(t=>{ const locked = t.need && !t.need(); html += `<div class="tab ${emojiTab===t.id?'active':''}" onclick="emojiTab='${t.id}';renderEmojiPanel()" style="${locked?'opacity:.5':''}">${t.name}${locked?' 🔒':''}</div>`; });
+  html += '</div><div class="emoji-grid">';
+  const tab = tabs.find(t=>t.id===emojiTab) || tabs[0];
+  const locked = tab.need && !tab.need();
+  if(!tab.list.length) html += '<div style="grid-column:1/-1;padding:14px;text-align:center;color:var(--muted);font-size:12.5px">Пусто</div>';
+  else tab.list.forEach(e => { html += `<button class="e" onclick="${locked?'':`insertEmoji('${e}')`}">${e}</button>` });
+  html += '</div>';
+  $('emojiPanel').innerHTML = html;
+}
+function insertEmoji(e){ $('msgInput').value += e; $('msgInput').focus() }
+
+/* ============================================================
+   ЭМОДЗИ И ПРЕФИКС
+   ============================================================ */
+function openEmojiCustomize(){
+  const isPrem = isPremium(ME); const custom = ME.custom_emoji || []; const hidden = ME.hidden_emoji || []; const custom_prefix = ME.custom_prefix || '';
+  const uniq = [...new Set([...EMOJI_BASE, ...EMOJI_PREMIUM, ...EMOJI_DONOR])];
+  $('emojiCustomizeBody').innerHTML = `
+    <div class="st-section"><h3>Мой префикс</h3>
+      <input id="myPrefixInput" maxlength="4" class="report-input" value="${esc(custom_prefix)}" placeholder="1–4 символа"/>
+      <div class="row" style="margin-top:8px"><button class="btn ok" onclick="saveMyPrefix()">Сохранить</button><button class="btn ghost" onclick="clearMyPrefix()">Убрать</button></div>
+      ${!isPrem ? '<div style="margin-top:8px;color:var(--warn);font-size:12px">Только Premium</div>' : ''}
+    </div>
+    <div class="st-section"><h3>Мои эмодзи (до 20)</h3>
+      <div class="row"><input id="myEmojiInput" maxlength="4" class="report-input" style="flex:1" placeholder="1 эмодзи"/><button class="btn ok" style="width:auto;padding:0 14px" onclick="addMyEmoji()">+</button></div>
+      <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:4px">
+        ${custom.length ? custom.map((e,i)=>`<span style="font-size:22px;background:var(--panel2);padding:6px 8px;border-radius:8px;border:1px solid var(--border2);cursor:pointer" onclick="removeMyEmoji(${i})">${e} ✕</span>`).join('') : '<span style="color:var(--muted);font-size:12.5px">Своих пока нет</span>'}
+      </div>
+    </div>
+    <div class="st-section"><h3>Скрыть эмодзи</h3>
+      <div style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:10px;max-height:280px;overflow:auto">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px">
+          ${uniq.map(e=>{ const isHidden = hidden.includes(e); return `<button style="font-size:22px;padding:6px;border-radius:8px;cursor:pointer;background:${isHidden?'rgba(255,92,92,.15)':'transparent'};border:1px solid ${isHidden?'rgba(255,92,92,.4)':'transparent'};color:inherit" onclick="toggleHideEmoji('${e}')">${e}</button>`; }).join('')}
+        </div>
+      </div>
+    </div>`;
+  openPanel('emojiCustomize');
+}
+async function saveMyPrefix(){ if(!isPremium(ME)) return alert('Только Premium'); try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: ($('myPrefixInput').value||'').trim().slice(0,4) }); await loadAll(); renderSettingsBody(); renderChats(); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
+async function clearMyPrefix(){ try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix:'' }); await loadAll(); renderSettingsBody(); renderChats(); } catch(e){} }
+async function addMyEmoji(){ if(!isPremium(ME)) return alert('Только Premium'); const v = ($('myEmojiInput').value||'').trim().slice(0,4); if(!v) return; const list = [...(ME.custom_emoji||[]), v].slice(0,20); try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
+async function removeMyEmoji(i){ const list = (ME.custom_emoji||[]).slice(); list.splice(i,1); try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
+async function toggleHideEmoji(e){ const list = (ME.hidden_emoji||[]).slice(); const i = list.indexOf(e); if(i>=0) list.splice(i,1); else list.push(e); try { await api('/users/me/emoji','PUT',{ hidden_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
+
+/* ============================================================
+   КЛАНЫ
+   ============================================================ */
+async function openClansList(){ try { CLANS = await api('/clans'); } catch(e){ CLANS = [] } renderClansList(); openPanel('clansList'); }
+function renderClansList(){
+  const myIds = CLANS.filter(c => (c.members||[]).some(m => m.userId === ME.id)).map(c => c.id);
+  $('clansListBody').innerHTML = `
+    <div class="st-section"><h3>Мои кланы</h3>
+      ${myIds.length ? myIds.map(id => clanCard(CLANS.find(x => x.id === id))).join('') : '<div class="empty">Ты пока не в клане</div>'}
+    </div>
+    <div class="st-section"><h3>Все кланы (${CLANS.length})</h3>
+      ${CLANS.filter(c => !myIds.includes(c.id)).map(c => clanCard(c)).join('') || '<div class="empty">Других нет</div>'}
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn gold" onclick="openClanCreate()">🛡️ Создать клан (30 токенов)</button></div>`;
+}
+function clanCard(c){
+  if(!c) return '';
+  const inClan = (c.members||[]).some(m => m.userId === ME.id);
+  const myRole = ((c.members||[]).find(m => m.userId === ME.id) || {}).role;
+  const tag = myRole === 'owner' ? '<span class="role-tag role-owner">Владелец</span>' : myRole === 'coowner' ? '<span class="role-tag role-coowner">Совладелец</span>' : myRole ? '<span class="role-tag role-member">Участник</span>' : '';
+  return `<div class="st-row" onclick="openClan(${c.id})">
+    <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff);font-size:20px">${c.prefix || c.name[0].toUpperCase()}</div>
+    <div class="txt"><div class="t1">${esc(c.name)} ${tag}</div><div class="t2">👥 ${(c.members||[]).length} · 💰 ${fmt(c.wallet)} токенов</div></div>
+    <span style="color:var(--accent);font-size:12px">${inClan ? 'открыть' : 'войти'}</span>
+  </div>`;
+}
+async function openClan(id){ try { CURRENT_CLAN = await api('/clans/' + id); } catch(e){ toast('Ошибка', e.message); return } await renderClanBody(); openPanel('clanCard'); }
+async function renderClanBody(){
+  const c = CURRENT_CLAN; if(!c) return;
+  const inClan = (c.members||[]).some(m => m.userId === ME.id);
+  const meRow = (c.members||[]).find(m => m.userId === ME.id);
+  const isOwner = meRow && meRow.role === 'owner';
+  const canManage = meRow && (meRow.role === 'owner' || meRow.role === 'coowner');
+  const monthlyCost = 4 * (c.members||[]).length;
+  const frozen = c.frozenUntil && new Date(c.frozenUntil) > new Date();
+  let proposals = [];
+  if(isOwner){ try { proposals = await api('/clans/' + c.id + '/proposals'); } catch(e){} }
+  $('clanTitle').textContent = (c.prefix || '') + ' ' + c.name;
+  $('clanBody').innerHTML = `
+    <div class="hero">
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#4f8cff,#7c5cff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 10px">${c.prefix || c.name[0].toUpperCase()}</div>
+      <div class="name"><span class="prefix">${esc(c.prefix||'')}</span>${esc(c.name)}</div>
+      <div class="sub">${esc(c.desc||'—')}</div>
+      ${frozen ? '<div style="margin-top:8px;color:var(--danger);font-weight:600">🧊 Клан заморожен</div>' : ''}
+      ${c.warnings ? `<div style="margin-top:6px;color:var(--warn);font-size:12.5px">⚠️ Предупреждений: ${c.warnings}</div>` : ''}
+    </div>
+    <div class="balance-card"><div class="lbl">Клановый кошелёк</div><div class="num">${fmt(c.wallet)}</div><div class="lbl">токенов доступно клану</div></div>
+    <div class="st-section"><h3>Действия</h3>
+      ${inClan ? `
+        <div class="st-row" onclick="openClanDeposit()"><div class="icon">💰</div><div class="txt"><div class="t1">Пополнить кошелёк клана</div></div></div>
+        <div class="st-row" onclick="openClanProposal()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💡</div><div class="txt"><div class="t1">Предложить покупку</div><div class="t2">Premium или Inkognito — уйдёт владельцу</div></div></div>
+      ` : `<div class="st-row" onclick="joinClan(${c.id})"><div class="icon">➕</div><div class="txt"><div class="t1">Войти в клан</div></div></div>`}
+      ${canManage ? `<div class="st-row" onclick="openEditClan()"><div class="icon">✏️</div><div class="txt"><div class="t1">Изменить название, описание, префикс</div></div></div>` : ''}
+      ${inClan ? `
+        <div class="st-row" onclick="openClanInk(${c.id})"><div class="icon">🕶️</div><div class="txt"><div class="t1">Хранилище Inkognito</div><div class="t2">Слотов: ${c.inkStock || 0}</div></div></div>
+        <div class="st-row" onclick="withdrawClan(${c.id})"><div class="icon">📤</div><div class="txt"><div class="t1">Вывести свою долю</div></div></div>
+        <div class="st-row" onclick="leaveClan(${c.id})"><div class="icon" style="background:rgba(255,92,92,.2);color:#ff8a8a">🚪</div><div class="txt"><div class="t1">Выйти из клана</div></div></div>
+      ` : ''}
+      <div class="st-row" onclick="reportClan(${c.id})"><div class="icon" style="background:rgba(255,209,138,.2);color:var(--warn)">⚠️</div><div class="txt"><div class="t1">Жалоба на клан</div></div></div>
+    </div>
+    ${isOwner ? `<div class="st-section"><h3>💡 Предложения участников (${proposals.length})</h3>
+      ${proposals.length ? proposals.map(p => proposalCard(c, p)).join('') : '<div class="empty">Предложений нет</div>'}
+    </div>` : ''}
+    <div class="st-section"><h3>Голосования (${(c.votes||[]).filter(v => v.status === 'active').length})</h3>
+      ${(c.votes||[]).length ? c.votes.slice().reverse().map(v => voteCard(c, v)).join('') : '<div class="empty">Голосований нет</div>'}
+    </div>
+    <div class="st-section"><h3>Участники (${(c.members||[]).length})</h3>
+      ${(c.members||[]).map(m => {
+        const u = userById(m.userId); if(!u) return '';
+        const r = m.role === 'owner' ? '<span class="role-tag role-owner">Владелец</span>' : m.role === 'coowner' ? '<span class="role-tag role-coowner">Совладелец</span>' : '<span class="role-tag role-member">Участник</span>';
+        return `<div class="st-row" style="cursor:default">${avatarHTML(u,'sm')}
+          <div class="txt"><div class="t1">${esc(u.login)} ${r}</div><div class="t2">вложил: ${fmt(m.paid||0)}</div></div>
+          ${canManage && m.userId !== ME.id ? `<div style="display:flex;flex-direction:column;gap:4px">
+              ${m.role === 'member' ? `<button class="btn-mini primary" onclick="promoteMem(${m.userId})">↑</button>` : ''}
+              ${m.role === 'coowner' ? `<button class="btn-mini" onclick="demoteMem(${m.userId})">↓</button>` : ''}
+              ${m.role !== 'owner' ? `<button class="btn-mini bad" onclick="kickMem(${m.userId})">✕</button>` : ''}
+          </div>` : ''}
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="st-section"><h3>Ежемесячно</h3>
+      <div class="st-row" style="cursor:default"><div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">📅</div><div class="txt"><div class="t1">Сбор: ${monthlyCost} токенов</div><div class="t2">4 × ${(c.members||[]).length} участников</div></div></div>
+      ${isOwner ? `<button class="btn danger" onclick="payMonthly(${c.id})">Оплатить сбор ${monthlyCost}</button>` : ''}
+    </div>`;
+}
+function proposalCard(c, p){
+  const u = userById(p.byId) || { login:'—' };
+  const cost = p.type === 'premium' ? 10 * (c.members||[]).length : 2 * (c.members||[]).length;
+  const canPay = (c.wallet||0) >= cost;
+  return `<div class="vote-row">
+    <div class="title">${p.type === 'premium' ? '💎 Premium всем' : '🕶️ Inkognito'}</div>
+    <div class="desc">Предложил: <b>${esc(u.login)}</b><br>Стоимость: ${cost} токенов${!canPay ? ' · <span style="color:var(--danger)">не хватает</span>' : ''}${p.note ? '<br>'+esc(p.note) : ''}</div>
+    <div class="actions">
+      <button class="btn-mini primary" onclick="startVoteFromProp(${c.id}, ${p.id})" ${!canPay ? 'disabled style="opacity:.5"' : ''}>🗳️ Начать голосование</button>
+      <button class="btn-mini bad" onclick="declineProp(${c.id}, ${p.id})">✕ Отклонить</button>
+    </div>
+  </div>`;
+}
+function voteCard(c, v){
+  const total = (c.members||[]).length;
+  const yes = Object.values(v.votes||{}).filter(x => x === 'yes').length;
+  const no = Object.values(v.votes||{}).filter(x => x === 'no').length;
+  const decided = v.status !== 'active';
+  const pct = total ? Math.round(yes/total*100) : 0;
+  return `<div class="vote-row">
+    <div class="title">${v.type === 'premium' ? '💎 Premium' : '🕶️ Inkognito'}</div>
+    <div class="desc">Стоимость: ${v.amount} · нужно 90% (${Math.ceil(total*0.9)} из ${total})</div>
+    <div class="prog"><div class="fill" style="width:${pct}%"></div></div>
+    <div style="font-size:12.5px;color:var(--muted)">За: ${yes} · Против: ${no} · Не голосовали: ${total-yes-no}</div>
+    ${!decided ? `<div class="actions"><button class="btn-mini good" onclick="castVote(${c.id},${v.id},'yes')">✓ За</button><button class="btn-mini bad" onclick="castVote(${c.id},${v.id},'no')">✕ Против</button></div>` : `<div style="margin-top:8px;font-weight:600;color:${v.status === 'passed' ? 'var(--ok)' : 'var(--danger)'}">${v.status === 'passed' ? '✓ Одобрено' : '✕ Отклонено'}</div>`}
+  </div>`;
+}
+async function joinClan(id){ try { await api('/clans/'+id+'/join','POST'); await openClan(id); renderClansList(); toast('Ты вошёл в клан','') } catch(e){ toast('Ошибка', e.message) } }
+async function leaveClan(id){ if(!confirm('Выйти из клана? Доля вернётся.')) return; try { const r = await api('/clans/'+id+'/leave','POST'); await loadAll(); closePanel('clanCard'); renderClansList(); toast('Вышел', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) } }
+async function kickMem(uid){ if(!confirm('Исключить?')) return; try { const r = await api('/clans/'+CURRENT_CLAN.id+'/kick','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id); toast('Исключён', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) } }
+async function promoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/promote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
+async function demoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/demote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
+function openClanCreate(){
+  $('clanCreateBody').innerHTML = `
+    <label class="field-label">Название</label><input id="ccName" class="report-input"/>
+    <label class="field-label">Описание</label><textarea id="ccDesc" rows="3" class="report-input"></textarea>
+    <label class="field-label">Префикс (до 4 символов)</label><input id="ccPrefix" maxlength="4" class="report-input"/>
+    <div style="background:rgba(255,209,138,.1);border:1px solid rgba(255,209,138,.3);color:var(--warn);padding:12px;border-radius:12px;font-size:12.5px;margin-top:14px">Создание — 30 токенов. Ежемесячный сбор — 4 за каждого участника.</div>
+    <button class="btn gold" style="margin-top:14px" onclick="doCreateClan()">Создать за 30 токенов</button>`;
+  openPanel('clanCreate');
+}
+async function doCreateClan(){
+  try {
+    const r = await api('/clans','POST',{ name: $('ccName').value.trim(), desc: $('ccDesc').value.trim(), prefix: $('ccPrefix').value.trim() });
+    await loadAll(); await openClansList(); closePanel('clanCreate'); toast('🛡️ Клан создан','');
+    await openClan(r.clan.id);
+  } catch(e){ toast('Ошибка', e.message) }
+}
+function openEditClan(){
+  const c = CURRENT_CLAN;
+  $('clanBody').innerHTML = `
+    <label class="field-label">Название</label><input id="ecName" class="report-input" value="${esc(c.name)}"/>
+    <label class="field-label">Описание</label><textarea id="ecDesc" rows="3" class="report-input">${esc(c.desc||'')}</textarea>
+    <label class="field-label">Префикс</label><input id="ecPrefix" class="report-input" maxlength="4" value="${esc(c.prefix||'')}"/>
+    <div class="row" style="margin-top:14px"><button class="btn ghost" onclick="renderClanBody()">Отмена</button><button class="btn" onclick="saveClanEdit()">Сохранить</button></div>`;
+}
+async function saveClanEdit(){ try { await api('/clans/'+CURRENT_CLAN.id,'PUT',{ name: $('ecName').value.trim(), desc: $('ecDesc').value.trim(), prefix: $('ecPrefix').value.trim() }); await openClan(CURRENT_CLAN.id); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
+function openClanProposal(){
+  const c = CURRENT_CLAN;
+  const pcost = 10 * c.members.length, icost = 2 * c.members.length;
+  $('clanProposalBody').innerHTML = `
+    <div class="st-section"><h3>Что предложить</h3>
+      <div class="st-row" onclick="submitProp('premium')"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div><div class="txt"><div class="t1">Premium всем на 30 дней</div><div class="t2">Стоимость: ${pcost} токенов</div></div></div>
+      <div class="st-row" onclick="submitProp('inkognito')"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">Inkognito: ${c.members.length} слотов</div><div class="t2">Стоимость: ${icost} токенов</div></div></div>
+    </div>
+    <label class="field-label">Комментарий</label><textarea id="propNote" rows="3" class="report-input"></textarea>`;
+  openPanel('clanProposal');
+}
+async function submitProp(type){ try { const note = ($('propNote') && $('propNote').value || '').trim(); await api('/clans/'+CURRENT_CLAN.id+'/propose','POST',{ type, note }); closePanel('clanProposal'); toast('💡 Предложение отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
+async function startVoteFromProp(clanId, pid){ try { await api('/clans/'+clanId+'/proposals/'+pid+'/start-vote','POST'); await openClan(clanId); toast('🗳️ Голосование запущено',''); } catch(e){ toast('Ошибка', e.message) } }
+async function declineProp(clanId, pid){ if(!confirm('Отклонить?')) return; try { await api('/clans/'+clanId+'/proposals/'+pid+'/decline','POST'); await openClan(clanId) } catch(e){ toast('Ошибка', e.message) } }
+async function castVote(clanId, vid, choice){ try { const r = await api('/clans/'+clanId+'/votes/'+vid+'/vote','POST',{ choice }); await openClan(clanId); if(r.vote && r.vote.status === 'passed') toast('✓ Одобрено',''); else if(r.vote && r.vote.status === 'rejected') toast('✕ Отклонено',''); } catch(e){ toast('Ошибка', e.message) } }
+async function openClanDeposit(){
+  const amt = parseInt(prompt('Сколько токенов положить?', '10'), 10);
+  if(!amt || amt <= 0) return;
+  try { const r = await api('/clans/'+CURRENT_CLAN.id+'/deposit','POST',{ amount: amt }); ME.tokens = r.balance; renderTokensBadge(); await openClan(CURRENT_CLAN.id); toast('+'+amt+' в кошелёк',''); } catch(e){ toast('Ошибка', e.message) }
+}
+async function withdrawClan(id){ if(!confirm('Вывести свою долю?')) return; try { const r = await api('/clans/'+id+'/withdraw','POST'); ME.tokens = r.balance; renderTokensBadge(); await openClan(id); toast('+'+r.share,''); } catch(e){ toast('Ошибка', e.message) } }
+function openClanInk(id){
+  const c = CURRENT_CLAN;
+  const meRow = (c.members||[]).find(m => m.userId === ME.id);
+  const myActive = meRow && meRow.slotUntil && new Date(meRow.slotUntil) > new Date();
+  $('clanInkStockBody').innerHTML = `
+    <div class="balance-card"><div class="lbl">Слотов в хранилище</div><div class="num">${c.inkStock || 0}</div></div>
+    ${myActive ? `<div style="background:linear-gradient(135deg,rgba(124,92,255,.15),rgba(79,140,255,.1));border:1px solid #7c5cff;border-radius:14px;padding:14px;text-align:center;margin-bottom:14px">
+        <div style="font-size:32px">🕶️</div><div style="font-weight:700;margin-top:6px">Inkognito активен</div>
+        <div style="color:var(--muted);font-size:12.5px;margin-top:4px">до ${new Date(meRow.slotUntil).toLocaleString('ru-RU')}</div>
+      </div>` : `<button class="btn gold" onclick="useInkSlot(${id})" ${(c.inkStock || 0) <= 0 ? 'disabled style="opacity:.5"' : ''}>🕶️ Взять слот на 24 часа</button>`}`;
+  openPanel('clanInkStock');
+}
+async function useInkSlot(id){ try { await api('/clans/'+id+'/ink/use-slot','POST'); closePanel('clanInkStock'); await openClan(id); toast('🕶️ Inkognito','24 часа'); } catch(e){ toast('Ошибка', e.message) } }
+async function payMonthly(id){ try { const r = await api('/clans/'+id+'/pay-monthly','POST'); await openClan(id); toast('✓ Сбор оплачен', r.cost) } catch(e){ toast('Ошибка', e.message) } }
+async function reportClan(id){
+  const reason = prompt('Причина жалобы:', 'нарушение правил');
+  if(!reason) return;
+  try { const r = await api('/clans/'+id+'/report','POST',{ reason }); if(r.disbanded){ toast('🚫 Клан расформирован',''); closePanel('clanCard'); renderClansList(); } else toast('⚠️ Предупреждение владельцу',''); } catch(e){ toast('Ошибка', e.message) }
+}
+
+/* ============================================================
+   РЕЙТИНГ КЛАНОВ
+   ============================================================ */
+async function openClansRating(){
+  try { RATING = await api('/clans/rating'); } catch(e){ RATING = [] }
+  $('clanRatingBody').innerHTML = `
+    <div style="color:var(--muted);font-size:12.5px;margin-bottom:10px">Обновляется каждый месяц. Топ-1 получает токены = числу участников.</div>
+    ${RATING.length ? RATING.map((c,i) => `
+      <div class="st-row" onclick="openClan(${c.id})">
+        <div class="icon" style="background:${i===0?'linear-gradient(135deg,#ffb84d,#ff5c8a)':(i===1?'linear-gradient(135deg,#c0c8d4,#7a8598)':(i===2?'linear-gradient(135deg,#c98a4a,#8a5a2a)':'linear-gradient(135deg,#4f8cff,#7c5cff)'))}">${i+1}</div>
+        <div class="txt"><div class="t1">${esc(c.prefix||'')} ${esc(c.name)}</div><div class="t2">👥 ${(c.members||[]).length} · 💰 ${fmt(c.wallet)}</div></div>
+      </div>`).join('') : '<div class="empty">Кланов нет</div>'}`;
+  openPanel('clanRating');
+}
+
+/* ============================================================
+   КОШЕЛЁК / ПЕРЕВОДЫ
+   ============================================================ */
+async function openWallet(){
+  try { ME = await api('/users/me'); } catch(e){}
+  $('walletBody').innerHTML = `
+    <div class="balance-card"><div class="lbl">Твой баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
+    <button class="btn gold" onclick="openSendTokens()">📤 Перевести токены</button>`;
+  openPanel('wallet');
+}
+function openSendTokens(){
+  $('sendTokensBody').innerHTML = `
+    <label class="field-label">Получатель (логин)</label><input id="sendTo" class="report-input"/>
+    <label class="field-label">Сколько токенов</label><input id="sendAmt" type="number" class="report-input" value="10"/>
+    <label class="field-label">Комментарий</label><input id="sendReason" class="report-input"/>
+    <button class="btn gold" style="margin-top:14px" onclick="doSendTokens()">Отправить</button>`;
+  openPanel('sendTokens');
+}
+async function doSendTokens(){
+  const to = $('sendTo').value.trim(), amt = parseInt($('sendAmt').value, 10), reason = $('sendReason').value.trim();
+  if(!to) return toast('Укажи логин','');
+  if(!amt || amt <= 0) return toast('Укажи сумму','');
+  try { const r = await api('/transfers','POST',{ to_login: to, amount: amt, reason }); ME.tokens = r.balance; renderTokensBadge(); closePanel('sendTokens'); toast('✓ Перевод выполнен',''); }
+  catch(e){ toast('Ошибка', e.message) }
+}
+async function openTransactions(){
+  try { TX = await api('/transactions'); } catch(e){ TX = [] }
+  $('transactionsBody').innerHTML = TX.length ? TX.map(t => {
+    const isIn = t.to === ME.id;
+    return `<div class="tx-row">
+      <div class="ico ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div>
+      <div class="info"><div class="t1">${esc(t.from_login||'—')} → ${esc(t.to_login||'—')}</div>
+      <div class="t2">${esc(t.reason||'')} · ${new Date(t.at).toLocaleString('ru-RU')}</div></div>
+      <div class="amount ${isIn ? 'pos' : 'neg'}">${isIn ? '+' : '−'}${fmt(t.amount)}</div>
+    </div>`;
+  }).join('') : '<div class="empty">Транзакций нет</div>';
+  openPanel('transactions');
+}
+
+/* ============================================================
+   МАГАЗИН
+   ============================================================ */
+function openShop(){
+  $('shopBody').innerHTML = `
+    <div class="balance-card"><div class="lbl">Баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
+    <div class="st-section"><h3>💎 Premium</h3>
+      <div class="st-row" onclick="buyPremium()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div><div class="txt"><div class="t1">Купить Premium</div><div class="t2">30 токенов = 30 дней</div></div></div>
+    </div>
+    <div class="st-section"><h3>🕶️ Inkognito</h3>
+      <div class="st-row" onclick="toggleInkognito()"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">${ME.inkUntil && new Date(ME.inkUntil) > new Date() ? 'Активен' : 'Купить 1 день'}</div><div class="t2">2 токена</div></div></div>
+    </div>`;
+  openPanel('shop');
+}
+async function buyPremium(){
+  if(!confirm('Списать 30 токенов и активировать Premium на 30 дней?')) return;
+  try { await api('/premium/purchase','POST',{ days: 30 }); await loadAll(); renderTokensBadge(); closePanel('shop'); toast('💎 Premium активирован','30 дней'); } catch(e){ toast('Ошибка', e.message) }
+}
+
+/* ============================================================
+   ДОНАТ
+   ============================================================ */
+function openDonate(){
+  $('shopBody').innerHTML = `
+    <div class="st-section"><h3>❤️ Поддержать Ink</h3>
+      <div style="background:rgba(255,92,138,.08);border:1px solid rgba(255,92,138,.3);color:#ffb3c9;padding:12px;border-radius:12px;font-size:13px;line-height:1.5;margin-bottom:12px">
+        Донат — добровольная поддержка проекта. Деньги идут на оплату сервера и домена. Возврат средств не предусмотрен.
+      </div>
+      <div class="card-info">
+        <div style="font-weight:700;margin-bottom:6px">Перевод на карту:</div>
+        <div class="num" onclick="copyCard(this)" title="Нажми, чтобы скопировать">${CARD_NUMBER}<span class="copy-hint">📋 копировать</span></div>
+      </div>
+      <label class="field-label">Сумма (мин. 25 ₽)</label>
+      <input id="donateAmount" type="number" class="report-input" value="100" min="25"/>
+      <label class="field-label">Цель доната</label>
+      <select id="donatePurpose" class="report-input" style="cursor:pointer">
+        <option value="support">❤️ Поддержать проект</option>
+        <option value="tokens">💳 Купить токены</option>
+      </select>
+      <label class="field-label">Последние 4 цифры вашей карты</label>
+      <input id="donateCard4" class="report-input" maxlength="4" placeholder="1234"/>
+      <label class="field-label">Сопроводительное письмо</label>
+      <textarea id="donateMsg" rows="3" class="report-input" placeholder="Опишите цель доната: поддержка проекта или покупка токенов."></textarea>
+      <button class="btn gold" style="margin-top:14px" onclick="submitDonate()">Отправить заявку</button>
+    </div>`;
+  openPanel('shop');
+}
+async function submitDonate(){
+  const amount = parseInt($('donateAmount').value, 10);
+  const card4 = ($('donateCard4').value || '').trim();
+  const message = ($('donateMsg').value || '').trim();
+  const purpose = ($('donatePurpose') && $('donatePurpose').value) || 'support';
+  if(!amount || amount < 25) return toast('Минимум 25 ₽','');
+  if(!/^\d{4}$/.test(card4)) return toast('Последние 4 цифры карты','');
+  const purposeText = purpose === 'tokens' ? 'Купить токены' : 'Поддержать проект';
+  if(!confirm(`Отправить заявку на ${amount} ₽?\nЦель: ${purposeText}\n\nДеньги не возвращаются.`)) return;
+  try {
+    await api('/donations','POST',{ amount, contact: card4, message, purpose, purpose_text: purposeText });
+    closePanel('shop');
+    toast('❤️ Заявка отправлена', purposeText + ' · админ подтвердит');
+  } catch(e){ toast('Ошибка', e.message) }
+}
+async function copyCard(el){
+  const number = CARD_NUMBER.replace(/\s+/g, '');
+  try {
+    await navigator.clipboard.writeText(number);
+    el.classList.add('copied');
+    const hint = el.querySelector('.copy-hint');
+    if(hint) hint.textContent = '✅ скопировано';
+    toast('📋 Номер скопирован', CARD_NUMBER);
+    setTimeout(() => { el.classList.remove('copied'); if(hint) hint.textContent = '📋 копировать'; }, 2000);
+  } catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = number; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('📋 Номер скопирован', CARD_NUMBER); } catch(err){ toast('Не удалось скопировать', 'Скопируй вручную: ' + number); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ============================================================
+   ЖАЛОБЫ
+   ============================================================ */
+function openReportToAdmin(){
+  $('reportTitle').textContent = '⚠️ Жалоба админу';
+  REPORT_SCREENS = [];
+  $('reportBody').innerHTML = `
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Если жалоба полезна — 5 токенов.</p>
+    <label class="field-label">На кого (логин)</label><input id="reportTargetLogin" class="report-input"/>
+    <label class="field-label">Причина</label><textarea id="reportReason" rows="4" class="report-input"></textarea>
+    <label class="field-label">Скриншоты</label>
+    <div class="attach-row"><button class="attach-btn" onclick="document.getElementById('reportFileInput').click()">🖼️ Выбрать</button><button class="attach-btn" onclick="pasteFromClipboard()">📋 Из буфера</button></div>
+    <input type="file" id="reportFileInput" accept="image/*" multiple style="display:none" onchange="onReportFiles(event)"/>
+    <div class="attach-preview" id="reportPreview"></div>
+    <button class="btn danger" style="margin-top:14px" onclick="sendGeneralReport()">Отправить</button>`;
+  openPanel('reportPanel');
+}
+function openWriteToAdmin(){
+  $('reportTitle').textContent = '✉️ Написать админу';
+  REPORT_SCREENS = [];
+  $('reportBody').innerHTML = `
+    <label class="field-label">Тема</label><input id="msgSubject" class="report-input"/>
+    <label class="field-label">Сообщение</label><textarea id="msgText" rows="5" class="report-input"></textarea>
+    <label class="field-label">Вложения</label>
+    <div class="attach-row"><button class="attach-btn" onclick="document.getElementById('reportFileInput').click()">🖼️ Выбрать</button><button class="attach-btn" onclick="pasteFromClipboard()">📋 Из буфера</button></div>
+    <input type="file" id="reportFileInput" accept="image/*" multiple style="display:none" onchange="onReportFiles(event)"/>
+    <div class="attach-preview" id="reportPreview"></div>
+    <button class="btn" style="margin-top:14px" onclick="sendToAdminInbox()">Отправить</button>`;
+  openPanel('reportPanel');
+}
+function onReportFiles(e){ Array.from(e.target.files||[]).forEach(addScreenshot); e.target.value=''; }
+function addScreenshot(file){
+  if(!file.type.startsWith('image/')) return;
+  if(file.size > 3*1024*1024) return alert('Макс 3 МБ');
+  if(REPORT_SCREENS.length >= 6) return alert('Максимум 6');
+  const r = new FileReader();
+  r.onload = ()=>{ REPORT_SCREENS.push(r.result); renderReportPreview(); };
+  r.readAsDataURL(file);
+}
+function removeScreenshot(i){ REPORT_SCREENS.splice(i,1); renderReportPreview() }
+function renderReportPreview(){ const b = $('reportPreview'); if(!b) return; b.innerHTML = REPORT_SCREENS.map((src,i)=>`<div class="thumb" style="background-image:url('${src}')"><div class="rm" onclick="removeScreenshot(${i})">✕</div></div>`).join(''); }
+function pasteFromClipboard(){
+  if(!navigator.clipboard || !navigator.clipboard.read) return alert('Ctrl+V прямо в окне');
+  navigator.clipboard.read().then(items=>{ for(const item of items) for(const type of item.types) if(type.startsWith('image/')) item.getType(type).then(blob=>addScreenshot(new File([blob],'clip.png',{type}))); }).catch(()=>alert('Ctrl+V прямо в окне'));
+}
+document.addEventListener('paste', e=>{
+  const p = $('reportPanel'); if(!p || !p.classList.contains('open')) return;
+  const items = e.clipboardData && e.clipboardData.items; if(!items) return;
+  for(const it of items) if(it.type.startsWith('image/')) addScreenshot(it.getAsFile());
+});
+async function sendGeneralReport(){
+  const target_login = ($('reportTargetLogin').value||'').trim();
+  const reason = ($('reportReason').value||'').trim();
+  if(!target_login || !reason) return alert('Заполни логин и причину');
+  try { await api('/reports','POST',{ target_login, reason, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('⚠️ Жалоба отправлена',''); } catch(e){ toast('Ошибка', e.message) }
+}
+async function sendToAdminInbox(){
+  const subject = ($('msgSubject').value||'').trim();
+  const text = ($('msgText').value||'').trim();
+  if(!text) return alert('Напиши сообщение');
+  try { await api('/inbox','POST',{ subject, text, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('✉️ Отправлено',''); } catch(e){ toast('Ошибка', e.message) }
+}
+
+/* ============================================================
+   АДМИН-ПАНЕЛЬ ВНУТРИ INK
+   ============================================================ */
+function openAdmin(){ if(!(ME.is_admin || ME.isAdmin)) return toast('Только админ',''); renderAdmin(); openPanel('adminPanel'); }
+async function renderAdmin(){
+  let orders=[], reports=[], inbox=[], helpers=[], donations=[];
+  try { orders = await api('/admin/orders'); } catch(e){}
+  try { reports = await api('/admin/reports'); } catch(e){}
+  try { inbox = await api('/admin/inbox'); } catch(e){}
+  try { helpers = await api('/admin/helpers'); } catch(e){}
+  try { donations = await api('/admin/donations'); } catch(e){}
+  const pendingOrders = orders.filter(x=>x.status==='pending').length;
+  const pendingRep = reports.filter(x=>x.status==='pending').length;
+  const unreadMsg = inbox.filter(x=>!x.read).length;
+  const pendingDonations = donations.filter(x=>x.status==='pending').length;
+  const banned = USERS.filter(u=>u.banned).length;
+  const prem = USERS.filter(u=>isPremium(u)).length;
+  const donors = USERS.filter(u=>u.is_donor).length;
+  $('adminBody').innerHTML = `
+    <div class="admin-stat">
+      <div class="card"><div class="num">${USERS.length}</div><div class="lbl">Всего</div></div>
+      <div class="card"><div class="num" style="color:var(--warn)">${prem}</div><div class="lbl">Premium</div></div>
+      <div class="card"><div class="num" style="color:#ff5c8a">${donors}</div><div class="lbl">Донат.</div></div>
+      <div class="card"><div class="num" style="color:var(--danger)">${banned}</div><div class="lbl">Бан</div></div>
+    </div>
+    <div class="st-section"><h3>Разделы</h3>
+      <div class="st-row" onclick="adminTabDonations()"><div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">❤️</div><div class="txt"><div class="t1">Донаты</div><div class="t2">${pendingDonations} ожидает</div></div></div>
+      <div class="st-row" onclick="adminTabUsers()"><div class="icon">👥</div><div class="txt"><div class="t1">Пользователи</div><div class="t2">${USERS.length}</div></div></div>
+    </div>`;
+}
+async function adminTabDonations(){
+  const donations = await api('/admin/donations').catch(()=>[]);
+  const pending = donations.filter(x=>x.status === 'pending' || !x.status);
+  $('adminBody').innerHTML = `
+    <button class="btn ghost" onclick="renderAdmin()">← Назад</button>
+    <div class="st-section" style="margin-top:12px"><h3>Ожидают (${pending.length})</h3>
+      ${pending.length ? pending.map(x=>`
+        <div class="st-row" style="cursor:default;flex-direction:column;align-items:stretch">
+          <div><div class="t1">${esc(x.login || x.username || '—')} · ${x.amount} ₽</div>
+          <div class="t2">Цель: <b>${esc(x.purpose_text || 'Поддержать проект')}</b> · ****${esc(x.contact||'')}</div>
+          ${x.message ? `<div class="t2" style="margin-top:4px;color:var(--text)">✉️ «${esc(x.message)}»</div>` : ''}</div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+            <button class="btn ok sm" onclick="confirmDonation(${x.id})">✓ Подтвердить</button>
+            <button class="btn ghost sm" onclick="thanksDonation(${x.id})">❤️ Спасибо</button>
+            <button class="btn danger sm" onclick="rejectDonation(${x.id})">✕</button>
+          </div>
+        </div>`).join('') : '<div style="color:var(--muted);font-size:13px">Пусто</div>'}
+    </div>`;
+}
+async function confirmDonation(id){ if(!confirm('Подтвердить донат?')) return; try { const r = await api('/admin/donations/'+id+'/confirm','POST'); toast('❤️ Подтверждён', '+' + (r.tokens||0) + ' токенов'); await loadAll(); adminTabDonations(); } catch(e){ toast('Ошибка', e.message) } }
+async function thanksDonation(id){ if(!confirm('Спасибо без токенов?')) return; try { await api('/admin/donations/'+id+'/thanks','POST'); toast('❤️',''); adminTabDonations(); } catch(e){ toast('Ошибка', e.message) } }
+async function rejectDonation(id){ if(!confirm('Отклонить?')) return; try { await api('/admin/donations/'+id+'/reject','POST'); toast('Отклонено',''); adminTabDonations(); } catch(e){ toast('Ошибка', e.message) } }
+async function adminTabUsers(){
+  $('adminBody').innerHTML = `
+    <button class="btn ghost" onclick="renderAdmin()">← Назад</button>
+    <div class="st-section" style="margin-top:12px"><h3>Пользователи (${USERS.length})</h3>
+      ${USERS.map(u=>`<div class="st-row" onclick="adminUserPanel(${u.id})">${avatarHTML(u,'sm')}<div class="txt"><div class="t1">${esc(u.login)} ${u.is_admin?'👑':''} ${u.banned?'🚫':''}</div><div class="t2">💰 ${u.tokens||0}</div></div></div>`).join('')}
+    </div>`;
+}
+async function adminUserPanel(uid){
+  const u = userById(uid); if(!u) return;
+  $('adminBody').innerHTML = `
+    <button class="btn ghost" onclick="adminTabUsers()">← К списку</button>
+    <div class="st-row" style="cursor:default;margin-top:12px">${avatarHTML(u,'sm')}<div class="txt"><div class="t1">${esc(u.login)}</div><div class="t2">ID: ${u.id} · токенов: ${u.tokens||0}</div></div></div>
+    <div class="st-section"><h3>Роли</h3>
+      <div class="st-row" onclick="adminToggle(${uid},'is_admin')"><div class="txt"><div class="t1">${u.is_admin?'Снять админа':'Назначить админом'}</div></div></div>
+      <div class="st-row" onclick="adminToggle(${uid},'premium')"><div class="txt"><div class="t1">${u.premium?'Снять Premium':'Выдать Premium'}</div></div></div>
+      <div class="st-row" onclick="adminToggle(${uid},'is_donor')"><div class="txt"><div class="t1">${u.is_donor?'Снять донатера':'Сделать донатером'}</div></div></div>
+    </div>
+    <div class="st-section"><h3>Токены</h3>
+      <label class="field-label">Сколько</label><input id="giveAmount" type="number" value="10" class="report-input"/>
+      <div class="row" style="margin-top:8px">
+        <button class="btn ok" onclick="applyGiveTokens(${uid},1)">Выдать</button>
+        <button class="btn danger" onclick="applyGiveTokens(${uid},-1)">Списать</button>
+      </div>
+    </div>`;
+}
+async function adminToggle(uid, field){ const u = userById(uid); try { await api('/admin/users/'+uid,'PUT',{ [field]: !u[field] }); await loadAll(); adminUserPanel(uid); toast('Изменено',''); } catch(e){ toast('Ошибка', e.message) } }
+async function applyGiveTokens(uid, sign){ const amount = parseInt($('giveAmount').value, 10); if(!amount || amount <= 0) return alert('Введи число'); try { await api('/admin/credit-tokens','POST',{ user_id: uid, amount: sign*amount }); await loadAll(); adminUserPanel(uid); toast(sign>0?'💰 +'+amount:'Списано '+amount,''); } catch(e){ toast('Ошибка', e.message) } }
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+(async function init(){
+  if(!TOKEN){ $('auth').style.display = 'flex'; return; }
+  try { await enterApp(); }
+  catch(e){ localStorage.removeItem('ink_token'); TOKEN = null; $('auth').style.display = 'flex'; }
+})();
+</script>
+</body>
+</html>
