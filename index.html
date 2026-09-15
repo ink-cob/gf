@@ -45,7 +45,18 @@ header button:active{background:rgba(127,127,127,.15)}
 .chatpane{display:none;flex-direction:column;width:100%;height:100%;background:var(--bg);min-width:0}
 body.in-chat .sidebar{display:none}
 body.in-chat .chatpane{display:flex}
-@media(min-width:820px){.layout{display:grid;grid-template-columns:minmax(280px,340px) 1fr}.sidebar{display:flex;border-right:1px solid var(--border)}.chatpane{display:flex}}
+
+/* ── ПК: диалог на весь экран при заходе в чат ── */
+@media(min-width:820px){
+  .layout{display:grid;grid-template-columns:minmax(280px,340px) 1fr;transition:grid-template-columns .18s ease}
+  .sidebar{display:flex;border-right:1px solid var(--border);min-width:0}
+  .chatpane{display:flex;min-width:0}
+  body.in-chat .layout{grid-template-columns:1fr}
+  body.in-chat .sidebar{display:none}
+  body.in-chat .chatpane{display:flex;width:100%}
+  body.in-chat #backBtn{display:inline-flex !important}
+}
+
 .search{margin:10px 14px 0;padding:12px;background:var(--panel2);border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:16px}
 .createBtn{margin:10px 14px 0;padding:12px;text-align:center;border-radius:14px;border:1px dashed var(--border2);color:var(--muted);cursor:pointer;font-size:14px}
 .chatList{flex:1;overflow-y:auto;padding:8px 8px 14px}
@@ -57,7 +68,7 @@ body.in-chat .chatpane{display:flex}
 .chat-item .name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chat-item .last{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* ── Полоска собеседника в личке ── */
+/* ── Полоска собеседника ── */
 .peer-bar{
   display:none;
   align-items:center;
@@ -78,10 +89,8 @@ body.in-chat .chatpane{display:flex}
 .peer-bar .status{font-size:12px;color:var(--muted);margin-top:1px}
 .peer-bar .status.online{color:var(--ok)}
 .peer-bar .status.typing{color:var(--accent)}
-.peer-bar .status.ink{color:#c7b3ff}
 .peer-bar .arrow{color:var(--muted);font-size:16px}
 
-/* ── Живая строка набора (Inkognito) ── */
 .live-typing{
   display:none;
   padding:8px 14px;
@@ -112,6 +121,7 @@ body.in-chat .chatpane{display:flex}
 .save-bar button{padding:8px 12px;border-radius:9px;border:0;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
 .save-bar button:disabled{opacity:.5;cursor:default}
 .save-bar .saved{color:#4ade80;font-weight:700;font-size:12.5px;white-space:nowrap}
+
 #messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:82%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.4;word-wrap:break-word;position:relative}
 .msg.them{align-self:flex-start;background:var(--them);border:1px solid var(--border);border-bottom-left-radius:4px}
@@ -233,7 +243,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .msg-menu .row-emojis span{font-size:20px;cursor:pointer;padding:4px 6px;border-radius:8px}
 .msg-menu .row-emojis span:hover{background:var(--panel2)}
 
-/* ── Модалка профиля собеседника ── */
 #peerProfile{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px}
 #peerProfile.open{display:flex}
 #peerProfile .box{background:var(--panel);border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:380px;text-align:center}
@@ -499,15 +508,7 @@ function avatarHTML(u, cls){
   if(u.avatar_url) return `<div class="avatar ${c}" style="background-image:url('${u.avatar_url}')"></div>`;
   return `<div class="avatar ${c}">${(u.login||'?')[0].toUpperCase()}</div>`;
 }
-function avatarStyle(u){
-  if(!u) return '';
-  if(u.avatar_url) return `background-image:url('${u.avatar_url}')`;
-  return '';
-}
 
-/* ============================================================
-   ПРОФИЛЬ СОБЕСЕДНИКА (модалка)
-   ============================================================ */
 function openPeerProfile(uid){
   const u = userById(uid);
   if(!u) return;
@@ -557,13 +558,11 @@ function renderPeerBar(){
   st.textContent = statusText(u);
   bar.onclick = () => openPeerProfile(otherId);
 }
-
 function startPeerStatusTimer(){
   stopPeerStatusTimer();
   PEER_STATUS_TIMER = setInterval(() => {
     if(!CURRENT_CHAT || CURRENT_CHAT.type !== 'private') return;
     if(document.hidden) return;
-    // обновляем статус из USERS (last_seen), которые периодически перезагружаются
     renderPeerBar();
   }, 3000);
 }
@@ -617,7 +616,8 @@ function backToList(){
 function openChatInfo(){ if(CURRENT_CHAT) openChatSettings(); }
 
 /* ============================================================
-   СОХРАНЕНИЕ ПЕРЕПИСКИ
+   СОХРАНЕНИЕ ПЕРЕПИСКИ (кнопка с 14 числа)
+   Удаление — только 1-го числа сервером.
    ============================================================ */
 function shouldShowSaveBar(){
   if(!CURRENT_CHAT) return false;
@@ -634,11 +634,13 @@ function renderSaveBar(){
   const btn = $('saveBarBtn'); const savedEl = $('saveBarSaved'); const txt = $('saveBarText');
   if(saved){
     btn.style.display = 'none'; savedEl.style.display = 'inline';
-    txt.innerHTML = '💾 Переписка за <b>' + ((DRAFT_INFO && DRAFT_INFO.month) || 'этот месяц') + '</b> сохранена. 1-го числа она очистится с сервера, но у тебя останется.';
+    txt.innerHTML = '✅ Переписка за <b>' + ((DRAFT_INFO && DRAFT_INFO.month) || 'этот месяц') + '</b> сохранена у тебя в загрузках. <b>1-го числа</b> сервер очистит её.';
   } else {
     btn.style.display = 'inline'; btn.disabled = false; savedEl.style.display = 'none';
     const draft = DRAFT_INFO && DRAFT_INFO.draftCount ? DRAFT_INFO.draftCount : 0;
-    txt.innerHTML = '⚠️ <b>1-го числа</b> переписка будет очищена. ' + (draft ? 'Сообщений в архиве: <b>' + draft + '</b>. ' : '') + 'Сохрани до конца месяца.';
+    txt.innerHTML = '⚠️ <b>1-го числа</b> переписка будет очищена с сервера. ' +
+                    (draft ? 'Сообщений: <b>' + draft + '</b>. ' : '') +
+                    'Нажми <b>💾 Сохранить</b> — файл скачается в загрузки, чтобы не потерять.';
   }
 }
 async function saveConversation(){
@@ -646,11 +648,26 @@ async function saveConversation(){
   const btn = $('saveBarBtn'); if(btn) btn.disabled = true;
   const month = (DRAFT_INFO && DRAFT_INFO.month) || new Date().toISOString().slice(0,7);
   try {
+    const data = await api('/chats/' + CURRENT_CHAT.id + '/draft/' + month);
+    const otherId = (CURRENT_CHAT.memberIds||[]).find(x => x !== ME.id);
+    const other = userById(otherId);
+    const otherName = other ? other.login : 'chat';
+    const fileName = 'ink-' + otherName + '-' + month + '.json';
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 500);
     await api('/chats/' + CURRENT_CHAT.id + '/convert/' + month, 'POST');
-    toast('💾 Переписка сохранена', month);
     try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){}
-    renderSaveBar(); updateArchiveBar();
-  } catch(e){ toast('Ошибка сохранения', e.message); if(btn) btn.disabled = false; }
+    renderSaveBar();
+    updateArchiveBar();
+    toast('💾 Файл скачан', fileName + ' — 1-го числа сервер очистит переписку');
+  } catch(e){
+    toast('Ошибка сохранения', e.message);
+    if(btn) btn.disabled = false;
+  }
 }
 
 /* ============================================================
@@ -747,10 +764,8 @@ function onTypingInput(){
   TYPING_TIMER = setTimeout(() => {
     api('/typing', 'POST', { chat_id: CURRENT_CHAT.id, text }).catch(()=>{});
   }, 200);
-  // если поле очистили — сразу отправим пустое
   if(!text) api('/typing', 'POST', { chat_id: CURRENT_CHAT.id, text: '' }).catch(()=>{});
 }
-
 let typingPollTimer = null;
 function startTypingPolling(){
   stopTypingPolling();
@@ -761,7 +776,6 @@ function startTypingPolling(){
       const list = await api('/typing/' + CURRENT_CHAT.id);
       const box = $('liveTyping');
       const txt = $('liveTypingText');
-      // показываем только если у собеседника активен Inkognito
       const otherId = (CURRENT_CHAT.memberIds||[]).find(x => x !== ME.id);
       const other = userById(otherId);
       const inkActive = other && other.inkUntil && new Date(other.inkUntil) > new Date();
@@ -769,7 +783,6 @@ function startTypingPolling(){
         box.classList.add('show');
         txt.textContent = list[0].text || '';
       } else if(list && list.length && !inkActive){
-        // печатает, но без Inkognito — покажем только статус
         box.classList.remove('show');
         const st = $('peerStatus');
         if(st){ st.className = 'status typing'; st.textContent = 'печатает…'; }
@@ -934,7 +947,6 @@ async function sendMsg(){
   const v = $('msgInput').value.trim();
   if(!v || !CURRENT_CHAT) return;
   $('msgInput').value = '';
-  // очищаем typing
   api('/typing', 'POST', { chat_id: CURRENT_CHAT.id, text: '' }).catch(()=>{});
   try {
     await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: v });
