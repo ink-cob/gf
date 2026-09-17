@@ -139,7 +139,7 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
   display:flex;
   align-items:center;
   gap:10px;
-  margin-bottom:8px;
+  margin-bottom:12px;
   flex-wrap:wrap;
 }
 .changelog-entry .ver .tag{
@@ -158,22 +158,47 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
 .changelog-entry .ver .tag.new{
   background:linear-gradient(135deg,#ffb84d,#ff5c8a);
 }
+.changelog-entry .ver .tag.type{
+  background:rgba(127,127,127,.15);
+  color:var(--muted);
+  font-weight:600;
+}
 .changelog-entry .ver .date{
   font-size:12.5px;
   color:var(--muted);
 }
 .changelog-entry ul{
   margin:0;
-  padding-left:22px;
-  font-size:14px;
-  line-height:1.75;
-  color:var(--text);
+  padding:0;
+  list-style:none;
 }
 .changelog-entry ul li{
-  margin-bottom:4px;
+  padding:10px 0 10px 18px;
+  position:relative;
+  border-bottom:1px solid rgba(127,127,127,.08);
 }
-.changelog-entry ul li b{
-  color:var(--accent);
+.changelog-entry ul li:last-child{ border-bottom:none; padding-bottom:0; }
+.changelog-entry ul li::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:18px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+}
+.changelog-entry ul li .li-title{
+  font-weight:600;
+  color:var(--text);
+  font-size:14.5px;
+  line-height:1.45;
+}
+.changelog-entry ul li .li-desc{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+  margin-top:3px;
 }
 footer{
   text-align:center;padding:60px 20px 40px;
@@ -192,6 +217,7 @@ footer a:hover{text-decoration:underline}
   .cta{padding:16px 26px;font-size:16px;width:100%;justify-content:center;max-width:400px}
   .actions{flex-direction:column;align-items:center}
   section{padding:36px 0}
+  .changelog{padding:16px 18px}
 }
 </style>
 </head>
@@ -285,7 +311,7 @@ footer a:hover{text-decoration:underline}
       <div class="card"><span class="ico">🎁</span><div class="t">Бонус от 1 до 5 токенов</div><div class="d">Случайный подарок за поддержку проекта.</div></div>
     </div>
   </section>
-   <ДОСКА ОБНОВЛЕНИЙ >
+
   <section>
     <h2><span class="n">6</span>Что нового</h2>
     <p class="desc">Ink новости</p>
@@ -293,6 +319,7 @@ footer a:hover{text-decoration:underline}
       <div class="changelog-loading">Новостей пока нет...</div>
     </div>
   </section>
+
   <footer>
     <p><b>Ink</b> — независимый проект. Сделан одним человеком.</p>
     <p style="margin-top:14px">
@@ -304,8 +331,11 @@ footer a:hover{text-decoration:underline}
   </footer>
 
 </div>
+
 <script>
-/* Загрузка доски обновлений из changelog.txt */
+/* ============================================================
+   ДОСКА ОБНОВЛЕНИЙ — загрузка из changelog.txt
+   ============================================================ */
 (async function loadChangelog(){
   const box = document.getElementById('changelogBox');
   if(!box) return;
@@ -326,23 +356,25 @@ footer a:hover{text-decoration:underline}
 /* Парсер changelog.txt
    Формат:
    === v1.2.0 · 2026-09-17 · new
-   - Добавлено: стикеры
-   - Исправлено: баг с памятью
-   === v1.1.0 · 2026-09-10 · fix
-   - Что-то ещё
+   - Заголовок пункта
+     Описание пункта (с новой строки, отступ 2 пробела)
+   - Ещё пункт
+     Ещё описание
 */
 function parseChangelog(text){
   const lines = text.split(/\r?\n/);
   const entries = [];
   let current = null;
+  let currentItem = null;
 
   for(const raw of lines){
-    const line = raw.trimEnd();
+    const line = raw.replace(/\s+$/, '');
     if(!line.trim()) continue;
 
     // Заголовок версии: === v1.2.0 · 2026-09-17 · new
     const m = line.match(/^===\s*(.+?)\s*$/);
     if(m){
+      if(currentItem && current){ current.items.push(currentItem); currentItem = null; }
       if(current) entries.push(current);
       const parts = m[1].split('·').map(s => s.trim());
       current = {
@@ -354,25 +386,34 @@ function parseChangelog(text){
       continue;
     }
 
-    // Пункт списка: - что-то  или  * что-то
+    // Пункт списка: - текст  или  * текст
     const item = line.match(/^[-*]\s+(.+)$/);
     if(item && current){
-      current.items.push(item[1]);
+      if(currentItem) current.items.push(currentItem);
+      currentItem = { title: item[1].trim(), desc: '' };
       continue;
     }
 
-    // Если строка без префикса — считаем продолжением текущего пункта
-    if(current && current.items.length){
-      current.items[current.items.length - 1] += ' ' + line.trim();
+    // Строка с отступом в 2+ пробела — описание последнего пункта
+    if(currentItem && /^\s{2,}/.test(raw)){
+      const desc = line.trim();
+      currentItem.desc = currentItem.desc ? (currentItem.desc + ' ' + desc) : desc;
+      continue;
+    }
+
+    // Просто строка — считаем продолжением предыдущего пункта
+    if(currentItem){
+      currentItem.desc = currentItem.desc ? (currentItem.desc + ' ' + line.trim()) : line.trim();
     }
   }
+  if(currentItem && current) current.items.push(currentItem);
   if(current) entries.push(current);
 
   if(!entries.length){
     return '<div class="changelog-empty">Пока обновлений нет</div>';
   }
 
-  // Показываем от новых к старым
+  // От новых к старым
   return entries.reverse().map(e => {
     const typeClass = e.type === 'fix' ? 'fix' : e.type === 'new' ? 'new' : '';
     const typeText = e.type === 'fix' ? 'FIX' : e.type === 'new' ? 'NEW' : 'UPDATE';
@@ -380,22 +421,21 @@ function parseChangelog(text){
       <div class="changelog-entry">
         <div class="ver">
           <span class="tag ${typeClass}">${escHtml(e.version)}</span>
-          <span class="tag ${typeClass}" style="background:rgba(127,127,127,.15);color:var(--muted);font-weight:600">${typeText}</span>
+          <span class="tag type">${typeText}</span>
           ${e.date ? `<span class="date">${escHtml(e.date)}</span>` : ''}
         </div>
-        <ul>${e.items.map(i => '<li>' + formatItem(i) + '</li>').join('')}</ul>
+        <ul>
+          ${e.items.map(i => `<li>
+            <div class="li-title">${escHtml(i.title)}</div>
+            ${i.desc ? `<div class="li-desc">${escHtml(i.desc)}</div>` : ''}
+          </li>`).join('')}
+        </ul>
       </div>`;
   }).join('');
 }
 
 function escHtml(s){
   return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-/* Жирным выделяем текст до двоеточия: "Добавлено: стикеры" → "<b>Добавлено:</b> стикеры" */
-function formatItem(s){
-  const t = escHtml(s);
-  return t.replace(/^([А-Яа-яЁёA-Za-z ]{2,30}):\s/, '<b>$1:</b> ');
 }
 </script>
 </body>
