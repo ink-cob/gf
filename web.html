@@ -736,11 +736,32 @@ async function buildArchiveZip(chat, messages){
 }
 function fullUrl(u){
   let url = String(u||'');
+  if(!url) return '';
+
+  // 1. Старый аватар: https://ink-chat.ru/api/upl_XXX.jpg → https://api.ink-chat.ru/uploads/XXX.jpg
+  if(/^https?:\/\/ink-chat\.ru\/api\/upl_/i.test(url)){
+    return url.replace(/^https?:\/\/ink-chat\.ru\/api\/upl_/i, 'https://api.ink-chat.ru/uploads/');
+  }
+
+  // 2. Старый путь с uploads: https://ink-chat.ru/api/uploads/XXX → https://api.ink-chat.ru/uploads/XXX
+  if(/^https?:\/\/ink-chat\.ru\/api\/uploads\//i.test(url)){
+    return url.replace('https://ink-chat.ru/api/uploads/', 'https://api.ink-chat.ru/uploads/');
+  }
+
+  // 3. Правильный полный URL — оставляем как есть
   if(/^https?:\/\//i.test(url)) return url;
-  if(url.startsWith('/')) return API.replace('/api','') + url;
-  if(/^ink-chat\.ru\//i.test(url)) return 'https://' + url;
-  if(/^api\.ink-chat\.ru\//i.test(url)) return 'https://' + url;
-  return API.replace('/api','') + '/' + url.replace(/^\/+/, '');
+
+  // 4. Относительный путь с /uploads/
+  if(url.startsWith('/uploads/')) return 'https://api.ink-chat.ru' + url;
+
+  // 5. Просто "uploads/XXX" без слеша
+  if(url.startsWith('uploads/')) return 'https://api.ink-chat.ru/' + url;
+
+  // 6. Другой путь с / — считаем, что от api.ink-chat.ru
+  if(url.startsWith('/')) return 'https://api.ink-chat.ru' + url;
+
+  // 7. Просто имя файла "1789671395493-xkkh97.jpg" → кладём в /uploads/
+  return 'https://api.ink-chat.ru/uploads/' + url.replace(/^\/+/, '');
 }
 async function makeZip(files){
   const chunks = []; const central = []; let offset = 0;
