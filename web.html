@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#4f8cff"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>Ink</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%234f8cff'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text></svg>"/>
 <style>
@@ -12,6 +15,8 @@ html,body{height:100%;margin:0;overflow:hidden}
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-user-select:none;user-select:none}
 input,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
 button{font-family:inherit}
+
+/* ──────── АВТОРИЗАЦИЯ ──────── */
 #auth{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:radial-gradient(1200px 600px at 50% -10%,var(--panel2) 0%,var(--bg) 60%);padding:16px;overflow:auto}
 #auth .card{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--border2);border-radius:22px;padding:26px 22px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
 #auth h1{margin:0 0 6px;font-size:26px}
@@ -29,10 +34,14 @@ button{font-family:inherit}
 .msg-ok{padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:10px;display:none}
 .msg-ok.err{background:rgba(255,92,92,.12);color:var(--danger);border:1px solid rgba(255,92,92,.35);display:block}
 .msg-ok.ok{background:rgba(74,222,128,.12);color:var(--ok);border:1px solid rgba(74,222,128,.35);display:block}
+
+/* ──────── ЗАГРУЗКА ──────── */
 #loading{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}
 #loading.open{display:flex}
 .spinner{width:44px;height:44px;border:4px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ──────── ПРИЛОЖЕНИЕ ──────── */
 #app{display:none;flex-direction:column;height:100dvh;overflow:hidden}
 #app.open{display:flex}
 header{height:58px;display:flex;align-items:center;gap:2px;padding:0 8px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;padding-top:env(safe-area-inset-top,0)}
@@ -41,18 +50,13 @@ header .spacer{flex:1}
 header button{background:transparent;border:0;color:var(--text);font-size:18px;cursor:pointer;padding:8px;border-radius:12px;min-width:var(--tap);min-height:var(--tap);display:flex;align-items:center;justify-content:center;position:relative}
 header button:active{background:rgba(127,127,127,.15)}
 
-/* ═══════════════════════════════════════════════════════════
-   ЛЕЙАУТ
-   Телефон: одна колонка, список ↔ чат по очереди.
-   ПК (≥820px): две колонки — слева список 340px, справа диалог.
-   ═══════════════════════════════════════════════════════════ */
+/* ──────── ЛЕЙАУТ (ПК: 2 колонки, моб: 1 колонка) ──────── */
 .layout{flex:1;display:flex;overflow:hidden;min-height:0;width:100%}
 .sidebar{display:flex;flex-direction:column;width:100%;height:100%;background:var(--panel);min-width:0}
 .chatpane{display:none;flex-direction:column;width:100%;height:100%;background:var(--bg);min-width:0}
 body.in-chat .sidebar{display:none}
 body.in-chat .chatpane{display:flex}
 body.in-chat #backBtn{display:inline-flex !important}
-
 @media(min-width:820px){
   .layout{display:grid;grid-template-columns:minmax(280px,340px) 1fr}
   .sidebar{display:flex;border-right:1px solid var(--border)}
@@ -61,7 +65,9 @@ body.in-chat #backBtn{display:inline-flex !important}
   body.in-chat #backBtn{display:none !important}
 }
 
+/* ──────── СПИСОК ЧАТОВ ──────── */
 .search{margin:10px 14px 0;padding:12px;background:var(--panel2);border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:16px}
+.search:focus{border-color:var(--accent)}
 .createBtn{margin:10px 14px 0;padding:12px;text-align:center;border-radius:14px;border:1px dashed var(--border2);color:var(--muted);cursor:pointer;font-size:14px}
 .chatList{flex:1;overflow-y:auto;padding:8px 8px 14px}
 .chat-item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;cursor:pointer;min-height:64px}
@@ -72,6 +78,7 @@ body.in-chat #backBtn{display:inline-flex !important}
 .chat-item .name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chat-item .last{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+/* ──────── ПОЛОСКА СОБЕСЕДНИКА ──────── */
 .peer-bar{display:none;align-items:center;gap:10px;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;cursor:pointer;min-height:54px;transition:background .15s}
 .peer-bar.show{display:flex}
 .peer-bar:active{background:rgba(127,127,127,.1)}
@@ -82,11 +89,15 @@ body.in-chat #backBtn{display:inline-flex !important}
 .peer-bar .status.online{color:var(--ok)}
 .peer-bar .status.typing{color:var(--accent)}
 .peer-bar .arrow{color:var(--muted);font-size:16px}
+.peer-bar .save-btn{background:linear-gradient(135deg,#ffb84d,#ff5c8a);border:0;color:#fff;font-size:12.5px;font-weight:700;padding:8px 12px;border-radius:9px;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit}
+.peer-bar .save-btn:disabled{opacity:.5;cursor:default}
 
+/* ──────── ЖИВОЙ НАБОР ──────── */
 .live-typing{display:none;padding:8px 14px;background:linear-gradient(135deg,rgba(124,92,255,.12),rgba(79,140,255,.08));border-bottom:1px solid rgba(124,92,255,.35);font-size:13px;color:#c7b3ff;flex-shrink:0;font-family:ui-monospace,Menlo,monospace;word-break:break-word;line-height:1.4;max-height:80px;overflow-y:auto}
 .live-typing.show{display:block}
 .live-typing .lbl{color:#8a7cff;font-weight:600;margin-right:6px}
 
+/* ──────── ПЛАШКИ ──────── */
 .archive-bar{padding:10px 14px;background:linear-gradient(135deg,rgba(255,184,77,.12),rgba(255,92,138,.12));border-bottom:1px solid rgba(255,184,77,.35);font-size:13px;display:none;flex-shrink:0}
 .archive-bar.show{display:block}
 .archive-bar .line{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -100,8 +111,8 @@ body.in-chat #backBtn{display:inline-flex !important}
 .save-bar .txt b{color:#ffb84d}
 .save-bar button{padding:8px 12px;border-radius:9px;border:0;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
 .save-bar button:disabled{opacity:.5;cursor:default}
-.save-bar .saved{color:#4ade80;font-weight:700;font-size:12.5px;white-space:nowrap}
 
+/* ──────── СООБЩЕНИЯ ──────── */
 #messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:82%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.4;word-wrap:break-word;position:relative}
 .msg.them{align-self:flex-start;background:var(--them);border:1px solid var(--border);border-bottom-left-radius:4px}
@@ -114,18 +125,32 @@ body.in-chat #backBtn{display:inline-flex !important}
 .msg.them .ticks{color:var(--muted)}
 .msg .hashtag{color:#7cb8ff;cursor:pointer;font-weight:600}
 .msg .sname{display:block;font-size:11.5px;font-weight:700;color:var(--accent);margin-bottom:3px}
+
+/* ──────── ВЛОЖЕНИЯ В СООБЩЕНИЯХ ──────── */
+.msg .attach{display:block;margin:6px 0;max-width:100%;border-radius:10px;overflow:hidden;text-decoration:none;color:inherit}
+.msg .attach img{display:block;max-width:260px;max-height:260px;width:auto;height:auto;border-radius:10px;cursor:pointer}
+.msg .attach video{display:block;max-width:260px;max-height:260px;border-radius:10px}
+.msg .attach audio{display:block;width:220px;margin-top:4px}
+.msg .attach .file-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.25);padding:10px 12px;border-radius:10px;font-size:13px;min-width:180px}
+.msg .attach .file-row .fi{font-size:22px;flex-shrink:0}
+.msg .attach .file-row .fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.msg .attach .file-row .fs{opacity:.65;font-size:11.5px;flex-shrink:0}
+
+/* ──────── РЕАКЦИИ ──────── */
 .reactions{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
 .reaction{background:rgba(127,127,127,.15);padding:2px 8px;border-radius:10px;font-size:12px;cursor:pointer}
 
+/* ──────── COMPOSER ──────── */
 .composer{display:flex;gap:10px;padding:12px 14px;border-top:1px solid var(--border);background:var(--panel);flex-shrink:0;align-items:center}
 .composer input{flex:1;min-width:0;padding:12px 16px;background:var(--panel2);border:1px solid var(--border2);border-radius:24px;color:var(--text);outline:none;font-size:15px}
 .composer .send-btn{width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;font-size:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0}
-.composer .emoji-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-size:18px;flex-shrink:0}
+.composer .emoji-btn,.composer .attach-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-size:18px;flex-shrink:0}
 .empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px;padding:0 20px}
 
+/* ──────── ПАНЕЛИ ──────── */
 .panel{position:fixed;inset:0;z-index:70;display:none;background:rgba(0,0,0,.5)}
 .panel.open{display:block}
-.panel .box{position:absolute;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--panel);display:flex;flex-direction:column;overflow:hidden}
+.panel .box{position:absolute;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--panel);display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
 @media(max-width:600px){.panel .box{width:100vw}}
 .st-header{height:58px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--border);flex-shrink:0}
 .st-header h2{margin:0;font-size:17px}
@@ -146,13 +171,13 @@ body.in-chat #backBtn{display:inline-flex !important}
 .switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
 .switch.on::after{transform:translateX(20px)}
 
+/* ──────── КАРТОЧКИ ──────── */
 .balance-card{background:linear-gradient(135deg,rgba(255,184,77,.12),rgba(255,92,138,.12));border:1px solid rgba(255,184,77,.35);border-radius:16px;padding:16px;text-align:center;margin-bottom:14px}
 .balance-card .num{font-size:32px;font-weight:700;color:#ffb84d;margin:4px 0}
 .balance-card .lbl{font-size:12.5px;color:var(--muted)}
 .card-info{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:10px;font-size:14px;line-height:1.7}
 .card-info .num{font-family:ui-monospace,Menlo,monospace;font-size:16px;letter-spacing:1.5px;color:var(--accent);font-weight:700;margin:4px 0;cursor:pointer;transition:color .15s}
 .card-info .num:hover{color:#7cb8ff}
-.card-info .num:active{color:#fff}
 .card-info .num.copied{color:#4ade80 !important}
 .card-info .num .copy-hint{font-size:11px;color:var(--muted);font-weight:400;margin-left:8px;font-family:system-ui,sans-serif;letter-spacing:0}
 .prem-feature{display:flex;gap:10px;padding:10px 12px;border-radius:12px;background:var(--panel2);margin-bottom:6px;align-items:center}
@@ -161,16 +186,23 @@ body.in-chat #backBtn{display:inline-flex !important}
 .prem-feature .t1{font-weight:600;font-size:14px}
 .prem-feature .t2{font-size:12px;color:var(--muted);margin-top:2px}
 
+/* ──────── TOAST ──────── */
 #toastBox{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:min(420px,calc(100vw - 24px))}
-.toast{background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:12px 14px}
+.toast{background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .toast .t1{font-weight:700;font-size:14px}
 .toast .t2{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+/* ──────── ЗНАЧКИ ──────── */
 .tokens-badge{background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;margin-left:4px}
 .premium-name{background:linear-gradient(135deg,#ffb84d,#ff5c8a,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
 .premium-badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;margin-left:4px}
 .smile-prefix{margin-right:3px}
 .text-prefix{background:linear-gradient(135deg,#ff5c8a,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;margin-right:3px}
+
+/* ──────── INKOGNITO ──────── */
 body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:#000a;color:#c7b3ff;padding:4px 12px;border-radius:999px;font-size:11px;letter-spacing:1.5px;z-index:40;pointer-events:none}
+
+/* ──────── КЛАНЫ ──────── */
 .hero{text-align:center;padding:20px 14px;background:linear-gradient(135deg,rgba(79,140,255,.12),rgba(124,92,255,.12));border:1px solid rgba(79,140,255,.35);border-radius:18px;margin-bottom:14px}
 .hero .name{font-size:20px;font-weight:700}
 .hero .prefix{color:#ffb84d;font-weight:700;margin-right:4px}
@@ -189,6 +221,8 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .vote-row .prog{height:8px;background:var(--border2);border-radius:4px;overflow:hidden;margin:8px 0}
 .vote-row .prog .fill{height:100%;background:linear-gradient(90deg,#22a55a,#4ade80)}
 .vote-row .actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+
+/* ──────── ТРАНЗАКЦИИ ──────── */
 .tx-row{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--panel2);margin-bottom:6px;font-size:13.5px}
 .tx-row .ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .tx-row .ico.in{background:rgba(74,222,128,.15);color:var(--ok)}
@@ -199,24 +233,35 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .tx-row .amount{font-weight:700;white-space:nowrap}
 .tx-row .amount.pos{color:var(--ok)}
 .tx-row .amount.neg{color:var(--danger)}
+
+/* ──────── ФОРМЫ ──────── */
 .report-input{width:100%;padding:13px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);outline:none;font-size:15px;resize:vertical;font-family:inherit}
 .field-label{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:14px 0 6px;font-weight:600}
+
+/* ──────── АДМИН-ПАНЕЛЬ ──────── */
 .admin-stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:14px}
 .admin-stat .card{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:10px;text-align:center}
 .admin-stat .num{font-size:20px;font-weight:700;color:var(--accent)}
 .admin-stat .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+
+/* ──────── ВЛОЖЕНИЯ (форма жалобы) ──────── */
 .attach-row{display:flex;gap:8px;margin-top:10px}
-.attach-btn{flex:1;padding:12px;border-radius:12px;border:1px dashed var(--border2);background:var(--panel2);color:var(--text);cursor:pointer;font-size:13.5px;text-align:center;font-family:inherit}
+.attach-btn2{flex:1;padding:12px;border-radius:12px;border:1px dashed var(--border2);background:var(--panel2);color:var(--text);cursor:pointer;font-size:13.5px;text-align:center;font-family:inherit}
 .attach-preview{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .attach-preview .thumb{position:relative;width:72px;height:72px;border-radius:10px;background-size:cover;background-position:center;border:1px solid var(--border2)}
 .attach-preview .thumb .rm{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
-.emoji-panel{position:absolute;bottom:60px;left:12px;right:12px;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:10px;z-index:60;display:none}
+
+/* ──────── ЭМОДЗИ-ПАНЕЛЬ ──────── */
+.emoji-panel{position:absolute;bottom:60px;left:12px;right:12px;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:10px;z-index:60;display:none;box-shadow:0 10px 40px rgba(0,0,0,.5)}
 .emoji-panel.open{display:block}
-.emoji-panel .tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
-.emoji-panel .tab{padding:4px 10px;border-radius:8px;font-size:12px;background:var(--panel2);border:1px solid var(--border2);cursor:pointer;color:var(--muted)}
+.emoji-panel .tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;max-height:60px;overflow-y:auto}
+.emoji-panel .tab{padding:4px 10px;border-radius:8px;font-size:12px;background:var(--panel2);border:1px solid var(--border2);cursor:pointer;color:var(--muted);white-space:nowrap}
 .emoji-panel .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
-.emoji-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px;max-height:200px;overflow-y:auto}
+.emoji-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px;max-height:220px;overflow-y:auto}
 .emoji-grid .e{font-size:22px;text-align:center;padding:6px;border-radius:8px;cursor:pointer;background:transparent;border:0;color:inherit}
+.emoji-grid .e:hover{background:var(--panel2)}
+
+/* ──────── МЕНЮ СООБЩЕНИЙ ──────── */
 .msg .msg-menu-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:6px;background:rgba(0,0,0,.45);color:#fff;border:0;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;line-height:1}
 .msg:hover .msg-menu-btn{display:flex}
 .msg.me .msg-menu-btn{background:rgba(0,0,0,.25)}
@@ -229,6 +274,9 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .msg-menu .row-emojis{display:flex;gap:4px;padding:4px 6px 6px;border-bottom:1px solid var(--border);margin-bottom:4px}
 .msg-menu .row-emojis span{font-size:20px;cursor:pointer;padding:4px 6px;border-radius:8px}
 .msg-menu .row-emojis span:hover{background:var(--panel2)}
+@media(max-width:600px){.msg-menu{left:12px !important;right:12px;bottom:12px;top:auto !important;max-height:70vh;overflow-y:auto;border-radius:16px;min-width:0}}
+
+/* ──────── ПРОФИЛЬ СОБЕСЕДНИКА ──────── */
 #peerProfile{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px}
 #peerProfile.open{display:flex}
 #peerProfile .box{background:var(--panel);border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:380px;text-align:center}
@@ -237,15 +285,24 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 #peerProfile .status{font-size:13px;color:var(--muted);margin-top:4px}
 #peerProfile .desc{font-size:13.5px;color:var(--text);margin-top:12px;line-height:1.5;padding:10px 12px;background:var(--panel2);border-radius:12px;text-align:left;min-height:50px}
 #peerProfile .row{margin-top:14px}
-@media(max-width:600px){.msg-menu{left:12px !important;right:12px;bottom:12px;top:auto !important;max-height:70vh;overflow-y:auto;border-radius:16px;min-width:0}}
+
+/* ──────── ОВЕРЛЕЙ ЗАГРУЗКИ ──────── */
+.upload-overlay{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:#fff}
+.upload-overlay.show{display:flex}
+.upload-overlay .bar{width:220px;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.upload-overlay .bar .fill{height:100%;width:0;background:linear-gradient(90deg,#4f8cff,#7c5cff);transition:width .15s}
+
+/* ──────── СКРОЛЛБАР ──────── */
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px}
+::-webkit-scrollbar-track{background:transparent}
 </style>
 </head>
 <body>
 
 <div id="loading"><div class="spinner"></div><div style="color:var(--muted);font-size:13px">Подключение...</div></div>
 
+<!-- ═══════════════ АВТОРИЗАЦИЯ ═══════════════ -->
 <div id="auth">
   <div class="card">
     <div id="authMode">
@@ -270,6 +327,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
   </div>
 </div>
 
+<!-- ═══════════════ ПРИЛОЖЕНИЕ ═══════════════ -->
 <div id="app">
   <header>
     <button id="backBtn" style="display:none" onclick="backToList()">←</button>
@@ -281,82 +339,320 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
     <button onclick="toggleInkognito()">🕶️</button>
     <button onclick="openSettings()">⚙️</button>
   </header>
+
   <div class="layout">
+
+    <!-- ──────── САЙДБАР ──────── -->
     <div class="sidebar">
       <input class="search" id="searchInput" placeholder="Поиск:" oninput="renderChats()"/>
       <div class="createBtn" onclick="openCreateChatPanel()">+ Создать чат</div>
       <div class="chatList" id="chatList"></div>
     </div>
+
+    <!-- ──────── ОКНО ЧАТА ──────── -->
     <div class="chatpane">
+
+      <!-- Полоска собеседника -->
       <div class="peer-bar" id="peerBar">
         <div class="avatar" id="peerAvatar"></div>
         <div class="meta">
           <div class="name" id="peerName">—</div>
           <div class="status" id="peerStatus">—</div>
         </div>
+        <button class="save-btn" id="peerSaveBtn" onclick="event.stopPropagation();savePeerConversation()">💾 Сохранить</button>
         <div class="arrow">›</div>
       </div>
+
+      <!-- Живой набор -->
       <div class="live-typing" id="liveTyping">
         <span class="lbl">🕶️ печатает:</span><span id="liveTypingText"></span>
       </div>
+
+      <!-- Плашка сохранения (14+ число месяца) -->
       <div class="save-bar" id="saveBar">
         <div class="txt" id="saveBarText">⚠️ <b>1-го числа</b> переписка будет очищена. Сохрани до конца месяца.</div>
-        <span class="saved" id="saveBarSaved" style="display:none">✅ Сохранено</span>
         <button id="saveBarBtn" onclick="saveConversation()">💾 Сохранить</button>
       </div>
+
+      <!-- Плашка архива -->
       <div class="archive-bar" id="archiveBar">
         <div class="line">
           <span id="archiveLine">Архив за месяц</span>
-          <button onclick="downloadArchive()">📥 Скачать и очистить</button>
+          <button onclick="downloadArchive()">📥 Скачать ZIP</button>
         </div>
       </div>
       <div class="archive-bar warn" id="archiveWarn"></div>
+
+      <!-- Сообщения -->
       <div id="messages"></div>
+
+      <!-- Эмодзи-панель -->
       <div class="emoji-panel" id="emojiPanel"></div>
+
+      <!-- Composer -->
       <div class="composer">
         <button class="emoji-btn" onclick="toggleEmojiPanel()">😊</button>
+        <button class="attach-btn" onclick="pickFile()" title="Прикрепить файл">📎</button>
         <input id="msgInput" placeholder="Сообщение..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}" oninput="onTypingInput()"/>
         <button class="send-btn" onclick="sendMsg()">➤</button>
       </div>
+
+      <input type="file" id="fileInput" multiple style="display:none" onchange="onFilePick(event)"/>
     </div>
   </div>
 </div>
 
-<div class="panel" id="settings"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Настройки</h2><div class="spacer"></div><button onclick="closePanel('settings')">✕</button></div><div class="st-body" id="settingsBody"></div></div></div>
-<div class="panel" id="editProfile"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Мой профиль</h2><div class="spacer"></div><button onclick="closePanel('editProfile')">✕</button></div><div class="st-body" id="editProfileBody"></div></div></div>
-<div class="panel" id="createChat"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Новый чат</h2><div class="spacer"></div><button onclick="closePanel('createChat')">✕</button></div><div class="st-body" id="createChatBody"></div></div></div>
-<div class="panel" id="shop"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛒 Покупки</h2><div class="spacer"></div><button onclick="closePanel('shop')">✕</button></div><div class="st-body" id="shopBody"></div></div></div>
-<div class="panel" id="clansList"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Кланы</h2><div class="spacer"></div><button onclick="closePanel('clansList')">✕</button></div><div class="st-body" id="clansListBody"></div></div></div>
-<div class="panel" id="clanCard"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="clanTitle">Клан</h2><div class="spacer"></div><button onclick="closePanel('clanCard')">✕</button></div><div class="st-body" id="clanBody"></div></div></div>
-<div class="panel" id="clanCreate"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Создать клан</h2><div class="spacer"></div><button onclick="closePanel('clanCreate')">✕</button></div><div class="st-body" id="clanCreateBody"></div></div></div>
-<div class="panel" id="clanProposal"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>💡 Предложить покупку</h2><div class="spacer"></div><button onclick="closePanel('clanProposal')">✕</button></div><div class="st-body" id="clanProposalBody"></div></div></div>
-<div class="panel" id="clanInkStock"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🗄️ Хранилище Inkognito</h2><div class="spacer"></div><button onclick="closePanel('clanInkStock')">✕</button></div><div class="st-body" id="clanInkStockBody"></div></div></div>
-<div class="panel" id="clanRating"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🏆 Рейтинг кланов</h2><div class="spacer"></div><button onclick="closePanel('clanRating')">✕</button></div><div class="st-body" id="clanRatingBody"></div></div></div>
-<div class="panel" id="wallet"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>💰 Мой кошелёк</h2><div class="spacer"></div><button onclick="closePanel('wallet')">✕</button></div><div class="st-body" id="walletBody"></div></div></div>
-<div class="panel" id="sendTokens"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>📤 Перевести токены</h2><div class="spacer"></div><button onclick="closePanel('sendTokens')">✕</button></div><div class="st-body" id="sendTokensBody"></div></div></div>
-<div class="panel" id="transactions"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>📜 Транзакции</h2><div class="spacer"></div><button onclick="closePanel('transactions')">✕</button></div><div class="st-body" id="transactionsBody"></div></div></div>
-<div class="panel" id="chatSettings"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Настройки чата</h2><div class="spacer"></div><button onclick="closePanel('chatSettings')">✕</button></div><div class="st-body" id="chatSettingsBody"></div></div></div>
-<div class="panel" id="emojiCustomize"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🎨 Эмодзи и префиксы</h2><div class="spacer"></div><button onclick="closePanel('emojiCustomize')">✕</button></div><div class="st-body" id="emojiCustomizeBody"></div></div></div>
-<div class="panel" id="reportPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="reportTitle">⚠️ Жалоба</h2><div class="spacer"></div><button onclick="closePanel('reportPanel')">✕</button></div><div class="st-body" id="reportBody"></div></div></div>
-<div class="panel" id="adminPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Админ-панель</h2><div class="spacer"></div><button onclick="closePanel('adminPanel')">✕</button></div><div class="st-body" id="adminBody"></div></div></div>
+<!-- ═══════════════ ПАНЕЛИ ═══════════════ -->
 
+<div class="panel" id="settings">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>Настройки</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('settings')">✕</button>
+    </div>
+    <div class="st-body" id="settingsBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="editProfile">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>Мой профиль</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('editProfile')">✕</button>
+    </div>
+    <div class="st-body" id="editProfileBody"></div>
+  </div>
+</div>
+
+<!-- Premium-панель -->
+<div class="panel" id="premiumPanel">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>💎 Premium</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('premiumPanel')">✕</button>
+    </div>
+    <div class="st-body" id="premiumBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="createChat">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>Новый чат</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('createChat')">✕</button>
+    </div>
+    <div class="st-body" id="createChatBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="shop">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>🛒 Покупки</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('shop')">✕</button>
+    </div>
+    <div class="st-body" id="shopBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="clansList">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>🛡️ Кланы</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('clansList')">✕</button>
+    </div>
+    <div class="st-body" id="clansListBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="clanCard">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2 id="clanTitle">Клан</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('clanCard')">✕</button>
+    </div>
+    <div class="st-body" id="clanBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="clanCreate">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>Создать клан</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('clanCreate')">✕</button>
+    </div>
+    <div class="st-body" id="clanCreateBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="clanProposal">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>💡 Предложить покупку</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('clanProposal')">✕</button>
+    </div>
+    <div class="st-body" id="clanProposalBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="clanInkStock">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>🗄️ Хранилище Inkognito</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('clanInkStock')">✕</button>
+    </div>
+    <div class="st-body" id="clanInkStockBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="clanRating">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>🏆 Рейтинг кланов</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('clanRating')">✕</button>
+    </div>
+    <div class="st-body" id="clanRatingBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="wallet">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>💰 Мой кошелёк</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('wallet')">✕</button>
+    </div>
+    <div class="st-body" id="walletBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="sendTokens">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>📤 Перевести токены</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('sendTokens')">✕</button>
+    </div>
+    <div class="st-body" id="sendTokensBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="transactions">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>📜 Транзакции</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('transactions')">✕</button>
+    </div>
+    <div class="st-body" id="transactionsBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="chatSettings">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>Настройки чата</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('chatSettings')">✕</button>
+    </div>
+    <div class="st-body" id="chatSettingsBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="emojiCustomize">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>🎨 Эмодзи</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('emojiCustomize')">✕</button>
+    </div>
+    <div class="st-body" id="emojiCustomizeBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="reportPanel">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2 id="reportTitle">⚠️ Жалоба</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('reportPanel')">✕</button>
+    </div>
+    <div class="st-body" id="reportBody"></div>
+  </div>
+</div>
+
+<div class="panel" id="adminPanel">
+  <div class="box">
+    <div class="st-header">
+      <button class="st-back" onclick="goBack()">←</button>
+      <h2>🛡️ Админ-панель</h2>
+      <div class="spacer"></div>
+      <button onclick="closePanel('adminPanel')">✕</button>
+    </div>
+    <div class="st-body" id="adminBody"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ПРОФИЛЬ СОБЕСЕДНИКА ═══════════════ -->
 <div id="peerProfile"><div class="box" onclick="event.stopPropagation()">
   <div class="avatar" id="ppAvatar"></div>
   <div class="name" id="ppName">—</div>
   <div class="status" id="ppStatus">—</div>
   <div class="desc" id="ppDesc">—</div>
+  <div class="row">
+    <button class="btn gold" onclick="savePeerConversation()">💾 Сохранить переписку</button>
+  </div>
   <div class="row"><button class="btn ghost" onclick="closePeerProfile()">Закрыть</button></div>
 </div></div>
 
+<!-- ═══════════════ МЕНЮ СООБЩЕНИЙ ═══════════════ -->
 <div class="msg-menu" id="msgMenu"></div>
-<div id="toastBox"></div>
 
+<!-- ═══════════════ ОВЕРЛЕЙ ЗАГРУЗКИ ФАЙЛА ═══════════════ -->
+<div class="upload-overlay" id="uploadOverlay">
+  <div style="font-size:32px">📎</div>
+  <div id="uploadText">Загрузка файла...</div>
+  <div class="bar"><div class="fill" id="uploadFill"></div></div>
+</div>
+
+<!-- ═══════════════ TOAST ═══════════════ -->
+<div id="toastBox"></div>
 <script>
 /* ============================================================
    НАСТРОЙКА
    ============================================================ */
 const API = 'https://api.ink-chat.ru/api';
+const SITE_ORIGIN = 'https://ink-chat.ru';
 const CARD_NUMBER = '2200 1536 8967 4803';
+
 let TOKEN = localStorage.getItem('ink_token') || null;
 let ME = null, USERS = [], CHATS = [], MSGS = {}, CLANS = [], RATING = [], TX = [];
 let CURRENT_CHAT = null, CURRENT_CLAN = null;
@@ -406,6 +702,7 @@ const $ = id => document.getElementById(id);
 function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
 function toast(a,b){ const el=document.createElement('div'); el.className='toast'; el.innerHTML=`<div class="t1">${esc(a)}</div><div class="t2">${esc(b||'')}</div>`; $('toastBox').appendChild(el); setTimeout(()=>el.remove(),3500) }
 function fmt(n){ return Number(n||0).toLocaleString('ru-RU') }
+function fmtSize(n){ if(!n) return ''; if(n < 1024) return n + ' Б'; if(n < 1024*1024) return (n/1024).toFixed(1) + ' КБ'; return (n/1024/1024).toFixed(1) + ' МБ'; }
 function showLoading(on){ const el=$('loading'); if(!el) return; on ? el.classList.add('open') : el.classList.remove('open') }
 function showMsg(id,t,k){ const el=$(id); if(!el) return; el.textContent=t; el.className='msg-ok '+k }
 function switchTo(w){ $('authMode').style.display=w==='login'?'block':'none'; $('regMode').style.display=w==='reg'?'block':'none'; $('authMsg').className='msg-ok'; $('regMsg').className='msg-ok' }
@@ -414,6 +711,9 @@ function openPanel(id){ const el=document.getElementById(id); if(!el) return; if
 function closePanel(id){ const el=document.getElementById(id); if(el) el.classList.remove('open'); STACK = STACK.filter(x => x !== id); }
 function goBack(){ if(!STACK.length) return; const cur = STACK.pop(); const curEl = document.getElementById(cur); if(curEl) curEl.classList.remove('open'); const prev = STACK[STACK.length-1]; if(prev){ const p = document.getElementById(prev); if(p) p.classList.add('open'); } }
 
+/* ============================================================
+   AUTH
+   ============================================================ */
 async function doRegister(){
   const l = $('regLogin').value.trim(); const p1 = $('regPass').value, p2 = $('regPass2').value;
   if(l.length<3) return showMsg('regMsg','Логин минимум 3','err');
@@ -441,6 +741,9 @@ function logout(){
   location.href = 'index.html';
 }
 
+/* ============================================================
+   ЗАГРУЗКА
+   ============================================================ */
 async function loadAll(){
   showLoading(true);
   try {
@@ -472,19 +775,47 @@ function startPresence(){
   presenceTimer = setInterval(() => { api('/presence','POST').then(r => { ME.tokens = r.tokens; renderTokensBadge(); }).catch(()=>{}); }, 60000);
   api('/presence','POST').then(r => { ME.tokens = r.tokens; renderTokensBadge(); }).catch(()=>{});
 }
+
+/* ============================================================
+   PUSH-УВЕДОМЛЕНИЯ
+   ============================================================ */
 async function initPush(){
   try {
-    if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
-    const reg = await navigator.serviceWorker.register('sw.js');
-    const keyRes = await api('/push/key');
-    if(!keyRes.key) return;
-    if(Notification.permission === 'denied') return;
+    if(!('serviceWorker' in navigator) || !('PushManager' in window)){
+      console.warn('[push] Browser не поддерживает push');
+      return;
+    }
+    const reg = await navigator.serviceWorker.register('/sw.js');
+    console.log('[push] sw.js зарегистрирован');
+
+    const keyRes = await api('/push/key').catch(()=>({ key: null }));
+    if(!keyRes.key){
+      console.warn('[push] VAPID-ключ не отдан сервером');
+      return;
+    }
+
+    if(Notification.permission === 'denied'){
+      console.warn('[push] Разрешение на уведомления отклонено');
+      return;
+    }
     let perm = Notification.permission;
-    if(perm === 'default') perm = await Notification.requestPermission();
-    if(perm !== 'granted') return;
+    if(perm === 'default'){
+      perm = await Notification.requestPermission();
+    }
+    if(perm !== 'granted'){
+      console.warn('[push] Разрешение не выдано');
+      return;
+    }
+
     let sub = await reg.pushManager.getSubscription();
-    if(!sub){ sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: urlB64ToUint8Array(keyRes.key) }); }
+    if(!sub){
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlB64ToUint8Array(keyRes.key)
+      });
+    }
     await api('/push/subscribe','POST',{ subscription: sub });
+    console.log('[push] Подписка отправлена на сервер');
   } catch(e){ console.warn('[push]', e.message); }
 }
 function urlB64ToUint8Array(base64){
@@ -500,6 +831,19 @@ async function toggleNotifications(){
   catch(e){ toast('Ошибка', e.message); }
 }
 
+/* Service Worker: обработка открытия чата из уведомления */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if(event.data && event.data.type === 'open-chat' && event.data.chatId){
+      const cid = event.data.chatId;
+      if(CHATS.find(c => c.id === cid)) openChat(cid);
+    }
+  });
+}
+
+/* ============================================================
+   ИМЯ / АВАТАР / ПРОФИЛЬ
+   ============================================================ */
 function isPremium(u){ if(!u || !u.premium) return false; if(!u.premium_until) return true; return new Date(u.premium_until) > new Date() }
 function userById(id){ return USERS.find(u => u.id === id) }
 function nameHTML(u){
@@ -509,9 +853,14 @@ function nameHTML(u){
     if(u.show_smile_prefix !== false && u.donor_smile_prefix) pre += `<span class="smile-prefix">${u.donor_smile_prefix}</span>`;
     if(u.show_text_prefix !== false && u.donor_text_prefix) pre += `<span class="text-prefix">${esc(u.donor_text_prefix)}</span>`;
   }
-  if(u.custom_prefix && isPremium(u)) pre += `<span class="smile-prefix">${esc(u.custom_prefix)}</span>`;
+  if(u.custom_prefix && u.show_custom_prefix !== false && isPremium(u)) pre += `<span class="smile-prefix">${esc(u.custom_prefix)}</span>`;
   const n = esc(u.login);
-  return pre + (isPremium(u) ? `<span class="premium-name">${n}</span><span class="premium-badge">💎 PRO</span>` : n);
+  if(isPremium(u)){
+    const namePart = u.show_premium_name !== false ? `<span class="premium-name">${n}</span>` : n;
+    const badgePart = u.show_premium_badge !== false ? `<span class="premium-badge">💎 PRO</span>` : '';
+    return pre + namePart + badgePart;
+  }
+  return pre + n;
 }
 function avatarHTML(u, cls){
   const c = cls || '';
@@ -543,6 +892,9 @@ function statusText(u){
 }
 function isOnline(u){ if(!u || !u.last_seen) return false; return (Date.now() - new Date(u.last_seen).getTime()) < 120000; }
 
+/* ============================================================
+   ПОЛОСКА СОБЕСЕДНИКА
+   ============================================================ */
 function renderPeerBar(){
   const bar = $('peerBar'); if(!bar) return;
   if(!CURRENT_CHAT || CURRENT_CHAT.type !== 'private'){ bar.classList.remove('show'); stopPeerStatusTimer(); return; }
@@ -578,6 +930,9 @@ function startPeerStatusTimer(){
 }
 function stopPeerStatusTimer(){ if(PEER_STATUS_TIMER){ clearInterval(PEER_STATUS_TIMER); PEER_STATUS_TIMER = null; } }
 
+/* ============================================================
+   ЧАТЫ
+   ============================================================ */
 function renderChats(){
   const box = $('chatList'); box.innerHTML = '';
   if(!CHATS.length){ box.innerHTML = '<div class="empty">Чатов пока нет</div>'; return }
@@ -586,9 +941,10 @@ function renderChats(){
     const isGroup = c.type === 'group' || c.type === 'channel';
     const el = document.createElement('div');
     el.className = 'chat-item';
+    const lastText = last ? (last.file ? '📎 ' + (last.file.name || 'файл') : esc(last.text||'')) : '';
     el.innerHTML = `<div class="avatar">${c.name.replace(/^#+/,'')[0].toUpperCase()}</div>
       <div class="meta"><div class="name">${esc(c.name)} ${isGroup ? '<span style="font-size:10px;color:var(--muted)">'+c.type+'</span>' : ''}</div>
-      <div class="last">${last ? esc(last.text||'').slice(0,40) : ''}</div></div>`;
+      <div class="last">${lastText.slice(0,40)}</div></div>`;
     el.onclick = () => openChat(c.id);
     box.appendChild(el);
   });
@@ -621,6 +977,9 @@ function backToList(){
 }
 function openChatInfo(){ if(CURRENT_CHAT) openChatSettings(); }
 
+/* ============================================================
+   СОХРАНЕНИЕ ПЕРЕПИСКИ (ZIP: сообщения + файлы)
+   ============================================================ */
 function shouldShowSaveBar(){
   if(!CURRENT_CHAT) return false;
   if(CURRENT_CHAT.type !== 'private') return false;
@@ -632,41 +991,124 @@ function renderSaveBar(){
   const bar = $('saveBar'); if(!bar) return;
   if(!shouldShowSaveBar()){ bar.classList.remove('show'); return; }
   const saved = DRAFT_INFO && DRAFT_INFO.myConverted;
-  // Уже сохранено — плашку НЕ показываем
   if(saved){ bar.classList.remove('show'); return; }
   bar.classList.add('show');
-  const btn = $('saveBarBtn'); const savedEl = $('saveBarSaved'); const txt = $('saveBarText');
-  btn.style.display = 'inline'; btn.disabled = false; savedEl.style.display = 'none';
+  const txt = $('saveBarText');
   const draft = DRAFT_INFO && DRAFT_INFO.draftCount ? DRAFT_INFO.draftCount : 0;
-  txt.innerHTML = '⚠️ <b>1-го числа</b> переписка будет очищена с сервера. ' + (draft ? 'Сообщений: <b>' + draft + '</b>. ' : '') + 'Нажми <b>💾 Сохранить</b> — файл скачается в загрузки.';
+  txt.innerHTML = '⚠️ <b>1-го числа</b> переписка будет очищена с сервера. ' + (draft ? 'Сообщений: <b>' + draft + '</b>. ' : '') + 'Нажми <b>💾 Сохранить</b> — файл скачается.';
 }
+
+async function fetchFileBlob(url){
+  try { const r = await fetch(url); if(!r.ok) return null; return await r.blob(); } catch(e){ return null; }
+}
+async function buildArchiveZip(chat, messages){
+  const files = [
+    { name: 'messages.json', data: new Blob([JSON.stringify(messages, null, 2)], { type:'application/json' }) }
+  ];
+  for(const m of messages){
+    if(!m.file || !m.file.url) continue;
+    const url = m.file.url.startsWith('http') ? m.file.url : (API.replace('/api','') + m.file.url);
+    const blob = await fetchFileBlob(url);
+    if(!blob) continue;
+    const safeName = 'files/' + m.id + '-' + (m.file.name || 'file').replace(/[^\w.\-]+/g,'_');
+    files.push({ name: safeName, data: blob });
+  }
+  return await makeZip(files);
+}
+async function makeZip(files){
+  const chunks = []; const central = []; let offset = 0;
+  const u16 = n => { const b = new Uint8Array(2); new DataView(b.buffer).setUint16(0, n, true); return b; };
+  const u32 = n => { const b = new Uint8Array(4); new DataView(b.buffer).setUint32(0, n, true); return b; };
+  const enc = new TextEncoder();
+  for(const f of files){
+    const nameBytes = enc.encode(f.name);
+    const dataBuf = new Uint8Array(await f.data.arrayBuffer());
+    const crc = crc32(dataBuf); const size = dataBuf.length;
+    chunks.push(u32(0x04034b50), u16(20), u16(0), u16(0), u16(0), u16(0), u32(crc), u32(size), u32(size), u16(nameBytes.length), u16(0), nameBytes, dataBuf);
+    central.push(u32(0x02014b50), u16(20), u16(20), u16(0), u16(0), u16(0), u16(0), u32(crc), u32(size), u32(size), u16(nameBytes.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(offset), nameBytes);
+    offset += 30 + nameBytes.length + size;
+  }
+  const cdStart = offset; let cdSize = 0;
+  for(const c of central) cdSize += c.length;
+  const end = [u32(0x06054b50), u16(0), u16(0), u16(files.length), u16(files.length), u32(cdSize), u32(cdStart), u16(0)];
+  return new Blob([...chunks, ...central, ...end], { type:'application/zip' });
+}
+let _crcTable = null;
+function crc32(buf){
+  if(!_crcTable){
+    _crcTable = new Uint32Array(256);
+    for(let n=0;n<256;n++){
+      let c = n;
+      for(let k=0;k<8;k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      _crcTable[n] = c >>> 0;
+    }
+  }
+  let crc = 0xFFFFFFFF;
+  for(let i=0;i<buf.length;i++) crc = (_crcTable[(crc ^ buf[i]) & 0xFF] ^ (crc >>> 8)) >>> 0;
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+
 async function saveConversation(){
   if(!CURRENT_CHAT) return;
   const btn = $('saveBarBtn'); if(btn) btn.disabled = true;
   const month = (DRAFT_INFO && DRAFT_INFO.month) || new Date().toISOString().slice(0,7);
   try {
-    const data = await api('/chats/' + CURRENT_CHAT.id + '/draft/' + month);
+    const msgs = await api('/messages/' + CURRENT_CHAT.id);
     const otherId = (CURRENT_CHAT.memberIds||[]).find(x => x !== ME.id);
     const other = userById(otherId);
     const otherName = other ? other.login : 'chat';
-    const fileName = 'ink-' + otherName + '-' + month + '.json';
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const zipBlob = await buildArchiveZip(CURRENT_CHAT, msgs);
+    const fileName = 'ink-' + otherName + '-' + month + '.zip';
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = fileName;
+    a.href = URL.createObjectURL(zipBlob); a.download = fileName;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(a.href), 500);
-    await api('/chats/' + CURRENT_CHAT.id + '/convert/' + month, 'POST');
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    try { await api('/chats/' + CURRENT_CHAT.id + '/convert/' + month, 'POST'); } catch(e){}
     try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){}
     renderSaveBar(); updateArchiveBar();
-    toast('💾 Файл скачан', fileName);
-  } catch(e){ toast('Ошибка сохранения', e.message); if(btn) btn.disabled = false; }
+    toast('💾 ZIP скачан', fileName);
+  } catch(e){ toast('Ошибка сохранения', e.message); }
+  if(btn) btn.disabled = false;
+}
+async function savePeerConversation(){
+  if(!CURRENT_CHAT) return;
+  const btn = $('peerSaveBtn'); if(btn){ btn.disabled = true; btn.textContent = '⏳'; }
+  const month = new Date().toISOString().slice(0,7);
+  try {
+    const msgs = await api('/messages/' + CURRENT_CHAT.id);
+    const otherId = (CURRENT_CHAT.memberIds||[]).find(x => x !== ME.id);
+    const other = userById(otherId);
+    const otherName = other ? other.login : 'chat';
+    const zipBlob = await buildArchiveZip(CURRENT_CHAT, msgs);
+    const fileName = 'ink-' + otherName + '-' + month + '.zip';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zipBlob); a.download = fileName;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    toast('💾 ZIP скачан', fileName);
+  } catch(e){ toast('Ошибка', e.message); }
+  if(btn){ btn.disabled = false; btn.textContent = '💾 Сохранить'; }
 }
 
+/* ============================================================
+   СООБЩЕНИЯ (рендер)
+   ============================================================ */
 function buildTicks(m){
   if(!m) return '';
   if(m.status === 'read') return `<span class="ticks read" title="Прочитано">✓✓</span>`;
   if(m.status === 'delivered') return `<span class="ticks delivered" title="Доставлено">✓✓</span>`;
   return `<span class="ticks sent" title="Отправлено">✓</span>`;
+}
+function attachHTML(f){
+  if(!f || !f.url) return '';
+  const url = f.url.startsWith('http') ? f.url : (API.replace('/api','') + f.url);
+  const safeUrl = esc(url);
+  if(f.kind === 'image') return `<a class="attach" target="_blank" href="${safeUrl}"><img src="${safeUrl}" alt=""/></a>`;
+  if(f.kind === 'video') return `<div class="attach"><video src="${safeUrl}" controls></video></div>`;
+  if(f.kind === 'audio') return `<div class="attach"><audio src="${safeUrl}" controls></audio></div>`;
+  return `<a class="attach" target="_blank" href="${safeUrl}" download="${esc(f.name||'file')}">
+    <div class="file-row"><span class="fi">📄</span><span class="fn">${esc(f.name||'файл')}</span><span class="fs">${fmtSize(f.size)}</span></div>
+  </a>`;
 }
 
 async function renderMessagesAndArchive(){
@@ -702,8 +1144,9 @@ async function renderMessagesAndArchive(){
       rx += '</div>';
     }
     const text = esc(m.text || '').replace(/#([\wа-яё]+)/gi, (x,tag)=>`<span class="hashtag">#${tag}</span>`);
+    const attach = attachHTML(m.file);
     const ticksHTML = isMe ? buildTicks(m) : '';
-    el.innerHTML = head + text + rx +
+    el.innerHTML = head + attach + (text ? '<div>'+text+'</div>' : '') + rx +
       `<button class="msg-menu-btn" onclick="event.stopPropagation();openMsgMenu(event, ${m.id})" title="Действия">⋯</button>` +
       `<span class="time">${m.created_at ? new Date(m.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : ''}${ticksHTML}</span>`;
     el.ondblclick = () => toggleReaction(m.id, '👍');
@@ -715,6 +1158,7 @@ async function renderMessagesAndArchive(){
   updateArchiveBar();
   renderSaveBar();
 }
+
 function updateArchiveBar(){
   const bar = $('archiveBar'), warn = $('archiveWarn');
   if(!DRAFT_INFO){ bar.classList.remove('show'); warn.classList.remove('show'); return; }
@@ -735,19 +1179,22 @@ async function downloadArchive(){
   if(!DRAFT_INFO || !CURRENT_CHAT) return;
   try {
     const month = DRAFT_INFO.month;
-    const data = await api('/chats/' + CURRENT_CHAT.id + '/draft/' + month);
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    const msgs = await api('/messages/' + CURRENT_CHAT.id);
+    const zipBlob = await buildArchiveZip(CURRENT_CHAT, msgs);
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'ink-' + CURRENT_CHAT.id + '-' + month + '.json';
+    a.href = URL.createObjectURL(zipBlob);
+    a.download = 'ink-chat-' + CURRENT_CHAT.id + '-' + month + '.zip';
     a.click();
     URL.revokeObjectURL(a.href);
-    await api('/chats/' + CURRENT_CHAT.id + '/convert/' + month, 'POST');
+    try { await api('/chats/' + CURRENT_CHAT.id + '/convert/' + month, 'POST'); } catch(e){}
     toast('📦 Архив сохранён', month);
     await renderMessagesAndArchive();
   } catch(e){ toast('Ошибка', e.message); }
 }
 
+/* ============================================================
+   TYPING
+   ============================================================ */
 function onTypingInput(){
   if(!CURRENT_CHAT) return;
   const now = Date.now();
@@ -770,9 +1217,8 @@ function startTypingPolling(){
       const otherId = (CURRENT_CHAT.memberIds||[]).find(x => x !== ME.id);
       const other = userById(otherId);
       const inkActive = other && other.inkUntil && new Date(other.inkUntil) > new Date();
-      if(list && list.length && inkActive){
-        box.classList.add('show'); txt.textContent = list[0].text || '';
-      } else if(list && list.length && !inkActive){
+      if(list && list.length && inkActive){ box.classList.add('show'); txt.textContent = list[0].text || ''; }
+      else if(list && list.length && !inkActive){
         box.classList.remove('show');
         const st = $('peerStatus');
         if(st){ st.className = 'status typing'; st.textContent = 'печатает…'; }
@@ -782,6 +1228,9 @@ function startTypingPolling(){
 }
 function stopTypingPolling(){ if(typingPollTimer){ clearInterval(typingPollTimer); typingPollTimer = null; } }
 
+/* ============================================================
+   ТИХИЙ ОПРОС СООБЩЕНИЙ
+   ============================================================ */
 let silentPollTimer = null;
 let lastMsgSignature = '';
 function startSilentPolling(){
@@ -796,15 +1245,8 @@ function startSilentPolling(){
       if(sig === lastMsgSignature) return;
       lastMsgSignature = sig;
       MSGS[CURRENT_CHAT.id] = fresh;
-      // Новые чужие сообщения → прочитаны
-      const hasNewFromOthers = fresh.some(m =>
-        m.sender_id !== ME.id &&
-        m.status !== 'read' &&
-        (!m.read_by || !m.read_by.includes(ME.id))
-      );
-      if(hasNewFromOthers && !document.hidden){
-        api('/messages/read', 'POST', { chat_id: CURRENT_CHAT.id }).catch(()=>{});
-      }
+      const hasNewFromOthers = fresh.some(m => m.sender_id !== ME.id && m.status !== 'read' && (!m.read_by || !m.read_by.includes(ME.id)));
+      if(hasNewFromOthers && !document.hidden){ api('/messages/read', 'POST', { chat_id: CURRENT_CHAT.id }).catch(()=>{}); }
       softUpdateMessages(fresh);
     } catch(e){}
   }, 1000);
@@ -820,9 +1262,7 @@ function buildReactionsHTML(m){
 function softUpdateMessages(fresh){
   if(CURRENT_CHAT){
     const hasNewFromOthers = fresh.some(m => m.sender_id !== ME.id && m.status === 'sent');
-    if(hasNewFromOthers){
-      api('/messages/delivered', 'POST', { chat_id: CURRENT_CHAT.id }).catch(()=>{});
-    }
+    if(hasNewFromOthers){ api('/messages/delivered', 'POST', { chat_id: CURRENT_CHAT.id }).catch(()=>{}); }
   }
   const box = $('messages'); if(!box) return;
   const today = DRAFT_INFO && DRAFT_INFO.today ? DRAFT_INFO.today : new Date().toISOString().slice(0,10);
@@ -843,7 +1283,6 @@ function softUpdateMessages(fresh){
       const rxEl = el.querySelector('.reactions');
       if(rxEl){ if(rxHtml !== rxEl.outerHTML) rxEl.outerHTML = rxHtml; }
       else if(rxHtml){ el.insertAdjacentHTML('beforeend', rxHtml); }
-      // Обновляем галочки
       const timeEl = el.querySelector('.time');
       if(timeEl){
         const isMe = m.sender_id === ME.id;
@@ -860,6 +1299,9 @@ function softUpdateMessages(fresh){
   if(wasAtBottom) box.scrollTop = box.scrollHeight;
 }
 
+/* ============================================================
+   МЕНЮ ДЕЙСТВИЙ
+   ============================================================ */
 let LP_TIMER = null;
 function attachLongPress(el, mid){
   el.addEventListener('touchstart', () => { LP_TIMER = setTimeout(() => { openMsgMenu({clientX:window.innerWidth/2, clientY:window.innerHeight/2}, mid); }, 500); }, { passive: true });
@@ -877,7 +1319,7 @@ function openMsgMenu(e, mid){
   quick.forEach(em => { html += `<span onclick="toggleReaction(${mid},'${em}');closeMsgMenu()">${em}</span>`; });
   html += '</div>';
   html += `<div class="mi" onclick="replyToMsg(${mid});closeMsgMenu()">↩️ Ответить</div>`;
-  html += `<div class="mi" onclick="copyMsg(${mid});closeMsgMenu()">📋 Копировать</div>`;
+  if(m.text) html += `<div class="mi" onclick="copyMsg(${mid});closeMsgMenu()">📋 Копировать</div>`;
   if(mine) html += `<div class="mi" onclick="editMsg(${mid});closeMsgMenu()">✏️ Изменить</div>`;
   html += `<div class="sep"></div>`;
   html += `<div class="mi danger" onclick="deleteMsg(${mid}, false);closeMsgMenu()">🗑️ Удалить у себя</div>`;
@@ -944,6 +1386,53 @@ async function toggleReaction(mid, emo){
   try { await api('/messages/' + mid, 'PUT', { reactions: r }); m.reactions = r; renderMessagesAndArchive(); }
   catch(e){ toast('Ошибка', e.message); }
 }
+
+/* ============================================================
+   ФАЙЛЫ
+   ============================================================ */
+function pickFile(){ $('fileInput').click(); }
+async function onFilePick(e){
+  const files = Array.from(e.target.files || []);
+  e.target.value = '';
+  if(!files.length || !CURRENT_CHAT) return;
+  for(const f of files){ await uploadAndSend(f); }
+}
+async function uploadAndSend(file){
+  const overlay = $('uploadOverlay'); const fill = $('uploadFill'); const txt = $('uploadText');
+  txt.textContent = 'Загрузка: ' + file.name;
+  fill.style.width = '0%';
+  overlay.classList.add('show');
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    const r = await fetch(API + '/upload', {
+      method: 'POST',
+      headers: TOKEN ? { 'Authorization': 'Bearer ' + TOKEN } : {},
+      body: fd
+    });
+    if(!r.ok){
+      const d = await r.json().catch(()=>({}));
+      throw new Error(d.error || ('HTTP ' + r.status));
+    }
+    const res = await r.json();
+    fill.style.width = '100%';
+    await api('/messages', 'POST', {
+      chat_id: CURRENT_CHAT.id,
+      text: '',
+      file: { url: res.url, name: res.name, size: res.size, mime: res.mime, kind: res.kind }
+    });
+    MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
+    renderMessagesAndArchive(); renderChats();
+    overlay.classList.remove('show');
+  } catch(e){
+    overlay.classList.remove('show');
+    toast('Ошибка загрузки', e.message);
+  }
+}
+
+/* ============================================================
+   СООБЩЕНИЯ (отправка текста)
+   ============================================================ */
 async function sendMsg(){
   const v = $('msgInput').value.trim();
   if(!v || !CURRENT_CHAT) return;
@@ -956,6 +1445,9 @@ async function sendMsg(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
+/* ============================================================
+   НАСТРОЙКИ ЧАТА
+   ============================================================ */
 function openChatSettings(){
   if(!CURRENT_CHAT) return;
   const c = CURRENT_CHAT; const enabled = NOTIF_CHATS[c.id] !== false;
@@ -980,6 +1472,10 @@ async function toggleChatNotif(){
   try { await api('/push/settings','POST',{ chatId: id, enabled: next }); NOTIF_CHATS[id] = next; openChatSettings(); toast(next ? 'Уведомления включены' : 'Уведомления выключены',''); }
   catch(e){ toast('Ошибка', e.message); }
 }
+
+/* ============================================================
+   СОЗДАНИЕ ЧАТА
+   ============================================================ */
 let CC_TYPE = 'private', CC_SEL = [];
 function openCreateChatPanel(){ CC_TYPE = 'private'; CC_SEL = []; renderCreateChatBody(); openPanel('createChat'); }
 function renderCreateChatBody(){
@@ -1025,10 +1521,14 @@ async function createChatFinal(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
+/* ============================================================
+   НАСТРОЙКИ
+   ============================================================ */
 function openSettings(){ renderSettingsBody(); openPanel('settings'); }
 function renderSettingsBody(){
   const inkActive = ME.inkUntil && new Date(ME.inkUntil) > new Date();
   const isAdmin = !!(ME.is_admin || ME.isAdmin);
+  const prem = isPremium(ME);
   $('settingsBody').innerHTML = `
     <div class="st-section"><h3>Профиль</h3>
       <div class="st-row" onclick="openEditProfile()">
@@ -1036,6 +1536,13 @@ function renderSettingsBody(){
         <div class="txt"><div class="t1">${nameHTML(ME)}</div><div class="t2">${ME.description || 'Настрой профиль'}</div></div>
       </div>
     </div>
+    ${prem ? `
+    <div class="st-section"><h3>💎 Premium</h3>
+      <div class="st-row" onclick="openPremiumPanel()">
+        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div>
+        <div class="txt"><div class="t1">Premium-функции</div><div class="t2">Значок, цветной ник, префиксы</div></div>
+      </div>
+    </div>` : ''}
     <div class="st-section"><h3>🛡️ Кланы</h3>
       <div class="st-row" onclick="openClansList()"><div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">🛡️</div><div class="txt"><div class="t1">Кланы</div><div class="t2">Мои и все существующие</div></div></div>
       <div class="st-row" onclick="openClansRating()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">🏆</div><div class="txt"><div class="t1">Рейтинг кланов</div><div class="t2">Кто больше — тот выше</div></div></div>
@@ -1048,7 +1555,7 @@ function renderSettingsBody(){
       <div class="st-row" onclick="openEmojiCustomize()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">😊</div><div class="txt"><div class="t1">Эмодзи и префиксы</div><div class="t2">Свой набор</div></div></div>
     </div>
     <div class="st-section" id="prefixSection" style="display:${ME.is_donor ? 'block' : 'none'}">
-      <h3>Префиксы</h3>
+      <h3>Префиксы донатера</h3>
       <div class="st-row" onclick="toggleSmilePrefix()">
         <div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">🌟</div>
         <div class="txt"><div class="t1">Смайл-префикс</div><div class="t2">${ME.show_smile_prefix !== false ? 'Показан' : 'Скрыт'}</div></div>
@@ -1075,19 +1582,97 @@ function renderSettingsBody(){
     </div>
     <div class="st-section"><h3>Обратная связь</h3>
       <div class="st-row" onclick="openReportToAdmin()"><div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">⚠️</div><div class="txt"><div class="t1">Жалоба админу</div><div class="t2">Нарушение правил</div></div></div>
-      <div class="st-row" onclick="openWriteToAdmin()"><div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">✉️</div><div class="txt"><div class="t1">Написать админу</div><div class="t2">Вопрос, идея, предложение</div></div></div>
     </div>
     ${isAdmin ? `<div class="st-section"><h3>🛡️ Администрирование</h3>
       <div class="st-row" onclick="openAdmin()"><div class="icon" style="background:linear-gradient(135deg,#c8410f,#a02020)">🛡️</div><div class="txt"><div class="t1">Админ-панель</div><div class="t2">Управление и модерация</div></div></div>
     </div>` : ''}
     <div class="st-section"><h3>Аккаунт</h3>
+      <div class="st-row" onclick="openChangePassword()">
+        <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">🔑</div>
+        <div class="txt"><div class="t1">Сменить пароль</div></div>
+      </div>
       <div class="st-row" onclick="logout()"><div class="txt"><span style="font-size:18px">🚪</span><span class="t1" style="margin-left:10px">Выйти</span></div></div>
     </div>`;
 }
 async function toggleSmilePrefix(){ const next = !(ME.show_smile_prefix !== false); try { await api('/users/me/donor-prefixes','PUT',{ show_smile: next }); ME.show_smile_prefix = next; renderSettingsBody(); renderChats(); } catch(e){ toast('Ошибка', e.message) } }
 async function toggleTextPrefix(){ const next = !(ME.show_text_prefix !== false); try { await api('/users/me/donor-prefixes','PUT',{ show_text: next }); ME.show_text_prefix = next; renderSettingsBody(); renderChats(); } catch(e){ toast('Ошибка', e.message) } }
+
+/* ============================================================
+   PREMIUM-ПАНЕЛЬ
+   ============================================================ */
+function openPremiumPanel(){ renderPremiumBody(); openPanel('premiumPanel'); }
+function renderPremiumBody(){
+  const prem = isPremium(ME);
+  if(!prem){
+    $('premiumBody').innerHTML = `<div class="empty">Premium не активен.<br><br>Купи за 30 токенов в магазине.</div>`;
+    return;
+  }
+  $('premiumBody').innerHTML = `
+    <div class="balance-card" style="margin-bottom:16px">
+      <div style="font-size:42px">💎</div>
+      <div class="lbl" style="margin-top:6px">Premium активен</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:2px">до ${ME.premium_until ? new Date(ME.premium_until).toLocaleDateString('ru-RU') : 'бесконечно'}</div>
+    </div>
+    <div class="st-section"><h3>Отображение</h3>
+      <div class="st-row" onclick="togglePremiumBadge()">
+        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div>
+        <div class="txt"><div class="t1">Значок «PRO»</div><div class="t2">${ME.show_premium_badge !== false ? 'Показан' : 'Скрыт'}</div></div>
+        <div class="switch ${ME.show_premium_badge !== false ? 'on' : ''}"></div>
+      </div>
+      <div class="st-row" onclick="togglePremiumName()">
+        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">🎨</div>
+        <div class="txt"><div class="t1">Цветной ник</div><div class="t2">${ME.show_premium_name !== false ? 'Включён' : 'Выключен'}</div></div>
+        <div class="switch ${ME.show_premium_name !== false ? 'on' : ''}"></div>
+      </div>
+    </div>
+    <div class="st-section"><h3>Свой префикс</h3>
+      <label class="field-label">До 4 символов</label>
+      <input id="premPrefixInput" class="report-input" maxlength="4" value="${esc(ME.custom_prefix||'')}" placeholder="Например: ⚡"/>
+      <div class="row" style="margin-top:8px">
+        <button class="btn ok" onclick="savePremPrefix()">Сохранить</button>
+        <button class="btn ghost" onclick="clearPremPrefix()">Убрать</button>
+      </div>
+    </div>
+    <div class="st-section"><h3>Эмодзи</h3>
+      <div class="st-row" onclick="openEmojiCustomize()">
+        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">😊</div>
+        <div class="txt"><div class="t1">Свои эмодзи</div><div class="t2">${(ME.custom_emoji||[]).length} / 20</div></div>
+      </div>
+    </div>`;
+}
+async function togglePremiumBadge(){
+  const next = !(ME.show_premium_badge !== false);
+  try { await api('/users/me/donor-prefixes','PUT',{ show_premium_badge: next }); ME.show_premium_badge = next; renderPremiumBody(); renderChats(); renderSettingsBody(); }
+  catch(e){ toast('Ошибка', e.message) }
+}
+async function togglePremiumName(){
+  const next = !(ME.show_premium_name !== false);
+  try { await api('/users/me/donor-prefixes','PUT',{ show_premium_name: next }); ME.show_premium_name = next; renderPremiumBody(); renderChats(); renderSettingsBody(); }
+  catch(e){ toast('Ошибка', e.message) }
+}
+async function savePremPrefix(){
+  const v = ($('premPrefixInput').value || '').trim().slice(0,4);
+  try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: v, show_custom_prefix: true }); await loadAll(); renderPremiumBody(); renderChats(); renderSettingsBody(); toast('Сохранено',''); }
+  catch(e){ toast('Ошибка', e.message) }
+}
+async function clearPremPrefix(){
+  try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: '' }); await loadAll(); renderPremiumBody(); renderChats(); renderSettingsBody(); }
+  catch(e){}
+}
+
+/* ============================================================
+   МОЙ ПРОФИЛЬ (аватарка)
+   ============================================================ */
 function openEditProfile(){
+  const av = ME.avatar_url
+    ? `<div class="avatar" style="width:96px;height:96px;font-size:34px;margin:0 auto 12px;background-image:url('${ME.avatar_url}');background-size:cover;background-position:center" onclick="document.getElementById('pePhoto').click()"></div>`
+    : `<div class="avatar" style="width:96px;height:96px;font-size:34px;margin:0 auto 12px" onclick="document.getElementById('pePhoto').click()">${(ME.login||'?')[0].toUpperCase()}</div>`;
   $('editProfileBody').innerHTML = `
+    <div style="text-align:center;margin-bottom:12px">
+      ${av}
+      <div style="color:var(--muted);font-size:12px">Нажми на аватар, чтобы изменить</div>
+      <input type="file" id="pePhoto" accept="image/*" style="display:none" onchange="onAvatarPick(event)"/>
+    </div>
     <label class="field-label">Логин</label><input id="peLogin" class="report-input" value="${esc(ME.login)}"/>
     <label class="field-label">О себе</label><textarea id="peDesc" rows="3" class="report-input">${esc(ME.description||'')}</textarea>
     <label class="field-label">Телефон</label><input id="pePhone" class="report-input" value="${esc(ME.phone||'')}"/>
@@ -1096,9 +1681,64 @@ function openEditProfile(){
   openPanel('editProfile');
 }
 async function saveProfile(){
-  try { await api('/users/me','PUT',{ username: $('peLogin').value.trim(), description: $('peDesc').value.trim(), phone: $('pePhone').value.trim(), birthday: $('peBirthday').value }); await loadAll(); renderSettingsBody(); closePanel('editProfile'); toast('Сохранено',''); }
-  catch(e){ toast('Ошибка', e.message) }
+  try {
+    await api('/users/me','PUT',{ username: $('peLogin').value.trim(), description: $('peDesc').value.trim(), phone: $('pePhone').value.trim(), birthday: $('peBirthday').value });
+    await loadAll(); renderSettingsBody(); closePanel('editProfile'); toast('Сохранено','');
+  } catch(e){ toast('Ошибка', e.message) }
 }
+function onAvatarPick(ev){
+  const f = ev.target.files && ev.target.files[0];
+  if(!f) return;
+  if(!f.type.startsWith('image/')) return alert('Только изображения');
+  if(f.size > 10*1024*1024) return alert('Максимум 10 МБ');
+  const r = new FileReader();
+  r.onload = async () => {
+    try {
+      await api('/users/me','PUT',{ avatar_url: r.result });
+      await loadAll();
+      toast('✓ Аватар обновлён','');
+      openEditProfile();
+    } catch(e){ toast('Ошибка загрузки аватара', e.message); }
+  };
+  r.readAsDataURL(f);
+}
+
+/* ============================================================
+   СМЕНА ПАРОЛЯ
+   ============================================================ */
+function openChangePassword(){
+  if(STACK.length) closePanel(STACK[STACK.length-1]);
+  $('editProfileBody').innerHTML = `
+    <div class="st-section">
+      <h3>Смена пароля</h3>
+      <label class="field-label">Текущий пароль</label>
+      <input id="cpOld" type="password" class="report-input" placeholder="Текущий пароль"/>
+      <label class="field-label">Новый пароль</label>
+      <input id="cpNew" type="password" class="report-input" placeholder="Минимум 6 символов"/>
+      <label class="field-label">Повтори новый пароль</label>
+      <input id="cpNew2" type="password" class="report-input" placeholder="Ещё раз"/>
+      <button class="btn ok" style="margin-top:14px" onclick="doChangePassword()">Сменить пароль</button>
+      <button class="btn ghost" style="margin-top:8px" onclick="openSettings()">← Назад</button>
+    </div>`;
+  openPanel('editProfile');
+}
+async function doChangePassword(){
+  const oldP = ($('cpOld').value || '').trim();
+  const newP = ($('cpNew').value || '').trim();
+  const newP2 = ($('cpNew2').value || '').trim();
+  if(!newP || newP.length < 6) return toast('Пароль минимум 6', '');
+  if(newP !== newP2) return toast('Пароли не совпадают', '');
+  try {
+    await api('/users/me/password', 'PUT', { oldPassword: oldP, newPassword: newP });
+    toast('🔑 Пароль изменён', '');
+    $('cpOld').value = ''; $('cpNew').value = ''; $('cpNew2').value = '';
+    openSettings();
+  } catch(e){ toast('Ошибка', e.message); }
+}
+
+/* ============================================================
+   INKOGNITO
+   ============================================================ */
 async function toggleInkognito(){
   const active = ME.inkUntil && new Date(ME.inkUntil) > new Date();
   if(!active){
@@ -1111,61 +1751,118 @@ async function toggleInkognito(){
   toast(document.body.classList.contains('inkognito') ? '🕶️ Inkognito включён' : 'Inkognito выключен','');
 }
 
-const EMOJI_BASE = ['😀','😁','😂','🤣','😊','😍','😎','🤔','😴','😢','😭','😡','🥺','👍','👎','🙏','👏','🤝','💪','❤️','🧡','💛','💚','💙','🖤','🤍','💯','✨','🎉','🎁','🔥','⚡','🌈','☀️','🌙','⭐','🍀','🌸','🌺','🐱','🐶','🦊','🍕','🍔','🍎','☕','🍺','⚽','🏀','🎮','🎵','🚀','✈️','🏠'];
+/* ============================================================
+   ЭМОДЗИ — КАТЕГОРИИ + ПАНЕЛЬ С ВКЛАДКАМИ
+   ============================================================ */
 const EMOJI_PREMIUM = ['💎','👑','🏆','🥇','💫','🌠','🦄','🐉','🍾','🥂','💐','🎊','🎈','🔮'];
 const EMOJI_DONOR = ['💖','💜','🤍','💝','💘','💗'];
+
+const EMOJI_CATEGORIES = {
+  faces: { name:'😀 Лица', emojis:[
+    '😀','😃','😄','😁','😆','😅','😂','🤣','🥲','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳',
+    '😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓',
+    '🤔','🫣','🤭','🫢','🤫','🫠','🤥','😶','🫥','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😮‍💨','😵','😵‍💫','🫨','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕',
+    '💩','🤡','👹','👺','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😾','😿'
+  ]},
+  hands: { name:'👍 Жесты', emojis:[
+    '👍','👎','✊','👊','🤛','🤜','🤞','✌️','🫰','🤟','🤘','👌','🤌','🤏','🤙','👋','🤚','🖐️','✋','🖖','🙌','👐','🙏','🤝',
+    '👆','👇','👈','👉','🖕','✍️','🤳','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','🧠','🫀','🫁','🦷','🦴','👀','👁️','👅','👄','💋','🩸'
+  ]},
+  people: { name:'👥 Люди', emojis:[
+    '👶','👧','🧒','👦','👩','🧑','👨','👩‍🦱','👨‍🦱','👩‍🦰','👨‍🦰','👱‍♀️','👱‍♂️','👩‍🦳','👨‍🦳','👩‍🦲','👨‍🦲','👵','🧓','👴','👮‍♀️','👮‍♂️','🕵️‍♀️','🕵️‍♂️','💂‍♀️','💂‍♂️','🥷','👷‍♀️','👷‍♂️','🤴','👸','👳‍♀️','👳‍♂️','👲','🧕','🤵‍♂️','🤵‍♀️','👰‍♂️','👰‍♀️','🤰','🫄','🫅',
+    '🏃‍♀️','🏃‍♂️','🚶‍♀️','🚶‍♂️','💃','🕺','🧗‍♀️','🧗‍♂️','🧘‍♀️','🧘‍♂️','🛀','🛌','🤺','🏇','⛷️','🏂','🏌️‍♀️','🏌️‍♂️','🏄‍♀️','🏄‍♂️','🚣‍♀️','🚣‍♂️','🏊‍♀️','🏊‍♂️','🏋️‍♀️','🏋️‍♂️','🚴‍♀️','🚴‍♂️','🚵‍♀️','🚵‍♂️','🤸‍♀️','🤸‍♂️','🤽‍♀️','🤽‍♂️','🤾‍♀️','🤾‍♂️',
+    '🥼','🦺','👚','👕','👖','🧣','🧤','🧥','🧦','👗','👘','🥻','🩱','🩲','🩳','👙','👛','👜','👝','🛍️','🎒','🩴','👞','👟','🥾','🥿','👠','👡','👢','👑','👒','🎩','🎓','🧢','🪖','⛑️','💄','💍','💼'
+  ]},
+  animals: { name:'🐱 Животные', emojis:[
+    '🦧','🦍','🐒','🐵','🐱','🐈','🦁','🐯','🐅','🐆','🐴','🐎','🦄','🦓','🦌','🦬','🐮','🐂','🐃','🐄','🐷','🐖','🐗','🐏','🐑','🐐','🐪','🐫','🦙','🦒','🐘','🦣','🦏','🦛','🐭','🐁','🐀','🐹','🐰','🐇','🐿️','🦫','🦔','🦇','🐻','🐻‍❄️','🐨','🐼','🦥','🦦','🦨','🦘','🦡',
+    '🦅','🦆','🦢','🦉','🦤','🦩','🦚','🦜','🐊','🐢','🦎','🐍','🐉','🐲','🐙','🦑','🦞','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈',
+    '🐜','🐝','🪲','🦋','🦗','🕷️','🕸️','🦂','🦟','🪰','🪱','🐌',
+    '💐','🌸','💮','🏵️','🌹','🥀','🌺','🌻','🌼','🌷','🌱','🪴','🌲','🌳','🌴','🌵','🌾','🌿','☘️','🍀','🍁','🍂','🍃','🍄','🌰','🪵'
+  ]},
+  food: { name:'🍕 Еда', emojis:[
+    '🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🫑','🧅','🧄','🥕','🌽','🥔','🍠','🥐','🥯','🍞','🥖','🥨','🧀','🥚','🍳','🧈','🥞','🧇','🥓','🥩','🍗','🍖','🦴','🌭','🍔','🍟','🍕','🥪',
+    '🌮','🌯','🫔','🥗','🍿','🍱','🍘','🍙','🍚','🍛','🍜','🍝','🍢','🍣','🍤','🍥','🥮','🍡','🥟','🥠','🥡','🦐','🦪','🍦','🍧','🍨','🍩','🍪','🎂','🍰','🧁','🥧','🍫','🍬','🍭','🍮','🍯',
+    '🍼','🥛','☕','🫖','🍵','🧃','🥤','🧋','🍶','🍺','🍻','🥂','🍷','🥃','🍸','🍹','🧉','🧊','🥢','🍽️','🍴','🥄','🔪','🏺'
+  ]},
+  travel: { name:'🚗 Транспорт', emojis:[
+    '🏔️','⛰️','🌋','🗻','🏕️','🏖️','🏜️','🏝️','🏞️','🏟️','🏛️','🏗️','🧱','🪨','🪵','🛖','🏘️','🏚️','🏠','🏡','🏢','🏣','🏤','🏥','🏦','🏨','🏩','🏪','🏫','🏬','🏭','🏯','🏰','💒','🗼','🗽','⛪','🕌','🛕','🕍','⛩️','🕋',
+    '🚂','🚃','🚄','🚅','🚆','🚇','🚈','🚉','🚊','🚝','🚞','🚋','🚌','🚍','🚎','🚐','🚑','🚒','🚓','🚔','🚕','🚖','🚗','🚘','🚙','🛻','🚚','🚛','🚜','🏎️','🏍️','🛵','🦽','🦼','🛺','🚲','🛴','🛹','🛼','🚏','🛣️','🛤️','🛢️','⛽','🚨','🚥','🚦','🛑','⚓','⛵','🛶','🚤','🛳️','⛴️','🚢','✈️','🛩️','🛫','🛬','🪂','💺','🚁','🚟','🚠','🚡','🚀','🛸'
+  ]},
+  objects: { name:'🧰 Предметы', emojis:[
+    '🪓','⛏️','⚒️','🛠️','🗡️','⚔️','💣','🪃','🏹','🛡️','🪚','🔧','🪛','🔨','🔩','⚙️','🗜️','⚖️','🔗','⛓️','🧰','🧲','🪜','⚗️','🧪','🧫','🧬','🔬','🔭','📡','💉','💊','🩹','🩺','🩻','🧹','🧻','🧼','🪥','🧽','🪣','🔑','🗝️',
+    '🪘','🥁','🪕','🎸','🎹','🎺','🎻','🪗','🪈','🎬','🎤','🎧','🎨','🧩','♟️','🎯','🎳','🎮','🎰','🎲',
+    '⌚','📱','📲','💻','⌨️','🖱️','🖲️','🖨️','🖥️','💾','💿','📀','🧮','🎥','🎞️','📞','📟','📠','📺','📻','🎙️','🎚️','🎛️','🧭','⏱️','⏲️','⏰','⌛','⏳','🕯️','💡','🔦','🏮','🪙','💵','💴','💶','💷','💳','💎','📦','🏷️'
+  ]},
+  symbols: { name:'⚡ Символы', emojis:[
+    '⚠️','🚸','⛔','🚫','🚳','🚭','🚯','🚱','🚷','📵','🔞','☢️','☣️','⬆️','↗️','➡️','↘️','⬇️','↙️','⬅️','↖️','↕️','↔️','↩️','↪️','⤴️','⤵️','🔀','🔁','🔂','🔄','🔃','🎵','🎶','➕','➖','➗','✖️','♾️','💲','💱','™️','®️','©️','🔚','🔙','🔛','🔝','🔜',
+    '🔴','🔵','⚫','⚪','🟩','🟨','🟧','🟪','🟫','🟥','🔸','🔹','🔶','🔷','🔺','🔻','💠','🔲','🔳','▪️','▫️','◽','◾','◻️','◼️'
+  ]},
+  flags: { name:'🏁 Флаги', emojis:[
+    '🏁','🚩','🎌','🏴','🏳️','🏳️‍🌈','🏳️‍⚧️','🏴‍☠️',
+    '🇷🇺','🇺🇸','🇬🇧','🇩🇪','🇫🇷','🇮🇹','🇪🇸','🇯🇵','🇨🇳','🇰🇷','🇺🇦','🇧🇾','🇰🇿','🇹🇷','🇧🇷','🇨🇦','🇦🇺','🇮🇳','🇪🇺'
+  ]}
+};
+
 let emojiTab = 'base';
 function toggleEmojiPanel(){ const p = $('emojiPanel'); p.classList.toggle('open'); if(p.classList.contains('open')) renderEmojiPanel(); }
 function renderEmojiPanel(){
-  const hidden = ME.hidden_emoji || []; const custom = ME.custom_emoji || [];
+  const hidden = ME.hidden_emoji || [];
+  const custom = ME.custom_emoji || [];
+  const isPrem = isPremium(ME);
   const tabs = [
-    { id:'base', name:'Базовые', list: EMOJI_BASE.filter(e=>!hidden.includes(e)) },
-    { id:'premium', name:'💎 Premium', list: EMOJI_PREMIUM.filter(e=>!hidden.includes(e)), need:()=>isPremium(ME) },
-    { id:'donor', name:'❤️ Донатер', list: EMOJI_DONOR.filter(e=>!hidden.includes(e)), need:()=>ME.is_donor },
-    { id:'custom', name:'⭐ Мои', list: custom, need:()=>isPremium(ME) || custom.length>0 }
+    { id:'base', name:'📚 Все', list: Object.values(EMOJI_CATEGORIES).flatMap(c=>c.emojis).filter(e=>!hidden.includes(e)) },
+    ...Object.keys(EMOJI_CATEGORIES).map(k => ({
+      id:'cat-' + k,
+      name: EMOJI_CATEGORIES[k].name,
+      list: EMOJI_CATEGORIES[k].emojis.filter(e=>!hidden.includes(e))
+    })),
+    { id:'premium', name:'💎 Premium', list: EMOJI_PREMIUM.filter(e=>!hidden.includes(e)), need:()=>isPrem },
+    { id:'custom', name:'⭐ Мои', list: custom, need:()=>isPrem || custom.length > 0 }
   ];
   let html = '<div class="tabs">';
-  tabs.forEach(t=>{ const locked = t.need && !t.need(); html += `<div class="tab ${emojiTab===t.id?'active':''}" onclick="emojiTab='${t.id}';renderEmojiPanel()" style="${locked?'opacity:.5':''}">${t.name}${locked?' 🔒':''}</div>`; });
+  tabs.forEach(t=>{
+    const locked = t.need && !t.need();
+    html += `<div class="tab ${emojiTab===t.id?'active':''}" onclick="emojiTab='${t.id}';renderEmojiPanel()" style="${locked?'opacity:.5':''}">${t.name}${locked?' 🔒':''}</div>`;
+  });
   html += '</div><div class="emoji-grid">';
   const tab = tabs.find(t=>t.id===emojiTab) || tabs[0];
   const locked = tab.need && !tab.need();
   if(!tab.list.length) html += '<div style="grid-column:1/-1;padding:14px;text-align:center;color:var(--muted);font-size:12.5px">Пусто</div>';
-  else tab.list.forEach(e => { html += `<button class="e" onclick="${locked?'':`insertEmoji('${e}')`}">${e}</button>` });
+  else tab.list.forEach(e => {
+    html += `<button class="e" onclick="${locked?'':`insertEmoji('${e}')`}">${e}</button>`;
+  });
   html += '</div>';
   $('emojiPanel').innerHTML = html;
 }
 function insertEmoji(e){ $('msgInput').value += e; $('msgInput').focus() }
 
 function openEmojiCustomize(){
-  const isPrem = isPremium(ME); const custom = ME.custom_emoji || []; const hidden = ME.hidden_emoji || []; const custom_prefix = ME.custom_prefix || '';
-  const uniq = [...new Set([...EMOJI_BASE, ...EMOJI_PREMIUM, ...EMOJI_DONOR])];
+  const isPrem = isPremium(ME); const custom = ME.custom_emoji || []; const hidden = ME.hidden_emoji || [];
+  const uniq = [...new Set([...EMOJI_PREMIUM, ...EMOJI_DONOR, ...Object.values(EMOJI_CATEGORIES).flatMap(c=>c.emojis)])];
   $('emojiCustomizeBody').innerHTML = `
-    <div class="st-section"><h3>Мой префикс</h3>
-      <input id="myPrefixInput" maxlength="4" class="report-input" value="${esc(custom_prefix)}" placeholder="1–4 символа"/>
-      <div class="row" style="margin-top:8px"><button class="btn ok" onclick="saveMyPrefix()">Сохранить</button><button class="btn ghost" onclick="clearMyPrefix()">Убрать</button></div>
-      ${!isPrem ? '<div style="margin-top:8px;color:var(--warn);font-size:12px">Только Premium</div>' : ''}
-    </div>
     <div class="st-section"><h3>Мои эмодзи (до 20)</h3>
       <div class="row"><input id="myEmojiInput" maxlength="4" class="report-input" style="flex:1" placeholder="1 эмодзи"/><button class="btn ok" style="width:auto;padding:0 14px" onclick="addMyEmoji()">+</button></div>
       <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:4px">
         ${custom.length ? custom.map((e,i)=>`<span style="font-size:22px;background:var(--panel2);padding:6px 8px;border-radius:8px;border:1px solid var(--border2);cursor:pointer" onclick="removeMyEmoji(${i})">${e} ✕</span>`).join('') : '<span style="color:var(--muted);font-size:12.5px">Своих пока нет</span>'}
       </div>
+      ${!isPrem ? '<div style="margin-top:10px;color:var(--warn);font-size:12px">Доступно только Premium</div>' : ''}
     </div>
     <div class="st-section"><h3>Скрыть эмодзи</h3>
       <div style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:10px;max-height:280px;overflow:auto">
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px">
-          ${uniq.map(e=>{ const isHidden = hidden.includes(e); return `<button style="font-size:22px;padding:6px;border-radius:8px;cursor:pointer;background:${isHidden?'rgba(255,92,92,.15)':'transparent'};border:1px solid ${isHidden?'rgba(255,92,92,.4)':'transparent'};color:inherit" onclick="toggleHideEmoji('${e}')">${e}</button>`; }).join('')}
+          ${uniq.slice(0, 300).map(e=>{ const isHidden = hidden.includes(e); return `<button style="font-size:22px;padding:6px;border-radius:8px;cursor:pointer;background:${isHidden?'rgba(255,92,92,.15)':'transparent'};border:1px solid ${isHidden?'rgba(255,92,92,.4)':'transparent'};color:inherit" onclick="toggleHideEmoji('${e}')">${e}</button>`; }).join('')}
         </div>
       </div>
     </div>`;
   openPanel('emojiCustomize');
 }
-async function saveMyPrefix(){ if(!isPremium(ME)) return alert('Только Premium'); try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: ($('myPrefixInput').value||'').trim().slice(0,4) }); await loadAll(); renderSettingsBody(); renderChats(); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
-async function clearMyPrefix(){ try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix:'' }); await loadAll(); renderSettingsBody(); renderChats(); } catch(e){} }
 async function addMyEmoji(){ if(!isPremium(ME)) return alert('Только Premium'); const v = ($('myEmojiInput').value||'').trim().slice(0,4); if(!v) return; const list = [...(ME.custom_emoji||[]), v].slice(0,20); try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
 async function removeMyEmoji(i){ const list = (ME.custom_emoji||[]).slice(); list.splice(i,1); try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
 async function toggleHideEmoji(e){ const list = (ME.hidden_emoji||[]).slice(); const i = list.indexOf(e); if(i>=0) list.splice(i,1); else list.push(e); try { await api('/users/me/emoji','PUT',{ hidden_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
 
+/* ============================================================
+   КЛАНЫ
+   ============================================================ */
 async function openClansList(){ try { CLANS = await api('/clans'); } catch(e){ CLANS = [] } renderClansList(); openPanel('clansList'); }
 function renderClansList(){
   const myIds = CLANS.filter(c => (c.members||[]).some(m => m.userId === ME.id)).map(c => c.id);
@@ -1207,28 +1904,23 @@ async function renderClanBody(){
       <div class="name"><span class="prefix">${esc(c.prefix||'')}</span>${esc(c.name)}</div>
       <div class="sub">${esc(c.desc||'—')}</div>
       ${frozen ? '<div style="margin-top:8px;color:var(--danger);font-weight:600">🧊 Клан заморожен</div>' : ''}
-      ${c.warnings ? `<div style="margin-top:6px;color:var(--warn);font-size:12.5px">⚠️ Предупреждений: ${c.warnings}</div>` : ''}
     </div>
     <div class="balance-card"><div class="lbl">Клановый кошелёк</div><div class="num">${fmt(c.wallet)}</div><div class="lbl">токенов доступно клану</div></div>
     <div class="st-section"><h3>Действия</h3>
       ${inClan ? `
         <div class="st-row" onclick="openClanDeposit()"><div class="icon">💰</div><div class="txt"><div class="t1">Пополнить кошелёк клана</div></div></div>
-        <div class="st-row" onclick="openClanProposal()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💡</div><div class="txt"><div class="t1">Предложить покупку</div><div class="t2">Premium или Inkognito — уйдёт владельцу</div></div></div>
+        <div class="st-row" onclick="openClanProposal()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💡</div><div class="txt"><div class="t1">Предложить покупку</div></div></div>
       ` : `<div class="st-row" onclick="joinClan(${c.id})"><div class="icon">➕</div><div class="txt"><div class="t1">Войти в клан</div></div></div>`}
-      ${canManage ? `<div class="st-row" onclick="openEditClan()"><div class="icon">✏️</div><div class="txt"><div class="t1">Изменить название, описание, префикс</div></div></div>` : ''}
+      ${canManage ? `<div class="st-row" onclick="openEditClan()"><div class="icon">✏️</div><div class="txt"><div class="t1">Изменить клан</div></div></div>` : ''}
       ${inClan ? `
         <div class="st-row" onclick="openClanInk(${c.id})"><div class="icon">🕶️</div><div class="txt"><div class="t1">Хранилище Inkognito</div><div class="t2">Слотов: ${c.inkStock || 0}</div></div></div>
         <div class="st-row" onclick="withdrawClan(${c.id})"><div class="icon">📤</div><div class="txt"><div class="t1">Вывести свою долю</div></div></div>
         <div class="st-row" onclick="leaveClan(${c.id})"><div class="icon" style="background:rgba(255,92,92,.2);color:#ff8a8a">🚪</div><div class="txt"><div class="t1">Выйти из клана</div></div></div>
       ` : ''}
-      <div class="st-row" onclick="reportClan(${c.id})"><div class="icon" style="background:rgba(255,209,138,.2);color:var(--warn)">⚠️</div><div class="txt"><div class="t1">Жалоба на клан</div></div></div>
     </div>
-    ${isOwner ? `<div class="st-section"><h3>💡 Предложения участников (${proposals.length})</h3>
+    ${isOwner ? `<div class="st-section"><h3>💡 Предложения (${proposals.length})</h3>
       ${proposals.length ? proposals.map(p => proposalCard(c, p)).join('') : '<div class="empty">Предложений нет</div>'}
     </div>` : ''}
-    <div class="st-section"><h3>Голосования (${(c.votes||[]).filter(v => v.status === 'active').length})</h3>
-      ${(c.votes||[]).length ? c.votes.slice().reverse().map(v => voteCard(c, v)).join('') : '<div class="empty">Голосований нет</div>'}
-    </div>
     <div class="st-section"><h3>Участники (${(c.members||[]).length})</h3>
       ${(c.members||[]).map(m => {
         const u = userById(m.userId); if(!u) return '';
@@ -1254,29 +1946,15 @@ function proposalCard(c, p){
   const canPay = (c.wallet||0) >= cost;
   return `<div class="vote-row">
     <div class="title">${p.type === 'premium' ? '💎 Premium всем' : '🕶️ Inkognito'}</div>
-    <div class="desc">Предложил: <b>${esc(u.login)}</b><br>Стоимость: ${cost} токенов${!canPay ? ' · <span style="color:var(--danger)">не хватает</span>' : ''}${p.note ? '<br>'+esc(p.note) : ''}</div>
+    <div class="desc">Предложил: <b>${esc(u.login)}</b><br>Стоимость: ${cost} токенов</div>
     <div class="actions">
       <button class="btn-mini primary" onclick="startVoteFromProp(${c.id}, ${p.id})" ${!canPay ? 'disabled style="opacity:.5"' : ''}>🗳️ Начать голосование</button>
-      <button class="btn-mini bad" onclick="declineProp(${c.id}, ${p.id})">✕ Отклонить</button>
+      <button class="btn-mini bad" onclick="declineProp(${c.id}, ${p.id})">✕</button>
     </div>
   </div>`;
 }
-function voteCard(c, v){
-  const total = (c.members||[]).length;
-  const yes = Object.values(v.votes||{}).filter(x => x === 'yes').length;
-  const no = Object.values(v.votes||{}).filter(x => x === 'no').length;
-  const decided = v.status !== 'active';
-  const pct = total ? Math.round(yes/total*100) : 0;
-  return `<div class="vote-row">
-    <div class="title">${v.type === 'premium' ? '💎 Premium' : '🕶️ Inkognito'}</div>
-    <div class="desc">Стоимость: ${v.amount} · нужно 90% (${Math.ceil(total*0.9)} из ${total})</div>
-    <div class="prog"><div class="fill" style="width:${pct}%"></div></div>
-    <div style="font-size:12.5px;color:var(--muted)">За: ${yes} · Против: ${no} · Не голосовали: ${total-yes-no}</div>
-    ${!decided ? `<div class="actions"><button class="btn-mini good" onclick="castVote(${c.id},${v.id},'yes')">✓ За</button><button class="btn-mini bad" onclick="castVote(${c.id},${v.id},'no')">✕ Против</button></div>` : `<div style="margin-top:8px;font-weight:600;color:${v.status === 'passed' ? 'var(--ok)' : 'var(--danger)'}">${v.status === 'passed' ? '✓ Одобрено' : '✕ Отклонено'}</div>`}
-  </div>`;
-}
 async function joinClan(id){ try { await api('/clans/'+id+'/join','POST'); await openClan(id); renderClansList(); toast('Ты вошёл в клан','') } catch(e){ toast('Ошибка', e.message) } }
-async function leaveClan(id){ if(!confirm('Выйти из клана? Доля вернётся.')) return; try { const r = await api('/clans/'+id+'/leave','POST'); await loadAll(); closePanel('clanCard'); renderClansList(); toast('Вышел', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) } }
+async function leaveClan(id){ if(!confirm('Выйти из клана?')) return; try { const r = await api('/clans/'+id+'/leave','POST'); await loadAll(); closePanel('clanCard'); renderClansList(); toast('Вышел', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) } }
 async function kickMem(uid){ if(!confirm('Исключить?')) return; try { const r = await api('/clans/'+CURRENT_CLAN.id+'/kick','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id); toast('Исключён', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) } }
 async function promoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/promote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
 async function demoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/demote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
@@ -1285,7 +1963,7 @@ function openClanCreate(){
     <label class="field-label">Название</label><input id="ccName" class="report-input"/>
     <label class="field-label">Описание</label><textarea id="ccDesc" rows="3" class="report-input"></textarea>
     <label class="field-label">Префикс (до 4 символов)</label><input id="ccPrefix" maxlength="4" class="report-input"/>
-    <div style="background:rgba(255,209,138,.1);border:1px solid rgba(255,209,138,.3);color:var(--warn);padding:12px;border-radius:12px;font-size:12.5px;margin-top:14px">Создание — 30 токенов. Ежемесячный сбор — 4 за каждого участника.</div>
+    <div style="background:rgba(255,209,138,.1);border:1px solid rgba(255,209,138,.3);color:var(--warn);padding:12px;border-radius:12px;font-size:12.5px;margin-top:14px">Создание — 30 токенов.</div>
     <button class="btn gold" style="margin-top:14px" onclick="doCreateClan()">Создать за 30 токенов</button>`;
   openPanel('clanCreate');
 }
@@ -1307,11 +1985,10 @@ function openEditClan(){
 async function saveClanEdit(){ try { await api('/clans/'+CURRENT_CLAN.id,'PUT',{ name: $('ecName').value.trim(), desc: $('ecDesc').value.trim(), prefix: $('ecPrefix').value.trim() }); await openClan(CURRENT_CLAN.id); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
 function openClanProposal(){
   const c = CURRENT_CLAN;
-  const pcost = 10 * c.members.length, icost = 2 * c.members.length;
   $('clanProposalBody').innerHTML = `
     <div class="st-section"><h3>Что предложить</h3>
-      <div class="st-row" onclick="submitProp('premium')"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div><div class="txt"><div class="t1">Premium всем на 30 дней</div><div class="t2">Стоимость: ${pcost} токенов</div></div></div>
-      <div class="st-row" onclick="submitProp('inkognito')"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">Inkognito: ${c.members.length} слотов</div><div class="t2">Стоимость: ${icost} токенов</div></div></div>
+      <div class="st-row" onclick="submitProp('premium')"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div><div class="txt"><div class="t1">Premium всем на 30 дней</div></div></div>
+      <div class="st-row" onclick="submitProp('inkognito')"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">Inkognito</div></div></div>
     </div>
     <label class="field-label">Комментарий</label><textarea id="propNote" rows="3" class="report-input"></textarea>`;
   openPanel('clanProposal');
@@ -1319,8 +1996,11 @@ function openClanProposal(){
 async function submitProp(type){ try { const note = ($('propNote') && $('propNote').value || '').trim(); await api('/clans/'+CURRENT_CLAN.id+'/propose','POST',{ type, note }); closePanel('clanProposal'); toast('💡 Предложение отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function startVoteFromProp(clanId, pid){ try { await api('/clans/'+clanId+'/proposals/'+pid+'/start-vote','POST'); await openClan(clanId); toast('🗳️ Голосование запущено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function declineProp(clanId, pid){ if(!confirm('Отклонить?')) return; try { await api('/clans/'+clanId+'/proposals/'+pid+'/decline','POST'); await openClan(clanId) } catch(e){ toast('Ошибка', e.message) } }
-async function castVote(clanId, vid, choice){ try { const r = await api('/clans/'+clanId+'/votes/'+vid+'/vote','POST',{ choice }); await openClan(clanId); if(r.vote && r.vote.status === 'passed') toast('✓ Одобрено',''); else if(r.vote && r.vote.status === 'rejected') toast('✕ Отклонено',''); } catch(e){ toast('Ошибка', e.message) } }
-async function openClanDeposit(){ const amt = parseInt(prompt('Сколько токенов положить?', '10'), 10); if(!amt || amt <= 0) return; try { const r = await api('/clans/'+CURRENT_CLAN.id+'/deposit','POST',{ amount: amt }); ME.tokens = r.balance; renderTokensBadge(); await openClan(CURRENT_CLAN.id); toast('+'+amt+' в кошелёк',''); } catch(e){ toast('Ошибка', e.message) } }
+async function openClanDeposit(){
+  const amt = parseInt(prompt('Сколько токенов положить?', '10'), 10);
+  if(!amt || amt <= 0) return;
+  try { const r = await api('/clans/'+CURRENT_CLAN.id+'/deposit','POST',{ amount: amt }); ME.tokens = r.balance; renderTokensBadge(); await openClan(CURRENT_CLAN.id); toast('+'+amt+' в кошелёк',''); } catch(e){ toast('Ошибка', e.message) }
+}
 async function withdrawClan(id){ if(!confirm('Вывести свою долю?')) return; try { const r = await api('/clans/'+id+'/withdraw','POST'); ME.tokens = r.balance; renderTokensBadge(); await openClan(id); toast('+'+r.share,''); } catch(e){ toast('Ошибка', e.message) } }
 function openClanInk(id){
   const c = CURRENT_CLAN;
@@ -1328,28 +2008,24 @@ function openClanInk(id){
   const myActive = meRow && meRow.slotUntil && new Date(meRow.slotUntil) > new Date();
   $('clanInkStockBody').innerHTML = `
     <div class="balance-card"><div class="lbl">Слотов в хранилище</div><div class="num">${c.inkStock || 0}</div></div>
-    ${myActive ? `<div style="background:linear-gradient(135deg,rgba(124,92,255,.15),rgba(79,140,255,.1));border:1px solid #7c5cff;border-radius:14px;padding:14px;text-align:center;margin-bottom:14px">
-        <div style="font-size:32px">🕶️</div><div style="font-weight:700;margin-top:6px">Inkognito активен</div>
-        <div style="color:var(--muted);font-size:12.5px;margin-top:4px">до ${new Date(meRow.slotUntil).toLocaleString('ru-RU')}</div>
-      </div>` : `<button class="btn gold" onclick="useInkSlot(${id})" ${(c.inkStock || 0) <= 0 ? 'disabled style="opacity:.5"' : ''}>🕶️ Взять слот на 24 часа</button>`}`;
+    ${myActive ? `<div style="text-align:center;color:var(--ok)">🕶️ Inkognito активен до ${new Date(meRow.slotUntil).toLocaleString('ru-RU')}</div>` : `<button class="btn gold" onclick="useInkSlot(${id})" ${(c.inkStock || 0) <= 0 ? 'disabled style="opacity:.5"' : ''}>🕶️ Взять слот на 24 часа</button>`}`;
   openPanel('clanInkStock');
 }
 async function useInkSlot(id){ try { await api('/clans/'+id+'/ink/use-slot','POST'); closePanel('clanInkStock'); await openClan(id); toast('🕶️ Inkognito','24 часа'); } catch(e){ toast('Ошибка', e.message) } }
 async function payMonthly(id){ try { const r = await api('/clans/'+id+'/pay-monthly','POST'); await openClan(id); toast('✓ Сбор оплачен', r.cost) } catch(e){ toast('Ошибка', e.message) } }
-async function reportClan(id){ const reason = prompt('Причина жалобы:', 'нарушение правил'); if(!reason) return; try { const r = await api('/clans/'+id+'/report','POST',{ reason }); if(r.disbanded){ toast('🚫 Клан расформирован',''); closePanel('clanCard'); renderClansList(); } else toast('⚠️ Предупреждение владельцу',''); } catch(e){ toast('Ошибка', e.message) } }
-
 async function openClansRating(){
   try { RATING = await api('/clans/rating'); } catch(e){ RATING = [] }
-  $('clanRatingBody').innerHTML = `
-    <div style="color:var(--muted);font-size:12.5px;margin-bottom:10px">Обновляется каждый месяц. Топ-1 получает токены = числу участников.</div>
-    ${RATING.length ? RATING.map((c,i) => `
-      <div class="st-row" onclick="openClan(${c.id})">
-        <div class="icon" style="background:${i===0?'linear-gradient(135deg,#ffb84d,#ff5c8a)':(i===1?'linear-gradient(135deg,#c0c8d4,#7a8598)':(i===2?'linear-gradient(135deg,#c98a4a,#8a5a2a)':'linear-gradient(135deg,#4f8cff,#7c5cff)'))}">${i+1}</div>
-        <div class="txt"><div class="t1">${esc(c.prefix||'')} ${esc(c.name)}</div><div class="t2">👥 ${(c.members||[]).length} · 💰 ${fmt(c.wallet)}</div></div>
-      </div>`).join('') : '<div class="empty">Кланов нет</div>'}`;
+  $('clanRatingBody').innerHTML = RATING.length ? RATING.map((c,i) => `
+    <div class="st-row" onclick="openClan(${c.id})">
+      <div class="icon" style="background:${i===0?'linear-gradient(135deg,#ffb84d,#ff5c8a)':(i===1?'linear-gradient(135deg,#c0c8d4,#7a8598)':(i===2?'linear-gradient(135deg,#c98a4a,#8a5a2a)':'linear-gradient(135deg,#4f8cff,#7c5cff)'))}">${i+1}</div>
+      <div class="txt"><div class="t1">${esc(c.prefix||'')} ${esc(c.name)}</div><div class="t2">👥 ${(c.members||[]).length} · 💰 ${fmt(c.wallet)}</div></div>
+    </div>`).join('') : '<div class="empty">Кланов нет</div>';
   openPanel('clanRating');
 }
 
+/* ============================================================
+   КОШЕЛЁК
+   ============================================================ */
 async function openWallet(){
   try { ME = await api('/users/me'); } catch(e){}
   $('walletBody').innerHTML = `
@@ -1386,6 +2062,9 @@ async function openTransactions(){
   openPanel('transactions');
 }
 
+/* ============================================================
+   МАГАЗИН
+   ============================================================ */
 function openShop(){
   $('shopBody').innerHTML = `
     <div class="balance-card"><div class="lbl">Баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
@@ -1399,15 +2078,18 @@ function openShop(){
 }
 async function buyPremium(){ if(!confirm('Списать 30 токенов и активировать Premium на 30 дней?')) return; try { await api('/premium/purchase','POST',{ days: 30 }); await loadAll(); renderTokensBadge(); closePanel('shop'); toast('💎 Premium активирован','30 дней'); } catch(e){ toast('Ошибка', e.message) } }
 
+/* ============================================================
+   ДОНАТ
+   ============================================================ */
 function openDonate(){
   $('shopBody').innerHTML = `
     <div class="st-section"><h3>❤️ Поддержать Ink</h3>
       <div style="background:rgba(255,92,138,.08);border:1px solid rgba(255,92,138,.3);color:#ffb3c9;padding:12px;border-radius:12px;font-size:13px;line-height:1.5;margin-bottom:12px">
-        Донат — добровольная поддержка проекта. Деньги идут на оплату сервера и домена. Возврат средств не предусмотрен.
+        Донат — добровольная поддержка проекта.
       </div>
       <div class="card-info">
         <div style="font-weight:700;margin-bottom:6px">Перевод на карту:</div>
-        <div class="num" onclick="copyCard(this)" title="Нажми, чтобы скопировать">${CARD_NUMBER}<span class="copy-hint">📋 копировать</span></div>
+        <div class="num" onclick="copyCard(this)">${CARD_NUMBER}<span class="copy-hint">📋 копировать</span></div>
       </div>
       <label class="field-label">Сумма (мин. 25 ₽)</label>
       <input id="donateAmount" type="number" class="report-input" value="100" min="25"/>
@@ -1416,11 +2098,11 @@ function openDonate(){
         <option value="support">❤️ Поддержать проект</option>
         <option value="tokens">💳 Купить токены</option>
       </select>
-      <label class="field-label">Последние 4 цифры вашей карты</label>
+      <label class="field-label">Последние 4 цифры карты</label>
       <input id="donateCard4" class="report-input" maxlength="4" placeholder="1234"/>
       <label class="field-label">Сопроводительное письмо</label>
-      <textarea id="donateMsg" rows="3" class="report-input" placeholder="Опишите цель доната."></textarea>
-      <button class="btn gold" style="margin-top:14px" onclick="submitDonate()">Отправить заявку</button>
+      <textarea id="donateMsg" rows="3" class="report-input"></textarea>
+      <button class="btn gold" style="margin-top:14px" onclick="submitDonate()">Отправить</button>
     </div>`;
   openPanel('shop');
 }
@@ -1432,8 +2114,8 @@ async function submitDonate(){
   if(!amount || amount < 25) return toast('Минимум 25 ₽','');
   if(!/^\d{4}$/.test(card4)) return toast('Последние 4 цифры карты','');
   const purposeText = purpose === 'tokens' ? 'Купить токены' : 'Поддержать проект';
-  if(!confirm(`Отправить заявку на ${amount} ₽?\nЦель: ${purposeText}\n\nДеньги не возвращаются.`)) return;
-  try { await api('/donations','POST',{ amount, contact: card4, message, purpose, purpose_text: purposeText }); closePanel('shop'); toast('❤️ Заявка отправлена', purposeText + ' · админ подтвердит'); }
+  if(!confirm(`Отправить заявку на ${amount} ₽?\nЦель: ${purposeText}`)) return;
+  try { await api('/donations','POST',{ amount, contact: card4, message, purpose, purpose_text: purposeText }); closePanel('shop'); toast('❤️ Заявка отправлена',''); }
   catch(e){ toast('Ошибка', e.message) }
 }
 async function copyCard(el){
@@ -1449,36 +2131,25 @@ async function copyCard(el){
     const ta = document.createElement('textarea');
     ta.value = number; ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); toast('📋 Номер скопирован', CARD_NUMBER); } catch(err){ toast('Не удалось скопировать', 'Скопируй вручную: ' + number); }
+    try { document.execCommand('copy'); toast('📋 Номер скопирован', CARD_NUMBER); } catch(err){}
     document.body.removeChild(ta);
   }
 }
 
+/* ============================================================
+   ЖАЛОБЫ
+   ============================================================ */
 function openReportToAdmin(){
   $('reportTitle').textContent = '⚠️ Жалоба админу';
   REPORT_SCREENS = [];
   $('reportBody').innerHTML = `
-    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Если жалоба полезна — 5 токенов.</p>
     <label class="field-label">На кого (логин)</label><input id="reportTargetLogin" class="report-input"/>
     <label class="field-label">Причина</label><textarea id="reportReason" rows="4" class="report-input"></textarea>
     <label class="field-label">Скриншоты</label>
-    <div class="attach-row"><button class="attach-btn" onclick="document.getElementById('reportFileInput').click()">🖼️ Выбрать</button><button class="attach-btn" onclick="pasteFromClipboard()">📋 Из буфера</button></div>
+    <div class="attach-row"><button class="attach-btn2" onclick="document.getElementById('reportFileInput').click()">🖼️ Выбрать</button></div>
     <input type="file" id="reportFileInput" accept="image/*" multiple style="display:none" onchange="onReportFiles(event)"/>
     <div class="attach-preview" id="reportPreview"></div>
     <button class="btn danger" style="margin-top:14px" onclick="sendGeneralReport()">Отправить</button>`;
-  openPanel('reportPanel');
-}
-function openWriteToAdmin(){
-  $('reportTitle').textContent = '✉️ Написать админу';
-  REPORT_SCREENS = [];
-  $('reportBody').innerHTML = `
-    <label class="field-label">Тема</label><input id="msgSubject" class="report-input"/>
-    <label class="field-label">Сообщение</label><textarea id="msgText" rows="5" class="report-input"></textarea>
-    <label class="field-label">Вложения</label>
-    <div class="attach-row"><button class="attach-btn" onclick="document.getElementById('reportFileInput').click()">🖼️ Выбрать</button><button class="attach-btn" onclick="pasteFromClipboard()">📋 Из буфера</button></div>
-    <input type="file" id="reportFileInput" accept="image/*" multiple style="display:none" onchange="onReportFiles(event)"/>
-    <div class="attach-preview" id="reportPreview"></div>
-    <button class="btn" style="margin-top:14px" onclick="sendToAdminInbox()">Отправить</button>`;
   openPanel('reportPanel');
 }
 function onReportFiles(e){ Array.from(e.target.files||[]).forEach(addScreenshot); e.target.value=''; }
@@ -1492,40 +2163,20 @@ function addScreenshot(file){
 }
 function removeScreenshot(i){ REPORT_SCREENS.splice(i,1); renderReportPreview() }
 function renderReportPreview(){ const b = $('reportPreview'); if(!b) return; b.innerHTML = REPORT_SCREENS.map((src,i)=>`<div class="thumb" style="background-image:url('${src}')"><div class="rm" onclick="removeScreenshot(${i})">✕</div></div>`).join(''); }
-function pasteFromClipboard(){
-  if(!navigator.clipboard || !navigator.clipboard.read) return alert('Ctrl+V прямо в окне');
-  navigator.clipboard.read().then(items=>{ for(const item of items) for(const type of item.types) if(type.startsWith('image/')) item.getType(type).then(blob=>addScreenshot(new File([blob],'clip.png',{type}))); }).catch(()=>alert('Ctrl+V прямо в окне'));
-}
-document.addEventListener('paste', e=>{
-  const p = $('reportPanel'); if(!p || !p.classList.contains('open')) return;
-  const items = e.clipboardData && e.clipboardData.items; if(!items) return;
-  for(const it of items) if(it.type.startsWith('image/')) addScreenshot(it.getAsFile());
-});
 async function sendGeneralReport(){
   const target_login = ($('reportTargetLogin').value||'').trim();
   const reason = ($('reportReason').value||'').trim();
   if(!target_login || !reason) return alert('Заполни логин и причину');
   try { await api('/reports','POST',{ target_login, reason, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('⚠️ Жалоба отправлена',''); } catch(e){ toast('Ошибка', e.message) }
 }
-async function sendToAdminInbox(){
-  const subject = ($('msgSubject').value||'').trim();
-  const text = ($('msgText').value||'').trim();
-  if(!text) return alert('Напиши сообщение');
-  try { await api('/inbox','POST',{ subject, text, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('✉️ Отправлено',''); } catch(e){ toast('Ошибка', e.message) }
-}
 
+/* ============================================================
+   АДМИН-ПАНЕЛЬ
+   ============================================================ */
 function openAdmin(){ if(!(ME.is_admin || ME.isAdmin)) return toast('Только админ',''); renderAdmin(); openPanel('adminPanel'); }
 async function renderAdmin(){
-  let orders=[], reports=[], inbox=[], helpers=[], donations=[];
-  try { orders = await api('/admin/orders'); } catch(e){}
-  try { reports = await api('/admin/reports'); } catch(e){}
-  try { inbox = await api('/admin/inbox'); } catch(e){}
-  try { helpers = await api('/admin/helpers'); } catch(e){}
+  let donations=[];
   try { donations = await api('/admin/donations'); } catch(e){}
-  const pendingOrders = orders.filter(x=>x.status==='pending').length;
-  const pendingRep = reports.filter(x=>x.status==='pending').length;
-  const unreadMsg = inbox.filter(x=>!x.read).length;
-  const pendingDonations = donations.filter(x=>x.status==='pending').length;
   const banned = USERS.filter(u=>u.banned).length;
   const prem = USERS.filter(u=>isPremium(u)).length;
   const donors = USERS.filter(u=>u.is_donor).length;
@@ -1537,7 +2188,7 @@ async function renderAdmin(){
       <div class="card"><div class="num" style="color:var(--danger)">${banned}</div><div class="lbl">Бан</div></div>
     </div>
     <div class="st-section"><h3>Разделы</h3>
-      <div class="st-row" onclick="adminTabDonations()"><div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">❤️</div><div class="txt"><div class="t1">Донаты</div><div class="t2">${pendingDonations} ожидает</div></div></div>
+      <div class="st-row" onclick="adminTabDonations()"><div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">❤️</div><div class="txt"><div class="t1">Донаты</div><div class="t2">${donations.filter(x=>x.status==='pending').length} ожидает</div></div></div>
       <div class="st-row" onclick="adminTabUsers()"><div class="icon">👥</div><div class="txt"><div class="t1">Пользователи</div><div class="t2">${USERS.length}</div></div></div>
     </div>`;
 }
@@ -1554,14 +2205,12 @@ async function adminTabDonations(){
           ${x.message ? `<div class="t2" style="margin-top:4px;color:var(--text)">✉️ «${esc(x.message)}»</div>` : ''}</div>
           <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
             <button class="btn ok sm" onclick="confirmDonation(${x.id})">✓ Подтвердить</button>
-            <button class="btn ghost sm" onclick="thanksDonation(${x.id})">❤️ Спасибо</button>
             <button class="btn danger sm" onclick="rejectDonation(${x.id})">✕</button>
           </div>
         </div>`).join('') : '<div style="color:var(--muted);font-size:13px">Пусто</div>'}
     </div>`;
 }
 async function confirmDonation(id){ if(!confirm('Подтвердить донат?')) return; try { const r = await api('/admin/donations/'+id+'/confirm','POST'); toast('❤️ Подтверждён', '+' + (r.tokens||0) + ' токенов'); await loadAll(); adminTabDonations(); } catch(e){ toast('Ошибка', e.message) } }
-async function thanksDonation(id){ if(!confirm('Спасибо без токенов?')) return; try { await api('/admin/donations/'+id+'/thanks','POST'); toast('❤️',''); adminTabDonations(); } catch(e){ toast('Ошибка', e.message) } }
 async function rejectDonation(id){ if(!confirm('Отклонить?')) return; try { await api('/admin/donations/'+id+'/reject','POST'); toast('Отклонено',''); adminTabDonations(); } catch(e){ toast('Ошибка', e.message) } }
 async function adminTabUsers(){
   $('adminBody').innerHTML = `
@@ -1578,7 +2227,6 @@ async function adminUserPanel(uid){
     <div class="st-section"><h3>Роли</h3>
       <div class="st-row" onclick="adminToggle(${uid},'is_admin')"><div class="txt"><div class="t1">${u.is_admin?'Снять админа':'Назначить админом'}</div></div></div>
       <div class="st-row" onclick="adminToggle(${uid},'premium')"><div class="txt"><div class="t1">${u.premium?'Снять Premium':'Выдать Premium'}</div></div></div>
-      <div class="st-row" onclick="adminToggle(${uid},'is_donor')"><div class="txt"><div class="t1">${u.is_donor?'Снять донатера':'Сделать донатером'}</div></div></div>
     </div>
     <div class="st-section"><h3>Токены</h3>
       <label class="field-label">Сколько</label><input id="giveAmount" type="number" value="10" class="report-input"/>
@@ -1586,11 +2234,21 @@ async function adminUserPanel(uid){
         <button class="btn ok" onclick="applyGiveTokens(${uid},1)">Выдать</button>
         <button class="btn danger" onclick="applyGiveTokens(${uid},-1)">Списать</button>
       </div>
+    </div>
+    <div class="st-section"><h3>Модерация</h3>
+      ${u.blocked_until && new Date(u.blocked_until) > new Date()
+        ? `<div class="st-row" onclick="adminUnban(${uid})"><div class="txt"><div class="t1">✅ Разбанить</div></div></div>`
+        : `<div class="st-row" onclick="adminBan(${uid})"><div class="txt"><div class="t1">🚫 Забанить на 30 дней</div></div></div>`}
     </div>`;
 }
 async function adminToggle(uid, field){ const u = userById(uid); try { await api('/admin/users/'+uid,'PUT',{ [field]: !u[field] }); await loadAll(); adminUserPanel(uid); toast('Изменено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function applyGiveTokens(uid, sign){ const amount = parseInt($('giveAmount').value, 10); if(!amount || amount <= 0) return alert('Введи число'); try { await api('/admin/credit-tokens','POST',{ user_id: uid, amount: sign*amount }); await loadAll(); adminUserPanel(uid); toast(sign>0?'💰 +'+amount:'Списано '+amount,''); } catch(e){ toast('Ошибка', e.message) } }
+async function adminBan(uid){ if(!confirm('Забанить на 30 дней?')) return; const reason = prompt('Причина:', 'нарушение правил') || 'нарушение правил'; try { await api('/admin/users/'+uid,'PUT',{ blocked_until: new Date(Date.now()+30*86400000).toISOString(), block_reason: reason, banned: true }); await loadAll(); adminUserPanel(uid); toast('🚫 Забанен',''); } catch(e){ toast('Ошибка', e.message) } }
+async function adminUnban(uid){ try { await api('/admin/users/'+uid,'PUT',{ blocked_until: null, block_reason: '', banned: false }); await loadAll(); adminUserPanel(uid); toast('✅ Разбанен',''); } catch(e){ toast('Ошибка', e.message) } }
 
+/* ============================================================
+   СТАРТ
+   ============================================================ */
 (async function init(){
   if(!TOKEN){ $('auth').style.display = 'flex'; return; }
   try { await enterApp(); }
