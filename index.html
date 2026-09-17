@@ -114,6 +114,67 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
 .card .t{font-weight:700;font-size:15px;margin-bottom:4px}
 .card .d{font-size:13px;color:var(--muted);line-height:1.5}
 
+/* ──────── ДОСКА ОБНОВЛЕНИЙ ──────── */
+.changelog{
+  background:var(--panel);
+  border:1px solid var(--border2);
+  border-radius:18px;
+  padding:22px 24px;
+  max-height:520px;
+  overflow-y:auto;
+}
+.changelog-loading,
+.changelog-empty{
+  color:var(--muted);
+  font-size:14px;
+  text-align:center;
+  padding:30px 10px;
+}
+.changelog-entry{
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+.changelog-entry:last-child{ border-bottom:none; }
+.changelog-entry .ver{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+  flex-wrap:wrap;
+}
+.changelog-entry .ver .tag{
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:700;
+  background:linear-gradient(135deg,#4f8cff,#7c5cff);
+  color:#fff;
+  letter-spacing:.3px;
+}
+.changelog-entry .ver .tag.fix{
+  background:linear-gradient(135deg,#22a55a,#15803d);
+}
+.changelog-entry .ver .tag.new{
+  background:linear-gradient(135deg,#ffb84d,#ff5c8a);
+}
+.changelog-entry .ver .date{
+  font-size:12.5px;
+  color:var(--muted);
+}
+.changelog-entry ul{
+  margin:0;
+  padding-left:22px;
+  font-size:14px;
+  line-height:1.75;
+  color:var(--text);
+}
+.changelog-entry ul li{
+  margin-bottom:4px;
+}
+.changelog-entry ul li b{
+  color:var(--accent);
+}
 footer{
   text-align:center;padding:60px 20px 40px;
   border-top:1px solid var(--border);margin-top:40px;
@@ -243,6 +304,99 @@ footer a:hover{text-decoration:underline}
   </footer>
 
 </div>
+<script>
+/* Загрузка доски обновлений из changelog.txt */
+(async function loadChangelog(){
+  const box = document.getElementById('changelogBox');
+  if(!box) return;
+  try {
+    const r = await fetch('changelog.txt?t=' + Date.now(), { cache: 'no-store' });
+    if(!r.ok) throw new Error('Файл не найден');
+    const text = await r.text();
+    if(!text.trim()){
+      box.innerHTML = '<div class="changelog-empty">Пока обновлений нет</div>';
+      return;
+    }
+    box.innerHTML = parseChangelog(text);
+  } catch(e){
+    box.innerHTML = '<div class="changelog-empty">Обновления скоро появятся</div>';
+  }
+})();
 
+/* Парсер changelog.txt
+   Формат:
+   === v1.2.0 · 2026-09-17 · new
+   - Добавлено: стикеры
+   - Исправлено: баг с памятью
+   === v1.1.0 · 2026-09-10 · fix
+   - Что-то ещё
+*/
+function parseChangelog(text){
+  const lines = text.split(/\r?\n/);
+  const entries = [];
+  let current = null;
+
+  for(const raw of lines){
+    const line = raw.trimEnd();
+    if(!line.trim()) continue;
+
+    // Заголовок версии: === v1.2.0 · 2026-09-17 · new
+    const m = line.match(/^===\s*(.+?)\s*$/);
+    if(m){
+      if(current) entries.push(current);
+      const parts = m[1].split('·').map(s => s.trim());
+      current = {
+        version: parts[0] || '',
+        date: parts[1] || '',
+        type: (parts[2] || 'new').toLowerCase(),
+        items: []
+      };
+      continue;
+    }
+
+    // Пункт списка: - что-то  или  * что-то
+    const item = line.match(/^[-*]\s+(.+)$/);
+    if(item && current){
+      current.items.push(item[1]);
+      continue;
+    }
+
+    // Если строка без префикса — считаем продолжением текущего пункта
+    if(current && current.items.length){
+      current.items[current.items.length - 1] += ' ' + line.trim();
+    }
+  }
+  if(current) entries.push(current);
+
+  if(!entries.length){
+    return '<div class="changelog-empty">Пока обновлений нет</div>';
+  }
+
+  // Показываем от новых к старым
+  return entries.reverse().map(e => {
+    const typeClass = e.type === 'fix' ? 'fix' : e.type === 'new' ? 'new' : '';
+    const typeText = e.type === 'fix' ? 'FIX' : e.type === 'new' ? 'NEW' : 'UPDATE';
+    return `
+      <div class="changelog-entry">
+        <div class="ver">
+          <span class="tag ${typeClass}">${escHtml(e.version)}</span>
+          <span class="tag ${typeClass}" style="background:rgba(127,127,127,.15);color:var(--muted);font-weight:600">${typeText}</span>
+          ${e.date ? `<span class="date">${escHtml(e.date)}</span>` : ''}
+        </div>
+        <ul>${e.items.map(i => '<li>' + formatItem(i) + '</li>').join('')}</ul>
+      </div>`;
+  }).join('');
+}
+
+function escHtml(s){
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* Жирным выделяем текст до двоеточия: "Добавлено: стикеры" → "<b>Добавлено:</b> стикеры" */
+function formatItem(s){
+  const t = escHtml(s);
+  return t.replace(/^([А-Яа-яЁёA-Za-z ]{2,30}):\s/, '<b>$1:</b> ');
+}
+</script>
 </body>
 </html>
