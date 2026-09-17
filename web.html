@@ -213,25 +213,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .emoji-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px;max-height:220px;overflow-y:auto}
 .emoji-grid .e{font-size:22px;text-align:center;padding:6px;border-radius:8px;cursor:pointer;background:transparent;border:0;color:inherit}
 .emoji-grid .e:hover{background:var(--panel2)}
-.sticker-panel{position:absolute;bottom:60px;left:12px;right:12px;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:10px;z-index:60;display:none;box-shadow:0 10px 40px rgba(0,0,0,.5)}
-.sticker-panel.open{display:block}
-.sticker-panel .st-header-mini{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;color:var(--muted);font-weight:600}
-.sticker-panel .st-header-mini .spacer{flex:1}
-.sticker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;max-height:200px;overflow-y:auto}
-.sticker-grid .st{width:100%;aspect-ratio:1;background:var(--panel2);border-radius:10px;cursor:pointer;background-size:contain;background-repeat:no-repeat;background-position:center;border:1px solid var(--border2);transition:transform .12s}
-.sticker-grid .st:hover{transform:scale(1.06);border-color:var(--accent)}
-.sticker-grid .st.empty{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:22px}
-.sticker-edit-area{position:relative;width:100%;max-width:340px;aspect-ratio:1;margin:0 auto 16px;background:#000;border-radius:16px;overflow:hidden;touch-action:none;cursor:grab}
-.sticker-edit-area.dragging{cursor:grabbing}
-.sticker-edit-area img{position:absolute;left:0;top:0;max-width:none;pointer-events:none;transform-origin:0 0;user-select:none;-webkit-user-drag:none}
-.sticker-edit-area .overlay{position:absolute;inset:0;pointer-events:none;border:2px solid rgba(255,255,255,.6);border-radius:16px}
-.sticker-edit-area .crosshair{position:absolute;inset:0;pointer-events:none}
-.sticker-edit-area .crosshair::before,.sticker-edit-area .crosshair::after{content:'';position:absolute;background:rgba(255,255,255,.35)}
-.sticker-edit-area .crosshair::before{left:50%;top:0;bottom:0;width:1px;transform:translateX(-.5px)}
-.sticker-edit-area .crosshair::after{top:50%;left:0;right:0;height:1px;transform:translateY(-.5px)}
-.zoom-row{display:flex;align-items:center;gap:12px;max-width:340px;margin:0 auto 16px}
-.zoom-row input[type=range]{flex:1;height:6px;border-radius:3px;-webkit-appearance:none;background:var(--border2);outline:none}
-.zoom-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));cursor:pointer}
 .msg .msg-menu-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:6px;background:rgba(0,0,0,.45);color:#fff;border:0;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;line-height:1}
 .msg:hover .msg-menu-btn{display:flex}
 .msg.me .msg-menu-btn{background:rgba(0,0,0,.25)}
@@ -333,17 +314,8 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
       <div class="archive-bar warn" id="archiveWarn"></div>
       <div id="messages"></div>
       <div class="emoji-panel" id="emojiPanel"></div>
-      <div class="sticker-panel" id="stickerPanel">
-        <div class="st-header-mini">
-          <span>🧸 Стикеры</span>
-          <span class="spacer"></span>
-          <button onclick="openStickerEditor()" class="btn-mini primary">＋ Создать</button>
-        </div>
-        <div class="sticker-grid" id="stickerGrid"></div>
-      </div>
       <div class="composer">
         <button class="emoji-btn" onclick="toggleEmojiPanel()">😊</button>
-        <button class="attach-btn" onclick="toggleStickerPanel()" title="Стикеры">🧸</button>
         <button class="attach-btn" onclick="pickFile()" title="Прикрепить файл">📎</button>
         <input id="msgInput" placeholder="Сообщение..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}" oninput="onTypingInput()"/>
         <button class="send-btn" onclick="sendMsg()">➤</button>
@@ -356,8 +328,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 <div class="panel" id="settings"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Настройки</h2><div class="spacer"></div><button onclick="closePanel('settings')">✕</button></div><div class="st-body" id="settingsBody"></div></div></div>
 <div class="panel" id="editProfile"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Мой профиль</h2><div class="spacer"></div><button onclick="closePanel('editProfile')">✕</button></div><div class="st-body" id="editProfileBody"></div></div></div>
 <div class="panel" id="premiumPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>💎 Premium</h2><div class="spacer"></div><button onclick="closePanel('premiumPanel')">✕</button></div><div class="st-body" id="premiumBody"></div></div></div>
-<div class="panel" id="galleryPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🖼️ Галерея профиля</h2><div class="spacer"></div><button onclick="closePanel('galleryPanel')">✕</button></div><div class="st-body" id="galleryBody"></div></div></div>
-<div class="panel" id="stickerEditor"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🧸 Редактор стикера</h2><div class="spacer"></div><button onclick="closePanel('stickerEditor')">✕</button></div><div class="st-body" id="stickerEditorBody"></div></div></div>
 <div class="panel" id="createChat"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Новый чат</h2><div class="spacer"></div><button onclick="closePanel('createChat')">✕</button></div><div class="st-body" id="createChatBody"></div></div></div>
 <div class="panel" id="shop"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛒 Покупки</h2><div class="spacer"></div><button onclick="closePanel('shop')">✕</button></div><div class="st-body" id="shopBody"></div></div></div>
 <div class="panel" id="clansList"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Кланы</h2><div class="spacer"></div><button onclick="closePanel('clansList')">✕</button></div><div class="st-body" id="clansListBody"></div></div></div>
@@ -394,9 +364,9 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 <div id="toastBox"></div>
 
 <script>
-/* ============================================================
-   НАСТРОЙКА
-   ============================================================ */
+/* ============================================================ */
+/* НАСТРОЙКА */
+/* ============================================================ */
 const API = 'https://api.ink-chat.ru/api';
 const CARD_NUMBER = '2200 1536 8967 4803';
 let TOKEN = localStorage.getItem('ink_token') || null;
@@ -457,9 +427,7 @@ function openPanel(id){ const el=document.getElementById(id); if(!el) return; if
 function closePanel(id){ const el=document.getElementById(id); if(el) el.classList.remove('open'); STACK = STACK.filter(x => x !== id); }
 function goBack(){ if(!STACK.length) return; const cur = STACK.pop(); const curEl = document.getElementById(cur); if(curEl) curEl.classList.remove('open'); const prev = STACK[STACK.length-1]; if(prev){ const p = document.getElementById(prev); if(p) p.classList.add('open'); } }
 
-/* ============================================================
-   AUTH
-   ============================================================ */
+/* AUTH */
 async function doRegister(){
   const l = $('regLogin').value.trim(); const p1 = $('regPass').value, p2 = $('regPass2').value;
   if(l.length<3) return showMsg('regMsg','Логин минимум 3','err');
@@ -487,9 +455,7 @@ function logout(){
   location.href = 'index.html';
 }
 
-/* ============================================================
-   ЗАГРУЗКА
-   ============================================================ */
+/* ЗАГРУЗКА */
 async function loadAll(){
   showLoading(true);
   try {
@@ -522,9 +488,7 @@ function startPresence(){
   api('/presence','POST').then(r => { ME.tokens = r.tokens; renderTokensBadge(); }).catch(()=>{});
 }
 
-/* ============================================================
-   PUSH
-   ============================================================ */
+/* PUSH */
 async function initPush(){
   try {
     if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
@@ -561,9 +525,7 @@ if('serviceWorker' in navigator){
   });
 }
 
-/* ============================================================
-   ИМЯ / АВАТАР
-   ============================================================ */
+/* ИМЯ / АВАТАР */
 function isPremium(u){ if(!u || !u.premium) return false; if(!u.premium_until) return true; return new Date(u.premium_until) > new Date() }
 function userById(id){ return USERS.find(u => u.id === id) }
 function nameHTML(u){
@@ -612,9 +574,7 @@ function statusText(u){
 }
 function isOnline(u){ if(!u || !u.last_seen) return false; return (Date.now() - new Date(u.last_seen).getTime()) < 120000; }
 
-/* ============================================================
-   ПОЛОСКА СОБЕСЕДНИКА
-   ============================================================ */
+/* ПОЛОСКА СОБЕСЕДНИКА */
 function renderPeerBar(){
   const bar = $('peerBar'); if(!bar) return;
   if(!CURRENT_CHAT || CURRENT_CHAT.type !== 'private'){ bar.classList.remove('show'); stopPeerStatusTimer(); return; }
@@ -650,9 +610,7 @@ function startPeerStatusTimer(){
 }
 function stopPeerStatusTimer(){ if(PEER_STATUS_TIMER){ clearInterval(PEER_STATUS_TIMER); PEER_STATUS_TIMER = null; } }
 
-/* ============================================================
-   ЧАТЫ
-   ============================================================ */
+/* ЧАТЫ */
 function renderChats(){
   const box = $('chatList'); box.innerHTML = '';
   if(!CHATS.length){ box.innerHTML = '<div class="empty">Чатов пока нет</div>'; return }
@@ -661,7 +619,7 @@ function renderChats(){
     const isGroup = c.type === 'group' || c.type === 'channel';
     const el = document.createElement('div');
     el.className = 'chat-item';
-    const lastText = last ? (last.file ? (last.file.kind === 'sticker' ? '🧸 Стикер' : '📎 ' + (last.file.name || 'файл')) : esc(last.text||'')) : '';
+    const lastText = last ? (last.file ? ('📎 ' + (last.file.name || 'файл')) : esc(last.text||'')) : '';
     el.innerHTML = `<div class="avatar">${c.name.replace(/^#+/,'')[0].toUpperCase()}</div>
       <div class="meta"><div class="name">${esc(c.name)} ${isGroup ? '<span style="font-size:10px;color:var(--muted)">'+c.type+'</span>' : ''}</div>
       <div class="last">${lastText.slice(0,40)}</div></div>`;
@@ -697,9 +655,7 @@ function backToList(){
 }
 function openChatInfo(){ if(CURRENT_CHAT) openChatSettings(); }
 
-/* ============================================================
-   ZIP-СОХРАНЕНИЕ
-   ============================================================ */
+/* ZIP-СОХРАНЕНИЕ */
 function shouldShowSaveBar(){
   if(!CURRENT_CHAT) return false;
   if(CURRENT_CHAT.type !== 'private') return false;
@@ -734,29 +690,19 @@ async function buildArchiveZip(chat, messages){
   }
   return await makeZip(files);
 }
-/* ============================================================
-   ПОЛНЫЙ URL файла — берём с ТОГО ЖЕ домена, что и сайт
-   ============================================================ */
+/* ПОЛНЫЙ URL файла — берём с ТОГО ЖЕ домена, что и сайт */
 function fullUrl(u){
   let url = String(u||'').trim();
   if(!url) return '';
-
-  // Уже полный / data / blob — как есть
   if(/^(https?:|data:|blob:)/i.test(url)) return url;
-
-  // Старые кривые варианты — чиним на /uploads/ того же домена
   if(/^https?:\/\/ink-chat\.ru\/api\/upl_/i.test(url)){
     return 'https://ink-chat.ru/uploads/' + url.replace(/^https?:\/\/ink-chat\.ru\/api\/upl_/i, '');
   }
   if(url.startsWith('/api/uploads/')) return 'https://ink-chat.ru/uploads/' + url.slice('/api/uploads/'.length);
   if(url.startsWith('api/uploads/'))  return 'https://ink-chat.ru/uploads/' + url.slice('api/uploads/'.length);
-
-  // Относительные — на тот же домен, где сайт
   if(url.startsWith('/uploads/')) return 'https://ink-chat.ru' + url;
   if(url.startsWith('uploads/'))  return 'https://ink-chat.ru/' + url;
   if(url.startsWith('/'))         return 'https://ink-chat.ru' + url;
-
-  // Просто имя файла → /uploads/
   return 'https://ink-chat.ru/uploads/' + url.replace(/^\/+/, '');
 }
 async function makeZip(files){
@@ -833,9 +779,7 @@ async function savePeerConversation(){
   if(btn){ btn.disabled = false; btn.textContent = '💾 Сохранить'; }
 }
 
-/* ============================================================
-   СООБЩЕНИЯ
-   ============================================================ */
+/* СООБЩЕНИЯ */
 function buildTicks(m){
   if(!m) return '';
   if(m.status === 'read') return `<span class="ticks read" title="Прочитано">✓✓</span>`;
@@ -845,7 +789,6 @@ function buildTicks(m){
 function attachHTML(f){
   if(!f || !f.url) return '';
   const safeUrl = esc(fullUrl(f.url));
-  if(f.kind === 'sticker') return `<img src="${safeUrl}" style="width:120px;height:120px;object-fit:contain;display:block" alt=""/>`;
   if(f.kind === 'image') return `<a class="attach" target="_blank" href="${safeUrl}"><img src="${safeUrl}" alt=""/></a>`;
   if(f.kind === 'video') return `<div class="attach"><video src="${safeUrl}" controls></video></div>`;
   if(f.kind === 'audio') return `<div class="attach"><audio src="${safeUrl}" controls></audio></div>`;
@@ -933,9 +876,7 @@ async function downloadArchive(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================
-   TYPING
-   ============================================================ */
+/* TYPING */
 function onTypingInput(){
   if(!CURRENT_CHAT) return;
   const now = Date.now();
@@ -969,9 +910,7 @@ function startTypingPolling(){
 }
 function stopTypingPolling(){ if(typingPollTimer){ clearInterval(typingPollTimer); typingPollTimer = null; } }
 
-/* ============================================================
-   ТИХИЙ ОПРОС
-   ============================================================ */
+/* ТИХИЙ ОПРОС */
 let silentPollTimer = null;
 let lastMsgSignature = '';
 function startSilentPolling(){
@@ -1040,9 +979,7 @@ function softUpdateMessages(fresh){
   if(wasAtBottom) box.scrollTop = box.scrollHeight;
 }
 
-/* ============================================================
-   МЕНЮ СООБЩЕНИЙ
-   ============================================================ */
+/* МЕНЮ СООБЩЕНИЙ */
 let LP_TIMER = null;
 function attachLongPress(el, mid){
   el.addEventListener('touchstart', () => { LP_TIMER = setTimeout(() => { openMsgMenu({clientX:window.innerWidth/2, clientY:window.innerHeight/2}, mid); }, 500); }, { passive: true });
@@ -1128,9 +1065,7 @@ async function toggleReaction(mid, emo){
   catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================
-   ФАЙЛЫ
-   ============================================================ */
+/* ФАЙЛЫ */
 function pickFile(){ $('fileInput').click(); }
 async function onFilePick(e){
   const files = Array.from(e.target.files || []);
@@ -1203,189 +1138,7 @@ function compressImage(file, maxSide, quality){
   });
 }
 
-/* ============================================================
-   СТИКЕРЫ
-   ============================================================ */
-function toggleStickerPanel(){
-  if(!isPremium(ME)){ toast('Стикеры только для Premium',''); return; }
-  const p = $('stickerPanel');
-  p.classList.toggle('open');
-  if(p.classList.contains('open')) renderStickerPanel();
-}
-function renderStickerPanel(){
-  const stickers = ME.stickers || [];
-  const grid = $('stickerGrid');
-  if(!grid) return;
-  if(!stickers.length){
-    grid.innerHTML = '<div class="st empty" onclick="openStickerEditor()">＋</div>';
-  } else {
-    grid.innerHTML = stickers.map((s, i) => `
-      <div class="st" style="background-image:url('${fullUrl(s)}')" onclick="sendSticker('${fullUrl(s).replace(/'/g,"\\'")}')" oncontextmenu="event.preventDefault();removeSticker(${i})"></div>
-    `).join('') + '<div class="st empty" onclick="openStickerEditor()">＋</div>';
-  }
-}
-async function sendSticker(url){
-  if(!CURRENT_CHAT) return;
-  $('stickerPanel').classList.remove('open');
-  try {
-    await api('/messages', 'POST', {
-      chat_id: CURRENT_CHAT.id,
-      text: '',
-      file: { url, name: 'sticker.png', size: 0, mime: 'image/png', kind: 'sticker' }
-    });
-    MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
-    renderMessagesAndArchive(); renderChats();
-  } catch(e){ toast('Ошибка', e.message); }
-}
-async function removeSticker(i){
-  if(!confirm('Удалить стикер?')) return;
-  const list = (ME.stickers || []).slice();
-  list.splice(i, 1);
-  try { await api('/users/me/stickers', 'PUT', { stickers: list }); ME.stickers = list; renderStickerPanel(); }
-  catch(e){ toast('Ошибка', e.message); }
-}
-let STICKER_IMG = null;
-let STICKER_SCALE = 1;
-let STICKER_OFFSET = { x: 0, y: 0 };
-let STICKER_DRAG = null;
-
-function openStickerEditor(){
-  if(!isPremium(ME)) return toast('Только Premium','');
-  $('stickerEditorBody').innerHTML = `
-    <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Выбери фото, обрежь по квадрату и настрой зум</div>
-    <div id="stickerPickZone" style="padding:40px;border:2px dashed var(--border2);border-radius:16px;text-align:center;cursor:pointer;background:var(--panel2);margin-bottom:14px">
-      <div style="font-size:48px;margin-bottom:8px">📷</div>
-      <div style="font-weight:600;margin-bottom:4px">Выбрать фото</div>
-      <div style="font-size:12px;color:var(--muted)">JPG, PNG, WEBP — до 10 МБ</div>
-      <input type="file" id="stickerFile" accept="image/*" style="display:none" onchange="onStickerPick(event)"/>
-    </div>
-    <div id="stickerEditWrap" style="display:none">
-      <div class="sticker-edit-area" id="stickerEditArea">
-        <img id="stickerPreview" alt=""/>
-        <div class="crosshair"></div>
-        <div class="overlay"></div>
-      </div>
-      <div class="zoom-row">
-        <span style="font-size:14px">🔍</span>
-        <input type="range" id="stickerZoom" min="50" max="300" value="100" oninput="onStickerZoom(this.value)"/>
-        <span id="stickerZoomVal" style="font-size:12px;color:var(--muted);width:44px;text-align:right">100%</span>
-      </div>
-      <div class="row">
-        <button class="btn ghost" onclick="openStickerEditor()">↺ Сбросить</button>
-        <button class="btn gold" onclick="saveSticker()">💾 Сохранить</button>
-      </div>
-    </div>`;
-  $('stickerPickZone').onclick = () => $('stickerFile').click();
-  openPanel('stickerEditor');
-}
-function onStickerPick(e){
-  const f = e.target.files && e.target.files[0];
-  e.target.value = '';
-  if(!f) return;
-  if(!f.type.startsWith('image/')) return toast('Только изображения','');
-  if(f.size > 10 * 1024 * 1024) return toast('Максимум 10 МБ','');
-  const r = new FileReader();
-  r.onload = () => {
-    STICKER_SCALE = 1;
-    STICKER_OFFSET = { x: 0, y: 0 };
-    $('stickerPickZone').style.display = 'none';
-    $('stickerEditWrap').style.display = 'block';
-    const img = $('stickerPreview');
-    img.onload = () => { STICKER_IMG = img; centerSticker(); };
-    img.src = r.result;
-    $('stickerZoom').value = 100;
-    $('stickerZoomVal').textContent = '100%';
-    attachStickerDrag();
-  };
-  r.readAsDataURL(f);
-}
-function centerSticker(){
-  const area = $('stickerEditArea');
-  const w = area.clientWidth, h = area.clientHeight;
-  const iw = STICKER_IMG.naturalWidth, ih = STICKER_IMG.naturalHeight;
-  const baseScale = Math.max(w / iw, h / ih);
-  STICKER_IMG.dataset.baseScale = baseScale;
-  applyStickerTransform();
-}
-function applyStickerTransform(){
-  const area = $('stickerEditArea');
-  const w = area.clientWidth, h = area.clientHeight;
-  const baseScale = parseFloat(STICKER_IMG.dataset.baseScale || '1');
-  const scale = baseScale * STICKER_SCALE;
-  const iw = STICKER_IMG.naturalWidth * scale;
-  const ih = STICKER_IMG.naturalHeight * scale;
-  const minX = w - iw, maxX = 0;
-  const minY = h - ih, maxY = 0;
-  STICKER_OFFSET.x = Math.min(maxX, Math.max(minX, STICKER_OFFSET.x));
-  STICKER_OFFSET.y = Math.min(maxY, Math.max(minY, STICKER_OFFSET.y));
-  STICKER_IMG.style.width = iw + 'px';
-  STICKER_IMG.style.height = ih + 'px';
-  STICKER_IMG.style.transform = `translate(${STICKER_OFFSET.x}px, ${STICKER_OFFSET.y}px)`;
-}
-function onStickerZoom(v){
-  STICKER_SCALE = parseInt(v, 10) / 100;
-  $('stickerZoomVal').textContent = v + '%';
-  applyStickerTransform();
-}
-function attachStickerDrag(){
-  const area = $('stickerEditArea');
-  if(area.dataset.dragAttached) return;
-  area.dataset.dragAttached = '1';
-  function down(x, y){ STICKER_DRAG = { x, y, ox: STICKER_OFFSET.x, oy: STICKER_OFFSET.y }; area.classList.add('dragging'); }
-  function move(x, y){
-    if(!STICKER_DRAG) return;
-    STICKER_OFFSET.x = STICKER_DRAG.ox + (x - STICKER_DRAG.x);
-    STICKER_OFFSET.y = STICKER_DRAG.oy + (y - STICKER_DRAG.y);
-    applyStickerTransform();
-  }
-  function up(){ STICKER_DRAG = null; area.classList.remove('dragging'); }
-  area.addEventListener('mousedown', e => down(e.clientX, e.clientY));
-  area.addEventListener('mousemove', e => move(e.clientX, e.clientY));
-  area.addEventListener('mouseup', up);
-  area.addEventListener('mouseleave', up);
-  area.addEventListener('touchstart', e => { const t = e.touches[0]; down(t.clientX, t.clientY); }, { passive: true });
-  area.addEventListener('touchmove', e => { const t = e.touches[0]; move(t.clientX, t.clientY); e.preventDefault(); }, { passive: false });
-  area.addEventListener('touchend', up);
-}
-async function saveSticker(){
-  if(!STICKER_IMG) return toast('Сначала выбери фото','');
-  try {
-    const area = $('stickerEditArea');
-    const size = 256;
-    const canvas = document.createElement('canvas');
-    canvas.width = size; canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    const w = area.clientWidth, h = area.clientHeight;
-    const baseScale = parseFloat(STICKER_IMG.dataset.baseScale || '1');
-    const scale = baseScale * STICKER_SCALE;
-    const srcX = (-STICKER_OFFSET.x) / scale;
-    const srcY = (-STICKER_OFFSET.y) / scale;
-    const srcW = w / scale;
-    const srcH = h / scale;
-    ctx.drawImage(STICKER_IMG, srcX, srcY, srcW, srcH, 0, 0, size, size);
-    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-    const fd = new FormData();
-    fd.append('file', new File([blob], 'sticker-' + Date.now() + '.png', { type:'image/png' }));
-    const r = await fetch(API + '/upload', {
-      method:'POST',
-      headers: TOKEN ? { 'Authorization':'Bearer ' + TOKEN } : {},
-      body: fd
-    });
-    if(!r.ok){ const d = await r.json().catch(()=>({})); throw new Error(d.error || 'Ошибка загрузки'); }
-    const res = await r.json();
-    const url = res.url;
-    const list = [...(ME.stickers || []), url].slice(0, 20);
-    await api('/users/me/stickers', 'PUT', { stickers: list });
-    ME.stickers = list;
-    toast('🧸 Стикер добавлен','');
-    closePanel('stickerEditor');
-    if($('stickerPanel').classList.contains('open')) renderStickerPanel();
-  } catch(e){ toast('Ошибка', e.message); }
-}
-
-/* ============================================================
-   ОТПРАВКА ТЕКСТА
-   ============================================================ */
+/* ОТПРАВКА ТЕКСТА */
 async function sendMsg(){
   const v = $('msgInput').value.trim();
   if(!v || !CURRENT_CHAT) return;
@@ -1398,9 +1151,7 @@ async function sendMsg(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================
-   НАСТРОЙКИ ЧАТА
-   ============================================================ */
+/* НАСТРОЙКИ ЧАТА */
 function openChatSettings(){
   if(!CURRENT_CHAT) return;
   const c = CURRENT_CHAT; const enabled = NOTIF_CHATS[c.id] !== false;
@@ -1426,9 +1177,7 @@ async function toggleChatNotif(){
   catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================
-   СОЗДАНИЕ ЧАТА
-   ============================================================ */
+/* СОЗДАНИЕ ЧАТА */
 let CC_TYPE = 'private', CC_SEL = [];
 function openCreateChatPanel(){ CC_TYPE = 'private'; CC_SEL = []; renderCreateChatBody(); openPanel('createChat'); }
 function renderCreateChatBody(){
@@ -1474,25 +1223,17 @@ async function createChatFinal(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================
-   НАСТРОЙКИ
-   ============================================================ */
+/* НАСТРОЙКИ */
 function openSettings(){ renderSettingsBody(); openPanel('settings'); }
 function renderSettingsBody(){
   const inkActive = ME.inkUntil && new Date(ME.inkUntil) > new Date();
   const isAdmin = !!(ME.is_admin || ME.isAdmin);
   const prem = isPremium(ME);
-  const galleryCount = (ME.gallery_urls||[]).length;
-  const galleryLimit = prem ? 10 : 3;
   $('settingsBody').innerHTML = `
     <div class="st-section"><h3>Профиль</h3>
       <div class="st-row" onclick="openEditProfile()">
         ${avatarHTML(ME,'sm')}
         <div class="txt"><div class="t1">${nameHTML(ME)}</div><div class="t2">${ME.description || 'Настрой профиль'}</div></div>
-      </div>
-      <div class="st-row" onclick="openGalleryEditor()">
-        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">🖼️</div>
-        <div class="txt"><div class="t1">Галерея профиля</div><div class="t2">${galleryCount} / ${galleryLimit} ячеек</div></div>
       </div>
     </div>
     ${prem ? `
@@ -1579,76 +1320,7 @@ async function deleteMyAccount(){
   catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================
-   ГАЛЕРЕЯ
-   ============================================================ */
-function openGalleryEditor(){
-  const isPrem = isPremium(ME);
-  const limit = isPrem ? 10 : 3;
-  const urls = (ME.gallery_urls || []).slice();
-  while(urls.length < limit) urls.push('');
-  $('galleryBody').innerHTML = `
-    <div style="font-size:13px;color:var(--muted);margin-bottom:12px">
-      ${isPrem ? '💎 Premium: до 10 ячеек' : 'Обычные: до 3 ячеек. Premium даёт до 10.'}
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">
-      ${urls.slice(0, limit).map((u, i) => `
-        <div style="position:relative;padding-top:100%;background:var(--panel2);border:1px dashed var(--border2);border-radius:12px;overflow:hidden;cursor:pointer" onclick="pickGallery(${i})">
-          ${u ? (isVideoUrl(u)
-            ? `<video src="${fullUrl(u)}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover" muted></video>`
-            : `<img src="${fullUrl(u)}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover"/>`)
-            : `<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--muted)"><div style="font-size:36px">＋</div><div style="font-size:12px">Добавить</div></div>`}
-          ${u ? `<div style="position:absolute;top:4px;right:4px;width:24px;height:24px;background:rgba(0,0,0,.7);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px" onclick="event.stopPropagation();removeGallery(${i})">✕</div>` : ''}
-        </div>`).join('')}
-    </div>
-    <input type="file" id="galleryInput" accept="image/*,video/*" style="display:none" onchange="onGalleryPick(event)"/>`;
-  openPanel('galleryPanel');
-}
-function isVideoUrl(u){ return /\.(mp4|webm|mov|m4v)($|\?)/i.test(u) || u.startsWith('data:video/'); }
-let GALLERY_SLOT = -1;
-function pickGallery(i){ GALLERY_SLOT = i; $('galleryInput').click(); }
-async function onGalleryPick(e){
-  const f = e.target.files && e.target.files[0];
-  e.target.value = '';
-  if(!f) return;
-  if(f.size > 20 * 1024 * 1024) return toast('Максимум 20 МБ', '');
-  const isVideo = f.type.startsWith('video/');
-  const isImage = f.type.startsWith('image/');
-  if(!isVideo && !isImage) return toast('Только фото или видео','');
-  try {
-    let toUpload = f;
-    if(isImage){ try { toUpload = await compressImage(f, 1600, 0.85); } catch(e){ toUpload = f; } }
-    const fd = new FormData();
-    fd.append('file', toUpload);
-    const r = await fetch(API + '/upload', {
-      method: 'POST',
-      headers: TOKEN ? { 'Authorization': 'Bearer ' + TOKEN } : {},
-      body: fd
-    });
-    if(!r.ok){ const d = await r.json().catch(()=>({})); throw new Error(d.error || 'Ошибка загрузки'); }
-    const res = await r.json();
-    const url = res.url;
-    const list = (ME.gallery_urls || []).slice();
-    while(list.length <= GALLERY_SLOT) list.push('');
-    list[GALLERY_SLOT] = url;
-    ME.gallery_urls = list.filter(Boolean);
-    await api('/users/me', 'PUT', { gallery_urls: ME.gallery_urls });
-    toast('✓ Добавлено','');
-    openGalleryEditor();
-  } catch(e){ toast('Ошибка', e.message); }
-}
-async function removeGallery(i){
-  if(!confirm('Удалить?')) return;
-  const list = (ME.gallery_urls || []).slice();
-  list.splice(i, 1);
-  ME.gallery_urls = list;
-  try { await api('/users/me', 'PUT', { gallery_urls: list }); toast('Удалено',''); openGalleryEditor(); }
-  catch(e){ toast('Ошибка', e.message); }
-}
-
-/* ============================================================
-   PREMIUM-ПАНЕЛЬ
-   ============================================================ */
+/* PREMIUM-ПАНЕЛЬ */
 function openPremiumPanel(){ renderPremiumBody(); openPanel('premiumPanel'); }
 function renderPremiumBody(){
   const prem = isPremium(ME);
@@ -1681,18 +1353,6 @@ function renderPremiumBody(){
         <button class="btn ok" onclick="savePremPrefix()">Сохранить</button>
         <button class="btn ghost" onclick="clearPremPrefix()">Убрать</button>
       </div>
-    </div>
-    <div class="st-section"><h3>Стикеры</h3>
-      <div class="st-row" onclick="openStickerEditor()">
-        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">🧸</div>
-        <div class="txt"><div class="t1">Мои стикеры</div><div class="t2">${(ME.stickers||[]).length} / 20</div></div>
-      </div>
-    </div>
-    <div class="st-section"><h3>Эмодзи</h3>
-      <div class="st-row" onclick="openEmojiCustomize()">
-        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">😊</div>
-        <div class="txt"><div class="t1">Свои эмодзи</div><div class="t2">${(ME.custom_emoji||[]).length} / 20</div></div>
-      </div>
     </div>`;
 }
 async function togglePremiumBadge(){
@@ -1715,9 +1375,7 @@ async function clearPremPrefix(){
   catch(e){}
 }
 
-/* ============================================================
-   ПРОФИЛЬ
-   ============================================================ */
+/* ПРОФИЛЬ */
 function openEditProfile(){
   const av = ME.avatar_url
     ? `<div class="avatar" style="width:96px;height:96px;font-size:34px;margin:0 auto 12px;background-image:url('${ME.avatar_url}');background-size:cover;background-position:center" onclick="document.getElementById('pePhoto').click()"></div>`
@@ -1761,9 +1419,7 @@ async function onAvatarPick(ev){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================
-   СМЕНА ПАРОЛЯ
-   ============================================================ */
+/* СМЕНА ПАРОЛЯ */
 function openChangePassword(){
   if(STACK.length) closePanel(STACK[STACK.length-1]);
   $('editProfileBody').innerHTML = `
@@ -1794,9 +1450,7 @@ async function doChangePassword(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================
-   INKOGNITO
-   ============================================================ */
+/* INKOGNITO */
 async function toggleInkognito(){
   const active = ME.inkUntil && new Date(ME.inkUntil) > new Date();
   if(!active){
@@ -1809,9 +1463,7 @@ async function toggleInkognito(){
   toast(document.body.classList.contains('inkognito') ? '🕶️ Inkognito включён' : 'Inkognito выключен','');
 }
 
-/* ============================================================
-   ЭМОДЗИ
-   ============================================================ */
+/* ЭМОДЗИ */
 const EMOJI_PREMIUM = ['💎','👑','🏆','🥇','💫','🌠','🦄','🐉','🍾','🥂','💐','🎊','🎈','🔮'];
 const EMOJI_DONOR = ['💖','💜','🤍','💝','💘','💗'];
 const EMOJI_CATEGORIES = {
@@ -1876,9 +1528,7 @@ async function addMyEmoji(){ if(!isPremium(ME)) return alert('Только Premi
 async function removeMyEmoji(i){ const list = (ME.custom_emoji||[]).slice(); list.splice(i,1); try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
 async function toggleHideEmoji(e){ const list = (ME.hidden_emoji||[]).slice(); const i = list.indexOf(e); if(i>=0) list.splice(i,1); else list.push(e); try { await api('/users/me/emoji','PUT',{ hidden_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
 
-/* ============================================================
-   КЛАНЫ
-   ============================================================ */
+/* КЛАНЫ */
 async function openClansList(){ try { CLANS = await api('/clans'); } catch(e){ CLANS = [] } renderClansList(); openPanel('clansList'); }
 function renderClansList(){
   const myIds = CLANS.filter(c => (c.members||[]).some(m => m.userId === ME.id)).map(c => c.id);
@@ -2039,9 +1689,7 @@ async function openClansRating(){
   openPanel('clanRating');
 }
 
-/* ============================================================
-   КОШЕЛЁК
-   ============================================================ */
+/* КОШЕЛЁК */
 async function openWallet(){
   try { ME = await api('/users/me'); } catch(e){}
   $('walletBody').innerHTML = `
@@ -2078,9 +1726,7 @@ async function openTransactions(){
   openPanel('transactions');
 }
 
-/* ============================================================
-   МАГАЗИН
-   ============================================================ */
+/* МАГАЗИН */
 function openShop(){
   $('shopBody').innerHTML = `
     <div class="balance-card"><div class="lbl">Баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
@@ -2094,9 +1740,7 @@ function openShop(){
 }
 async function buyPremium(){ if(!confirm('Списать 30 токенов и активировать Premium на 30 дней?')) return; try { await api('/premium/purchase','POST',{ days: 30 }); await loadAll(); renderTokensBadge(); closePanel('shop'); toast('💎 Premium активирован','30 дней'); } catch(e){ toast('Ошибка', e.message) } }
 
-/* ============================================================
-   ДОНАТ
-   ============================================================ */
+/* ДОНАТ */
 function openDonate(){
   $('shopBody').innerHTML = `
     <div class="st-section"><h3>❤️ Поддержать Ink</h3>
@@ -2152,9 +1796,7 @@ async function copyCard(el){
   }
 }
 
-/* ============================================================
-   ЖАЛОБЫ
-   ============================================================ */
+/* ЖАЛОБЫ */
 function openReportToAdmin(){
   $('reportTitle').textContent = '⚠️ Жалоба админу';
   REPORT_SCREENS = [];
@@ -2186,9 +1828,7 @@ async function sendGeneralReport(){
   try { await api('/reports','POST',{ target_login, reason, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('⚠️ Жалоба отправлена',''); } catch(e){ toast('Ошибка', e.message) }
 }
 
-/* ============================================================
-   АДМИН-ПАНЕЛЬ
-   ============================================================ */
+/* АДМИН-ПАНЕЛЬ */
 function openAdmin(){ if(!(ME.is_admin || ME.isAdmin)) return toast('Только админ',''); renderAdmin(); openPanel('adminPanel'); }
 async function renderAdmin(){
   let donations=[];
@@ -2262,9 +1902,7 @@ async function applyGiveTokens(uid, sign){ const amount = parseInt($('giveAmount
 async function adminBan(uid){ if(!confirm('Забанить на 30 дней?')) return; const reason = prompt('Причина:', 'нарушение правил') || 'нарушение правил'; try { await api('/admin/users/'+uid,'PUT',{ blocked_until: new Date(Date.now()+30*86400000).toISOString(), block_reason: reason, banned: true }); await loadAll(); adminUserPanel(uid); toast('🚫 Забанен',''); } catch(e){ toast('Ошибка', e.message) } }
 async function adminUnban(uid){ try { await api('/admin/users/'+uid,'PUT',{ blocked_until: null, block_reason: '', banned: false }); await loadAll(); adminUserPanel(uid); toast('✅ Разбанен',''); } catch(e){ toast('Ошибка', e.message) } }
 
-/* ============================================================
-   СТАРТ
-   ============================================================ */
+/* СТАРТ */
 (async function init(){
   if(!TOKEN){ $('auth').style.display = 'flex'; return; }
   try { await enterApp(); }
