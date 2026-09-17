@@ -43,8 +43,6 @@ header .title{font-weight:700;font-size:17px;padding:8px 10px;cursor:pointer;max
 header .spacer{flex:1}
 header button{background:transparent;border:0;color:var(--text);font-size:18px;cursor:pointer;padding:8px;border-radius:12px;min-width:var(--tap);min-height:var(--tap);display:flex;align-items:center;justify-content:center;position:relative}
 header button:active{background:rgba(127,127,127,.15)}
-
-/* ───── ЛЕЙАУТ ───── */
 .layout{flex:1;display:flex;overflow:hidden;min-height:0;width:100%}
 .sidebar{display:flex;flex-direction:column;width:100%;height:100%;background:var(--panel);min-width:0}
 .chatpane{display:none;flex-direction:column;width:100%;height:100%;background:var(--bg);min-width:0}
@@ -58,7 +56,6 @@ body.in-chat #backBtn{display:inline-flex !important}
   body.in-chat .sidebar{display:flex}
   body.in-chat #backBtn{display:none !important}
 }
-
 .search{margin:10px 14px 0;padding:12px;background:var(--panel2);border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:16px}
 .search:focus{border-color:var(--accent)}
 .createBtn{margin:10px 14px 0;padding:12px;text-align:center;border-radius:14px;border:1px dashed var(--border2);color:var(--muted);cursor:pointer;font-size:14px}
@@ -70,7 +67,6 @@ body.in-chat #backBtn{display:inline-flex !important}
 .chat-item .meta{flex:1;min-width:0}
 .chat-item .name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chat-item .last{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
 .peer-bar{display:none;align-items:center;gap:10px;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;cursor:pointer;min-height:54px;transition:background .15s}
 .peer-bar.show{display:flex}
 .peer-bar:active{background:rgba(127,127,127,.1)}
@@ -83,11 +79,9 @@ body.in-chat #backBtn{display:inline-flex !important}
 .peer-bar .arrow{color:var(--muted);font-size:16px}
 .peer-bar .save-btn{background:linear-gradient(135deg,#ffb84d,#ff5c8a);border:0;color:#fff;font-size:12.5px;font-weight:700;padding:8px 12px;border-radius:9px;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit}
 .peer-bar .save-btn:disabled{opacity:.5;cursor:default}
-
 .live-typing{display:none;padding:8px 14px;background:linear-gradient(135deg,rgba(124,92,255,.12),rgba(79,140,255,.08));border-bottom:1px solid rgba(124,92,255,.35);font-size:13px;color:#c7b3ff;flex-shrink:0;font-family:ui-monospace,Menlo,monospace;word-break:break-word;line-height:1.4;max-height:80px;overflow-y:auto}
 .live-typing.show{display:block}
 .live-typing .lbl{color:#8a7cff;font-weight:600;margin-right:6px}
-
 .archive-bar{padding:10px 14px;background:linear-gradient(135deg,rgba(255,184,77,.12),rgba(255,92,138,.12));border-bottom:1px solid rgba(255,184,77,.35);font-size:13px;display:none;flex-shrink:0}
 .archive-bar.show{display:block}
 .archive-bar .line{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -100,7 +94,6 @@ body.in-chat #backBtn{display:inline-flex !important}
 .save-bar .txt b{color:#ffb84d}
 .save-bar button{padding:8px 12px;border-radius:9px;border:0;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
 .save-bar button:disabled{opacity:.5;cursor:default}
-
 #messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:82%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.4;word-wrap:break-word;position:relative}
 .msg.them{align-self:flex-start;background:var(--them);border:1px solid var(--border);border-bottom-left-radius:4px}
@@ -113,7 +106,6 @@ body.in-chat #backBtn{display:inline-flex !important}
 .msg.them .ticks{color:var(--muted)}
 .msg .hashtag{color:#7cb8ff;cursor:pointer;font-weight:600}
 .msg .sname{display:block;font-size:11.5px;font-weight:700;color:var(--accent);margin-bottom:3px}
-
 .msg .attach{display:block;margin:6px 0;max-width:100%;border-radius:10px;overflow:hidden;text-decoration:none;color:inherit}
 .msg .attach img{display:block;max-width:260px;max-height:260px;width:auto;height:auto;border-radius:10px;cursor:pointer}
 .msg .attach video{display:block;max-width:260px;max-height:260px;border-radius:10px}
@@ -122,7 +114,6 @@ body.in-chat #backBtn{display:inline-flex !important}
 .msg .attach .file-row .fi{font-size:22px;flex-shrink:0}
 .msg .attach .file-row .fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .msg .attach .file-row .fs{opacity:.65;font-size:11.5px;flex-shrink:0}
-
 .reactions{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
 .reaction{background:rgba(127,127,127,.15);padding:2px 8px;border-radius:10px;font-size:12px;cursor:pointer}
 .composer{display:flex;gap:10px;padding:12px 14px;border-top:1px solid var(--border);background:var(--panel);flex-shrink:0;align-items:center}
@@ -130,7 +121,6 @@ body.in-chat #backBtn{display:inline-flex !important}
 .composer .send-btn{width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;font-size:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0}
 .composer .emoji-btn,.composer .attach-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-size:18px;flex-shrink:0}
 .empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px;padding:0 20px}
-
 .panel{position:fixed;inset:0;z-index:70;display:none;background:rgba(0,0,0,.5)}
 .panel.open{display:block}
 .panel .box{position:absolute;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--panel);display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
@@ -153,7 +143,6 @@ body.in-chat #backBtn{display:inline-flex !important}
 .switch.on{background:var(--accent)}
 .switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
 .switch.on::after{transform:translateX(20px)}
-
 .balance-card{background:linear-gradient(135deg,rgba(255,184,77,.12),rgba(255,92,138,.12));border:1px solid rgba(255,184,77,.35);border-radius:16px;padding:16px;text-align:center;margin-bottom:14px}
 .balance-card .num{font-size:32px;font-weight:700;color:#ffb84d;margin:4px 0}
 .balance-card .lbl{font-size:12.5px;color:var(--muted)}
@@ -167,7 +156,6 @@ body.in-chat #backBtn{display:inline-flex !important}
 .prem-feature .txt{flex:1;min-width:0}
 .prem-feature .t1{font-weight:600;font-size:14px}
 .prem-feature .t2{font-size:12px;color:var(--muted);margin-top:2px}
-
 #toastBox{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:min(420px,calc(100vw - 24px))}
 .toast{background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .toast .t1{font-weight:700;font-size:14px}
@@ -217,8 +205,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .attach-preview{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .attach-preview .thumb{position:relative;width:72px;height:72px;border-radius:10px;background-size:cover;background-position:center;border:1px solid var(--border2)}
 .attach-preview .thumb .rm{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
-
-/* ── ЭМОДЗИ-ПАНЕЛЬ ── */
 .emoji-panel{position:absolute;bottom:60px;left:12px;right:12px;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:10px;z-index:60;display:none;box-shadow:0 10px 40px rgba(0,0,0,.5)}
 .emoji-panel.open{display:block}
 .emoji-panel .tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;max-height:60px;overflow-y:auto}
@@ -227,8 +213,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .emoji-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px;max-height:220px;overflow-y:auto}
 .emoji-grid .e{font-size:22px;text-align:center;padding:6px;border-radius:8px;cursor:pointer;background:transparent;border:0;color:inherit}
 .emoji-grid .e:hover{background:var(--panel2)}
-
-/* ── СТИКЕРЫ ── */
 .sticker-panel{position:absolute;bottom:60px;left:12px;right:12px;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:10px;z-index:60;display:none;box-shadow:0 10px 40px rgba(0,0,0,.5)}
 .sticker-panel.open{display:block}
 .sticker-panel .st-header-mini{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;color:var(--muted);font-weight:600}
@@ -237,8 +221,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .sticker-grid .st{width:100%;aspect-ratio:1;background:var(--panel2);border-radius:10px;cursor:pointer;background-size:contain;background-repeat:no-repeat;background-position:center;border:1px solid var(--border2);transition:transform .12s}
 .sticker-grid .st:hover{transform:scale(1.06);border-color:var(--accent)}
 .sticker-grid .st.empty{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:22px}
-
-/* ── РЕДАКТОР СТИКЕРА ── */
 .sticker-edit-area{position:relative;width:100%;max-width:340px;aspect-ratio:1;margin:0 auto 16px;background:#000;border-radius:16px;overflow:hidden;touch-action:none;cursor:grab}
 .sticker-edit-area.dragging{cursor:grabbing}
 .sticker-edit-area img{position:absolute;left:0;top:0;max-width:none;pointer-events:none;transform-origin:0 0;user-select:none;-webkit-user-drag:none}
@@ -250,8 +232,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .zoom-row{display:flex;align-items:center;gap:12px;max-width:340px;margin:0 auto 16px}
 .zoom-row input[type=range]{flex:1;height:6px;border-radius:3px;-webkit-appearance:none;background:var(--border2);outline:none}
 .zoom-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));cursor:pointer}
-
-/* ── МЕНЮ СООБЩЕНИЙ ── */
 .msg .msg-menu-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:6px;background:rgba(0,0,0,.45);color:#fff;border:0;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;line-height:1}
 .msg:hover .msg-menu-btn{display:flex}
 .msg.me .msg-menu-btn{background:rgba(0,0,0,.25)}
@@ -286,7 +266,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 
 <div id="loading"><div class="spinner"></div><div style="color:var(--muted);font-size:13px">Подключение...</div></div>
 
-<!-- АВТОРИЗАЦИЯ -->
 <div id="auth">
   <div class="card">
     <div id="authMode">
@@ -311,7 +290,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
   </div>
 </div>
 
-<!-- ПРИЛОЖЕНИЕ -->
 <div id="app">
   <header>
     <button id="backBtn" style="display:none" onclick="backToList()">←</button>
@@ -375,7 +353,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
   </div>
 </div>
 
-<!-- ПАНЕЛИ -->
 <div class="panel" id="settings"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Настройки</h2><div class="spacer"></div><button onclick="closePanel('settings')">✕</button></div><div class="st-body" id="settingsBody"></div></div></div>
 <div class="panel" id="editProfile"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Мой профиль</h2><div class="spacer"></div><button onclick="closePanel('editProfile')">✕</button></div><div class="st-body" id="editProfileBody"></div></div></div>
 <div class="panel" id="premiumPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>💎 Premium</h2><div class="spacer"></div><button onclick="closePanel('premiumPanel')">✕</button></div><div class="st-body" id="premiumBody"></div></div></div>
@@ -397,7 +374,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 <div class="panel" id="reportPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="reportTitle">⚠️ Жалоба</h2><div class="spacer"></div><button onclick="closePanel('reportPanel')">✕</button></div><div class="st-body" id="reportBody"></div></div></div>
 <div class="panel" id="adminPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Админ-панель</h2><div class="spacer"></div><button onclick="closePanel('adminPanel')">✕</button></div><div class="st-body" id="adminBody"></div></div></div>
 
-<!-- ПРОФИЛЬ СОБЕСЕДНИКА -->
 <div id="peerProfile"><div class="box" onclick="event.stopPropagation()">
   <div class="avatar" id="ppAvatar"></div>
   <div class="name" id="ppName">—</div>
@@ -407,10 +383,8 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
   <div class="row"><button class="btn ghost" onclick="closePeerProfile()">Закрыть</button></div>
 </div></div>
 
-<!-- МЕНЮ СООБЩЕНИЙ -->
 <div class="msg-menu" id="msgMenu"></div>
 
-<!-- ОВЕРЛЕЙ ЗАГРУЗКИ -->
 <div class="upload-overlay" id="uploadOverlay">
   <div style="font-size:32px">📎</div>
   <div id="uploadText">Загрузка файла...</div>
@@ -418,6 +392,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 </div>
 
 <div id="toastBox"></div>
+
 <script>
 /* ============================================================
    НАСТРОЙКА
@@ -587,7 +562,7 @@ if('serviceWorker' in navigator){
 }
 
 /* ============================================================
-   ИМЯ / АВАТАР / ПРОФИЛЬ
+   ИМЯ / АВАТАР
    ============================================================ */
 function isPremium(u){ if(!u || !u.premium) return false; if(!u.premium_until) return true; return new Date(u.premium_until) > new Date() }
 function userById(id){ return USERS.find(u => u.id === id) }
@@ -751,13 +726,21 @@ async function buildArchiveZip(chat, messages){
   ];
   for(const m of messages){
     if(!m.file || !m.file.url) continue;
-    const url = m.file.url.startsWith('http') ? m.file.url : (API.replace('/api','') + m.file.url);
+    const url = fullUrl(m.file.url);
     const blob = await fetchFileBlob(url);
     if(!blob) continue;
     const safeName = 'files/' + m.id + '-' + (m.file.name || 'file').replace(/[^\w.\-]+/g,'_');
     files.push({ name: safeName, data: blob });
   }
   return await makeZip(files);
+}
+function fullUrl(u){
+  let url = String(u||'');
+  if(/^https?:\/\//i.test(url)) return url;
+  if(url.startsWith('/')) return API.replace('/api','') + url;
+  if(/^ink-chat\.ru\//i.test(url)) return 'https://' + url;
+  if(/^api\.ink-chat\.ru\//i.test(url)) return 'https://' + url;
+  return API.replace('/api','') + '/' + url.replace(/^\/+/, '');
 }
 async function makeZip(files){
   const chunks = []; const central = []; let offset = 0;
@@ -844,8 +827,7 @@ function buildTicks(m){
 }
 function attachHTML(f){
   if(!f || !f.url) return '';
-  const url = f.url.startsWith('http') ? f.url : (API.replace('/api','') + f.url);
-  const safeUrl = esc(url);
+  const safeUrl = esc(fullUrl(f.url));
   if(f.kind === 'sticker') return `<img src="${safeUrl}" style="width:120px;height:120px;object-fit:contain;display:block" alt=""/>`;
   if(f.kind === 'image') return `<a class="attach" target="_blank" href="${safeUrl}"><img src="${safeUrl}" alt=""/></a>`;
   if(f.kind === 'video') return `<div class="attach"><video src="${safeUrl}" controls></video></div>`;
@@ -1130,7 +1112,7 @@ async function toggleReaction(mid, emo){
 }
 
 /* ============================================================
-   ФАЙЛЫ — с сжатием для телефона
+   ФАЙЛЫ
    ============================================================ */
 function pickFile(){ $('fileInput').click(); }
 async function onFilePick(e){
@@ -1205,7 +1187,7 @@ function compressImage(file, maxSide, quality){
 }
 
 /* ============================================================
-   СТИКЕРЫ (Premium)
+   СТИКЕРЫ
    ============================================================ */
 function toggleStickerPanel(){
   if(!isPremium(ME)){ toast('Стикеры только для Premium',''); return; }
@@ -1221,7 +1203,7 @@ function renderStickerPanel(){
     grid.innerHTML = '<div class="st empty" onclick="openStickerEditor()">＋</div>';
   } else {
     grid.innerHTML = stickers.map((s, i) => `
-      <div class="st" style="background-image:url('${s}')" onclick="sendSticker('${s.replace(/'/g,"\\'")}')" oncontextmenu="event.preventDefault();removeSticker(${i})"></div>
+      <div class="st" style="background-image:url('${fullUrl(s)}')" onclick="sendSticker('${fullUrl(s).replace(/'/g,"\\'")}')" oncontextmenu="event.preventDefault();removeSticker(${i})"></div>
     `).join('') + '<div class="st empty" onclick="openStickerEditor()">＋</div>';
   }
 }
@@ -1245,7 +1227,6 @@ async function removeSticker(i){
   try { await api('/users/me/stickers', 'PUT', { stickers: list }); ME.stickers = list; renderStickerPanel(); }
   catch(e){ toast('Ошибка', e.message); }
 }
-
 let STICKER_IMG = null;
 let STICKER_SCALE = 1;
 let STICKER_OFFSET = { x: 0, y: 0 };
@@ -1293,10 +1274,7 @@ function onStickerPick(e){
     $('stickerPickZone').style.display = 'none';
     $('stickerEditWrap').style.display = 'block';
     const img = $('stickerPreview');
-    img.onload = () => {
-      STICKER_IMG = img;
-      centerSticker();
-    };
+    img.onload = () => { STICKER_IMG = img; centerSticker(); };
     img.src = r.result;
     $('stickerZoom').value = 100;
     $('stickerZoomVal').textContent = '100%';
@@ -1378,7 +1356,7 @@ async function saveSticker(){
     });
     if(!r.ok){ const d = await r.json().catch(()=>({})); throw new Error(d.error || 'Ошибка загрузки'); }
     const res = await r.json();
-    const url = res.url.startsWith('http') ? res.url : (API.replace('/api','') + res.url);
+    const url = res.url;
     const list = [...(ME.stickers || []), url].slice(0, 20);
     await api('/users/me/stickers', 'PUT', { stickers: list });
     ME.stickers = list;
@@ -1600,8 +1578,8 @@ function openGalleryEditor(){
       ${urls.slice(0, limit).map((u, i) => `
         <div style="position:relative;padding-top:100%;background:var(--panel2);border:1px dashed var(--border2);border-radius:12px;overflow:hidden;cursor:pointer" onclick="pickGallery(${i})">
           ${u ? (isVideoUrl(u)
-            ? `<video src="${u}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover" muted></video>`
-            : `<img src="${u}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover"/>`)
+            ? `<video src="${fullUrl(u)}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover" muted></video>`
+            : `<img src="${fullUrl(u)}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover"/>`)
             : `<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--muted)"><div style="font-size:36px">＋</div><div style="font-size:12px">Добавить</div></div>`}
           ${u ? `<div style="position:absolute;top:4px;right:4px;width:24px;height:24px;background:rgba(0,0,0,.7);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px" onclick="event.stopPropagation();removeGallery(${i})">✕</div>` : ''}
         </div>`).join('')}
@@ -1632,7 +1610,7 @@ async function onGalleryPick(e){
     });
     if(!r.ok){ const d = await r.json().catch(()=>({})); throw new Error(d.error || 'Ошибка загрузки'); }
     const res = await r.json();
-    const url = res.url.startsWith('http') ? res.url : (API.replace('/api','') + res.url);
+    const url = res.url;
     const list = (ME.gallery_urls || []).slice();
     while(list.length <= GALLERY_SLOT) list.push('');
     list[GALLERY_SLOT] = url;
@@ -1721,7 +1699,7 @@ async function clearPremPrefix(){
 }
 
 /* ============================================================
-   ПРОФИЛЬ (аватарка)
+   ПРОФИЛЬ
    ============================================================ */
 function openEditProfile(){
   const av = ME.avatar_url
@@ -1815,16 +1793,16 @@ async function toggleInkognito(){
 }
 
 /* ============================================================
-   ЭМОДЗИ КАТЕГОРИИ
+   ЭМОДЗИ
    ============================================================ */
 const EMOJI_PREMIUM = ['💎','👑','🏆','🥇','💫','🌠','🦄','🐉','🍾','🥂','💐','🎊','🎈','🔮'];
 const EMOJI_DONOR = ['💖','💜','🤍','💝','💘','💗'];
 const EMOJI_CATEGORIES = {
-  faces: { name:'😀 Лица', emojis:['😀','😃','😄','😁','😆','😅','😂','🤣','🥲','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤔','🫣','🤭','🫢','🤫','🫠','🤥','😶','🫥','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😮‍💨','😵','😵‍💫','🫨','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','💩','🤡','👹','👺','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😾','😿'] },
-  hands: { name:'👍 Жесты', emojis:['👍','👎','✊','👊','🤛','🤜','🤞','✌️','🫰','🤟','🤘','👌','🤌','🤏','🤙','👋','🤚','🖐️','✋','🖖','🙌','👐','🙏','🤝','👆','👇','👈','👉','🖕','✍️','🤳','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','🧠','🫀','🫁','🦷','🦴','👀','👁️','👅','👄','💋','🩸'] },
-  people: { name:'👥 Люди', emojis:['👶','👧','🧒','👦','👩','🧑','👨','👩‍🦱','👨‍🦱','👩‍🦰','👨‍🦰','👱‍♀️','👱‍♂️','👩‍🦳','👨‍🦳','👩‍🦲','👨‍🦲','👵','🧓','👴','👮‍♀️','👮‍♂️','🥷','👷‍♀️','👷‍♂️','🤴','👸','👳‍♀️','👳‍♂️','👲','🧕','🤵‍♂️','🤵‍♀️','👰‍♂️','👰‍♀️','🤰','🫄','🫅','🏃‍♀️','🏃‍♂️','🚶‍♀️','🚶‍♂️','💃','🕺','🧘‍♀️','🧘‍♂️','🛀','🛌','🥼','🦺','👚','👕','👖','🧣','🧤','🧥','🧦','👗','👘','🥻','👙','👛','👜','🎒','👞','👟','🥾','👠','👡','👢','👑','👒','🎩','🎓','🧢','💄','💍','💼'] },
-  animals: { name:'🐱 Животные', emojis:['🦧','🦍','🐒','🐵','🐱','🐈','🦁','🐯','🐅','🐆','🐴','🐎','🦄','🦓','🦌','🐮','🐷','🐖','🐗','🐏','🐑','🐐','🐪','🐫','🦙','🦒','🐘','🦏','🦛','🐭','🐹','🐰','🐇','🐿️','🦔','🐻','🐨','🐼','🦥','🦦','🦘','🦅','🦆','🦢','🦉','🦩','🦚','🦜','🐊','🐢','🦎','🐍','🐉','🐲','🐙','🦑','🦞','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐜','🐝','🦋','🕷️','🦂','🐌','💐','🌸','🌹','🌺','🌻','🌼','🌷','🌱','🌲','🌳','🌴','🌵','🌿','🍀','🍁','🍄'] },
-  food: { name:'🍕 Еда', emojis:['🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🧅','🧄','🥕','🌽','🥔','🍠','🥐','🍞','🥖','🥨','🧀','🥚','🍳','🥞','🥓','🥩','🍗','🍖','🌭','🍔','🍟','🍕','🥪','🌮','🌯','🥗','🍿','🍱','🍚','🍛','🍜','🍝','🍣','🍤','🥟','🍦','🍧','🍨','🍩','🍪','🎂','🍰','🧁','🥧','🍫','🍬','🍭','🍯','🍼','🥛','☕','🫖','🍵','🧃','🥤','🧋','🍺','🍻','🥂','🍷','🥃','🍸','🍹','🧊','🍽️','🍴','🥄','🔪'] },
+  faces: { name:'😀 Лица', emojis:['😀','😃','😄','😁','😆','😅','😂','🤣','🥲','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤔','🫣','🤭','🫢','🤫','🫠','🤥','😶','🫥','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😮‍💨','😵','😵‍💫','🫨','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','💩','🤡','👹','👺','👻','💀','☠️','👽','👾','🤖','🎃'] },
+  hands: { name:'👍 Жесты', emojis:['👍','👎','✊','👊','🤛','🤜','🤞','✌️','🫰','🤟','🤘','👌','🤌','🤏','🤙','👋','🤚','🖐️','✋','🖖','🙌','👐','🙏','🤝','👆','👇','👈','👉','✍️','🤳','💪','👀','👁️','👅','👄','💋'] },
+  people: { name:'👥 Люди', emojis:['👶','👧','🧒','👦','👩','🧑','👨','👵','🧓','👴','👮‍♀️','👮‍♂️','🥷','👷‍♀️','👷‍♂️','🤴','👸','🧕','🤵‍♂️','🤵‍♀️','👰‍♀️','🤰','💃','🕺','🏃‍♀️','🏃‍♂️','🚶‍♀️','🚶‍♂️','🧘‍♀️','🧘‍♂️','🧗‍♀️','🧗‍♂️','👚','👕','👖','🧣','🧤','🧥','🧦','👗','👘','👙','👛','👜','🎒','👞','👟','🥾','👠','👡','👢','👑','👒','🎩','🎓','🧢','💄','💍','💼'] },
+  animals: { name:'🐱 Животные', emojis:['🐱','🐈','🦁','🐯','🐅','🐆','🐴','🐎','🦄','🦓','🦌','🐮','🐷','🐖','🐗','🐏','🐑','🐐','🐪','🐫','🦙','🦒','🐘','🦏','🦛','🐭','🐹','🐰','🐇','🦔','🐻','🐨','🐼','🦥','🦦','🦘','🦅','🦆','🦢','🦉','🦩','🦚','🦜','🐊','🐢','🦎','🐍','🐉','🐲','🐙','🦑','🦞','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐜','🐝','🦋','🕷️','🦂','🐌','💐','🌸','🌹','🌺','🌻','🌼','🌷','🌱','🌲','🌳','🌴','🌵','🌿','🍀','🍁','🍄'] },
+  food: { name:'🍕 Еда', emojis:['🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🧅','🧄','🥕','🌽','🥔','🥐','🍞','🥖','🥨','🧀','🥚','🍳','🥞','🥓','🥩','🍗','🍖','🌭','🍔','🍟','🍕','🥪','🌮','🌯','🥗','🍿','🍱','🍚','🍛','🍜','🍝','🍣','🍤','🥟','🍦','🍧','🍨','🍩','🍪','🎂','🍰','🧁','🥧','🍫','🍬','🍭','🍯','🍼','🥛','☕','🫖','🍵','🧃','🥤','🧋','🍺','🍻','🥂','🍷','🥃','🍸','🍹','🧊','🍽️','🍴','🥄','🔪'] },
   travel: { name:'🚗 Транспорт', emojis:['🏔️','🌋','🏕️','🏖️','🏝️','🏟️','🏛️','🏗️','🏘️','🏠','🏡','🏢','🏥','🏦','🏨','🏪','🏫','🏬','🏭','🏯','🏰','💒','🗼','🗽','⛪','🕌','🕍','⛩️','🚂','🚄','🚅','🚆','🚇','🚉','🚊','🚌','🚍','🚎','🚐','🚑','🚒','🚓','🚕','🚖','🚗','🚘','🚙','🚚','🚛','🚜','🏎️','🏍️','🛵','🚲','🛴','🛹','🚏','🚨','🚥','🚦','🛑','⚓','⛵','🛶','🚤','🛳️','🚢','✈️','🛫','🛬','🚁','🚀','🛸'] },
   objects: { name:'🧰 Предметы', emojis:['🪓','⛏️','⚒️','🛠️','🗡️','⚔️','💣','🏹','🛡️','🔧','🔨','🔩','⚙️','⚖️','🔗','⛓️','🧰','🧲','🪜','🧪','🔬','🔭','📡','💉','💊','🩹','🩺','🧹','🧻','🧼','🪥','🧽','🪣','🔑','🗝️','🥁','🎸','🎹','🎺','🎻','🎬','🎤','🎧','🎨','🧩','🎯','🎳','🎮','🎲','⌚','📱','📲','💻','⌨️','🖱️','🖥️','💾','📀','🎥','📞','📺','📻','⏰','⌛','⏳','💡','🔦','🪙','💵','💶','💷','💳','💎','📦'] },
   symbols: { name:'⚡ Символы', emojis:['⚠️','⛔','🚫','📵','🔞','☢️','☣️','⬆️','↗️','➡️','↘️','⬇️','↙️','⬅️','↖️','↕️','↔️','↩️','↪️','🔀','🔁','🔄','🎵','🎶','➕','➖','➗','✖️','♾️','💲','💱','™️','®️','©️','🔴','🔵','⚫','⚪','🟩','🟨','🟧','🟪','🟫','🟥','🔸','🔹','🔶','🔷','🔺','🔻','💠'] },
