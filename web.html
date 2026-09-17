@@ -734,26 +734,29 @@ async function buildArchiveZip(chat, messages){
   }
   return await makeZip(files);
 }
+/* ============================================================
+   ПОЛНЫЙ URL файла — берём с ТОГО ЖЕ домена, что и сайт
+   ============================================================ */
 function fullUrl(u){
   let url = String(u||'').trim();
   if(!url) return '';
 
-  // 1. Уже полный URL / data / blob — как есть
+  // Уже полный / data / blob — как есть
   if(/^(https?:|data:|blob:)/i.test(url)) return url;
 
-  // 2. Старые кривые варианты — чиним на /uploads/
+  // Старые кривые варианты — чиним на /uploads/ того же домена
   if(/^https?:\/\/ink-chat\.ru\/api\/upl_/i.test(url)){
     return 'https://ink-chat.ru/uploads/' + url.replace(/^https?:\/\/ink-chat\.ru\/api\/upl_/i, '');
   }
   if(url.startsWith('/api/uploads/')) return 'https://ink-chat.ru/uploads/' + url.slice('/api/uploads/'.length);
   if(url.startsWith('api/uploads/'))  return 'https://ink-chat.ru/uploads/' + url.slice('api/uploads/'.length);
 
-  // 3. Относительные — на ТОТ ЖЕ домен, что и сайт (ink-chat.ru)
+  // Относительные — на тот же домен, где сайт
   if(url.startsWith('/uploads/')) return 'https://ink-chat.ru' + url;
   if(url.startsWith('uploads/'))  return 'https://ink-chat.ru/' + url;
   if(url.startsWith('/'))         return 'https://ink-chat.ru' + url;
 
-  // 4. Просто имя файла → /uploads/
+  // Просто имя файла → /uploads/
   return 'https://ink-chat.ru/uploads/' + url.replace(/^\/+/, '');
 }
 async function makeZip(files){
