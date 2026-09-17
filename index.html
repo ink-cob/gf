@@ -1,34 +1,3 @@
-Skip to content
-ink-cob
-gf
-Repository navigation
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security and quality
-Insights
-Settings
-gf
-/index.html
-Go to file
-t
-T
-ink-cob
-ink-cob
-Add files via upload
-f563af3
- · 
-1 hour ago
-gf
-/index.html
-
-Code
-
-Blame
-442 lines (413 loc) · 18.7 KB
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -145,92 +114,6 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
 .card .t{font-weight:700;font-size:15px;margin-bottom:4px}
 .card .d{font-size:13px;color:var(--muted);line-height:1.5}
 
-/* ──────── ДОСКА ОБНОВЛЕНИЙ ──────── */
-.changelog{
-  background:var(--panel);
-  border:1px solid var(--border2);
-  border-radius:18px;
-  padding:22px 24px;
-  max-height:520px;
-  overflow-y:auto;
-}
-.changelog-loading,
-.changelog-empty{
-  color:var(--muted);
-  font-size:14px;
-  text-align:center;
-  padding:30px 10px;
-}
-.changelog-entry{
-  padding:14px 0;
-  border-bottom:1px solid var(--border);
-}
-.changelog-entry:last-child{ border-bottom:none; }
-.changelog-entry .ver{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:12px;
-  flex-wrap:wrap;
-}
-.changelog-entry .ver .tag{
-  display:inline-block;
-  padding:3px 10px;
-  border-radius:8px;
-  font-size:12px;
-  font-weight:700;
-  background:linear-gradient(135deg,#4f8cff,#7c5cff);
-  color:#fff;
-  letter-spacing:.3px;
-}
-.changelog-entry .ver .tag.fix{
-  background:linear-gradient(135deg,#22a55a,#15803d);
-}
-.changelog-entry .ver .tag.new{
-  background:linear-gradient(135deg,#ffb84d,#ff5c8a);
-}
-.changelog-entry .ver .tag.type{
-  background:rgba(127,127,127,.15);
-  color:var(--muted);
-  font-weight:600;
-}
-.changelog-entry .ver .date{
-  font-size:12.5px;
-  color:var(--muted);
-}
-.changelog-entry ul{
-  margin:0;
-  padding:0;
-  list-style:none;
-}
-.changelog-entry ul li{
-  padding:10px 0 10px 18px;
-  position:relative;
-  border-bottom:1px solid rgba(127,127,127,.08);
-}
-.changelog-entry ul li:last-child{ border-bottom:none; padding-bottom:0; }
-.changelog-entry ul li::before{
-  content:'';
-  position:absolute;
-  left:0;
-  top:18px;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-}
-.changelog-entry ul li .li-title{
-  font-weight:600;
-  color:var(--text);
-  font-size:14.5px;
-  line-height:1.45;
-}
-.changelog-entry ul li .li-desc{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.6;
-  margin-top:3px;
-}
 footer{
   text-align:center;padding:60px 20px 40px;
   border-top:1px solid var(--border);margin-top:40px;
@@ -248,7 +131,6 @@ footer a:hover{text-decoration:underline}
   .cta{padding:16px 26px;font-size:16px;width:100%;justify-content:center;max-width:400px}
   .actions{flex-direction:column;align-items:center}
   section{padding:36px 0}
-  .changelog{padding:16px 18px}
 }
 </style>
 </head>
@@ -280,7 +162,7 @@ footer a:hover{text-decoration:underline}
       </a>
     </div>
     <div class="hint">
-      Бесплатно. Регистрация за <b>30 секунд</b>. 
+      Бесплатно. Регистрация за <b>30 секунд</b>.
     </div>
   </header>
 
@@ -343,14 +225,6 @@ footer a:hover{text-decoration:underline}
     </div>
   </section>
 
-  <section>
-    <h2><span class="n">6</span>Что нового</h2>
-    <p class="desc">Ink новости</p>
-    <div class="changelog" id="changelogBox">
-      <div class="changelog-loading">Новостей пока нет...</div>
-    </div>
-  </section>
-
   <footer>
     <p><b>Ink</b> — независимый проект. Сделан одним человеком.</p>
     <p style="margin-top:14px">
@@ -363,112 +237,5 @@ footer a:hover{text-decoration:underline}
 
 </div>
 
-<script>
-/* ============================================================
-   ДОСКА ОБНОВЛЕНИЙ — загрузка из changelog.txt
-   ============================================================ */
-(async function loadChangelog(){
-  const box = document.getElementById('changelogBox');
-  if(!box) return;
-  try {
-    const r = await fetch('changelog.txt?t=' + Date.now(), { cache: 'no-store' });
-    if(!r.ok) throw new Error('Файл не найден');
-    const text = await r.text();
-    if(!text.trim()){
-      box.innerHTML = '<div class="changelog-empty">Пока обновлений нет</div>';
-      return;
-    }
-    box.innerHTML = parseChangelog(text);
-  } catch(e){
-    box.innerHTML = '<div class="changelog-empty">Обновления скоро появятся</div>';
-  }
-})();
-
-/* Парсер changelog.txt
-   Формат:
-   === v1.2.0 · 2026-09-17 · new
-   - Заголовок пункта
-     Описание пункта (с новой строки, отступ 2 пробела)
-   - Ещё пункт
-     Ещё описание
-*/
-function parseChangelog(text){
-  const lines = text.split(/\r?\n/);
-  const entries = [];
-  let current = null;
-  let currentItem = null;
-
-  for(const raw of lines){
-    const line = raw.replace(/\s+$/, '');
-    if(!line.trim()) continue;
-
-    // Заголовок версии: === v1.2.0 · 2026-09-17 · new
-    const m = line.match(/^===\s*(.+?)\s*$/);
-    if(m){
-      if(currentItem && current){ current.items.push(currentItem); currentItem = null; }
-      if(current) entries.push(current);
-      const parts = m[1].split('·').map(s => s.trim());
-      current = {
-        version: parts[0] || '',
-        date: parts[1] || '',
-        type: (parts[2] || 'new').toLowerCase(),
-        items: []
-      };
-      continue;
-    }
-
-    // Пункт списка: - текст  или  * текст
-    const item = line.match(/^[-*]\s+(.+)$/);
-    if(item && current){
-      if(currentItem) current.items.push(currentItem);
-      currentItem = { title: item[1].trim(), desc: '' };
-      continue;
-    }
-
-    // Строка с отступом в 2+ пробела — описание последнего пункта
-    if(currentItem && /^\s{2,}/.test(raw)){
-      const desc = line.trim();
-      currentItem.desc = currentItem.desc ? (currentItem.desc + ' ' + desc) : desc;
-      continue;
-    }
-
-    // Просто строка — считаем продолжением предыдущего пункта
-    if(currentItem){
-      currentItem.desc = currentItem.desc ? (currentItem.desc + ' ' + line.trim()) : line.trim();
-    }
-  }
-  if(currentItem && current) current.items.push(currentItem);
-  if(current) entries.push(current);
-
-  if(!entries.length){
-    return '<div class="changelog-empty">Пока обновлений нет</div>';
-  }
-
-  // От новых к старым
-  return entries.reverse().map(e => {
-    const typeClass = e.type === 'fix' ? 'fix' : e.type === 'new' ? 'new' : '';
-    const typeText = e.type === 'fix' ? 'FIX' : e.type === 'new' ? 'NEW' : 'UPDATE';
-    return `
-      <div class="changelog-entry">
-        <div class="ver">
-          <span class="tag ${typeClass}">${escHtml(e.version)}</span>
-          <span class="tag type">${typeText}</span>
-          ${e.date ? `<span class="date">${escHtml(e.date)}</span>` : ''}
-        </div>
-        <ul>
-          ${e.items.map(i => `<li>
-            <div class="li-title">${escHtml(i.title)}</div>
-            ${i.desc ? `<div class="li-desc">${escHtml(i.desc)}</div>` : ''}
-          </li>`).join('')}
-        </ul>
-      </div>`;
-  }).join('');
-}
-
-function escHtml(s){
-  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-</script>
 </body>
 </html>
- 
