@@ -71,6 +71,8 @@ body.in-chat #backBtn{display:inline-flex !important}
 .chat-item .meta{flex:1;min-width:0}
 .chat-item .name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chat-item .last{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-section{padding:12px 14px 6px;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.search-block{padding:0 8px 14px}
 .peer-bar{display:none;align-items:center;gap:10px;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;cursor:pointer;min-height:54px;transition:background .15s}
 .peer-bar.show{display:flex}
 .peer-bar:active{background:rgba(127,127,127,.1)}
@@ -277,9 +279,10 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
   </header>
   <div class="layout">
     <div class="sidebar">
-      <input class="search" id="searchInput" placeholder="Поиск: логин, ID#, канал" oninput="renderChats()"/>
+      <input class="search" id="searchInput" placeholder="Поиск: чаты, каналы, логин" oninput="onSearchInput()"/>
       <div class="createBtn" onclick="openCreateChatPanel()">+ Создать чат</div>
       <div class="chatList" id="chatList"></div>
+      <div id="searchGlobal" style="display:none"></div>
     </div>
     <div class="chatpane">
       <div class="peer-bar" id="peerBar">
@@ -373,6 +376,8 @@ let TYPING_TIMER = null;
 let LAST_TYPING_SENT = 0;
 let KICKED_OUT = false;
 let CURRENT_PEER_ID = null;
+let SEARCH_DEBOUNCE = null;
+let SEARCH_RESULTS = [];
 
 async function api(path, method, body){
   const opt = { method: method || 'GET', headers: {'Content-Type':'application/json'} };
@@ -389,7 +394,7 @@ async function api(path, method, body){
   return d;
 }
 function kickOut(reason, until){
-  try { localStorage.removeItem('ink_token'); localStorage.removeItem('ink_admin_token'); } catch(e){}
+  try { localStorage.removeItem('ink_token'); } catch(e){}
   TOKEN = null;
   try { stopSilentPolling(); } catch(e){}
   try { stopTypingPolling(); } catch(e){}
@@ -487,7 +492,7 @@ async function initPush(){
     if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
     const reg = await navigator.serviceWorker.register('/sw.js');
     const keyRes = await api('/push/key').catch(()=>({ key: null }));
-    if(!keyRes.key){ console.warn('[push] нет VAPID'); return; }
+    if(!keyRes.key) return;
     if(Notification.permission === 'denied') return;
     let perm = Notification.permission;
     if(perm === 'default') perm = await Notification.requestPermission();
@@ -640,14 +645,98 @@ function startPeerStatusTimer(){
 function stopPeerStatusTimer(){ if(PEER_STATUS_TIMER){ clearInterval(PEER_STATUS_TIMER); PEER_STATUS_TIMER = null; } }
 
 /* ============================================================ */
-/* СПИСОК ЧАТОВ + ПОИСК */
+/* ПОИСК: ЛОКАЛЬНЫЙ + ГЛОБАЛЬНЫЙ В ОДНОЙ СТРОКЕ */
+/* ============================================================ */
+function onSearchInput(){
+  renderChats();                                  // мгновенно фильтруем свои
+  clearTimeout(SEARCH_DEBOUNCE);
+  const q = ($('searchInput').value || '').trim();
+  if(q.length < 1){ SEARCH_RESULTS = []; renderSearchResults(); return; }
+  SEARCH_DEBOUNCE = setTimeout(() => globalSearch(q), 350);
+}
+
+async function globalSearch(q){
+  const lq = q.toLowerCase();
+  const results = [];
+
+  // 1) Пользователи по логину
+  USERS.forEach(u => {
+    if(u.id === ME.id) return;
+    if((u.login||'').toLowerCase().includes(lq)){
+      results.push({ kind: 'user', id: u.id, name: u.login, sub: 'пользователь' });
+    }
+  });
+
+  // 2) Каналы с сервера (глобально)
+  try {
+    const list = await api('/channels/search?q=' + encodeURIComponent(q));
+    (list || []).forEach(c => {
+      results.push({ kind: 'channel', id: c.id, name: c.name, sub: `${c.members} участников${c.isMember ? ' · вы участник' : ''}`, isMember: c.isMember, desc: c.desc || '' });
+    });
+  } catch(e){ console.warn('[search]', e.message); }
+
+  SEARCH_RESULTS = results.slice(0, 30);
+  renderSearchResults();
+}
+
+function renderSearchResults(){
+  const box = $('searchGlobal'); if(!box) return;
+  if(!SEARCH_RESULTS.length){ box.style.display = 'none'; box.innerHTML = ''; return; }
+  box.style.display = 'block';
+  box.innerHTML = `
+    <div class="search-section">Найдено в Ink (${SEARCH_RESULTS.length})</div>
+    <div class="search-block">
+      ${SEARCH_RESULTS.map(r => {
+        if(r.kind === 'user'){
+          return `<div class="chat-item" onclick="startPrivateWith(${r.id})">
+            <div class="avatar">${(r.name||'?')[0].toUpperCase()}</div>
+            <div class="meta"><div class="name">${esc(r.name)}</div><div class="last">${r.sub}</div></div>
+            <button class="btn-mini primary">Написать</button>
+          </div>`;
+        }
+        if(r.kind === 'channel'){
+          return `<div class="chat-item">
+            <div class="avatar" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">${(r.name||'?')[0].toUpperCase()}</div>
+            <div class="meta"><div class="name">${esc(r.name)}</div><div class="last">📢 ${esc(r.sub)}</div></div>
+            ${r.isMember
+              ? `<button class="btn-mini good" onclick="event.stopPropagation();openChat(${r.id})">Открыть</button>`
+              : `<button class="btn-mini primary" onclick="event.stopPropagation();joinChannel(${r.id})">Войти</button>`}
+          </div>`;
+        }
+        return '';
+      }).join('')}
+    </div>`;
+}
+
+async function joinChannel(id){
+  try {
+    await api('/channels/' + id + '/join', 'POST');
+    await loadAll();
+    renderChats();
+    toast('✓ Ты вошёл в канал','');
+    openChat(id);
+  } catch(e){ toast('Ошибка', e.message); }
+}
+
+async function startPrivateWith(uid){
+  const u = userById(uid); if(!u) return;
+  const ex = CHATS.find(c => c.type === 'private' && (c.memberIds||[]).includes(u.id));
+  if(ex){ openChat(ex.id); return; }
+  try {
+    const r = await api('/chats','POST',{ name:u.login, type:'private', members:[u.id] });
+    await loadAll(); renderChats(); openChat(r.id);
+  } catch(e){ toast('Ошибка', e.message); }
+}
+
+/* ============================================================ */
+/* СПИСОК ЧАТОВ (локальный фильтр) */
 /* ============================================================ */
 function renderChats(){
   const box = $('chatList'); box.innerHTML = '';
   if(!CHATS.length){ box.innerHTML = '<div class="empty">Чатов пока нет</div>'; return }
   const q = ($('searchInput').value || '').trim().toLowerCase();
   const list = q ? CHATS.filter(c => (c.name||'').toLowerCase().includes(q)) : CHATS;
-  if(!list.length){ box.innerHTML = '<div class="empty">Ничего не найдено</div>'; return }
+  if(!list.length){ box.innerHTML = '<div class="empty" style="margin-top:20px">Ничего в твоих чатах</div>'; return }
   list.forEach(c => {
     const all = MSGS[c.id] || [];
     const last = all.filter(m => !m.deleted_for_all).slice(-1)[0];
@@ -664,7 +753,8 @@ function renderChats(){
 }
 async function openChat(id){
   CURRENT_CHAT = CHATS.find(c => c.id === id);
-  if(!CURRENT_CHAT) return;
+  if(!CURRENT_CHAT){ try { await loadAll(); CURRENT_CHAT = CHATS.find(c => c.id === id); } catch(e){} }
+  if(!CURRENT_CHAT) return toast('Чат не найден','');
   document.body.classList.add('in-chat');
   $('backBtn').style.display = 'inline-block';
   $('hTitle').textContent = CURRENT_CHAT.name;
@@ -691,7 +781,7 @@ function backToList(){
 function openChatInfo(){ if(CURRENT_CHAT) openChatSettings(); }
 
 /* ============================================================ */
-/* РОЛИ / ДОСТУП */
+/* РОЛИ */
 /* ============================================================ */
 function myChatRole(c){
   if(!c) return 'member';
@@ -811,7 +901,7 @@ async function saveFromHeader(){
 }
 
 /* ============================================================ */
-/* ПОЛОСА АРХИВА + КНОПКА В ШАПКЕ */
+/* СТАТУС СОХРАНЕНИЯ + КНОПКА В ШАПКЕ */
 /* ============================================================ */
 function updateArchiveBar(){
   const bar = $('archiveBar');
@@ -1260,7 +1350,7 @@ function openChatSettings(){
       <div class="txt"><div class="t1">${esc(u.login)} ${roleTag(r)}${isMe ? ' <span style="color:var(--muted);font-size:11px">(вы)</span>' : ''}</div></div>
       ${(canManage && !isMe && r !== 'owner') ? `
         <div style="display:flex;gap:4px;flex-wrap:wrap">
-          ${r === 'member' ? `<button class="btn-mini primary" onclick="setChatRole(${uid},'coowner')">Сделать админом</button>` : ''}
+          ${r === 'member' ? `<button class="btn-mini primary" onclick="setChatRole(${uid},'coowner')">Админ</button>` : ''}
           ${r === 'coowner' ? `<button class="btn-mini" onclick="setChatRole(${uid},'member')">Снять</button>` : ''}
           <button class="btn-mini bad" onclick="kickFromChat(${uid})">Исключить</button>
         </div>` : ''}
@@ -1271,14 +1361,8 @@ function openChatSettings(){
   if(canManage){
     html += `
     <div class="st-section"><h3>Управление</h3>
-      <div class="st-row" onclick="openRenameChat()">
-        <div class="icon">✏️</div>
-        <div class="txt"><div class="t1">Переименовать</div></div>
-      </div>
-      <div class="st-row" onclick="openEditChatDesc()">
-        <div class="icon">📝</div>
-        <div class="txt"><div class="t1">Изменить описание</div></div>
-      </div>
+      <div class="st-row" onclick="openRenameChat()"><div class="icon">✏️</div><div class="txt"><div class="t1">Переименовать</div></div></div>
+      <div class="st-row" onclick="openEditChatDesc()"><div class="icon">📝</div><div class="txt"><div class="t1">Изменить описание</div></div></div>
       <div class="st-row" onclick="deleteChat()" style="background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.35)">
         <div class="icon" style="background:rgba(255,92,92,.2);color:#ff8a8a">🗑️</div>
         <div class="txt"><div class="t1" style="color:#ffb3b3">Удалить ${c.type === 'channel' ? 'канал' : 'чат'}</div></div>
@@ -1340,7 +1424,7 @@ async function saveChatInfo(patch){
 async function deleteChat(){
   const isChannel = CURRENT_CHAT.type === 'channel';
   if(!confirm(`Удалить ${isChannel ? 'канал' : 'чат'} «${CURRENT_CHAT.name}» НАВСЕГДА?`)) return;
-  if(!confirm('Точно? Все сообщения будут потеряны.')) return;
+  if(!confirm('Точно?')) return;
   try {
     await api('/chats/' + CURRENT_CHAT.id, 'DELETE');
     CHATS = CHATS.filter(c => c.id !== CURRENT_CHAT.id);
