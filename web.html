@@ -270,7 +270,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
     <div class="spacer"></div>
     <div id="chatSaveDot" class="header-dot" title="Статус сохранения" style="display:none"></div>
     <button id="chatSaveBtn" onclick="saveFromHeader()" title="Сохранить переписку" style="display:none">💾</button>
-    <button onclick="openMusicPanel()" title="Музыка">🎵</button>
     <button id="notifBtn" onclick="toggleNotifications()" title="Уведомления">🔔</button>
     <button onclick="openShop()">💰<span class="tokens-badge" id="tokensCount">0</span></button>
     <button onclick="toggleInkognito()">🕶️</button>
@@ -332,7 +331,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 <div class="panel" id="chatSettings"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="chatSettingsTitle">Настройки чата</h2><div class="spacer"></div><button onclick="closePanel('chatSettings')">✕</button></div><div class="st-body" id="chatSettingsBody"></div></div></div>
 <div class="panel" id="emojiCustomize"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🎨 Эмодзи</h2><div class="spacer"></div><button onclick="closePanel('emojiCustomize')">✕</button></div><div class="st-body" id="emojiCustomizeBody"></div></div></div>
 <div class="panel" id="clickerPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🖱️ Кликер</h2><div class="spacer"></div><button onclick="closePanel('clickerPanel')">✕</button></div><div class="st-body" id="clickerBody"></div></div></div>
-<div class="panel" id="musicPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🎵 Музыка</h2><div class="spacer"></div><button onclick="closePanel('musicPanel')">✕</button></div><div class="st-body" id="musicBody"></div></div></div>
 <div class="panel" id="reportPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="reportTitle">⚠️ Жалоба</h2><div class="spacer"></div><button onclick="closePanel('reportPanel')">✕</button></div><div class="st-body" id="reportBody"></div></div></div>
 <div class="panel" id="adminPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Админ-панель</h2><div class="spacer"></div><button onclick="closePanel('adminPanel')">✕</button></div><div class="st-body" id="adminBody"></div></div></div>
 
@@ -382,36 +380,23 @@ let SEARCH_DEBOUNCE = null;
 let SEARCH_RESULTS = [];
 
 /* КЛИКЕР */
-let CLICKER_STATE = { total: 0, tokensEarned: 0, tokens: 0, toNextToken: 1000 };
+let CLICKER_STATE = { total:0, tokensEarned:0, tokens:0, toNextToken:1000 };
 let CLICKER_PENDING = 0;
 let CLICKER_FLUSH_TIMER = null;
 let CLICKER_LOCAL_TOTAL = 0;
-
-/* МУЗЫКА */
-let MUSIC_LIST = [];
-let MUSIC_CURRENT = null;
 
 async function api(path, method, body){
   const opt = { method: method || 'GET', headers: {'Content-Type':'application/json'} };
   if(TOKEN) opt.headers['Authorization'] = 'Bearer ' + TOKEN;
   if(body) opt.body = JSON.stringify(body);
-  let r;
-  try {
-    r = await fetch(API + path, opt);
-  } catch(e){
-    console.error('[api] network error', path, e);
-    throw new Error('Сеть недоступна: ' + e.message);
-  }
+  const r = await fetch(API + path, opt);
   let d = {};
   try { d = await r.json(); } catch(e){}
   if(r.status === 403 && (d.banned || (d.error && d.error.startsWith('Забанен')))){
     if(!KICKED_OUT){ KICKED_OUT = true; kickOut(d.error || 'Забанен', d.blocked_until); }
     throw new Error(d.error || 'Забанен');
   }
-  if(!r.ok){
-    console.error('[api]', path, r.status, d);
-    throw new Error(d.error || ('HTTP ' + r.status));
-  }
+  if(!r.ok) throw new Error(d.error || ('HTTP ' + r.status));
   return d;
 }
 function kickOut(reason, until){
@@ -480,10 +465,7 @@ async function loadAll(){
     USERS = await api('/users');
     CHATS = await api('/chats');
     MSGS = {};
-    for(const c of CHATS){
-      try { MSGS[c.id] = await api('/messages/' + c.id); }
-      catch(e){ console.error('[loadAll] messages', c.id, e); MSGS[c.id] = []; }
-    }
+    for(const c of CHATS){ try { MSGS[c.id] = await api('/messages/' + c.id); } catch(e){ MSGS[c.id] = []; } }
     try { CLANS = await api('/clans'); } catch(e){ CLANS = []; }
     try { TX = await api('/transactions'); } catch(e){ TX = []; }
     try { const s = await api('/push/settings'); NOTIF_GLOBAL = s.global !== false; NOTIF_CHATS = s.chats || {}; } catch(e){}
@@ -792,20 +774,12 @@ function renderChats(){
 }
 async function openChat(id){
   CURRENT_CHAT = CHATS.find(c => c.id === id);
-  if(!CURRENT_CHAT){
-    try { await loadAll(); CURRENT_CHAT = CHATS.find(c => c.id === id); } catch(e){}
-  }
+  if(!CURRENT_CHAT){ try { await loadAll(); CURRENT_CHAT = CHATS.find(c => c.id === id); } catch(e){} }
   if(!CURRENT_CHAT) return toast('Чат не найден','');
   document.body.classList.add('in-chat');
   $('backBtn').style.display = 'inline-block';
   $('hTitle').textContent = CURRENT_CHAT.name;
-  try {
-    MSGS[id] = await api('/messages/' + id);
-  } catch(e){
-    console.error('[openChat] messages', e);
-    MSGS[id] = MSGS[id] || [];
-    toast('Ошибка загрузки сообщений', e.message);
-  }
+  try { MSGS[id] = await api('/messages/' + id); } catch(e){ console.warn('[openChat]', e); }
   await renderMessagesAndArchive();
   renderPeerBar();
   startPeerStatusTimer();
@@ -944,7 +918,7 @@ async function saveFromHeader(){
 }
 
 /* ============================================================ */
-/* СТАТУС СОХРАНЕНИЯ + КНОПКА В ШАПКЕ */
+/* СТАТУС СОХРАНЕНИЯ */
 /* ============================================================ */
 function updateArchiveBar(){
   const bar = $('archiveBar');
@@ -992,7 +966,7 @@ function updateArchiveBar(){
 }
 
 /* ============================================================ */
-/* СООБЩЕНИЯ — ИСПРАВЛЕНО */
+/* СООБЩЕНИЯ */
 /* ============================================================ */
 function buildTicks(m){
   if(!m) return '';
@@ -1013,36 +987,23 @@ function attachHTML(f){
 }
 async function renderMessagesAndArchive(){
   if(!CURRENT_CHAT) return;
-
-  // DRAFT_INFO — опционально, если не получен, ничего не ломаем
   DRAFT_INFO = null;
   try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){ DRAFT_INFO = null }
 
   const box = $('messages'); if(!box) return;
   box.innerHTML = '';
-
   const msgs = (MSGS[CURRENT_CHAT.id] || []).slice();
-  const today = DRAFT_INFO && DRAFT_INFO.today ? DRAFT_INFO.today : null;
-  const myConv = DRAFT_INFO && DRAFT_INFO.myConverted;
 
-  // фильтруем по дню ТОЛЬКО если реально есть DRAFT_INFO с today
-  const visible = msgs.filter(m => {
-    if(!m) return false;
-    if(!myConv || !today) return true;
-    const d = m.created_at ? String(m.created_at).slice(0,10) : '';
-    return d.startsWith(today);
-  });
-
-  if(!visible.length){
+  if(!msgs.length){
     box.innerHTML = '<div class="empty">Сообщений пока нет</div>';
     updateArchiveBar();
     renderPeerBar();
     return;
   }
 
-  visible.forEach(m => {
+  msgs.forEach(m => {
     if(m.deleted_for_all) return;
-    const isMe = Number(m.sender_id) === Number(ME.id);
+    const isMe = m.sender_id === ME.id;
     const el = document.createElement('div');
     el.className = 'msg ' + (isMe ? 'me' : 'them');
     el.dataset.mid = m.id;
@@ -1052,7 +1013,6 @@ async function renderMessagesAndArchive(){
       const u = userById(m.sender_id);
       if(u) head = `<span class="sname">${nameHTML(u)}</span>`;
     }
-
     let rx = '';
     if(m.reactions && typeof m.reactions === 'object' && Object.keys(m.reactions).length){
       rx = '<div class="reactions">';
@@ -1061,13 +1021,10 @@ async function renderMessagesAndArchive(){
       }
       rx += '</div>';
     }
-
-    const rawText = m.text ? String(m.text) : '';
-    const text = esc(rawText).replace(/#([\wа-яё]+)/gi, (x,tag)=>`<span class="hashtag">#${tag}</span>`);
+    const text = esc(m.text || '').replace(/#([\wа-яё]+)/gi, (x,tag)=>`<span class="hashtag">#${tag}</span>`);
     const attach = attachHTML(m.file);
     const ticksHTML = isMe ? buildTicks(m) : '';
     const timeStr = m.created_at ? new Date(m.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '';
-
     el.innerHTML = head + attach + (text ? '<div>'+text+'</div>' : '') + rx +
       `<button class="msg-menu-btn" onclick="event.stopPropagation();openMsgMenu(event, ${m.id})" title="Действия">⋯</button>` +
       `<span class="time">${timeStr}${ticksHTML}</span>`;
@@ -1076,7 +1033,6 @@ async function renderMessagesAndArchive(){
     attachLongPress(el, m.id);
     box.appendChild(el);
   });
-
   box.scrollTop = box.scrollHeight;
   updateArchiveBar();
   renderPeerBar();
@@ -1169,14 +1125,7 @@ function softUpdateMessages(fresh){
     if(hasNewFromOthers){ api('/messages/delivered', 'POST', { chat_id: CURRENT_CHAT.id }).catch(()=>{}); }
   }
   const box = $('messages'); if(!box) return;
-  const today = DRAFT_INFO && DRAFT_INFO.today ? DRAFT_INFO.today : null;
-  const myConv = DRAFT_INFO && DRAFT_INFO.myConverted;
-  const visible = fresh.filter(m => {
-    if(m.deleted_for_all) return false;
-    if(!myConv || !today) return true;
-    const d = m.created_at ? String(m.created_at).slice(0,10) : '';
-    return d.startsWith(today);
-  });
+  const visible = fresh.filter(m => !m.deleted_for_all);
   const wasAtBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
   const existing = Array.from(box.querySelectorAll('.msg'));
   const idsMatch = existing.length === visible.length && existing.every((el, i) => Number(el.dataset.mid) === Number(visible[i].id));
@@ -1206,8 +1155,8 @@ function attachLongPress(el, mid){
 }
 function openMsgMenu(e, mid){
   const menu = $('msgMenu'); if(!menu) return;
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid)); if(!m) return;
-  const mine = Number(m.sender_id) === Number(ME.id);
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
+  const mine = m.sender_id === ME.id;
   const isAdmin = !!(ME.is_admin || ME.isAdmin);
   const role = myChatRole(CURRENT_CHAT);
   const canModerate = role === 'owner' || role === 'coowner' || isAdmin;
@@ -1236,13 +1185,13 @@ function closeMsgMenu(){ const menu = $('msgMenu'); if(menu) menu.classList.remo
 document.addEventListener('click', (e) => { const menu = $('msgMenu'); if(menu && menu.classList.contains('open') && !menu.contains(e.target)) closeMsgMenu(); });
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeMsgMenu(); });
 function replyToMsg(mid){
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid)); if(!m) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
   const u = userById(m.sender_id) || { login: '?' };
   $('msgInput').value = `[${u.login}: ${(m.text||'').slice(0,40)}] ` + $('msgInput').value;
   $('msgInput').focus();
 }
 function copyMsg(mid){
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid)); if(!m) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
   const text = m.text || '';
   if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=> toast('📋 Скопировано','')).catch(()=>fallbackCopy(text)); }
   else { fallbackCopy(text); }
@@ -1255,8 +1204,8 @@ function fallbackCopy(text){
   document.body.removeChild(ta);
 }
 function editMsg(mid){
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid));
-  if(!m || Number(m.sender_id) !== Number(ME.id)) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid);
+  if(!m || m.sender_id !== ME.id) return;
   const newText = prompt('Изменить сообщение:', m.text || '');
   if(newText === null) return;
   api('/messages/' + mid, 'PUT', { text: newText })
@@ -1264,11 +1213,11 @@ function editMsg(mid){
     .catch(e => toast('Ошибка', e.message));
 }
 async function deleteMsg(mid, forAll){
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid)); if(!m) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
   if(!confirm(forAll ? 'Удалить у всех?' : 'Удалить у себя?')) return;
   try {
     if(forAll){ await api('/messages/' + mid, 'PUT', { deleted_for_all: true }); m.deleted_for_all = true; }
-    else { MSGS[CURRENT_CHAT.id] = MSGS[CURRENT_CHAT.id].filter(x => Number(x.id) !== Number(mid)); }
+    else { MSGS[CURRENT_CHAT.id] = MSGS[CURRENT_CHAT.id].filter(x => x.id !== mid); }
     renderMessagesAndArchive();
     renderChats();
     toast('🗑️ Удалено','');
@@ -1276,7 +1225,7 @@ async function deleteMsg(mid, forAll){
 }
 async function toggleReaction(mid, emo){
   if(!CURRENT_CHAT) return;
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid)); if(!m) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
   const r = { ...(m.reactions || {}) };
   const arr = r[emo] || [];
   if(arr.includes(ME.id)){ r[emo] = arr.filter(x => x !== ME.id); if(!r[emo].length) delete r[emo]; }
@@ -1344,7 +1293,7 @@ function compressImage(file, maxSide, quality){
 }
 
 /* ============================================================ */
-/* ОТПРАВКА ТЕКСТА — ИСПРАВЛЕНО */
+/* ОТПРАВКА ТЕКСТА */
 /* ============================================================ */
 async function sendMsg(){
   const v = $('msgInput').value.trim();
@@ -1353,25 +1302,17 @@ async function sendMsg(){
   api('/typing', 'POST', { chat_id: CURRENT_CHAT.id, text: '' }).catch(()=>{});
   try {
     const res = await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: v });
-    // мгновенно добавляем в локальный кэш, чтобы сообщение точно показалось
     if(res && res.message){
       if(!MSGS[CURRENT_CHAT.id]) MSGS[CURRENT_CHAT.id] = [];
       MSGS[CURRENT_CHAT.id].push(res.message);
     }
-    // и параллельно перезагружаем с сервера — на случай других вложений/статусов
-    try {
-      MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
-    } catch(e){ console.warn('[sendMsg] refresh failed', e); }
-    renderMessagesAndArchive();
-    renderChats();
-  } catch(e){
-    console.error('[sendMsg]', e);
-    toast('Ошибка отправки', e.message);
-  }
+    try { MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id); } catch(e){}
+    renderMessagesAndArchive(); renderChats();
+  } catch(e){ toast('Ошибка отправки', e.message); }
 }
 
 /* ============================================================ */
-/* НАСТРОЙКИ ЧАТА / КАНАЛА */
+/* НАСТРОЙКИ ЧАТА */
 /* ============================================================ */
 function roleTag(role){
   if(role === 'owner')   return '<span class="role-tag role-owner">Владелец</span>';
@@ -1558,7 +1499,7 @@ async function createChatFinal(){
 }
 
 /* ============================================================ */
-/* НАСТРОЙКИ */
+/* НАСТРОЙКИ (мои) */
 /* ============================================================ */
 function openSettings(){ renderSettingsBody(); openPanel('settings'); }
 function renderSettingsBody(){
@@ -1723,50 +1664,6 @@ async function flushClicks(){
     renderTokensBadge();
     if($('clickerPanel').classList.contains('open')) renderClicker();
   } catch(e){ toast('Ошибка кликера', e.message); }
-}
-
-/* ============================================================ */
-/* МУЗЫКА */
-/* ============================================================ */
-function openMusicPanel(){
-  openPanel('musicPanel');
-  $('musicBody').innerHTML = `
-    <input class="search" id="musicSearch" placeholder="Поиск по названию или исполнителю..." style="margin:0 0 12px" oninput="filterMusic()"/>
-    <div id="musicList"><div class="empty">Загрузка...</div></div>
-    <div id="musicPlayer" style="position:sticky;bottom:0;background:var(--panel);border-top:1px solid var(--border);margin:14px -14px -14px;padding:12px 14px;display:none">
-      <div style="font-size:13px;color:var(--muted);margin-bottom:6px" id="musicNow">—</div>
-      <audio id="musicAudio" controls style="width:100%"></audio>
-    </div>`;
-  loadMusic();
-}
-async function loadMusic(q){
-  try {
-    const url = '/music/list' + (q ? '?q=' + encodeURIComponent(q) : '');
-    MUSIC_LIST = await api(url);
-    renderMusic();
-  } catch(e){
-    $('musicList').innerHTML = `<div class="empty">Ошибка: ${esc(e.message)}</div>`;
-  }
-}
-function filterMusic(){ const q = ($('musicSearch').value || '').trim().toLowerCase(); renderMusic(q); }
-function renderMusic(filterQ){
-  const list = $('musicList'); if(!list) return;
-  let items = MUSIC_LIST;
-  if(filterQ){ items = items.filter(t => (t.title + ' ' + t.artist).toLowerCase().includes(filterQ)); }
-  if(!items.length){ list.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
-  list.innerHTML = items.map(t => `
-    <div class="st-row" onclick="playMusic('${esc(t.file).replace(/'/g,"\\'")}', '${esc(t.title).replace(/'/g,"\\'")}', '${esc(t.artist).replace(/'/g,"\\'")}')">
-      <div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🎵</div>
-      <div class="txt"><div class="t1">${esc(t.title)}</div><div class="t2">${esc(t.artist || '—')}</div></div>
-    </div>`).join('');
-}
-function playMusic(file, title, artist){
-  MUSIC_CURRENT = file;
-  const player = $('musicPlayer'); const audio = $('musicAudio');
-  player.style.display = 'block';
-  $('musicNow').innerHTML = `<b>${esc(title)}</b> ${artist ? '· ' + esc(artist) : ''}`;
-  audio.src = ASSET_BASE + '/music/' + encodeURIComponent(file);
-  audio.play().catch(e => toast('Не удалось воспроизвести', e.message));
 }
 
 /* ============================================================ */
