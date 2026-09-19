@@ -72,7 +72,6 @@ body.in-chat #backBtn{display:inline-flex !important}
 .chat-item .name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chat-item .last{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .search-section{padding:12px 14px 6px;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.search-block{padding:0 8px 14px}
 .peer-bar{display:none;align-items:center;gap:10px;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;cursor:pointer;min-height:54px;transition:background .15s}
 .peer-bar.show{display:flex}
 .peer-bar:active{background:rgba(127,127,127,.1)}
@@ -105,9 +104,6 @@ body.in-chat #backBtn{display:inline-flex !important}
 .msg .hashtag{color:#7cb8ff;cursor:pointer;font-weight:600}
 .msg .sname{display:block;font-size:11.5px;font-weight:700;color:var(--accent);margin-bottom:3px}
 .msg .attach{display:block;margin:6px 0;max-width:100%;border-radius:10px;overflow:hidden;text-decoration:none;color:inherit}
-.msg .attach img{display:block;max-width:260px;max-height:260px;width:auto;height:auto;border-radius:10px;cursor:pointer}
-.msg .attach video{display:block;max-width:260px;max-height:260px;border-radius:10px}
-.msg .attach audio{display:block;width:220px;margin-top:4px}
 .msg .attach .file-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.25);padding:10px 12px;border-radius:10px;font-size:13px;min-width:180px}
 .msg .attach .file-row .fi{font-size:22px;flex-shrink:0}
 .msg .attach .file-row .fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
@@ -230,6 +226,10 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .upload-overlay.show{display:flex}
 .upload-overlay .bar{width:220px;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
 .upload-overlay .bar .fill{height:100%;width:0;background:linear-gradient(90deg,#4f8cff,#7c5cff);transition:width .15s}
+.click-btn{width:180px;height:180px;border-radius:50%;border:0;cursor:pointer;background:radial-gradient(circle at 30% 30%,#5cff8f,#22a55a 60%,#0e6b30);color:#fff;font-size:22px;font-weight:800;letter-spacing:2px;box-shadow:0 20px 60px rgba(34,165,90,.6),0 0 0 8px rgba(34,165,90,.15);transition:transform .08s ease-out}
+.click-btn:active{transform:scale(.94)}
+.progress-outer{height:10px;background:var(--border2);border-radius:5px;overflow:hidden}
+.progress-inner{height:100%;background:linear-gradient(90deg,#22a55a,#4ade80);transition:width .15s}
 @media(max-width:600px){.msg-menu{left:12px !important;right:12px;bottom:12px;top:auto !important;max-height:70vh;overflow-y:auto;border-radius:16px;min-width:0}}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px}
@@ -272,6 +272,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
     <div class="spacer"></div>
     <div id="chatSaveDot" class="header-dot" title="Статус сохранения" style="display:none"></div>
     <button id="chatSaveBtn" onclick="saveFromHeader()" title="Сохранить переписку" style="display:none">💾</button>
+    <button onclick="openMusicPanel()" title="Музыка">🎵</button>
     <button id="notifBtn" onclick="toggleNotifications()" title="Уведомления">🔔</button>
     <button onclick="openShop()">💰<span class="tokens-badge" id="tokensCount">0</span></button>
     <button onclick="toggleInkognito()">🕶️</button>
@@ -332,6 +333,8 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 <div class="panel" id="transactions"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>📜 Транзакции</h2><div class="spacer"></div><button onclick="closePanel('transactions')">✕</button></div><div class="st-body" id="transactionsBody"></div></div></div>
 <div class="panel" id="chatSettings"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="chatSettingsTitle">Настройки чата</h2><div class="spacer"></div><button onclick="closePanel('chatSettings')">✕</button></div><div class="st-body" id="chatSettingsBody"></div></div></div>
 <div class="panel" id="emojiCustomize"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🎨 Эмодзи</h2><div class="spacer"></div><button onclick="closePanel('emojiCustomize')">✕</button></div><div class="st-body" id="emojiCustomizeBody"></div></div></div>
+<div class="panel" id="clickerPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🖱️ Кликер</h2><div class="spacer"></div><button onclick="closePanel('clickerPanel')">✕</button></div><div class="st-body" id="clickerBody"></div></div></div>
+<div class="panel" id="musicPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🎵 Музыка</h2><div class="spacer"></div><button onclick="closePanel('musicPanel')">✕</button></div><div class="st-body" id="musicBody"></div></div></div>
 <div class="panel" id="reportPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="reportTitle">⚠️ Жалоба</h2><div class="spacer"></div><button onclick="closePanel('reportPanel')">✕</button></div><div class="st-body" id="reportBody"></div></div></div>
 <div class="panel" id="adminPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Админ-панель</h2><div class="spacer"></div><button onclick="closePanel('adminPanel')">✕</button></div><div class="st-body" id="adminBody"></div></div></div>
 
@@ -363,6 +366,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 /* НАСТРОЙКА */
 /* ============================================================ */
 const API = 'https://api.ink-chat.ru/api';
+const ASSET_BASE = 'https://api.ink-chat.ru';
 const CARD_NUMBER = '2200 1536 8967 4803';
 let TOKEN = localStorage.getItem('ink_token') || null;
 let ME = null, USERS = [], CHATS = [], MSGS = {}, CLANS = [], RATING = [], TX = [];
@@ -378,6 +382,16 @@ let KICKED_OUT = false;
 let CURRENT_PEER_ID = null;
 let SEARCH_DEBOUNCE = null;
 let SEARCH_RESULTS = [];
+
+/* КЛИКЕР */
+let CLICKER_STATE = { total: 0, tokensEarned: 0, tokens: 0, toNextToken: 1000 };
+let CLICKER_PENDING = 0;
+let CLICKER_FLUSH_TIMER = null;
+let CLICKER_LOCAL_TOTAL = 0;
+
+/* МУЗЫКА */
+let MUSIC_LIST = [];
+let MUSIC_CURRENT = null;
 
 async function api(path, method, body){
   const opt = { method: method || 'GET', headers: {'Content-Type':'application/json'} };
@@ -648,7 +662,7 @@ function stopPeerStatusTimer(){ if(PEER_STATUS_TIMER){ clearInterval(PEER_STATUS
 /* ПОИСК: ЛОКАЛЬНЫЙ + ГЛОБАЛЬНЫЙ В ОДНОЙ СТРОКЕ */
 /* ============================================================ */
 function onSearchInput(){
-  renderChats();                                  // мгновенно фильтруем свои
+  renderChats();
   clearTimeout(SEARCH_DEBOUNCE);
   const q = ($('searchInput').value || '').trim();
   if(q.length < 1){ SEARCH_RESULTS = []; renderSearchResults(); return; }
@@ -658,23 +672,18 @@ function onSearchInput(){
 async function globalSearch(q){
   const lq = q.toLowerCase();
   const results = [];
-
-  // 1) Пользователи по логину
   USERS.forEach(u => {
     if(u.id === ME.id) return;
     if((u.login||'').toLowerCase().includes(lq)){
       results.push({ kind: 'user', id: u.id, name: u.login, sub: 'пользователь' });
     }
   });
-
-  // 2) Каналы с сервера (глобально)
   try {
     const list = await api('/channels/search?q=' + encodeURIComponent(q));
     (list || []).forEach(c => {
-      results.push({ kind: 'channel', id: c.id, name: c.name, sub: `${c.members} участников${c.isMember ? ' · вы участник' : ''}`, isMember: c.isMember, desc: c.desc || '' });
+      results.push({ kind: 'channel', id: c.id, name: c.name, sub: `${c.members} участников${c.isMember ? ' · вы участник' : ''}`, isMember: c.isMember });
     });
   } catch(e){ console.warn('[search]', e.message); }
-
   SEARCH_RESULTS = results.slice(0, 30);
   renderSearchResults();
 }
@@ -685,7 +694,7 @@ function renderSearchResults(){
   box.style.display = 'block';
   box.innerHTML = `
     <div class="search-section">Найдено в Ink (${SEARCH_RESULTS.length})</div>
-    <div class="search-block">
+    <div style="padding:0 8px 14px">
       ${SEARCH_RESULTS.map(r => {
         if(r.kind === 'user'){
           return `<div class="chat-item" onclick="startPrivateWith(${r.id})">
@@ -711,13 +720,11 @@ function renderSearchResults(){
 async function joinChannel(id){
   try {
     await api('/channels/' + id + '/join', 'POST');
-    await loadAll();
-    renderChats();
+    await loadAll(); renderChats();
     toast('✓ Ты вошёл в канал','');
     openChat(id);
   } catch(e){ toast('Ошибка', e.message); }
 }
-
 async function startPrivateWith(uid){
   const u = userById(uid); if(!u) return;
   const ex = CHATS.find(c => c.type === 'private' && (c.memberIds||[]).includes(u.id));
@@ -734,10 +741,8 @@ async function startPrivateWith(uid){
 function renderChats(){
   const box = $('chatList'); box.innerHTML = '';
   if(!CHATS.length){ box.innerHTML = '<div class="empty">Чатов пока нет</div>'; return }
-
   const q = ($('searchInput').value || '').trim().toLowerCase();
   const list = q ? CHATS.filter(c => {
-    // искать и по имени чата, и по логину собеседника (для личек)
     if((c.name||'').toLowerCase().includes(q)) return true;
     if(c.type === 'private'){
       const otherId = (c.memberIds||[]).find(x => x !== ME.id);
@@ -746,18 +751,14 @@ function renderChats(){
     }
     return false;
   }) : CHATS;
-
-  if(!list.length){ box.innerHTML = '<div class="empty" style="margin-top:20px">Ничего не найдено</div>'; return }
-
+  if(!list.length){ box.innerHTML = '<div class="empty" style="margin-top:20px">Ничего в твоих чатах</div>'; return }
   list.forEach(c => {
     const all = MSGS[c.id] || [];
     const last = all.filter(m => !m.deleted_for_all).slice(-1)[0];
 
-    // ИМЯ: для личек — логин собеседника, для остальных — c.name
     let displayName = c.name || '—';
     let avatarLetter = (c.name || '?').replace(/^#+/,'')[0].toUpperCase();
     let avatarURL = '';
-
     if(c.type === 'private'){
       const otherId = (c.memberIds||[]).find(x => x !== ME.id);
       const other = otherId ? USERS.find(u => u.id === otherId) : null;
@@ -767,16 +768,11 @@ function renderChats(){
         if(other.avatar_url) avatarURL = other.avatar_url;
       }
     }
-
     const isGroup = c.type === 'group' || c.type === 'channel';
     const el = document.createElement('div');
     el.className = 'chat-item';
     const lastText = last ? (last.file ? ('📎 ' + (last.file.name || 'файл')) : esc(last.text||'')) : '';
-
-    const avatarStyle = avatarURL
-      ? `background-image:url('${avatarURL}');background-size:cover;background-position:center`
-      : '';
-
+    const avatarStyle = avatarURL ? `background-image:url('${avatarURL}')` : '';
     el.innerHTML = `<div class="avatar" style="${avatarStyle}">${avatarURL ? '' : avatarLetter}</div>
       <div class="meta"><div class="name">${esc(displayName)} ${isGroup ? '<span style="font-size:10px;color:var(--muted)">'+c.type+'</span>' : ''}</div>
       <div class="last">${lastText.slice(0,40)}</div></div>`;
@@ -839,13 +835,10 @@ async function buildArchiveZip(chat, messages){
 function fullUrl(u){
   let url = String(u||'').trim(); if(!url) return '';
   if(/^(https?:|data:|blob:)/i.test(url)) return url;
-  if(/^https?:\/\/ink-chat\.ru\/api\/upl_/i.test(url)) return 'https://ink-chat.ru/uploads/' + url.replace(/^https?:\/\/ink-chat\.ru\/api\/upl_/i, '');
-  if(url.startsWith('/api/uploads/')) return 'https://ink-chat.ru/uploads/' + url.slice('/api/uploads/'.length);
-  if(url.startsWith('api/uploads/'))  return 'https://ink-chat.ru/uploads/' + url.slice('api/uploads/'.length);
-  if(url.startsWith('/uploads/')) return 'https://ink-chat.ru' + url;
-  if(url.startsWith('uploads/'))  return 'https://ink-chat.ru/' + url;
-  if(url.startsWith('/'))         return 'https://ink-chat.ru' + url;
-  return 'https://ink-chat.ru/uploads/' + url.replace(/^\/+/, '');
+  if(url.startsWith('/uploads/')) return ASSET_BASE + url;
+  if(url.startsWith('uploads/'))  return ASSET_BASE + '/' + url;
+  if(url.startsWith('/'))         return ASSET_BASE + url;
+  return ASSET_BASE + '/uploads/' + url.replace(/^\/+/, '');
 }
 async function makeZip(files){
   const chunks = []; const central = []; let offset = 0;
@@ -914,12 +907,11 @@ async function saveChannelArchive(){
       const up = await fetch(API + '/upload', { method:'POST', headers: TOKEN ? { 'Authorization': 'Bearer ' + TOKEN } : {}, body: fd });
       if(up.ok){
         const res = await up.json();
-        await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: '📦 Архив за ' + month, file: { url: res.url, name: res.name, size: res.size, mime: res.mime, kind: res.kind } });
+        await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: '📦 Архив за ' + month, file: { url: res.url, name: res.name, size: res.size, mime: res.mime, kind: 'file' } });
         MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
         await renderMessagesAndArchive();
       }
     }
-    try { await api('/chats/' + CURRENT_CHAT.id + '/convert/' + month, 'POST'); } catch(e){}
     try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){}
     updateArchiveBar();
     toast('📦 Архив сохранён', fileName);
@@ -948,9 +940,7 @@ function updateArchiveBar(){
     if(CURRENT_CHAT && CURRENT_CHAT.type === 'private' && DRAFT_INFO && !DRAFT_INFO.myConverted && DRAFT_INFO.draftCount > 0){
       $('archiveLine').innerHTML = `📦 Архив за <b>${DRAFT_INFO.month}</b>: ${DRAFT_INFO.draftCount} сообщений`;
       bar.classList.add('show');
-    } else {
-      bar.classList.remove('show');
-    }
+    } else { bar.classList.remove('show'); }
   }
 
   if(!CURRENT_CHAT){ if(saveBtn) saveBtn.style.display='none'; if(dot) dot.style.display='none'; return; }
@@ -995,11 +985,12 @@ function buildTicks(m){
 function attachHTML(f){
   if(!f || !f.url) return '';
   const safeUrl = esc(fullUrl(f.url));
-  if(f.kind === 'image') return `<a class="attach" target="_blank" href="${safeUrl}"><img src="${safeUrl}" alt=""/></a>`;
-  if(f.kind === 'video') return `<div class="attach"><video src="${safeUrl}" controls></video></div>`;
-  if(f.kind === 'audio') return `<div class="attach"><audio src="${safeUrl}" controls></audio></div>`;
   return `<a class="attach" target="_blank" href="${safeUrl}" download="${esc(f.name||'file')}">
-    <div class="file-row"><span class="fi">📄</span><span class="fn">${esc(f.name||'файл')}</span><span class="fs">${fmtSize(f.size)}</span></div>
+    <div class="file-row">
+      <span class="fi">📄</span>
+      <span class="fn">${esc(f.name||'файл')}</span>
+      <span class="fs">${fmtSize(f.size)}</span>
+    </div>
   </a>`;
 }
 async function renderMessagesAndArchive(){
@@ -1153,14 +1144,6 @@ function softUpdateMessages(fresh){
       const rxEl = el.querySelector('.reactions');
       if(rxEl){ if(rxHtml !== rxEl.outerHTML) rxEl.outerHTML = rxHtml; }
       else if(rxHtml){ el.insertAdjacentHTML('beforeend', rxHtml); }
-      const timeEl = el.querySelector('.time');
-      if(timeEl){
-        const isMe = m.sender_id === ME.id;
-        const t = m.created_at ? new Date(m.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '';
-        const ticksHTML = isMe ? buildTicks(m) : '';
-        const newHtml = t + ticksHTML;
-        if(timeEl.innerHTML !== newHtml) timeEl.innerHTML = newHtml;
-      }
     });
     if(wasAtBottom) box.scrollTop = box.scrollHeight;
     return;
@@ -1284,7 +1267,10 @@ async function uploadAndSend(file){
     if(!r.ok){ const d = await r.json().catch(()=>({})); throw new Error(d.error || ('HTTP ' + r.status)); }
     const res = await r.json();
     fill.style.width = '100%';
-    await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: '', file: { url: res.url, name: res.name, size: res.size, mime: res.mime, kind: res.kind } });
+    await api('/messages', 'POST', {
+      chat_id: CURRENT_CHAT.id, text: '',
+      file: { url: res.url, name: res.name, size: res.size, mime: res.mime, kind: 'file' }
+    });
     MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
     renderMessagesAndArchive(); renderChats();
     overlay.classList.remove('show');
@@ -1417,8 +1403,7 @@ async function setChatRole(uid, role){
     await api('/chats/' + CURRENT_CHAT.id + '/role', 'POST', { user_id: uid, role });
     CURRENT_CHAT = await api('/chats/' + CURRENT_CHAT.id);
     CHATS = CHATS.map(c => c.id === CURRENT_CHAT.id ? CURRENT_CHAT : c);
-    openChatSettings();
-    updateArchiveBar();
+    openChatSettings(); updateArchiveBar();
     toast('✓ Роль обновлена','');
   } catch(e){ toast('Ошибка', e.message); }
 }
@@ -1537,6 +1522,12 @@ function renderSettingsBody(){
         <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div>
         <div class="txt"><div class="t1">Premium-функции</div></div>
       </div></div>` : ''}
+    <div class="st-section"><h3>🖱️ Кликер</h3>
+      <div class="st-row" onclick="openClicker()">
+        <div class="icon" style="background:linear-gradient(135deg,#22a55a,#15803d)">🖱️</div>
+        <div class="txt"><div class="t1">Кликер</div><div class="t2">1000 кликов = 1 токен</div></div>
+      </div>
+    </div>
     <div class="st-section"><h3>🚫 Чёрный список</h3>
       <div class="st-row" onclick="openBlockedList()">
         <div class="icon" style="background:linear-gradient(135deg,#e04343,#a02020)">🚫</div>
@@ -1623,6 +1614,104 @@ async function unblockUser(id){
     openBlockedList();
     if(CURRENT_CHAT) { MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id); renderMessagesAndArchive(); }
   } catch(e){ toast('Ошибка', e.message); }
+}
+
+/* ============================================================ */
+/* КЛИКЕР */
+/* ============================================================ */
+async function openClicker(){
+  openPanel('clickerPanel');
+  $('clickerBody').innerHTML = '<div class="empty">Загрузка...</div>';
+  try {
+    CLICKER_STATE = await api('/clicker/state');
+    CLICKER_LOCAL_TOTAL = CLICKER_STATE.total;
+    renderClicker();
+  } catch(e){
+    $('clickerBody').innerHTML = `<div class="empty">Ошибка: ${esc(e.message)}</div>`;
+  }
+}
+function renderClicker(){
+  const prog = CLICKER_LOCAL_TOTAL % 1000;
+  const pct = (prog / 1000 * 100).toFixed(1);
+  $('clickerBody').innerHTML = `
+    <div class="balance-card" style="margin-bottom:16px">
+      <div class="lbl">Заработано токенов</div>
+      <div class="num">${fmt(CLICKER_STATE.tokensEarned)}</div>
+      <div class="lbl">Всего кликов: ${fmt(CLICKER_LOCAL_TOTAL)}</div>
+    </div>
+    <div style="display:flex;justify-content:center;margin:20px 0">
+      <button onclick="doClick(event)" class="click-btn">КЛИК</button>
+    </div>
+    <div style="margin:20px 0">
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:6px">
+        <span>До следующего токена</span>
+        <span>${prog} / 1000</span>
+      </div>
+      <div class="progress-outer"><div class="progress-inner" style="width:${pct}%"></div></div>
+    </div>
+    <div style="text-align:center;color:var(--muted);font-size:12.5px;margin-top:20px">
+      Лимит: не больше 10 кликов в секунду. Автокликер отбрасывается.
+    </div>`;
+}
+function doClick(e){ if(e) e.preventDefault(); CLICKER_LOCAL_TOTAL++; CLICKER_PENDING++; renderClicker(); if(!CLICKER_FLUSH_TIMER){ CLICKER_FLUSH_TIMER = setTimeout(flushClicks, 700); } }
+async function flushClicks(){
+  CLICKER_FLUSH_TIMER = null;
+  const add = CLICKER_PENDING; CLICKER_PENDING = 0;
+  if(add <= 0) return;
+  try {
+    const r = await api('/clicker/clicks','POST',{ count: add });
+    CLICKER_STATE.total = r.total;
+    CLICKER_STATE.tokensEarned = r.tokensEarned;
+    CLICKER_STATE.tokens = r.tokens;
+    CLICKER_STATE.toNextToken = r.toNextToken;
+    CLICKER_LOCAL_TOTAL = r.total;
+    renderTokensBadge();
+    if($('clickerPanel').classList.contains('open')) renderClicker();
+  } catch(e){ toast('Ошибка кликера', e.message); }
+}
+
+/* ============================================================ */
+/* МУЗЫКА */
+/* ============================================================ */
+function openMusicPanel(){
+  openPanel('musicPanel');
+  $('musicBody').innerHTML = `
+    <input class="search" id="musicSearch" placeholder="Поиск по названию или исполнителю..." style="margin:0 0 12px" oninput="filterMusic()"/>
+    <div id="musicList"><div class="empty">Загрузка...</div></div>
+    <div id="musicPlayer" style="position:sticky;bottom:0;background:var(--panel);border-top:1px solid var(--border);margin:14px -14px -14px;padding:12px 14px;display:none">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:6px" id="musicNow">—</div>
+      <audio id="musicAudio" controls style="width:100%"></audio>
+    </div>`;
+  loadMusic();
+}
+async function loadMusic(q){
+  try {
+    const url = '/music/list' + (q ? '?q=' + encodeURIComponent(q) : '');
+    MUSIC_LIST = await api(url);
+    renderMusic();
+  } catch(e){
+    $('musicList').innerHTML = `<div class="empty">Ошибка: ${esc(e.message)}</div>`;
+  }
+}
+function filterMusic(){ const q = ($('musicSearch').value || '').trim().toLowerCase(); renderMusic(q); }
+function renderMusic(filterQ){
+  const list = $('musicList'); if(!list) return;
+  let items = MUSIC_LIST;
+  if(filterQ){ items = items.filter(t => (t.title + ' ' + t.artist).toLowerCase().includes(filterQ)); }
+  if(!items.length){ list.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
+  list.innerHTML = items.map(t => `
+    <div class="st-row" onclick="playMusic('${esc(t.file).replace(/'/g,"\\'")}', '${esc(t.title).replace(/'/g,"\\'")}', '${esc(t.artist).replace(/'/g,"\\'")}')">
+      <div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🎵</div>
+      <div class="txt"><div class="t1">${esc(t.title)}</div><div class="t2">${esc(t.artist || '—')}</div></div>
+    </div>`).join('');
+}
+function playMusic(file, title, artist){
+  MUSIC_CURRENT = file;
+  const player = $('musicPlayer'); const audio = $('musicAudio');
+  player.style.display = 'block';
+  $('musicNow').innerHTML = `<b>${esc(title)}</b> ${artist ? '· ' + esc(artist) : ''}`;
+  audio.src = ASSET_BASE + '/music/' + encodeURIComponent(file);
+  audio.play().catch(e => toast('Не удалось воспроизвести', e.message));
 }
 
 /* ============================================================ */
@@ -1813,7 +1902,6 @@ async function toggleHideEmoji(e){ const list = (ME.hidden_emoji||[]).slice(); c
 async function openClansList(){ try { CLANS = await api('/clans'); } catch(e){ CLANS = [] } renderClansList(); openPanel('clansList'); }
 function clanCard(c){
   if(!c) return '';
-  const inClan = (c.members||[]).some(m => m.userId === ME.id);
   const myRole = ((c.members||[]).find(m => m.userId === ME.id) || {}).role;
   const tag = myRole === 'owner' ? '<span class="role-tag role-owner">Владелец</span>' : myRole === 'coowner' ? '<span class="role-tag role-coowner">Админ</span>' : myRole ? '<span class="role-tag role-member">Участник</span>' : '';
   return `<div class="st-row" onclick="openClan(${c.id})">
@@ -1901,7 +1989,7 @@ function proposalCard(c, p){
 }
 async function joinClan(id){ try { await api('/clans/'+id+'/join','POST'); await openClan(id); renderClansList(); toast('Ты вошёл','') } catch(e){ toast('Ошибка', e.message) } }
 async function leaveClan(id){ if(!confirm('Выйти?')) return; try { const r = await api('/clans/'+id+'/leave','POST'); await loadAll(); closePanel('clanCard'); renderClansList(); toast('Вышел', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) } }
-async function kickMem(uid){ if(!confirm('Исключить?')) return; try { const r = await api('/clans/'+CURRENT_CLAN.id+'/kick','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id); toast('Исключён','') } catch(e){ toast('Ошибка', e.message) } }
+async function kickMem(uid){ if(!confirm('Исключить?')) return; try { await api('/clans/'+CURRENT_CLAN.id+'/kick','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id); toast('Исключён','') } catch(e){ toast('Ошибка', e.message) } }
 async function promoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/promote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
 async function demoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/demote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
 function openClanCreate(){ $('clanCreateBody').innerHTML = `
