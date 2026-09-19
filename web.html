@@ -170,8 +170,6 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .vote-row{background:var(--panel2);border:1px solid var(--border2);border-radius:14px;padding:12px;margin-bottom:10px}
 .vote-row .title{font-weight:600;font-size:14px;margin-bottom:6px}
 .vote-row .desc{font-size:12.5px;color:var(--muted);margin-bottom:8px;line-height:1.4}
-.vote-row .prog{height:8px;background:var(--border2);border-radius:4px;overflow:hidden;margin:8px 0}
-.vote-row .prog .fill{height:100%;background:linear-gradient(90deg,#22a55a,#4ade80)}
 .vote-row .actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
 .tx-row{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--panel2);margin-bottom:6px;font-size:13.5px}
 .tx-row .ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -397,14 +395,23 @@ async function api(path, method, body){
   const opt = { method: method || 'GET', headers: {'Content-Type':'application/json'} };
   if(TOKEN) opt.headers['Authorization'] = 'Bearer ' + TOKEN;
   if(body) opt.body = JSON.stringify(body);
-  const r = await fetch(API + path, opt);
+  let r;
+  try {
+    r = await fetch(API + path, opt);
+  } catch(e){
+    console.error('[api] network error', path, e);
+    throw new Error('Сеть недоступна: ' + e.message);
+  }
   let d = {};
   try { d = await r.json(); } catch(e){}
   if(r.status === 403 && (d.banned || (d.error && d.error.startsWith('Забанен')))){
     if(!KICKED_OUT){ KICKED_OUT = true; kickOut(d.error || 'Забанен', d.blocked_until); }
     throw new Error(d.error || 'Забанен');
   }
-  if(!r.ok) throw new Error(d.error || ('HTTP ' + r.status));
+  if(!r.ok){
+    console.error('[api]', path, r.status, d);
+    throw new Error(d.error || ('HTTP ' + r.status));
+  }
   return d;
 }
 function kickOut(reason, until){
@@ -473,7 +480,10 @@ async function loadAll(){
     USERS = await api('/users');
     CHATS = await api('/chats');
     MSGS = {};
-    for(const c of CHATS){ try { MSGS[c.id] = await api('/messages/' + c.id); } catch(e){ MSGS[c.id] = []; } }
+    for(const c of CHATS){
+      try { MSGS[c.id] = await api('/messages/' + c.id); }
+      catch(e){ console.error('[loadAll] messages', c.id, e); MSGS[c.id] = []; }
+    }
     try { CLANS = await api('/clans'); } catch(e){ CLANS = []; }
     try { TX = await api('/transactions'); } catch(e){ TX = []; }
     try { const s = await api('/push/settings'); NOTIF_GLOBAL = s.global !== false; NOTIF_CHATS = s.chats || {}; } catch(e){}
@@ -659,7 +669,7 @@ function startPeerStatusTimer(){
 function stopPeerStatusTimer(){ if(PEER_STATUS_TIMER){ clearInterval(PEER_STATUS_TIMER); PEER_STATUS_TIMER = null; } }
 
 /* ============================================================ */
-/* ПОИСК: ЛОКАЛЬНЫЙ + ГЛОБАЛЬНЫЙ В ОДНОЙ СТРОКЕ */
+/* ПОИСК */
 /* ============================================================ */
 function onSearchInput(){
   renderChats();
@@ -736,7 +746,7 @@ async function startPrivateWith(uid){
 }
 
 /* ============================================================ */
-/* СПИСОК ЧАТОВ (локальный фильтр) */
+/* СПИСОК ЧАТОВ */
 /* ============================================================ */
 function renderChats(){
   const box = $('chatList'); box.innerHTML = '';
@@ -782,12 +792,20 @@ function renderChats(){
 }
 async function openChat(id){
   CURRENT_CHAT = CHATS.find(c => c.id === id);
-  if(!CURRENT_CHAT){ try { await loadAll(); CURRENT_CHAT = CHATS.find(c => c.id === id); } catch(e){} }
+  if(!CURRENT_CHAT){
+    try { await loadAll(); CURRENT_CHAT = CHATS.find(c => c.id === id); } catch(e){}
+  }
   if(!CURRENT_CHAT) return toast('Чат не найден','');
   document.body.classList.add('in-chat');
   $('backBtn').style.display = 'inline-block';
   $('hTitle').textContent = CURRENT_CHAT.name;
-  try { MSGS[id] = await api('/messages/' + id); } catch(e){}
+  try {
+    MSGS[id] = await api('/messages/' + id);
+  } catch(e){
+    console.error('[openChat] messages', e);
+    MSGS[id] = MSGS[id] || [];
+    toast('Ошибка загрузки сообщений', e.message);
+  }
   await renderMessagesAndArchive();
   renderPeerBar();
   startPeerStatusTimer();
@@ -974,7 +992,7 @@ function updateArchiveBar(){
 }
 
 /* ============================================================ */
-/* СООБЩЕНИЯ */
+/* СООБЩЕНИЯ — ИСПРАВЛЕНО */
 /* ============================================================ */
 function buildTicks(m){
   if(!m) return '';
@@ -995,45 +1013,70 @@ function attachHTML(f){
 }
 async function renderMessagesAndArchive(){
   if(!CURRENT_CHAT) return;
+
+  // DRAFT_INFO — опционально, если не получен, ничего не ломаем
   DRAFT_INFO = null;
   try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){ DRAFT_INFO = null }
-  const box = $('messages'); box.innerHTML = '';
+
+  const box = $('messages'); if(!box) return;
+  box.innerHTML = '';
+
   const msgs = (MSGS[CURRENT_CHAT.id] || []).slice();
-  const today = DRAFT_INFO && DRAFT_INFO.today ? DRAFT_INFO.today : new Date().toISOString().slice(0,10);
+  const today = DRAFT_INFO && DRAFT_INFO.today ? DRAFT_INFO.today : null;
   const myConv = DRAFT_INFO && DRAFT_INFO.myConverted;
+
+  // фильтруем по дню ТОЛЬКО если реально есть DRAFT_INFO с today
   const visible = msgs.filter(m => {
-    const d = m.created_at ? m.created_at.slice(0,10) : '';
-    if(!myConv) return true;
+    if(!m) return false;
+    if(!myConv || !today) return true;
+    const d = m.created_at ? String(m.created_at).slice(0,10) : '';
     return d.startsWith(today);
   });
+
+  if(!visible.length){
+    box.innerHTML = '<div class="empty">Сообщений пока нет</div>';
+    updateArchiveBar();
+    renderPeerBar();
+    return;
+  }
+
   visible.forEach(m => {
     if(m.deleted_for_all) return;
-    const isMe = m.sender_id === ME.id;
+    const isMe = Number(m.sender_id) === Number(ME.id);
     const el = document.createElement('div');
     el.className = 'msg ' + (isMe ? 'me' : 'them');
     el.dataset.mid = m.id;
+
     let head = '';
     if(!isMe && CURRENT_CHAT.type !== 'private'){
       const u = userById(m.sender_id);
       if(u) head = `<span class="sname">${nameHTML(u)}</span>`;
     }
+
     let rx = '';
-    if(m.reactions && Object.keys(m.reactions).length){
+    if(m.reactions && typeof m.reactions === 'object' && Object.keys(m.reactions).length){
       rx = '<div class="reactions">';
-      for(const [e, list] of Object.entries(m.reactions)){ rx += `<span class="reaction" onclick="toggleReaction(${m.id},'${e}')">${e} ${(list||[]).length}</span>`; }
+      for(const [e, list] of Object.entries(m.reactions)){
+        rx += `<span class="reaction" onclick="toggleReaction(${m.id},'${e}')">${e} ${(list||[]).length}</span>`;
+      }
       rx += '</div>';
     }
-    const text = esc(m.text || '').replace(/#([\wа-яё]+)/gi, (x,tag)=>`<span class="hashtag">#${tag}</span>`);
+
+    const rawText = m.text ? String(m.text) : '';
+    const text = esc(rawText).replace(/#([\wа-яё]+)/gi, (x,tag)=>`<span class="hashtag">#${tag}</span>`);
     const attach = attachHTML(m.file);
     const ticksHTML = isMe ? buildTicks(m) : '';
+    const timeStr = m.created_at ? new Date(m.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '';
+
     el.innerHTML = head + attach + (text ? '<div>'+text+'</div>' : '') + rx +
       `<button class="msg-menu-btn" onclick="event.stopPropagation();openMsgMenu(event, ${m.id})" title="Действия">⋯</button>` +
-      `<span class="time">${m.created_at ? new Date(m.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : ''}${ticksHTML}</span>`;
+      `<span class="time">${timeStr}${ticksHTML}</span>`;
     el.ondblclick = () => toggleReaction(m.id, '👍');
     el.oncontextmenu = (e) => { e.preventDefault(); openMsgMenu(e, m.id); };
     attachLongPress(el, m.id);
     box.appendChild(el);
   });
+
   box.scrollTop = box.scrollHeight;
   updateArchiveBar();
   renderPeerBar();
@@ -1114,7 +1157,7 @@ function startSilentPolling(){
 }
 function stopSilentPolling(){ if(silentPollTimer){ clearInterval(silentPollTimer); silentPollTimer = null; } }
 function buildReactionsHTML(m){
-  if(!m.reactions || !Object.keys(m.reactions).length) return '';
+  if(!m.reactions || typeof m.reactions !== 'object' || !Object.keys(m.reactions).length) return '';
   let rx = '<div class="reactions">';
   for(const [e, list] of Object.entries(m.reactions)){ rx += `<span class="reaction" onclick="toggleReaction(${m.id},'${e}')">${e} ${(list||[]).length}</span>`; }
   rx += '</div>';
@@ -1126,12 +1169,12 @@ function softUpdateMessages(fresh){
     if(hasNewFromOthers){ api('/messages/delivered', 'POST', { chat_id: CURRENT_CHAT.id }).catch(()=>{}); }
   }
   const box = $('messages'); if(!box) return;
-  const today = DRAFT_INFO && DRAFT_INFO.today ? DRAFT_INFO.today : new Date().toISOString().slice(0,10);
+  const today = DRAFT_INFO && DRAFT_INFO.today ? DRAFT_INFO.today : null;
   const myConv = DRAFT_INFO && DRAFT_INFO.myConverted;
   const visible = fresh.filter(m => {
     if(m.deleted_for_all) return false;
-    const d = m.created_at ? m.created_at.slice(0,10) : '';
-    if(!myConv) return true;
+    if(!myConv || !today) return true;
+    const d = m.created_at ? String(m.created_at).slice(0,10) : '';
     return d.startsWith(today);
   });
   const wasAtBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
@@ -1163,8 +1206,8 @@ function attachLongPress(el, mid){
 }
 function openMsgMenu(e, mid){
   const menu = $('msgMenu'); if(!menu) return;
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
-  const mine = m.sender_id === ME.id;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid)); if(!m) return;
+  const mine = Number(m.sender_id) === Number(ME.id);
   const isAdmin = !!(ME.is_admin || ME.isAdmin);
   const role = myChatRole(CURRENT_CHAT);
   const canModerate = role === 'owner' || role === 'coowner' || isAdmin;
@@ -1193,13 +1236,13 @@ function closeMsgMenu(){ const menu = $('msgMenu'); if(menu) menu.classList.remo
 document.addEventListener('click', (e) => { const menu = $('msgMenu'); if(menu && menu.classList.contains('open') && !menu.contains(e.target)) closeMsgMenu(); });
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeMsgMenu(); });
 function replyToMsg(mid){
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid)); if(!m) return;
   const u = userById(m.sender_id) || { login: '?' };
   $('msgInput').value = `[${u.login}: ${(m.text||'').slice(0,40)}] ` + $('msgInput').value;
   $('msgInput').focus();
 }
 function copyMsg(mid){
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid)); if(!m) return;
   const text = m.text || '';
   if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=> toast('📋 Скопировано','')).catch(()=>fallbackCopy(text)); }
   else { fallbackCopy(text); }
@@ -1212,8 +1255,8 @@ function fallbackCopy(text){
   document.body.removeChild(ta);
 }
 function editMsg(mid){
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid);
-  if(!m || m.sender_id !== ME.id) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid));
+  if(!m || Number(m.sender_id) !== Number(ME.id)) return;
   const newText = prompt('Изменить сообщение:', m.text || '');
   if(newText === null) return;
   api('/messages/' + mid, 'PUT', { text: newText })
@@ -1221,11 +1264,11 @@ function editMsg(mid){
     .catch(e => toast('Ошибка', e.message));
 }
 async function deleteMsg(mid, forAll){
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid)); if(!m) return;
   if(!confirm(forAll ? 'Удалить у всех?' : 'Удалить у себя?')) return;
   try {
     if(forAll){ await api('/messages/' + mid, 'PUT', { deleted_for_all: true }); m.deleted_for_all = true; }
-    else { MSGS[CURRENT_CHAT.id] = MSGS[CURRENT_CHAT.id].filter(x => x.id !== mid); }
+    else { MSGS[CURRENT_CHAT.id] = MSGS[CURRENT_CHAT.id].filter(x => Number(x.id) !== Number(mid)); }
     renderMessagesAndArchive();
     renderChats();
     toast('🗑️ Удалено','');
@@ -1233,7 +1276,7 @@ async function deleteMsg(mid, forAll){
 }
 async function toggleReaction(mid, emo){
   if(!CURRENT_CHAT) return;
-  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
+  const m = (MSGS[CURRENT_CHAT.id] || []).find(x => Number(x.id) === Number(mid)); if(!m) return;
   const r = { ...(m.reactions || {}) };
   const arr = r[emo] || [];
   if(arr.includes(ME.id)){ r[emo] = arr.filter(x => x !== ME.id); if(!r[emo].length) delete r[emo]; }
@@ -1301,7 +1344,7 @@ function compressImage(file, maxSide, quality){
 }
 
 /* ============================================================ */
-/* ОТПРАВКА ТЕКСТА */
+/* ОТПРАВКА ТЕКСТА — ИСПРАВЛЕНО */
 /* ============================================================ */
 async function sendMsg(){
   const v = $('msgInput').value.trim();
@@ -1309,10 +1352,22 @@ async function sendMsg(){
   $('msgInput').value = '';
   api('/typing', 'POST', { chat_id: CURRENT_CHAT.id, text: '' }).catch(()=>{});
   try {
-    await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: v });
-    MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
-    renderMessagesAndArchive(); renderChats();
-  } catch(e){ toast('Ошибка', e.message); }
+    const res = await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: v });
+    // мгновенно добавляем в локальный кэш, чтобы сообщение точно показалось
+    if(res && res.message){
+      if(!MSGS[CURRENT_CHAT.id]) MSGS[CURRENT_CHAT.id] = [];
+      MSGS[CURRENT_CHAT.id].push(res.message);
+    }
+    // и параллельно перезагружаем с сервера — на случай других вложений/статусов
+    try {
+      MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
+    } catch(e){ console.warn('[sendMsg] refresh failed', e); }
+    renderMessagesAndArchive();
+    renderChats();
+  } catch(e){
+    console.error('[sendMsg]', e);
+    toast('Ошибка отправки', e.message);
+  }
 }
 
 /* ============================================================ */
@@ -1503,7 +1558,7 @@ async function createChatFinal(){
 }
 
 /* ============================================================ */
-/* НАСТРОЙКИ (мои) */
+/* НАСТРОЙКИ */
 /* ============================================================ */
 function openSettings(){ renderSettingsBody(); openPanel('settings'); }
 function renderSettingsBody(){
@@ -1650,7 +1705,7 @@ function renderClicker(){
       <div class="progress-outer"><div class="progress-inner" style="width:${pct}%"></div></div>
     </div>
     <div style="text-align:center;color:var(--muted);font-size:12.5px;margin-top:20px">
-      Лимит: не больше 10 кликов в секунду. Автокликер отбрасывается.
+      Лимит: не больше 10 кликов в секунду.
     </div>`;
 }
 function doClick(e){ if(e) e.preventDefault(); CLICKER_LOCAL_TOTAL++; CLICKER_PENDING++; renderClicker(); if(!CLICKER_FLUSH_TIMER){ CLICKER_FLUSH_TIMER = setTimeout(flushClicks, 700); } }
@@ -1715,7 +1770,7 @@ function playMusic(file, title, artist){
 }
 
 /* ============================================================ */
-/* PREMIUM-ПАНЕЛЬ */
+/* PREMIUM */
 /* ============================================================ */
 function openPremiumPanel(){ renderPremiumBody(); openPanel('premiumPanel'); }
 function renderPremiumBody(){
@@ -1989,7 +2044,7 @@ function proposalCard(c, p){
 }
 async function joinClan(id){ try { await api('/clans/'+id+'/join','POST'); await openClan(id); renderClansList(); toast('Ты вошёл','') } catch(e){ toast('Ошибка', e.message) } }
 async function leaveClan(id){ if(!confirm('Выйти?')) return; try { const r = await api('/clans/'+id+'/leave','POST'); await loadAll(); closePanel('clanCard'); renderClansList(); toast('Вышел', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) } }
-async function kickMem(uid){ if(!confirm('Исключить?')) return; try { await api('/clans/'+CURRENT_CLAN.id+'/kick','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id); toast('Исключён','') } catch(e){ toast('Ошибка', e.message) } }
+async function kickMem(uid){ if(!confirm('Исключить?')) return; try { const r = await api('/clans/'+CURRENT_CLAN.id+'/kick','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id); toast('Исключён','') } catch(e){ toast('Ошибка', e.message) } }
 async function promoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/promote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
 async function demoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/demote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
 function openClanCreate(){ $('clanCreateBody').innerHTML = `
