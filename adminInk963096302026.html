@@ -70,6 +70,7 @@ th{text-align:left;padding:10px 12px;background:var(--panel2);font-size:11px;col
 td{padding:10px 12px;border-top:1px solid var(--border);font-size:13px}
 tr:hover td{background:#ffffff05}
 tr.banned td{background:rgba(255,92,92,.05)}
+tr.selected td{background:rgba(200,65,15,.12)}
 
 .tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;text-transform:uppercase;margin-right:3px;letter-spacing:.5px}
 .tag.admin{background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff}
@@ -90,6 +91,17 @@ tr.banned td{background:rgba(255,92,92,.05)}
 
 .card-info{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px;margin-bottom:10px;font-size:13px;line-height:1.6}
 
+/* ========== МАССОВЫЕ ДЕЙСТВИЯ ========== */
+.mass-bar{background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:14px;margin-bottom:14px;display:none}
+.mass-bar.on{display:block}
+.mass-bar h3{margin:0 0 10px;font-size:14px}
+.mass-bar .cnt{color:var(--gold);font-weight:700}
+.mass-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.mass-card{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px}
+.mass-card .lbl{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px}
+.mass-card .row-act{display:flex;gap:6px;flex-wrap:wrap}
+.mass-card input{width:100%;padding:8px 10px;background:var(--panel);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;outline:none;margin-bottom:6px}
+
 #modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:20px}
 #modal.on{display:flex}
 #modal .box{background:var(--panel);border:1px solid var(--border2);border-radius:16px;padding:20px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
@@ -105,6 +117,9 @@ tr.banned td{background:rgba(255,92,92,.05)}
 .toast.ok{border-color:rgba(74,222,128,.5)}
 .toast.bad{border-color:rgba(255,92,92,.5)}
 .toast .t2{color:var(--muted);font-size:12px;margin-top:2px}
+
+.chk{width:18px;height:18px;border-radius:5px;border:2px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+.chk.on{background:var(--accent);border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -157,10 +172,79 @@ tr.banned td{background:rgba(255,92,92,.05)}
   <main>
     <section class="section on" id="sec-users">
       <div class="stats" id="stats"></div>
+
       <input id="search" placeholder="Поиск по логину или ID..." oninput="renderUsers()" style="width:100%;padding:11px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;outline:none;margin-bottom:14px"/>
+
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="btn ghost sm" onclick="selectAllVisible()">☑️ Выбрать всех видимых</button>
+        <button class="btn ghost sm" onclick="clearSelection()">✖️ Снять выбор</button>
+        <button class="btn ghost sm" onclick="selectInvert()">🔁 Инвертировать</button>
+        <button class="btn sm" onclick="toggleMassPanel()">⚙️ Массовые действия</button>
+      </div>
+
+      <div class="mass-bar" id="massBar">
+        <h3>Массовые действия · выбрано: <span class="cnt" id="massCount">0</span></h3>
+
+        <div class="mass-grid">
+          <div class="mass-card">
+            <div class="lbl">💰 Токены</div>
+            <input id="massTokens" type="number" placeholder="Сколько" value="10"/>
+            <div class="row-act">
+              <button class="btn ok sm" onclick="massTokens(1)">Выдать всем</button>
+              <button class="btn danger sm" onclick="massTokens(-1)">Списать всем</button>
+            </div>
+          </div>
+
+          <div class="mass-card">
+            <div class="lbl">💎 Premium</div>
+            <input id="massPremDays" type="number" placeholder="Дней" value="30"/>
+            <div class="row-act">
+              <button class="btn gold sm" onclick="massPremium(true)">Выдать</button>
+              <button class="btn ghost sm" onclick="massPremium(false)">Снять</button>
+            </div>
+          </div>
+
+          <div class="mass-card">
+            <div class="lbl">🚫 Бан</div>
+            <input id="massBanDays" type="number" placeholder="Дней" value="30"/>
+            <div class="row-act">
+              <button class="btn danger sm" onclick="massBan()">Забанить</button>
+              <button class="btn ok sm" onclick="massUnban()">Разбанить</button>
+            </div>
+          </div>
+
+          <div class="mass-card">
+            <div class="lbl">👑 Роли</div>
+            <div class="row-act">
+              <button class="btn sm" onclick="massAdmin(true)">Сделать админом</button>
+              <button class="btn ghost sm" onclick="massAdmin(false)">Снять админа</button>
+            </div>
+          </div>
+
+          <div class="mass-card">
+            <div class="lbl">❤️ Донатер</div>
+            <div class="row-act">
+              <button class="btn gold sm" onclick="massDonor(true)">Выдать</button>
+              <button class="btn ghost sm" onclick="massDonor(false)">Снять</button>
+            </div>
+          </div>
+
+          <div class="mass-card">
+            <div class="lbl">🛠️ Сервис</div>
+            <div class="row-act">
+              <button class="btn ghost sm" onclick="copySelectedIds()">📋 ID списком</button>
+              <button class="btn ghost sm" onclick="copySelectedLogins()">📋 Логины списком</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>ID</th><th>Логин</th><th>Токены</th><th>Статус</th><th>Действия</th></tr></thead>
+          <thead><tr>
+            <th style="width:36px"></th>
+            <th>ID</th><th>Логин</th><th>Токены</th><th>Статус</th><th>Действия</th>
+          </tr></thead>
           <tbody id="usersBody"></tbody>
         </table>
       </div>
@@ -192,7 +276,7 @@ tr.banned td{background:rgba(255,92,92,.05)}
         <b style="color:var(--warn)">⚠️ Способы авторизации:</b><br>
         • <b>JWT из Ink</b> — если залогинен в этом браузере, панель работает автоматически.<br>
         • <b>JWT из URL</b> — <code>?token=eyJ...</code>, для другого устройства.<br>
-        • <b>Мастер-ключ</b> — если сервер поддерживает <code>x-master-key</code> (нужна правка server.js).<br>
+        • <b>Мастер-ключ</b> — если сервер поддерживает <code>x-master-key</code>.<br>
         • Действия (банить, выдавать токены) работают через JWT — нужен действующий токен.
       </div>
     </section>
@@ -203,15 +287,17 @@ tr.banned td{background:rgba(255,92,92,.05)}
 <div id="toasts"></div>
 
 <script>
-/* ============================================================
-   НАСТРОЙКА
-   ============================================================ */
+/* ============================================================ */
+/* НАСТРОЙКА */
+/* ============================================================ */
 const API = 'https://api.ink-chat.ru/api';
 const MASTER_KEY = 'Max_092010_m';
 
-let JWT = '';             // текущий рабочий токен
-let AUTH_MODE = '';       // 'url' | 'storage' | 'manual' | 'master'
+let JWT = '';
+let AUTH_MODE = '';
 let ME = null, USERS = [], DONATIONS = [], REPORTS = [], INBOX = [];
+let SELECTED = new Set();
+let MASS_OPEN = false;
 
 const $ = id => document.getElementById(id);
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
@@ -225,29 +311,26 @@ function toast(msg, sub, type){
   setTimeout(()=>el.remove(), 3500);
 }
 
-/* ============================================================
-   АВТО-ОПРЕДЕЛЕНИЕ ТОКЕНА
-   ============================================================ */
+/* ============================================================ */
+/* АВТО-ОПРЕДЕЛЕНИЕ ТОКЕНА */
+/* ============================================================ */
 function detectToken(){
-  // 1. Из URL
   const urlT = new URLSearchParams(location.search).get('token');
   if(urlT){ JWT = urlT; AUTH_MODE = 'url'; localStorage.setItem('ink_admin_token', urlT); return true; }
-  // 2. Из localStorage Ink (мы залогинены в Ink в этом же браузере)
   const inkT = localStorage.getItem('ink_token');
   if(inkT){ JWT = inkT; AUTH_MODE = 'storage'; return true; }
-  // 3. Из сохранённого admin-токена
   const admT = localStorage.getItem('ink_admin_token');
   if(admT){ JWT = admT; AUTH_MODE = 'storage'; return true; }
   return false;
 }
 
-/* ============================================================
-   ЗАПРОСЫ (с авто-фоллбэком)
-   ============================================================ */
-async function fetchWithJWT(path){
+/* ============================================================ */
+/* ЗАПРОСЫ */
+/* ============================================================ */
+async function fetchWithJWT(path, method, body){
   const headers = { 'Content-Type': 'application/json' };
   if(JWT) headers['Authorization'] = 'Bearer ' + JWT;
-  const r = await fetch(API + path, { headers });
+  const r = await fetch(API + path, { method: method || 'GET', headers, body: body ? JSON.stringify(body) : undefined });
   let d = {};
   try { d = await r.json(); } catch(e){}
   return { ok: r.ok, status: r.status, data: d };
@@ -260,7 +343,6 @@ async function fetchWithMaster(path){
   return { ok: r.ok, status: r.status, data: d };
 }
 async function apiGet(path){
-  // Пробуем сначала мастер-ключ, потом JWT
   let r = await fetchWithMaster(path);
   if(r.ok) return { ok: true, data: r.data };
   if(JWT){
@@ -271,58 +353,35 @@ async function apiGet(path){
   return { ok: false, error: 'Нет токена' };
 }
 async function apiAction(path, method, body){
-  // Действия — только с JWT (мастер-ключ не принимает PUT/POST)
   if(!JWT){
-    return { ok: false, error: 'Действия требуют JWT. Войди в Ink в этом браузере или вставь токен вручную.' };
+    return { ok: false, error: 'Действия требуют JWT. Войди в Ink в этом браузере.' };
   }
-  const headers = { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + JWT };
-  const r = await fetch(API + path, { method: method || 'POST', headers, body: body ? JSON.stringify(body) : undefined });
-  let d = {};
-  try { d = await r.json(); } catch(e){}
-  if(!r.ok) return { ok: false, error: d.error || ('HTTP ' + r.status) };
-  return { ok: true, data: d };
+  const r = await fetchWithJWT(path, method || 'POST', body);
+  if(!r.ok) return { ok: false, error: r.data.error || ('HTTP ' + r.status) };
+  return { ok: true, data: r.data };
 }
 
-/* ============================================================
-   ЛОГИН
-   ============================================================ */
+/* ============================================================ */
+/* ЛОГИН */
+/* ============================================================ */
 function showErr(text){ const el = $('loginErr'); el.textContent = text; el.classList.add('on'); $('loginOk').classList.remove('on'); }
 function showOk(text){ const el = $('loginOk'); el.textContent = text; el.classList.add('on'); $('loginErr').classList.remove('on'); }
 
 async function doLogin(){
   const key = $('inKey').value.trim();
   const manualToken = $('inToken').value.trim();
-
-  // Мастер-ключ — если совпал локально и сервер поддерживает
-  if(key && key !== MASTER_KEY){
-    showErr('Неверный мастер-код');
-    return;
-  }
-
-  // Если ввели JWT вручную — используем его
-  if(manualToken){
-    JWT = manualToken;
-    AUTH_MODE = 'manual';
-    localStorage.setItem('ink_admin_token', JWT);
-  }
-
-  // Проверим, что токен/мастер работает
+  if(key && key !== MASTER_KEY){ showErr('Неверный мастер-код'); return; }
+  if(manualToken){ JWT = manualToken; AUTH_MODE = 'manual'; localStorage.setItem('ink_admin_token', JWT); }
   const r = await apiGet('/users');
-  if(!r.ok){
-    showErr('Сервер: ' + r.error + '. Проверь токен или залогинься в Ink в этом браузере.');
-    return;
-  }
-
+  if(!r.ok){ showErr('Сервер: ' + r.error + '. Проверь токен или залогинься в Ink в этом браузере.'); return; }
   showOk('✓ Доступ разрешён');
   enterPanel();
 }
-
 function logout(){
   if(!confirm('Выйти из панели?')) return;
   localStorage.removeItem('ink_admin_token');
   location.href = location.pathname;
 }
-
 function enterPanel(){
   $('login').classList.remove('on');
   $('app').classList.add('on');
@@ -330,15 +389,12 @@ function enterPanel(){
   reloadAll();
 }
 
-/* ============================================================
-   ЗАГРУЗКА ДАННЫХ
-   ============================================================ */
+/* ============================================================ */
+/* ЗАГРУЗКА */
+/* ============================================================ */
 async function reloadAll(){
   const u = await apiGet('/users');
-  if(!u.ok){
-    toast('Ошибка', u.error, 'bad');
-    return;
-  }
+  if(!u.ok){ toast('Ошибка', u.error, 'bad'); return; }
   USERS = u.data || [];
 
   const d = await apiGet('/admin/donations');
@@ -353,34 +409,39 @@ async function reloadAll(){
   renderUsers(); renderDonations(); renderReports(); renderInbox(); renderSystem();
 }
 
-/* ============================================================
-   ТАБЫ
-   ============================================================ */
+/* ============================================================ */
+/* ТАБЫ */
+/* ============================================================ */
 function switchTab(t){
   document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
   document.querySelectorAll('.section').forEach(s => s.classList.remove('on'));
   $('sec-' + t).classList.add('on');
 }
 
-/* ============================================================
-   ПОЛЬЗОВАТЕЛИ
-   ============================================================ */
+/* ============================================================ */
+/* ПОЛЬЗОВАТЕЛИ */
+/* ============================================================ */
 function isPrem(u){ return u.premium && (!u.premium_until || new Date(u.premium_until) > new Date()) }
 function isBan(u){ return u.blocked_until && new Date(u.blocked_until) > new Date() }
 function isAdmin(u){ return u.is_admin === true || u.isAdmin === true || u.is_admin === 'true' || u.isAdmin === 'true' }
+function isDonor(u){ return u.is_donor === true || (u.donated_total||0) > 0 }
+
+function visibleUsers(){
+  const q = ($('search').value || '').trim().toLowerCase();
+  return USERS.filter(u => !q || String(u.login||'').toLowerCase().includes(q) || String(u.id) === q).sort((a,b)=>a.id-b.id);
+}
 
 function renderUsers(){
   if(!USERS.length){
-    $('usersBody').innerHTML = '<tr><td colspan="5"><div class="empty">Пусто</div></td></tr>';
+    $('usersBody').innerHTML = '<tr><td colspan="6"><div class="empty">Пусто</div></td></tr>';
     return;
   }
-  const q = ($('search').value || '').trim().toLowerCase();
-  const list = USERS.filter(u => !q || String(u.login||'').toLowerCase().includes(q) || String(u.id) === q).sort((a,b)=>a.id-b.id);
+  const list = visibleUsers();
 
   $('stats').innerHTML = `
     <div class="card"><div class="num">${USERS.length}</div><div class="lbl">Всего</div></div>
     <div class="card"><div class="num" style="color:var(--gold)">${USERS.filter(isAdmin).length}</div><div class="lbl">Админов</div></div>
-    <div class="card"><div class="num" style="color:#ff8ab0">${USERS.filter(u=>u.is_donor||u.donated_total>0).length}</div><div class="lbl">Донатеров</div></div>
+    <div class="card"><div class="num" style="color:#ff8ab0">${USERS.filter(isDonor).length}</div><div class="lbl">Донатеров</div></div>
     <div class="card"><div class="num" style="color:var(--gold)">${USERS.filter(isPrem).length}</div><div class="lbl">Premium</div></div>
     <div class="card"><div class="num" style="color:var(--danger)">${USERS.filter(isBan).length}</div><div class="lbl">Забанено</div></div>
     <div class="card"><div class="num" style="color:var(--accent)">${USERS.reduce((s,u)=>s+(u.tokens||0),0)}</div><div class="lbl">Токенов</div></div>`;
@@ -392,7 +453,9 @@ function renderUsers(){
     if(u.is_donor) tags.push('<span class="tag donor">❤️ Донатер</span>');
     if(isBan(u)) tags.push('<span class="tag ban">🚫 Бан</span>');
     if(!tags.length) tags.push('<span class="tag muted">—</span>');
-    return `<tr class="${isBan(u)?'banned':''}">
+    const sel = SELECTED.has(u.id);
+    return `<tr class="${isBan(u)?'banned':''} ${sel?'selected':''}">
+      <td><div class="chk ${sel?'on':''}" onclick="toggleSelect(${u.id})">${sel?'✓':''}</div></td>
       <td>${u.id}</td>
       <td><b>${esc(u.login)}</b></td>
       <td>${fmt(u.tokens)}</td>
@@ -406,8 +469,117 @@ function renderUsers(){
       </div></td>
     </tr>`;
   }).join('');
+
+  $('massCount').textContent = SELECTED.size;
 }
 
+function toggleSelect(id){
+  if(SELECTED.has(id)) SELECTED.delete(id); else SELECTED.add(id);
+  renderUsers();
+}
+function selectAllVisible(){
+  visibleUsers().forEach(u => SELECTED.add(u.id));
+  renderUsers();
+}
+function clearSelection(){
+  SELECTED.clear();
+  renderUsers();
+}
+function selectInvert(){
+  const vis = visibleUsers();
+  vis.forEach(u => { if(SELECTED.has(u.id)) SELECTED.delete(u.id); else SELECTED.add(u.id); });
+  renderUsers();
+}
+function toggleMassPanel(){
+  MASS_OPEN = !MASS_OPEN;
+  $('massBar').classList.toggle('on', MASS_OPEN);
+}
+function selectedIds(){ return Array.from(SELECTED); }
+
+/* ============================================================ */
+/* МАССОВЫЕ ДЕЙСТВИЯ */
+/* ============================================================ */
+async function massAction(label, fn){
+  const ids = selectedIds();
+  if(!ids.length){ toast('Никого не выбрано', 'Отметь галочки слева', 'bad'); return; }
+  if(!confirm(`${label} для ${ids.length} пользователей?`)) return;
+  let ok = 0, fail = 0, lastErr = '';
+  toast('Выполняю...', ids.length + ' чел.');
+  for(const id of ids){
+    try {
+      const r = await fn(id);
+      if(r && r.ok) ok++; else { fail++; lastErr = (r && r.error) || 'ошибка'; }
+    } catch(e){ fail++; lastErr = e.message; }
+  }
+  toast(`Готово: ✓ ${ok} · ✗ ${fail}`, lastErr, fail ? 'bad' : 'ok');
+  reloadAll();
+}
+
+function massTokens(sign){
+  const n = Number($('massTokens').value) || 0;
+  if(!n) return toast('Введи число', '', 'bad');
+  const label = (sign>0?'Выдать ':'Списать ') + n + ' токенов';
+  massAction(label, id => apiAction('/admin/credit-tokens','POST',{ user_id:id, amount: sign*n }));
+}
+
+function massPremium(enable){
+  const days = Number($('massPremDays').value) || 30;
+  if(enable){
+    massAction('Выдать Premium ' + days + ' дн.', id => apiAction('/premium/purchase','POST',{ target_user_id:id, days }));
+  } else {
+    massAction('Снять Premium', id => apiAction('/admin/users/'+id,'PUT',{ premium:false, premium_until:null }));
+  }
+}
+
+function massBan(){
+  const days = Number($('massBanDays').value) || 30;
+  const reason = prompt('Причина для всех:', 'массовый бан') || 'массовый бан';
+  const until = new Date(Date.now() + days*86400000).toISOString();
+  massAction('Забанить на ' + days + ' дн.', id => apiAction('/admin/users/'+id,'PUT',{ blocked_until: until, block_reason: reason, banned:true }));
+}
+
+function massUnban(){
+  massAction('Разбанить', id => apiAction('/admin/users/'+id,'PUT',{ blocked_until:null, block_reason:'', banned:false }));
+}
+
+function massAdmin(enable){
+  massAction(enable?'Сделать админом':'Снять админа', id => apiAction('/admin/users/'+id,'PUT',{ is_admin: enable, isAdmin: enable }));
+}
+
+function massDonor(enable){
+  if(enable){
+    massAction('Выдать статус донатера', id => apiAction('/admin/users/'+id,'PUT',{ is_donor:true }));
+  } else {
+    massAction('Снять статус донатера', id => apiAction('/admin/users/'+id,'PUT',{ is_donor:false }));
+  }
+}
+
+function copySelectedIds(){
+  const ids = selectedIds();
+  if(!ids.length) return toast('Никого не выбрано','', 'bad');
+  copy(ids.join(', '));
+  toast('✓ Скопировано', ids.length + ' ID');
+}
+function copySelectedLogins(){
+  const logins = selectedIds().map(id => (USERS.find(u=>u.id===id)||{}).login).filter(Boolean);
+  if(!logins.length) return toast('Никого не выбрано','', 'bad');
+  copy(logins.join(', '));
+  toast('✓ Скопировано', logins.length + ' логинов');
+}
+function copy(t){
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).catch(()=>fallbackCopy(t)); }
+  else fallbackCopy(t);
+}
+function fallbackCopy(t){
+  const ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e){}
+  document.body.removeChild(ta);
+}
+
+/* ============================================================ */
+/* ОДИНОЧНЫЕ ДЕЙСТВИЯ */
+/* ============================================================ */
 async function quickBan(id){
   const u = USERS.find(x => x.id === id); if(!u) return;
   if(!confirm('Забанить ' + u.login + '?')) return;
@@ -432,9 +604,9 @@ async function quickGrant(id){
   reloadAll();
 }
 
-/* ============================================================
-   МОДАЛКА РЕДАКТИРОВАНИЯ ПОЛЬЗОВАТЕЛЯ
-   ============================================================ */
+/* ============================================================ */
+/* МОДАЛКА ПОЛЬЗОВАТЕЛЯ */
+/* ============================================================ */
 function openUserModal(id){
   const u = USERS.find(x => x.id === id); if(!u) return;
   $('modal').innerHTML = `
@@ -488,9 +660,9 @@ async function saveUserModal(id){
   } catch(e){ toast('Ошибка', e.message, 'bad'); }
 }
 
-/* ============================================================
-   ДОНАТЫ
-   ============================================================ */
+/* ============================================================ */
+/* ДОНАТЫ */
+/* ============================================================ */
 function renderDonations(){
   if(!DONATIONS.length){ $('donationsBody').innerHTML = '<div class="empty">Донатов нет</div>'; return }
   const pending = DONATIONS.filter(x => x.status === 'pending' || !x.status);
@@ -522,9 +694,9 @@ async function donateAction(id, action){
   reloadAll();
 }
 
-/* ============================================================
-   ЖАЛОБЫ
-   ============================================================ */
+/* ============================================================ */
+/* ЖАЛОБЫ */
+/* ============================================================ */
 function renderReports(){
   if(!REPORTS.length){ $('reportsBody').innerHTML = '<div class="empty">Жалоб нет</div>'; return }
   $('reportsBody').innerHTML = REPORTS.map(x=>`
@@ -546,9 +718,9 @@ async function verdict(id, v){
   reloadAll();
 }
 
-/* ============================================================
-   ВХОДЯЩИЕ
-   ============================================================ */
+/* ============================================================ */
+/* ВХОДЯЩИЕ */
+/* ============================================================ */
 function renderInbox(){
   if(!INBOX.length){ $('inboxBody').innerHTML = '<div class="empty">Входящих нет</div>'; return }
   $('inboxBody').innerHTML = INBOX.map(m=>`
@@ -559,9 +731,9 @@ function renderInbox(){
     </div>`).join('');
 }
 
-/* ============================================================
-   СИСТЕМА
-   ============================================================ */
+/* ============================================================ */
+/* СИСТЕМА */
+/* ============================================================ */
 function renderSystem(){
   const authLabel = AUTH_MODE === 'url'      ? 'JWT из URL'
                   : AUTH_MODE === 'storage' ? 'JWT из localStorage Ink'
@@ -580,20 +752,15 @@ function renderSystem(){
   $('sysInbox').textContent = INBOX.length;
 }
 
-/* ============================================================
-   СТАРТ
-   ============================================================ */
+/* ============================================================ */
+/* СТАРТ */
+/* ============================================================ */
 (async function init(){
   const hasToken = detectToken();
   if(hasToken){
-    // Пробуем сразу войти
     const r = await apiGet('/users');
-    if(r.ok){
-      enterPanel();
-      return;
-    }
+    if(r.ok){ enterPanel(); return; }
   }
-  // Показываем форму логина
   $('login').classList.add('on');
 })();
 </script>
