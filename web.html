@@ -229,6 +229,14 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 .progress-outer{height:10px;background:var(--border2);border-radius:5px;overflow:hidden}
 .progress-inner{height:100%;background:linear-gradient(90deg,#22a55a,#4ade80);transition:width .15s}
 @media(max-width:600px){.msg-menu{left:12px !important;right:12px;bottom:12px;top:auto !important;max-height:70vh;overflow-y:auto;border-radius:16px;min-width:0}}
+/* === МОБИЛЬНАЯ ШАПКА === */
+@media(max-width:600px){
+  body:not(.in-chat) #hTitle{display:none !important}
+  body:not(.in-chat) #chatSaveBtn{display:none !important}
+  body:not(.in-chat) #chatSaveDot{display:none !important}
+  body.in-chat #notifBtn{display:none !important}
+  body.in-chat #openShopBtn{display:none !important}
+}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -271,7 +279,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
     <div id="chatSaveDot" class="header-dot" title="Статус сохранения" style="display:none"></div>
     <button id="chatSaveBtn" onclick="saveFromHeader()" title="Сохранить переписку" style="display:none">💾</button>
     <button id="notifBtn" onclick="toggleNotifications()" title="Уведомления">🔔</button>
-    <button onclick="openShop()">💰<span class="tokens-badge" id="tokensCount">0</span></button>
+    <button id="openShopBtn" onclick="openShop()">💰<span class="tokens-badge" id="tokensCount">0</span></button>
     <button onclick="toggleInkognito()">🕶️</button>
     <button onclick="openSettings()">⚙️</button>
   </header>
@@ -989,25 +997,20 @@ async function renderMessagesAndArchive(){
   if(!CURRENT_CHAT) return;
   DRAFT_INFO = null;
   try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){ DRAFT_INFO = null }
-
-  const box = $('messages'); if(!box) return;
-  box.innerHTML = '';
+  const box = $('messages'); box.innerHTML = '';
   const msgs = (MSGS[CURRENT_CHAT.id] || []).slice();
-
   if(!msgs.length){
     box.innerHTML = '<div class="empty">Сообщений пока нет</div>';
     updateArchiveBar();
     renderPeerBar();
     return;
   }
-
   msgs.forEach(m => {
     if(m.deleted_for_all) return;
     const isMe = m.sender_id === ME.id;
     const el = document.createElement('div');
     el.className = 'msg ' + (isMe ? 'me' : 'them');
     el.dataset.mid = m.id;
-
     let head = '';
     if(!isMe && CURRENT_CHAT.type !== 'private'){
       const u = userById(m.sender_id);
