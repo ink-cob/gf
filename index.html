@@ -29,20 +29,35 @@ body::before{
 .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
 
 header{padding:60px 0 40px;text-align:center;animation:fadeIn .6s ease-out}
-.logo{display:inline-flex;align-items:center;gap:12px;margin-bottom:20px}
-.logo .mark{
-  width:64px;height:64px;border-radius:18px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  display:flex;align-items:center;justify-content:center;
-  font-size:32px;font-weight:800;color:#fff;
-  box-shadow:0 10px 40px rgba(79,140,255,.5);
-  animation:pulse 3s ease-in-out infinite;
+
+/* ===== ЛОГОТИП-ПРИЗРАК (шапка) ===== */
+.logo{display:inline-flex;align-items:center;gap:16px;margin-bottom:22px}
+.logo .ghost{
+  width:88px;height:88px;
+  filter:drop-shadow(0 12px 30px rgba(79,140,255,.55));
+  animation:ghostFloat 3.4s ease-in-out infinite;
+  transition:filter .3s;
 }
-@keyframes pulse{
-  0%,100%{box-shadow:0 10px 40px rgba(79,140,255,.5)}
-  50%{box-shadow:0 10px 60px rgba(124,92,255,.8)}
+.logo .ghost:hover{filter:drop-shadow(0 16px 40px rgba(124,92,255,.75))}
+.logo .ghost .eye{
+  animation:ghostBlink 4.2s ease-in-out infinite;
+  transform-origin:center;
 }
-.logo .name{font-size:38px;font-weight:800;letter-spacing:-1px}
+@keyframes ghostFloat{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-8px) rotate(2deg)}
+}
+@keyframes ghostBlink{
+  0%,42%,58%,100%{transform:scaleY(1)}
+  50%{transform:scaleY(.15)}
+}
+.logo .name{
+  font-size:44px;font-weight:800;letter-spacing:-1.5px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
 h1{font-size:clamp(28px,5vw,48px);font-weight:800;margin:0 0 14px;line-height:1.15;letter-spacing:-1px}
 h1 .grad{
   background:linear-gradient(135deg,var(--accent),var(--accent2),var(--pink));
@@ -114,6 +129,158 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
 .card .t{font-weight:700;font-size:15px;margin-bottom:4px}
 .card .d{font-size:13px;color:var(--muted);line-height:1.5}
 
+/* ===== ДОСКА ОБНОВЛЕНИЙ ===== */
+.updates-section{margin:50px 0 20px}
+.updates-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;flex-wrap:wrap;margin-bottom:20px;
+}
+.updates-head h2{
+  font-size:clamp(22px,3.6vw,30px);font-weight:800;
+  margin:0;letter-spacing:-.5px;
+  display:flex;align-items:center;gap:10px;
+}
+.updates-head .badge-ver{
+  font-size:11.5px;font-weight:700;
+  padding:4px 10px;border-radius:999px;
+  background:rgba(79,140,255,.15);
+  border:1px solid rgba(79,140,255,.35);
+  color:#8ab6ff;letter-spacing:.5px;
+}
+.updates-list{display:flex;flex-direction:column;gap:12px}
+.update-item{
+  background:var(--panel);
+  border:1px solid var(--border2);
+  border-radius:16px;
+  padding:16px 18px;
+  display:flex;gap:16px;
+  transition:border-color .15s, transform .15s;
+}
+.update-item:hover{border-color:var(--accent);transform:translateX(3px)}
+.update-item .ver{
+  display:flex;flex-direction:column;align-items:center;
+  flex-shrink:0;min-width:60px;text-align:center;
+}
+.update-item .ver .v{font-size:14px;font-weight:800;color:var(--accent)}
+.update-item .ver .date{font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.3px}
+.update-item .ver .dot{width:10px;height:10px;border-radius:50%;background:var(--border2);margin-top:8px}
+.update-item.latest .ver .v{color:var(--ok)}
+.update-item.latest .ver .dot{
+  background:var(--ok);
+  box-shadow:0 0 0 4px rgba(74,222,128,.15);
+  animation:pulseGreen 2s ease-in-out infinite;
+}
+@keyframes pulseGreen{
+  0%,100%{box-shadow:0 0 0 4px rgba(74,222,128,.15)}
+  50%{box-shadow:0 0 0 8px rgba(74,222,128,0)}
+}
+.update-item .body{flex:1;min-width:0}
+.update-item .title{
+  font-weight:700;font-size:15px;margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.update-item .title .new-tag{
+  font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:6px;
+  background:linear-gradient(135deg,#22c55e,#15803d);
+  color:#fff;letter-spacing:.4px;
+}
+.update-item ul{
+  margin:0;padding-left:18px;
+  font-size:13.5px;color:var(--muted);line-height:1.6;
+}
+.update-item ul li::marker{color:var(--accent)}
+.update-item ul li b{color:var(--text);font-weight:600}
+.update-item ul li a{color:var(--accent);text-decoration:none;font-weight:600}
+.update-item ul li a:hover{text-decoration:underline}
+
+/* ===== БЛОК СКАЧИВАНИЯ ===== */
+.download-section{
+  margin:40px 0 20px;
+  background:linear-gradient(135deg,rgba(79,140,255,.08),rgba(124,92,255,.08));
+  border:1px solid var(--border2);
+  border-radius:24px;
+  padding:40px 26px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.download-section::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background:radial-gradient(500px 300px at 50% 0%,rgba(79,140,255,.18),transparent 70%);
+  pointer-events:none;
+}
+.download-section > *{position:relative;z-index:1}
+
+.download-section .d-ghost{
+  width:96px;height:96px;
+  margin:0 auto 16px;
+  display:block;
+  filter:drop-shadow(0 14px 34px rgba(79,140,255,.55));
+  animation:ghostFly 4s ease-in-out infinite;
+  transition:filter .3s;
+}
+.download-section .d-ghost:hover{filter:drop-shadow(0 20px 50px rgba(124,92,255,.8))}
+.download-section .d-ghost .eye{
+  animation:ghostBlink 4.2s ease-in-out infinite;
+  transform-origin:center;
+}
+@keyframes ghostFly{
+  0%  {transform:translateY(0) translateX(-6px) rotate(-3deg)}
+  25% {transform:translateY(-14px) translateX(0) rotate(0)}
+  50% {transform:translateY(0) translateX(6px) rotate(3deg)}
+  75% {transform:translateY(-10px) translateX(0) rotate(0)}
+  100%{transform:translateY(0) translateX(-6px) rotate(-3deg)}
+}
+
+.download-section h3{
+  font-size:clamp(22px,3.6vw,30px);font-weight:800;
+  margin:0 0 10px;letter-spacing:-.5px;
+}
+.download-section > p{
+  color:var(--muted);font-size:15px;margin:0 auto 26px;max-width:520px;
+}
+
+.download-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:14px;
+  max-width:640px;
+  margin:0 auto;
+}
+.download-btn{
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  padding:16px 22px;
+  color:#dbe4f0;text-decoration:none;
+  background:#2b3444;
+  border:1px solid #3a4658;
+  border-radius:14px;
+  transition:background .15s, border-color .15s, transform .12s;
+  text-align:center;
+}
+.download-btn:hover{background:#333f52;border-color:#4b5a72}
+.download-btn:active{transform:scale(.98)}
+.download-btn .meta{display:flex;flex-direction:column;align-items:center;line-height:1.25}
+.download-btn .meta .big{font-size:15.5px;font-weight:700;color:#e8ecf3}
+.download-btn .meta .small{font-size:11.5px;color:#8a93a5;font-weight:500;margin-top:3px}
+
+.download-hint{font-size:12.5px;color:var(--muted);margin-top:14px}
+.download-hint b{color:var(--ok)}
+
+.iphone-note{
+  margin:24px auto 0;
+  max-width:640px;
+  background:rgba(255,209,138,.07);
+  border:1px solid rgba(255,209,138,.25);
+  border-radius:16px;
+  padding:16px 18px;
+  display:flex;gap:12px;align-items:flex-start;text-align:left;
+  font-size:13.5px;line-height:1.55;color:#d8d0c2;
+}
+.iphone-note .em{font-size:24px;line-height:1;flex-shrink:0;margin-top:2px}
+.iphone-note b{color:var(--warn);font-weight:700}
+.iphone-note .apology{color:var(--muted);margin-top:6px;font-style:italic}
+
 footer{
   text-align:center;padding:60px 20px 40px;
   border-top:1px solid var(--border);margin-top:40px;
@@ -126,11 +293,17 @@ footer a:hover{text-decoration:underline}
 
 @media(max-width:600px){
   header{padding:40px 0 30px}
-  .logo .mark{width:54px;height:54px;font-size:26px;border-radius:14px}
-  .logo .name{font-size:30px}
+  .logo{gap:12px;margin-bottom:16px}
+  .logo .ghost{width:64px;height:64px}
+  .logo .name{font-size:34px}
   .cta{padding:16px 26px;font-size:16px;width:100%;justify-content:center;max-width:400px}
   .actions{flex-direction:column;align-items:center}
   section{padding:36px 0}
+  .download-section{padding:30px 18px;border-radius:20px}
+  .download-btn{padding:15px 18px;font-size:15px;width:100%}
+  .update-item{flex-direction:column;gap:8px;padding:14px}
+  .update-item .ver{flex-direction:row;gap:8px;min-width:0;align-items:center}
+  .update-item .ver .dot{margin:0 0 0 auto}
 }
 </style>
 </head>
@@ -140,7 +313,22 @@ footer a:hover{text-decoration:underline}
 
   <header>
     <div class="logo">
-      <div class="mark">I</div>
+      <svg class="ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Ink logo">
+        <defs>
+          <linearGradient id="inkLogoGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#4f8cff"/>
+            <stop offset="60%" stop-color="#7c5cff"/>
+            <stop offset="100%" stop-color="#ff5c8a"/>
+          </linearGradient>
+        </defs>
+        <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#inkLogoGrad)"/>
+        <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#2b2b2b"/>
+        <circle cx="41.5" cy="44" r="1.6" fill="#ffffff"/>
+        <g class="eye">
+          <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#2b2b2b"/>
+          <circle cx="61.5" cy="44" r="1.6" fill="#ffffff"/>
+        </g>
+      </svg>
       <div class="name">Ink</div>
     </div>
     <h1>Мессенджер <span class="grad">без блокировок</span></h1>
@@ -186,7 +374,6 @@ footer a:hover{text-decoration:underline}
       <div class="card"><span class="ico">🕶️</span><div class="t">Статус «Не в сети»</div><div class="d">Все думают, что тебя нет — а ты читаешь и отвечаешь.</div></div>
       <div class="card"><span class="ico">👀</span><div class="t">Призрачное прочтение</div><div class="d">Читаешь сообщения — галочек нет.</div></div>
       <div class="card"><span class="ico">✍️</span><div class="t">Живой набор</div><div class="d">Видно, что человек печатает, как исправляет, что стирает.</div></div>
-      <div class="card"><span class="ico">🔐</span><div class="t">Свой шифр</div><div class="d">Тексты можно зашифровать собственным алфавитом.</div></div>
     </div>
   </section>
 
@@ -195,6 +382,7 @@ footer a:hover{text-decoration:underline}
     <p class="desc">Токены, кошельки, кланы и рейтинги.</p>
     <div class="grid">
       <div class="card"><span class="ico">💰</span><div class="t">Токены</div><div class="d">Зарабатывай за активность. 1 токен за 10 минут, раз в сутки по МСК.</div></div>
+      <div class="card"><span class="ico">🖱️</span><div class="t">Кликер</div><div class="d">1000 кликов = 1 токен. Жми — и копи на Premium.</div></div>
       <div class="card"><span class="ico">🛡️</span><div class="t">Кланы</div><div class="d">Создай свой, приглашай людей, веди общую казну.</div></div>
       <div class="card"><span class="ico">🗳️</span><div class="t">Голосования</div><div class="d">Клан решает вместе: купить Premium или Inkognito для всех.</div></div>
       <div class="card"><span class="ico">🏆</span><div class="t">Рейтинг кланов</div><div class="d">Топ-1 получает токены = числу участников.</div></div>
@@ -225,12 +413,164 @@ footer a:hover{text-decoration:underline}
     </div>
   </section>
 
+  <!-- ===== ДОСКА ОБНОВЛЕНИЙ ===== -->
+  <section class="updates-section" id="updates">
+    <div class="updates-head">
+      <h2>📢 Обновления</h2>
+      <span class="badge-ver">последняя версия</span>
+    </div>
+
+    <div class="updates-list">
+
+      <div class="update-item latest">
+        <div class="ver">
+          <span class="v">v1.4.0</span>
+          <span class="date">27 сен 2026</span>
+          <span class="dot"></span>
+        </div>
+        <div class="body">
+          <div class="title">Новая эра <span class="new-tag">NEW</span></div>
+          <ul>
+            <li><b>Новый логотип</b> — анимированный призрак с полётом и подмигиванием</li>
+            <li><b>Установочные файлы</b> — APK для Android и EXE для Windows</li>
+            <li>Официальный TikTok: <a href="https://www.tiktok.com/@ink_oficial" target="_blank" rel="noopener">Ink oficial</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="update-item">
+        <div class="ver">
+          <span class="v">v1.3.0</span>
+          <span class="date">27 сен 2026</span>
+          <span class="dot"></span>
+        </div>
+        <div class="body">
+          <div class="title">Лендинг и установочные файлы</div>
+          <ul>
+            <li>Новая приветственная страница с анимированным призраком-логотипом</li>
+            <li>Кнопки <b>скачать для Android (APK)</b> и <b>для Windows (EXE)</b></li>
+            <li>Плашка-извинение для владельцев iPhone</li>
+            <li>Доска обновлений, которую ты сейчас читаешь</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="update-item">
+        <div class="ver">
+          <span class="v">v1.2.0</span>
+          <span class="date">20 сен 2026</span>
+          <span class="dot"></span>
+        </div>
+        <div class="body">
+          <div class="title">Кликер и экономика</div>
+          <ul>
+            <li>Добавлен <b>кликер</b>: 1000 кликов = 1 токен</li>
+            <li>Ежедневный токен за активность (1 токен за 10 минут, по МСК)</li>
+            <li>Переводы токенов между пользователями</li>
+            <li>История транзакций</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="update-item">
+        <div class="ver">
+          <span class="v">v1.1.0</span>
+          <span class="date">14 сен 2026</span>
+          <span class="dot"></span>
+        </div>
+        <div class="body">
+          <div class="title">Кланы</div>
+          <ul>
+            <li>Создание <b>кланов</b> с общей казной</li>
+            <li>Внутренние голосования за покупки</li>
+            <li>Рейтинг кланов — топ-1 получает бонусные токены</li>
+            <li>Роли: владелец, админ, участник</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="update-item">
+        <div class="ver">
+          <span class="v">v1.0.0</span>
+          <span class="date">1 сен 2026</span>
+          <span class="dot"></span>
+        </div>
+        <div class="body">
+          <div class="title">Первый релиз</div>
+          <ul>
+            <li>Личные чаты, группы и каналы</li>
+            <li>Режим <b>Inkognito</b>: невидимость, призрачное прочтение, живой набор</li>
+            <li>Premium, кастомные эмодзи и префиксы</li>
+            <li>Регистрация за 30 секунд</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== СКАЧАТЬ ПРИЛОЖЕНИЕ ===== -->
+  <div class="download-section" id="download">
+    <svg class="d-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Ink logo">
+      <defs>
+        <linearGradient id="inkGhostGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#4f8cff"/>
+          <stop offset="60%" stop-color="#7c5cff"/>
+          <stop offset="100%" stop-color="#ff5c8a"/>
+        </linearGradient>
+      </defs>
+      <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#inkGhostGrad)"/>
+      <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#2b2b2b"/>
+      <circle cx="41.5" cy="44" r="1.6" fill="#ffffff"/>
+      <g class="eye">
+        <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#2b2b2b"/>
+        <circle cx="61.5" cy="44" r="1.6" fill="#ffffff"/>
+      </g>
+    </svg>
+
+    <h3>Скачать Ink</h3>
+    <p>Установи приложение на своё устройство — работает быстрее браузера и живёт прямо на рабочем столе.</p>
+
+    <div class="download-grid">
+      <a class="download-btn" href="ink.apk" download>
+        <span class="meta">
+          <span class="big">Скачать для Android</span>
+          <span class="small">APK · Android 7.0+</span>
+        </span>
+      </a>
+
+      <a class="download-btn" href="Ink.exe" download>
+        <span class="meta">
+          <span class="big">Скачать для Windows</span>
+          <span class="small">EXE · Windows 10/11 · x64</span>
+        </span>
+      </a>
+    </div>
+
+    <div class="download-hint">
+      Если браузер ругается — разреши установку из <b>неизвестных источников</b>.
+    </div>
+
+    <div class="iphone-note">
+      <span class="em">🍎</span>
+      <div>
+        <b>Для iPhone, к сожалению, установка невозможна.</b>
+        Apple разрешает ставить приложения только из официального App Store, а для публикации там нужен платный аккаунт разработчика и компьютер Mac — сейчас у нас такой возможности нет.
+        <div class="apology">Мы приносим искренние извинения пользователям iPhone. Пока можете пользоваться веб-версией прямо в браузере Safari — просто открой сайт и добавь его на главный экран.</div>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <p><b>Ink</b> — независимый проект. Сделан одним человеком.</p>
     <p style="margin-top:14px">
       <a href="web.html">Открыть Ink</a>
       &nbsp;·&nbsp;
       <a href="json-viewer.html">Конвертер JSON</a>
+      &nbsp;·&nbsp;
+      <a href="#updates">Обновления</a>
+      &nbsp;·&nbsp;
+      <a href="#download">Скачать приложение</a>
     </p>
     <p style="margin-top:20px;color:#5a6372">© 2026 Ink. Сделано с 💜</p>
   </footer>
