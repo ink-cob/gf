@@ -30,7 +30,6 @@ body::before{
 
 header{padding:60px 0 40px;text-align:center;animation:fadeIn .6s ease-out}
 
-/* ===== ЛОГОТИП-ПРИЗРАК (шапка) ===== */
 .logo{display:inline-flex;align-items:center;gap:16px;margin-bottom:22px}
 .logo .ghost{
   width:88px;height:88px;
@@ -75,18 +74,12 @@ h1 .grad{
   border-radius:18px;font-size:17px;font-weight:700;
   box-shadow:0 15px 45px rgba(79,140,255,.45);
   transition:transform .2s cubic-bezier(.2,.9,.3,1.4),box-shadow .2s;
-  position:relative;overflow:hidden;
 }
 .cta:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 25px 60px rgba(79,140,255,.6)}
 .cta:active{transform:translateY(0) scale(.98)}
-.cta .emoji{font-size:22px;animation:wiggle 2s ease-in-out infinite}
+.cta .emoji{font-size:22px}
 .cta .arrow{transition:transform .3s}
 .cta:hover .arrow{transform:translateX(6px)}
-@keyframes wiggle{
-  0%,100%{transform:rotate(0) scale(1)}
-  25%{transform:rotate(-12deg) scale(1.1)}
-  75%{transform:rotate(12deg) scale(1.1)}
-}
 .cta.gold{
   background:linear-gradient(135deg,var(--gold),var(--pink));
   box-shadow:0 15px 45px rgba(255,92,138,.45);
@@ -120,16 +113,11 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
   border-radius:16px;padding:18px;
   transition:transform .15s,border-color .15s,box-shadow .15s;
 }
-.card:hover{
-  transform:translateY(-3px);
-  border-color:var(--accent);
-  box-shadow:0 15px 40px rgba(79,140,255,.15);
-}
+.card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 15px 40px rgba(79,140,255,.15)}
 .card .ico{font-size:26px;margin-bottom:10px;display:block}
 .card .t{font-weight:700;font-size:15px;margin-bottom:4px}
 .card .d{font-size:13px;color:var(--muted);line-height:1.5}
 
-/* ===== ДОСКА ОБНОВЛЕНИЙ ===== */
 .updates-section{margin:50px 0 20px}
 .updates-head{
   display:flex;align-items:center;justify-content:space-between;
@@ -149,10 +137,8 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
 }
 .updates-list{display:flex;flex-direction:column;gap:12px}
 .update-item{
-  background:var(--panel);
-  border:1px solid var(--border2);
-  border-radius:16px;
-  padding:16px 18px;
+  background:var(--panel);border:1px solid var(--border2);
+  border-radius:16px;padding:16px 18px;
   display:flex;gap:16px;
   transition:border-color .15s, transform .15s;
 }
@@ -162,7 +148,7 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
   flex-shrink:0;min-width:60px;text-align:center;
 }
 .update-item .ver .v{font-size:14px;font-weight:800;color:var(--accent)}
-.update-item .ver .date{font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.3px}
+.update-item .ver .date{font-size:10.5px;color:var(--muted);margin-top:3px}
 .update-item .ver .dot{width:10px;height:10px;border-radius:50%;background:var(--border2);margin-top:8px}
 .update-item.latest .ver .v{color:var(--ok)}
 .update-item.latest .ver .dot{
@@ -183,18 +169,14 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
   font-size:10px;font-weight:700;
   padding:2px 7px;border-radius:6px;
   background:linear-gradient(135deg,#22c55e,#15803d);
-  color:#fff;letter-spacing:.4px;
+  color:#fff;
 }
-.update-item ul{
-  margin:0;padding-left:18px;
-  font-size:13.5px;color:var(--muted);line-height:1.6;
-}
+.update-item ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--muted);line-height:1.6}
 .update-item ul li::marker{color:var(--accent)}
 .update-item ul li b{color:var(--text);font-weight:600}
 .update-item ul li a{color:var(--accent);text-decoration:none;font-weight:600}
 .update-item ul li a:hover{text-decoration:underline}
 
-/* ===== БЛОК СКАЧИВАНИЯ ===== */
 .download-section{
   margin:40px 0 20px;
   background:linear-gradient(135deg,rgba(79,140,255,.08),rgba(124,92,255,.08));
@@ -218,9 +200,7 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
   display:block;
   filter:drop-shadow(0 14px 34px rgba(79,140,255,.55));
   animation:ghostFly 4s ease-in-out infinite;
-  transition:filter .3s;
 }
-.download-section .d-ghost:hover{filter:drop-shadow(0 20px 50px rgba(124,92,255,.8))}
 .download-section .d-ghost .eye{
   animation:ghostBlink 4.2s ease-in-out infinite;
   transform-origin:center;
@@ -242,18 +222,14 @@ section .desc{color:var(--muted);margin:0 0 26px;font-size:15px}
 }
 
 .download-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:14px;
-  max-width:640px;
-  margin:0 auto;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:14px;max-width:640px;margin:0 auto;
 }
 .download-btn{
   display:flex;align-items:center;justify-content:center;flex-direction:column;
   padding:16px 22px;
   color:#dbe4f0;text-decoration:none;
-  background:#2b3444;
-  border:1px solid #3a4658;
+  background:#2b3444;border:1px solid #3a4658;
   border-radius:14px;
   transition:background .15s, border-color .15s, transform .12s;
   text-align:center;
@@ -406,14 +382,20 @@ footer a:hover{text-decoration:underline}
     <h2><span class="n">5</span>Поддержка проекта</h2>
     <p class="desc">Ink живёт на донатах. Минимум 25 ₽ — идёт на сервер и домен.</p>
     <div class="grid">
-      <div class="card"><span class="ico">❤️</span><div class="t">Донат от 25 ₽</div><div class="d">Напрямую на карту. Деньги идут на инфраструктуру.</div></div>
+      <div class="card"><span class="ico">❤️</span><div class="t">Донат от 25 ₽</div><div class="d">Через ЮMoney — с публичной историей и подтверждением оплаты. Деньги идут на инфраструктуру.</div></div>
       <div class="card"><span class="ico">🌟</span><div class="t">Смайл-префикс</div><div class="d">До конца месяца — особый смайл перед ником.</div></div>
       <div class="card"><span class="ico">💜</span><div class="t">Префикс «Спасink»</div><div class="d">Текстовый префикс для донатеров. Включается в настройках.</div></div>
       <div class="card"><span class="ico">🎁</span><div class="t">Бонус от 1 до 5 токенов</div><div class="d">Случайный подарок за поддержку проекта.</div></div>
     </div>
+
+    <div style="margin-top:22px;max-width:640px">
+      <a href="https://yoomoney.ru/to/4100119641522628" target="_blank" rel="noopener"
+         style="display:flex;align-items:center;justify-content:center;padding:16px 22px;border-radius:14px;background:#232c3b;border:1px solid #333e52;color:#e8ecf3;text-decoration:none;font-weight:600;font-size:15px">
+        Поддержать через ЮMoney
+      </a>
+    </div>
   </section>
 
-  <!-- ===== ДОСКА ОБНОВЛЕНИЙ ===== -->
   <section class="updates-section" id="updates">
     <div class="updates-head">
       <h2>📢 Обновления</h2>
@@ -424,7 +406,7 @@ footer a:hover{text-decoration:underline}
 
       <div class="update-item latest">
         <div class="ver">
-          <span class="v">v1.3.0</span>
+          <span class="v">v1.4.0</span>
           <span class="date">27 сен 2026</span>
           <span class="dot"></span>
         </div>
@@ -433,8 +415,24 @@ footer a:hover{text-decoration:underline}
           <ul>
             <li><b>Новый логотип</b> — анимированный призрак с полётом и подмигиванием</li>
             <li><b>Установочные файлы</b> — APK для Android и EXE для Windows</li>
-            <li>Официальный TikTok: <a href="https://www.tiktok.com/@ink.oficial36" target="_blank" rel="noopener">Ink oficial</a></li>
-            <li>Официальный Телеграм канал: <a href="https://t.me/oficial_ink" target="_blank" rel="noopener">Ink oficial</a></li>
+            <li>Официальный TikTok: <a href="https://www.tiktok.com/@ink_oficial" target="_blank" rel="noopener">Ink oficial</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="update-item">
+        <div class="ver">
+          <span class="v">v1.3.0</span>
+          <span class="date">27 сен 2026</span>
+          <span class="dot"></span>
+        </div>
+        <div class="body">
+          <div class="title">Лендинг и установочные файлы</div>
+          <ul>
+            <li>Новая приветственная страница с анимированным призраком-логотипом</li>
+            <li>Кнопки <b>скачать для Android (APK)</b> и <b>для Windows (EXE)</b></li>
+            <li>Плашка-извинение для владельцев iPhone</li>
+            <li>Доска обновлений, которую ты сейчас читаешь</li>
           </ul>
         </div>
       </div>
@@ -493,7 +491,6 @@ footer a:hover{text-decoration:underline}
     </div>
   </section>
 
-  <!-- ===== СКАЧАТЬ ПРИЛОЖЕНИЕ ===== -->
   <div class="download-section" id="download">
     <svg class="d-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Ink logo">
       <defs>
@@ -555,6 +552,9 @@ footer a:hover{text-decoration:underline}
       <a href="#updates">Обновления</a>
       &nbsp;·&nbsp;
       <a href="#download">Скачать приложение</a>
+    </p>
+    <p style="margin-top:10px">
+      <a href="terms.html">Пользовательское соглашение</a>
     </p>
     <p style="margin-top:20px;color:#5a6372">© 2026 Ink. Сделано с 💜</p>
   </footer>
