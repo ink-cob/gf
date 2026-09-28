@@ -412,6 +412,7 @@ function kickOut(reason, until){
   try { stopSilentPolling(); } catch(e){}
   try { stopTypingPolling(); } catch(e){}
   try { stopPeerStatusTimer(); } catch(e){}
+  try { stopGlobalPolling(); } catch(e){}
   try { if(presenceTimer) clearInterval(presenceTimer); } catch(e){}
   const app = document.getElementById('app'); if(app) app.classList.remove('open');
   const auth = document.getElementById('auth'); if(auth) auth.style.display = 'flex';
@@ -457,6 +458,10 @@ async function doLogin(){
 }
 function logout(){
   if(!confirm('Выйти?')) return;
+  stopGlobalPolling();
+  stopSilentPolling();
+  stopTypingPolling();
+  stopPeerStatusTimer();
   localStorage.removeItem('ink_token');
   TOKEN = null;
   location.href = 'index.html';
@@ -485,6 +490,7 @@ async function enterApp(){
     $('app').classList.add('open');
     renderChats(); renderTokensBadge(); renderNotifBtn();
     startPresence();
+    startGlobalPolling();
     initPush();
   } catch(e){ toast('Ошибка', e.message); $('auth').style.display = 'flex'; }
 }
@@ -1090,7 +1096,7 @@ function startTypingPolling(){
 function stopTypingPolling(){ if(typingPollTimer){ clearInterval(typingPollTimer); typingPollTimer = null; } }
 
 /* ============================================================ */
-/* ТИХИЙ ОПРОС */
+/* ТИХИЙ ОПРОС (активный чат) */
 /* ============================================================ */
 let silentPollTimer = null;
 let lastMsgSignature = '';
@@ -1114,36 +1120,114 @@ function startSilentPolling(){
   }, 1500);
 }
 function stopSilentPolling(){ if(silentPollTimer){ clearInterval(silentPollTimer); silentPollTimer = null; } }
-function buildReactionsHTML(m){
-  if(!m.reactions || typeof m.reactions !== 'object' || !Object.keys(m.reactions).length) return '';
-  let rx = '<div class="reactions">';
-  for(const [e, list] of Object.entries(m.reactions)){ rx += `<span class="reaction" onclick="toggleReaction(${m.id},'${e}')">${e} ${(list||[]).length}</span>`; }
-  rx += '</div>';
-  return rx;
+
+/* ============================================================ */
+/* ГЛОБАЛЬНЫЙ ОПРОС СОСТОЯНИЯ */
+/* каждые 3 сек подтягиваем список чатов, юзеров, кланы */
+/* НЕ трогает активный чат — там свой polling 1.5 сек */
+/* ============================================================ */
+let globalPollTimer = null;
+let globalPollPaused = false;
+
+function startGlobalPolling(){
+  stopGlobalPolling();
+  globalPollTimer = setInterval(async () => {
+    if(document.hidden) return;              // вкладка неактивна — не дёргаем сервер
+    if(globalPollPaused) return;             // идёт долгая операция — не мешаем
+    if(!TOKEN || !ME) return;                // не залогинен
+    try {
+      // 1. Список чатов — новые, переименования, удаления
+      try {
+        const chatsFresh = await api('/chats');
+        const chatsChanged = JSON.stringify(chatsFresh) !== JSON.stringify(CHATS);
+        if(chatsChanged){
+          CHATS = chatsFresh;
+          for(const c of CHATS){
+            if(CURRENT_CHAT && c.id === CURRENT_CHAT.id) continue;
+            if(!MSGS[c.id]) MSGS[c.id] = [];
+          }
+          renderChats();
+        }
+      } catch(e){ console.warn('[global-poll] chats', e.message); }
+
+      // 2. Пользователи — статусы, аватарки, премиум, донатер-префиксы
+      try {
+        const usersFresh = await api('/users');
+        const keyOf = u => [u.id, u.last_seen, u.avatar_url, u.premium, u.premium_until, u.is_donor, u.show_smile_prefix, u.show_text_prefix, u.donor_smile_prefix, u.donor_text_prefix];
+        const usersChanged = JSON.stringify(usersFresh.map(keyOf)) !== JSON.stringify(USERS.map(keyOf));
+        if(usersChanged){
+          USERS = usersFresh;
+          if(CURRENT_CHAT) renderPeerBar();
+          renderChats();
+        }
+      } catch(e){ console.warn('[global-poll] users', e.message); }
+
+      // 3. Кланы — если открыт список
+      if($('clansList') && $('clansList').classList.contains('open')){
+        try {
+          const clansFresh = await api('/clans');
+          if(JSON.stringify(clansFresh) !== JSON.stringify(CLANS)){
+            CLANS = clansFresh;
+            renderClansList();
+          }
+        } catch(e){}
+      }
+
+      // 4. Открытая карточка клана — обновляем участников, казну, предложения
+      if($('clanCard') && $('clanCard').classList.contains('open') && CURRENT_CLAN){
+        try {
+          const clanFresh = await api('/clans/' + CURRENT_CLAN.id);
+          if(JSON.stringify(clanFresh) !== JSON.stringify(CURRENT_CLAN)){
+            CURRENT_CLAN = clanFresh;
+            renderClanBody();
+          }
+        } catch(e){}
+      }
+
+      // 5. Рейтинг кланов — если открыт
+      if($('clanRating') && $('clanRating').classList.contains('open')){
+        try {
+          const ratingFresh = await api('/clans/rating');
+          if(JSON.stringify(ratingFresh) !== JSON.stringify(RATING)){
+            RATING = ratingFresh;
+            openClansRating();
+          }
+        } catch(e){}
+      }
+
+      // 6. Баланс токенов — если админ выдал, увидим без перезахода
+      try {
+        const meFresh = await api('/users/me');
+        if(meFresh.tokens !== ME.tokens){
+          ME.tokens = meFresh.tokens;
+          renderTokensBadge();
+        }
+      } catch(e){}
+
+      // 7. Открытые транзакции
+      if($('transactions') && $('transactions').classList.contains('open')){
+        try {
+          const txFresh = await api('/transactions');
+          if(JSON.stringify(txFresh) !== JSON.stringify(TX)){
+            TX = txFresh;
+            openTransactions();
+          }
+        } catch(e){}
+      }
+
+    } catch(e){
+      console.warn('[global-poll]', e.message);
+    }
+  }, 3000);
 }
-function softUpdateMessages(fresh){
-  if(CURRENT_CHAT){
-    const hasNewFromOthers = fresh.some(m => m.sender_id !== ME.id && m.status === 'sent');
-    if(hasNewFromOthers){ api('/messages/delivered', 'POST', { chat_id: CURRENT_CHAT.id }).catch(()=>{}); }
-  }
-  const box = $('messages'); if(!box) return;
-  const visible = fresh.filter(m => !m.deleted_for_all);
-  const wasAtBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
-  const existing = Array.from(box.querySelectorAll('.msg'));
-  const idsMatch = existing.length === visible.length && existing.every((el, i) => Number(el.dataset.mid) === Number(visible[i].id));
-  if(idsMatch){
-    existing.forEach((el, i) => {
-      const m = visible[i];
-      const rxHtml = buildReactionsHTML(m);
-      const rxEl = el.querySelector('.reactions');
-      if(rxEl){ if(rxHtml !== rxEl.outerHTML) rxEl.outerHTML = rxHtml; }
-      else if(rxHtml){ el.insertAdjacentHTML('beforeend', rxHtml); }
-    });
-    if(wasAtBottom) box.scrollTop = box.scrollHeight;
-    return;
-  }
-  renderMessagesAndArchive();
-  if(wasAtBottom) box.scrollTop = box.scrollHeight;
+
+function stopGlobalPolling(){
+  if(globalPollTimer){ clearInterval(globalPollTimer); globalPollTimer = null; }
+}
+
+function pauseGlobalPolling(ms){
+  globalPollPaused = true;
+  setTimeout(() => { globalPollPaused = false; }, ms || 2000);
 }
 
 /* ============================================================ */
@@ -1244,6 +1328,7 @@ async function onFilePick(e){
   const files = Array.from(e.target.files || []);
   e.target.value = '';
   if(!files.length || !CURRENT_CHAT) return;
+  pauseGlobalPolling(10000);
   for(const f of files){ await uploadAndSend(f); }
 }
 async function uploadAndSend(file){
@@ -1968,7 +2053,7 @@ function openClanProposal(){ $('clanProposalBody').innerHTML = `
 async function submitProp(type){ try { const note = ($('propNote') && $('propNote').value || '').trim(); await api('/clans/'+CURRENT_CLAN.id+'/propose','POST',{ type, note }); closePanel('clanProposal'); toast('💡 Отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function startVoteFromProp(clanId, pid){ try { await api('/clans/'+clanId+'/proposals/'+pid+'/start-vote','POST'); await openClan(clanId); toast('🗳️ Запущено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function declineProp(clanId, pid){ if(!confirm('Отклонить?')) return; try { await api('/clans/'+clanId+'/proposals/'+pid+'/decline','POST'); await openClan(clanId) } catch(e){ toast('Ошибка', e.message) } }
-async function openClanDeposit(){ const amt = parseInt(prompt('Сколько токенов?', '10'), 10); if(!amt || amt <= 0) return; try { const r = await api('/clans/'+CURRENT_CLAN.id+'/deposit','POST',{ amount: amt }); ME.tokens = r.balance; renderTokensBadge(); await openClan(CURRENT_CLAN.id); toast('+'+amt,''); } catch(e){ toast('Ошибка', e.message) } }
+async function openClanDeposit(){ const amt = parseInt(prompt('Сколько токенов?', '10'), 10); if(!amt || amt <= 0) return; pauseGlobalPolling(3000); try { const r = await api('/clans/'+CURRENT_CLAN.id+'/deposit','POST',{ amount: amt }); ME.tokens = r.balance; renderTokensBadge(); await openClan(CURRENT_CLAN.id); toast('+'+amt,''); } catch(e){ toast('Ошибка', e.message) } }
 async function withdrawClan(id){ if(!confirm('Вывести долю?')) return; try { const r = await api('/clans/'+id+'/withdraw','POST'); ME.tokens = r.balance; renderTokensBadge(); await openClan(id); toast('+'+r.share,''); } catch(e){ toast('Ошибка', e.message) } }
 function openClanInk(id){ const c = CURRENT_CLAN; const meRow = (c.members||[]).find(m => m.userId === ME.id); const myActive = meRow && meRow.slotUntil && new Date(meRow.slotUntil) > new Date();
   $('clanInkStockBody').innerHTML = `
@@ -1998,7 +2083,7 @@ function openSendTokens(){ $('sendTokensBody').innerHTML = `
     <label class="field-label">Сколько токенов</label><input id="sendAmt" type="number" class="report-input" value="10"/>
     <label class="field-label">Комментарий</label><input id="sendReason" class="report-input"/>
     <button class="btn gold" style="margin-top:14px" onclick="doSendTokens()">Отправить</button>`; openPanel('sendTokens'); }
-async function doSendTokens(){ const to = $('sendTo').value.trim(), amt = parseInt($('sendAmt').value, 10), reason = $('sendReason').value.trim(); if(!to) return toast('Укажи логин',''); if(!amt || amt <= 0) return toast('Укажи сумму',''); try { const r = await api('/transfers','POST',{ to_login: to, amount: amt, reason }); ME.tokens = r.balance; renderTokensBadge(); closePanel('sendTokens'); toast('✓ Выполнено',''); } catch(e){ toast('Ошибка', e.message) } }
+async function doSendTokens(){ const to = $('sendTo').value.trim(), amt = parseInt($('sendAmt').value, 10), reason = $('sendReason').value.trim(); if(!to) return toast('Укажи логин',''); if(!amt || amt <= 0) return toast('Укажи сумму',''); pauseGlobalPolling(3000); try { const r = await api('/transfers','POST',{ to_login: to, amount: amt, reason }); ME.tokens = r.balance; renderTokensBadge(); closePanel('sendTokens'); toast('✓ Выполнено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function openTransactions(){ try { TX = await api('/transactions'); } catch(e){ TX = [] }
   $('transactionsBody').innerHTML = TX.length ? TX.map(t => { const isIn = t.to === ME.id;
     return `<div class="tx-row">
@@ -2019,7 +2104,7 @@ function openShop(){ $('shopBody').innerHTML = `
     <div class="st-section"><h3>🕶️ Inkognito</h3>
       <div class="st-row" onclick="toggleInkognito()"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">${ME.inkUntil && new Date(ME.inkUntil) > new Date() ? 'Активен' : 'Купить 1 день'}</div><div class="t2">2 токена</div></div></div>
     </div>`; openPanel('shop'); }
-async function buyPremium(){ if(!confirm('Списать 30 токенов и активировать Premium на 30 дней?')) return; try { await api('/premium/purchase','POST',{ days: 30 }); await loadAll(); renderTokensBadge(); closePanel('shop'); toast('💎 Активирован','30 дней'); } catch(e){ toast('Ошибка', e.message) } }
+async function buyPremium(){ if(!confirm('Списать 30 токенов и активировать Premium на 30 дней?')) return; pauseGlobalPolling(3000); try { await api('/premium/purchase','POST',{ days: 30 }); await loadAll(); renderTokensBadge(); closePanel('shop'); toast('💎 Активирован','30 дней'); } catch(e){ toast('Ошибка', e.message) } }
 
 /* ============================================================ */
 /* ДОНАТ */
@@ -2047,7 +2132,7 @@ function openDonate(){ $('shopBody').innerHTML = `
       <textarea id="donateMsg" rows="3" class="report-input"></textarea>
       <button class="btn gold" style="margin-top:14px" onclick="submitDonate()">Отправить заявку</button>
     </div>`; openPanel('shop'); }
-async function submitDonate(){ const amount = parseInt($('donateAmount').value, 10); const message = ($('donateMsg').value || '').trim(); const purpose = ($('donatePurpose') && $('donatePurpose').value) || 'support'; if(!amount || amount < 25) return toast('Минимум 25 ₽',''); const purposeText = purpose === 'tokens' ? 'Купить токены' : 'Поддержать проект'; if(!confirm(`Отправить заявку на ${amount} ₽?`)) return; try { await api('/donations','POST',{ amount, message, purpose, purpose_text: purposeText }); closePanel('shop'); toast('❤️ Отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
+async function submitDonate(){ const amount = parseInt($('donateAmount').value, 10); const message = ($('donateMsg').value || '').trim(); const purpose = ($('donatePurpose') && $('donatePurpose').value) || 'support'; if(!amount || amount < 25) return toast('Минимум 25 ₽',''); const purposeText = purpose === 'tokens' ? 'Купить токены' : 'Поддержать проект'; if(!confirm(`Отправить заявку на ${amount} ₽?`)) return; pauseGlobalPolling(3000); try { await api('/donations','POST',{ amount, message, purpose, purpose_text: purposeText }); closePanel('shop'); toast('❤️ Отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
 
 /* ============================================================ */
 /* ЖАЛОБЫ */
