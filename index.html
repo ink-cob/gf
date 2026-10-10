@@ -247,51 +247,96 @@ footer .owner{margin-top:20px;font-size:12px;color:var(--muted2)}
 @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
 
 /* ============================================================ */
-/* АДАПТАЦИЯ ПОД FPS */
+/* АДАПТАЦИЯ ПОД FPS: high ≥120, mid 90–119, low <90 */
 /* ============================================================ */
 
-/* perf-mid — среднее устройство */
+/* perf-mid — 90–119 FPS: отключаем всё постоянное */
 html.perf-mid .particles{display:none}
-html.perf-mid .room .back-wall::after{animation:none;opacity:.7}
-html.perf-mid .logo::after{animation:none;opacity:.6}
-html.perf-mid .download-section::before{animation:none;opacity:.6}
+html.perf-mid .cursor-ring{display:none}
+html.perf-mid .room .back-wall::after{display:none}
+html.perf-mid .room .floor{display:none}
+html.perf-mid .logo::after{display:none}
+html.perf-mid .download-section::before{display:none}
 html.perf-mid .updates-head .ver{animation:none}
-html.perf-mid .update-item.latest::before{animation:none}
+html.perf-mid .update-item.latest::before{animation:none;box-shadow:0 0 0 5px var(--bg)}
 html.perf-mid .update-item .new-tag{box-shadow:none}
-html.perf-mid .app-header .icon-btn.active::after{animation:none;opacity:0}
+html.perf-mid .app-header .icon-btn.active::after{display:none}
 html.perf-mid .chat-sk .av.online::after{animation:none}
 html.perf-mid .chat-sk .name-blk,
-html.perf-mid .chat-sk .last-blk{animation:none;background:linear-gradient(90deg,#0d0419,#150a26);background-size:100% 100%}
+html.perf-mid .chat-sk .last-blk{animation:none;background:#0d0419;background-image:none}
+html.perf-mid .chat-sk{animation:none}
 html.perf-mid .scroll-arrow a{animation:none}
-html.perf-mid .scroll-arrow a::after{animation:none}
+html.perf-mid .scroll-arrow a::after{display:none}
+html.perf-mid .scroll-arrow a::before{display:none}
+html.perf-mid .logo .ghost{animation:none}
+html.perf-mid .download-section .d-ghost{animation:none}
+html.perf-mid .ripple{display:none}
 html.perf-mid .phone-mock,
 html.perf-mid .phone-mock:hover{transform:none;transition:none}
 html.perf-mid .preview-box:hover,
 html.perf-mid .download-section:hover,
 html.perf-mid .logo:hover{transform:none}
+html.perf-mid .btn:hover{transform:none}
+html.perf-mid .update-item:hover{transform:none}
+html.perf-mid .sp-item:hover{transform:none}
+html.perf-mid .terminal-body .cursor{animation:none;opacity:1}
+html.perf-mid .toast{animation:none}
+html.perf-mid .settings-overlay,
+html.perf-mid .settings-panel{animation:none}
 
-/* perf-low — слабое устройство */
+/* perf-low — <90 FPS: максимально жёстко */
 html.perf-low .particles{display:none}
+html.perf-low .cursor-dot,
+html.perf-low .cursor-ring{display:none}
 html.perf-low .room .back-wall::after{display:none}
+html.perf-low .room .back-wall::before{display:none}
 html.perf-low .room .floor{display:none}
-html.perf-low .room .back-wall::before{background-size:120px 120px}
 html.perf-low .logo::after{display:none}
 html.perf-low .download-section::before{display:none}
-html.perf-low .updates-head .ver{animation:none}
-html.perf-low .update-item.latest::before{animation:none}
+html.perf-low .updates-head .ver{animation:none;box-shadow:none}
+html.perf-low .update-item.latest::before{animation:none;box-shadow:0 0 0 5px var(--bg)}
 html.perf-low .update-item .new-tag{box-shadow:none}
+html.perf-low .update-item::before{box-shadow:0 0 0 5px var(--bg)}
+html.perf-low .updates-list::before{box-shadow:none}
 html.perf-low .app-header .icon-btn.active::after{display:none}
+html.perf-low .app-header .icon-btn.active{box-shadow:none}
 html.perf-low .chat-sk .av.online::after{animation:none}
+html.perf-low .chat-sk .av{box-shadow:none}
 html.perf-low .chat-sk .name-blk,
 html.perf-low .chat-sk .last-blk{animation:none;background:#0d0419;background-image:none}
-html.perf-low .scroll-arrow a{animation:none}
+html.perf-low .chat-sk{animation:none}
+html.perf-low .scroll-arrow a{animation:none;box-shadow:0 4px 12px rgba(0,0,0,.5)}
 html.perf-low .scroll-arrow a::after{display:none}
+html.perf-low .scroll-arrow a::before{display:none}
+html.perf-low .logo .ghost{animation:none}
+html.perf-low .download-section .d-ghost{animation:none}
+html.perf-low .ripple{display:none}
 html.perf-low .phone-mock,
-html.perf-low .phone-mock:hover{transform:none;transition:none;box-shadow:0 20px 50px rgba(0,0,0,.6),inset 0 1px 0 rgba(232,230,226,.05)}
+html.perf-low .phone-mock:hover{transform:none;transition:none;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 html.perf-low .preview-box:hover,
 html.perf-low .download-section:hover,
-html.perf-low .logo:hover{transform:none}
+html.perf-low .logo:hover{transform:none;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+html.perf-low .btn:hover{transform:none;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+html.perf-low .btn:active{transform:none}
+html.perf-low .update-item:hover{transform:none}
+html.perf-low .sp-item:hover{transform:none;background:transparent}
+html.perf-low .terminal-body .cursor{animation:none;opacity:1}
+html.perf-low .terminal-body .line{animation:none;opacity:1}
+html.perf-low .toast{animation:none}
+html.perf-low .settings-overlay,
+html.perf-low .settings-panel{animation:none}
+html.perf-low h1,
+html.perf-low h1 .accent::after,
+html.perf-low .subtitle,
+html.perf-low .actions,
+html.perf-low .hint{animation:none;opacity:1;transform:none}
+html.perf-low .logo{animation:none;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 html.perf-low .reveal{opacity:1;transform:none;transition:none}
+html.perf-low .download-section{box-shadow:0 20px 50px rgba(0,0,0,.6)}
+html.perf-low .preview-box{box-shadow:0 20px 50px rgba(0,0,0,.6)}
+html.perf-low .terminal{box-shadow:0 10px 30px rgba(0,0,0,.6)}
+html.perf-low .iphone-note{box-shadow:none}
+html.perf-low *{backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
 
 @media(max-width:800px){.preview-box{grid-template-columns:1fr;gap:36px;padding:36px 24px}.phone-mock{width:240px;height:480px}}
 @media(max-width:600px){.wrap{padding:0 18px}header{padding:60px 0 50px}.logo{padding:10px 16px 10px 10px;gap:12px}.logo .ghost{width:44px;height:44px}.logo .name{font-size:24px}section{padding:56px 0}.download-section{padding:50px 24px;margin:56px 0}.download-grid{grid-template-columns:1fr}.btn{width:100%;justify-content:center;max-width:360px}.actions{flex-direction:column;align-items:center}.updates-head{gap:10px}.terminal{font-size:11.5px}}
@@ -542,7 +587,7 @@ html.perf-low .reveal{opacity:1;transform:none;transition:none}
 
 <script>
 /* ============================================================ */
-/* ЗАМЕР FPS И АДАПТАЦИЯ */
+/* ЗАМЕР FPS: high ≥120, mid 90–119, low <90 */
 /* ============================================================ */
 (function(){
   const html = document.documentElement;
@@ -562,8 +607,8 @@ html.perf-low .reveal{opacity:1;transform:none;transition:none}
     } else {
       const fps = Math.round((frames / elapsed) * 1000);
       let level = 'high';
-      if(fps < 40) level = 'low';
-      else if(fps < 55) level = 'mid';
+      if(fps < 90) level = 'low';
+      else if(fps < 120) level = 'mid';
       html.classList.add('perf-' + level);
       localStorage.setItem('ink_perf', level);
       console.log('[perf] FPS:', fps, '→ уровень:', level);
@@ -572,13 +617,11 @@ html.perf-low .reveal{opacity:1;transform:none;transition:none}
   requestAnimationFrame(loop);
 })();
 
-/* ЧАСТИЦЫ — только на perf-high и не на телефоне */
+/* ЧАСТИЦЫ — только perf-high */
 (function(){
   const box = document.getElementById('particles');
   if(!box) return;
-  if(document.documentElement.classList.contains('perf-low')) return;
-  if(document.documentElement.classList.contains('perf-mid')) return;
-  if(window.innerWidth < 700) return;
+  if(!document.documentElement.classList.contains('perf-high')) return;
   const count = 30;
   for(let i = 0; i < count; i++){
     const p = document.createElement('div');
@@ -595,10 +638,10 @@ html.perf-low .reveal{opacity:1;transform:none;transition:none}
   }
 })();
 
-/* КУРСОР — только на ПК и не на perf-low */
+/* КУРСОР — только ПК + perf-high */
 (function(){
   if(window.matchMedia('(max-width: 900px)').matches) return;
-  if(document.documentElement.classList.contains('perf-low')) return;
+  if(!document.documentElement.classList.contains('perf-high')) return;
   const dot = document.getElementById('cursorDot');
   const ring = document.getElementById('cursorRing');
   if(!dot || !ring) return;
@@ -622,10 +665,9 @@ html.perf-low .reveal{opacity:1;transform:none;transition:none}
   document.addEventListener('mouseup', () => ring.classList.remove('click'));
 })();
 
-/* ПАРАЛЛАКС СТЕНЫ — только на perf-high */
+/* ПАРАЛЛАКС — только perf-high */
 (function(){
-  if(document.documentElement.classList.contains('perf-low')) return;
-  if(document.documentElement.classList.contains('perf-mid')) return;
+  if(!document.documentElement.classList.contains('perf-high')) return;
   const wall = document.getElementById('backWall');
   if(!wall) return;
   window.addEventListener('scroll', () => {
@@ -634,7 +676,7 @@ html.perf-low .reveal{opacity:1;transform:none;transition:none}
   }, { passive: true });
 })();
 
-/* REVEAL — всегда работает, но на perf-low мгновенно */
+/* REVEAL — всегда, на perf-low мгновенно */
 (function(){
   const items = document.querySelectorAll('.reveal');
   if(document.documentElement.classList.contains('perf-low')){
@@ -657,9 +699,9 @@ html.perf-low .reveal{opacity:1;transform:none;transition:none}
   items.forEach(el => io.observe(el));
 })();
 
-/* RIPPLE — на всех, кроме perf-low */
+/* RIPPLE — только perf-high */
 (function(){
-  if(document.documentElement.classList.contains('perf-low')) return;
+  if(!document.documentElement.classList.contains('perf-high')) return;
   document.querySelectorAll('.btn, .download-btn, .app-create').forEach(btn => {
     btn.style.position = 'relative';
     btn.addEventListener('click', function(e){
@@ -721,11 +763,10 @@ document.querySelectorAll('[data-toast]').forEach(el => {
   if(t) io.observe(t);
 })();
 
-/* 3D-НАКЛОН МОКАПА — только на ПК и perf-high */
+/* 3D-НАКЛОН — только ПК + perf-high */
 (function(){
   if(window.innerWidth < 900) return;
-  if(document.documentElement.classList.contains('perf-low')) return;
-  if(document.documentElement.classList.contains('perf-mid')) return;
+  if(!document.documentElement.classList.contains('perf-high')) return;
   const card = document.getElementById('previewBox');
   if(!card) return;
   card.addEventListener('mousemove', (e) => {
@@ -737,12 +778,12 @@ document.querySelectorAll('[data-toast]').forEach(el => {
   card.addEventListener('mouseleave', () => { card.style.transform = ''; });
 })();
 
-/* НАСТРОЙКИ В МОКАПЕ */
+/* НАСТРОЙКИ МОКАПА */
 function openSettings(){ const el = document.getElementById('settingsOverlay'); if(el) el.classList.add('open'); }
 function closeSettings(){ const el = document.getElementById('settingsOverlay'); if(el) el.classList.remove('open'); }
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeSettings(); });
 
-/* ПЛАВНЫЙ СКРОЛЛ ПО ЯКОРЯМ */
+/* ПЛАВНЫЙ СКРОЛЛ */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', (e) => {
     const id = a.getAttribute('href');
