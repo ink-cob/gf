@@ -3,53 +3,99 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<meta name="theme-color" content="#4f8cff"/>
+<meta name="theme-color" content="#150a26"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>Ink</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%234f8cff'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text></svg>"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%238b5cf6'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text></svg>"/>
 <style>
-:root{--bg:#0f1115;--panel:#171a21;--panel2:#1f232c;--border:#222;--border2:#2a3040;--accent:#4f8cff;--accent2:#7c5cff;--text:#e8ecf3;--muted:#8a93a5;--danger:#ff5c5c;--ok:#4ade80;--warn:#ffd18a;--mine:#5b6cff;--mine2:#8b5cff;--them:#232936;--tap:44px}
+:root{
+  --bg:#150a26;
+  --panel:#1f1238;
+  --panel2:#281745;
+  --panel3:#331d54;
+  --border:#261540;
+  --border2:#352058;
+  --border3:#452a70;
+  --accent:#8b5cf6;
+  --accent2:#6d28d9;
+  --accent-bright:#a78bfa;
+  --accent-warm:#c4a3ff;
+  --text:#e8e6e2;
+  --text2:#c8c4be;
+  --muted:#a8a29c;
+  --muted2:#7a746e;
+  --danger:#f87171;
+  --ok:#4ade80;
+  --warn:#fbbf24;
+  --mine:#452376;
+  --mine2:#381b62;
+  --them:#251640;
+  --tap:44px;
+  --shadow-raised:0 6px 24px rgba(0,0,0,.55), 0 0 24px rgba(167,139,250,.2), inset 0 1px 0 rgba(232,230,226,.12), inset 0 -3px 0 rgba(0,0,0,.4);
+  --shadow-pressed:inset 0 2px 6px rgba(0,0,0,.5), 0 0 12px rgba(167,139,250,.15);
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 html,body{height:100%;margin:0;overflow:hidden}
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-user-select:none;user-select:none}
 input,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
 button{font-family:inherit}
+
+/* ===== АВТОРИЗАЦИЯ ===== */
 #auth{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:radial-gradient(1200px 600px at 50% -10%,var(--panel2) 0%,var(--bg) 60%);padding:16px;overflow:auto}
-#auth .card{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--border2);border-radius:22px;padding:26px 22px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+#auth .card{width:100%;max-width:400px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:18px;padding:28px 24px;box-shadow:0 30px 70px rgba(0,0,0,.7),0 0 60px rgba(167,139,250,.15),inset 0 1px 0 rgba(232,230,226,.05)}
 #auth h1{margin:0 0 6px;font-size:26px}
 #auth p.sub{margin:0 0 18px;color:var(--muted);font-size:13px}
-#auth input{width:100%;padding:14px;margin-bottom:10px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:16px;outline:none;min-height:var(--tap)}
-#auth input:focus{border-color:var(--accent)}
-.btn{width:100%;padding:14px;border:0;border-radius:12px;cursor:pointer;font-size:15px;font-weight:600;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;transition:transform .12s;min-height:var(--tap)}
-.btn:active{transform:scale(.97)}
-.btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--muted)}
-.btn.danger{background:linear-gradient(135deg,#e04343,#a02020)}
-.btn.ok{background:linear-gradient(135deg,#22a55a,#15803d)}
-.btn.gold{background:linear-gradient(135deg,#ffb84d,#ff5c8a)}
+#auth input{width:100%;padding:14px;margin-bottom:10px;background:var(--panel);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:16px;outline:none;min-height:var(--tap);transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
+#auth input:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
+
+/* ===== КНОПКИ ===== */
+.btn{width:100%;padding:14px;border:0;border-radius:12px;cursor:pointer;font-size:15px;font-weight:700;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;min-height:var(--tap);box-shadow:var(--shadow-raised);text-shadow:0 1px 0 rgba(232,230,226,.3);position:relative;overflow:hidden}
+.btn::before{content:'';position:absolute;inset:0;border-radius:12px;background:radial-gradient(ellipse at top,rgba(232,230,226,.2),transparent 60%);pointer-events:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,.6),0 0 40px rgba(167,139,250,.4),inset 0 1px 0 rgba(232,230,226,.2),inset 0 -3px 0 rgba(0,0,0,.4)}
+.btn:active{transform:translateY(1px) scale(.98);box-shadow:var(--shadow-pressed)}
+.btn.ghost{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);color:var(--text2);box-shadow:0 4px 12px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.06),inset 0 -2px 0 rgba(0,0,0,.3)}
+.btn.ghost:hover{background:linear-gradient(180deg,var(--panel3),var(--panel2));border-color:var(--accent);color:var(--accent-bright);box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 24px rgba(167,139,250,.25),inset 0 1px 0 rgba(232,230,226,.1),inset 0 -2px 0 rgba(0,0,0,.3)}
+.btn.ghost:active{transform:translateY(1px) scale(.98);box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
+.btn.danger{background:linear-gradient(180deg,#f87171,#b34040);color:#150a26;box-shadow:0 6px 24px rgba(248,113,113,.35),inset 0 1px 0 rgba(232,230,226,.2),inset 0 -3px 0 rgba(0,0,0,.3)}
+.btn.ok{background:linear-gradient(180deg,#4ade80,#2b8c50);color:#150a26;box-shadow:0 6px 24px rgba(74,222,128,.35),inset 0 1px 0 rgba(232,230,226,.2),inset 0 -3px 0 rgba(0,0,0,.3)}
+.btn.gold{background:linear-gradient(180deg,var(--accent-warm),var(--accent));color:#150a26}
 .btn.sm{padding:8px 12px;font-size:13px;width:auto;min-height:36px}
 .row{display:flex;gap:8px;margin-top:8px}.row .btn{flex:1}
 .msg-ok{padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:10px;display:none}
-.msg-ok.err{background:rgba(255,92,92,.12);color:var(--danger);border:1px solid rgba(255,92,92,.35);display:block}
+.msg-ok.err{background:rgba(248,113,113,.15);color:var(--danger);border:1px solid rgba(248,113,113,.35);display:block}
 .msg-ok.ok{background:rgba(74,222,128,.12);color:var(--ok);border:1px solid rgba(74,222,128,.35);display:block}
+
 #loading{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}
 #loading.open{display:flex}
-.spinner{width:44px;height:44px;border:4px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+.spinner{width:40px;height:40px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+
 #app{display:none;flex-direction:column;height:100dvh;overflow:hidden}
 #app.open{display:flex}
-header{height:58px;display:flex;align-items:center;gap:2px;padding:0 8px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;padding-top:env(safe-area-inset-top,0)}
-header .title{font-weight:700;font-size:17px;padding:8px 10px;cursor:pointer;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ===== ШАПКА ===== */
+header{height:56px;display:flex;align-items:center;gap:2px;padding:0 6px;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border);flex-shrink:0;padding-top:env(safe-area-inset-top,0);box-shadow:0 2px 8px rgba(0,0,0,.4)}
+header .title{font-weight:600;font-size:16px;padding:8px 10px;cursor:pointer;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 header .spacer{flex:1}
-header button{background:transparent;border:0;color:var(--text);font-size:18px;cursor:pointer;padding:8px;border-radius:12px;min-width:var(--tap);min-height:var(--tap);display:flex;align-items:center;justify-content:center;position:relative}
-header button:active{background:rgba(127,127,127,.15)}
-.header-dot{width:14px;height:14px;border-radius:50%;background:transparent;flex-shrink:0;margin:0 6px;transition:background .2s,box-shadow .2s}
-.header-dot.warn{background:#ff5c5c;box-shadow:0 0 0 3px rgba(255,92,92,.25);animation:pulseDot 1.6s ease-in-out infinite}
-.header-dot.ok{background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.25)}
-@keyframes pulseDot{0%,100%{box-shadow:0 0 0 3px rgba(255,92,92,.25)}50%{box-shadow:0 0 0 8px rgba(255,92,92,0)}}
+header button{background:linear-gradient(180deg,var(--panel3),var(--panel2));border:1px solid var(--border2);color:var(--text);font-size:17px;cursor:pointer;padding:8px;border-radius:12px;min-width:var(--tap);min-height:var(--tap);display:flex;align-items:center;justify-content:center;position:relative;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s, border-color .2s, background .2s;margin:0 2px;box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.08),inset 0 -2px 0 rgba(0,0,0,.4)}
+header button::before{content:'';position:absolute;top:2px;left:6px;right:6px;height:30%;border-radius:8px 8px 40% 40%;background:linear-gradient(180deg,rgba(232,230,226,.12),transparent);pointer-events:none}
+header button:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 24px rgba(167,139,250,.35),inset 0 1px 0 rgba(232,230,226,.15),inset 0 -2px 0 rgba(0,0,0,.4)}
+header button:active{transform:translateY(1px) scale(.96);box-shadow:inset 0 2px 6px rgba(0,0,0,.5),0 0 16px rgba(167,139,250,.2)}
+.header-dot{width:12px;height:12px;border-radius:50%;background:transparent;flex-shrink:0;margin:0 6px;transition:background .2s}
+.header-dot.warn{background:var(--danger);animation:pulseDot 1.6s ease-in-out infinite;box-shadow:0 0 12px var(--danger)}
+.header-dot.ok{background:var(--ok);box-shadow:0 0 12px var(--ok)}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.2)}}
+
+/* Призрак в шапке */
+.header-ghost{width:22px;height:22px;flex-shrink:0;margin:0 4px 0 8px;filter:drop-shadow(0 0 6px rgba(167,139,250,.4))}
+.header-ghost svg{width:100%;height:100%;display:block}
+.header-ghost .eye{animation:ghostBlink 4.2s ease-in-out infinite;transform-origin:center}
+@keyframes ghostBlink{0%,42%,58%,100%{transform:scaleY(1)}50%{transform:scaleY(.15)}}
+
 .layout{flex:1;display:flex;overflow:hidden;min-height:0;width:100%}
 .sidebar{display:flex;flex-direction:column;width:100%;height:100%;background:var(--panel);min-width:0}
-.chatpane{display:none;flex-direction:column;width:100%;height:100%;background:var(--bg);min-width:0}
+.chatpane{display:none;flex-direction:column;width:100%;height:100%;background:var(--bg);min-width:0;position:relative}
 body.in-chat .sidebar{display:none}
 body.in-chat .chatpane{display:flex}
 body.in-chat #backBtn{display:inline-flex !important}
@@ -60,184 +106,342 @@ body.in-chat #backBtn{display:inline-flex !important}
   body.in-chat .sidebar{display:flex}
   body.in-chat #backBtn{display:none !important}
 }
-.search{margin:10px 14px 0;padding:12px;background:var(--panel2);border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:16px}
-.search:focus{border-color:var(--accent)}
-.createBtn{margin:10px 14px 0;padding:12px;text-align:center;border-radius:14px;border:1px dashed var(--border2);color:var(--muted);cursor:pointer;font-size:14px}
-.chatList{flex:1;overflow-y:auto;padding:8px 8px 14px}
-.chat-item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;cursor:pointer;min-height:64px}
-.chat-item:active{background:rgba(127,127,127,.15)}
-.avatar{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;overflow:hidden;background-size:cover;background-position:center}
-.avatar.sm{width:34px;height:34px;font-size:13px}
+
+/* Поиск */
+.search{margin:10px 12px 0;padding:12px 14px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
+.search:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
+.search::placeholder{color:var(--muted2)}
+
+.createBtn{margin:8px 12px 0;padding:11px;text-align:center;border-radius:12px;border:1px dashed var(--border2);color:var(--muted);cursor:pointer;font-size:13.5px;transition:all .2s;background:linear-gradient(180deg,transparent,rgba(167,139,250,.04))}
+.createBtn:hover{border-color:var(--accent);color:var(--accent-bright);background:linear-gradient(180deg,rgba(167,139,250,.08),rgba(167,139,250,.04));box-shadow:0 0 24px rgba(167,139,250,.15)}
+
+.chatList{flex:1;overflow-y:auto;padding:6px 8px 14px}
+.chat-item{display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;cursor:pointer;min-height:62px;transition:background .15s, transform .15s, box-shadow .15s;border:1px solid transparent}
+.chat-item:hover{background:linear-gradient(180deg,rgba(167,139,250,.12),rgba(167,139,250,.06));transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.chat-item:active{transform:translateY(1px) scale(.99);box-shadow:inset 0 2px 6px rgba(0,0,0,.4)}
+.chat-item.active{background:linear-gradient(180deg,var(--accent),var(--accent2));color:#150a26;border-color:var(--accent-bright);box-shadow:0 6px 20px rgba(139,92,246,.4), inset 0 1px 0 rgba(232,230,226,.2)}
+.chat-item.active .name,.chat-item.active .last{color:#150a26}
+.chat-item.active .last{opacity:.85}
+
+.avatar{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#a78bfa,#6d28d9);color:#150a26;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:17px;overflow:hidden;background-size:cover;background-position:center;box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 2px 0 rgba(232,230,226,.2),inset 0 -2px 0 rgba(0,0,0,.2)}
+.avatar.sm{width:34px;height:34px;font-size:14px}
+.avatar.c0{background:linear-gradient(135deg,#e17076,#c05055);color:#e8e6e2}
+.avatar.c1{background:linear-gradient(135deg,#faa774,#d98749);color:#150a26}
+.avatar.c2{background:linear-gradient(135deg,#a695e7,#8578d0);color:#150a26}
+.avatar.c3{background:linear-gradient(135deg,#7bc862,#5aa843);color:#150a26}
+.avatar.c4{background:linear-gradient(135deg,#6ec9cb,#4fa5a8);color:#150a26}
+.avatar.c5{background:linear-gradient(135deg,#65aadd,#4a8ac5);color:#150a26}
+.avatar.c6{background:linear-gradient(135deg,#ee7aae,#cf5f92);color:#150a26}
+.avatar.c7{background:linear-gradient(135deg,#90b7d1,#6b93ac);color:#150a26}
+
 .chat-item .meta{flex:1;min-width:0}
-.chat-item .name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chat-item .last{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-item .name{font-weight:500;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-item .last{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+
 .search-section{padding:12px 14px 6px;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.peer-bar{display:none;align-items:center;gap:10px;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;cursor:pointer;min-height:54px;transition:background .15s}
+
+.peer-bar{display:none;align-items:center;gap:10px;padding:8px 14px;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border);flex-shrink:0;cursor:pointer;min-height:54px;transition:background .15s}
 .peer-bar.show{display:flex}
-.peer-bar:active{background:rgba(127,127,127,.1)}
+.peer-bar:hover{background:linear-gradient(180deg,var(--panel3),var(--panel2))}
 .peer-bar .avatar{width:38px;height:38px;font-size:15px}
 .peer-bar .meta{flex:1;min-width:0}
-.peer-bar .name{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.peer-bar .status{font-size:12px;color:var(--muted);margin-top:1px}
-.peer-bar .status.online{color:var(--ok)}
-.peer-bar .status.typing{color:var(--accent)}
+.peer-bar .name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.peer-bar .status{font-size:12.5px;color:var(--muted);margin-top:1px}
+.peer-bar .status.online{color:var(--accent-bright)}
+.peer-bar .status.typing{color:var(--accent-bright)}
 .peer-bar .arrow{color:var(--muted);font-size:16px}
-.live-typing{display:none;padding:8px 14px;background:linear-gradient(135deg,rgba(124,92,255,.12),rgba(79,140,255,.08));border-bottom:1px solid rgba(124,92,255,.35);font-size:13px;color:#c7b3ff;flex-shrink:0;font-family:ui-monospace,Menlo,monospace;word-break:break-word;line-height:1.4;max-height:80px;overflow-y:auto}
+
+.live-typing{display:none;padding:8px 14px;background:linear-gradient(180deg,rgba(167,139,250,.12),rgba(167,139,250,.05));border-bottom:1px solid rgba(167,139,250,.25);font-size:13px;color:var(--accent-bright);flex-shrink:0;font-family:ui-monospace,Menlo,monospace;word-break:break-word;line-height:1.4;max-height:80px;overflow-y:auto}
 .live-typing.show{display:block}
-.live-typing .lbl{color:#8a7cff;font-weight:600;margin-right:6px}
-.archive-bar{padding:10px 14px;background:linear-gradient(135deg,rgba(255,184,77,.12),rgba(255,92,138,.12));border-bottom:1px solid rgba(255,184,77,.35);font-size:13px;display:none;flex-shrink:0}
+.live-typing .lbl{color:var(--accent-bright);font-weight:600;margin-right:6px}
+
+.archive-bar{padding:10px 14px;background:linear-gradient(180deg,rgba(251,191,36,.12),rgba(251,191,36,.05));border-bottom:1px solid rgba(251,191,36,.25);font-size:13px;display:none;flex-shrink:0}
 .archive-bar.show{display:block}
 .archive-bar .line{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.archive-bar.warn{padding:8px 14px;background:rgba(255,92,92,.1);border-bottom:1px solid rgba(255,92,92,.3);color:#ffb3b3;font-size:12.5px;display:none}
+.archive-bar.warn{padding:8px 14px;background:rgba(248,113,113,.1);border-bottom:1px solid rgba(248,113,113,.25);color:#fca5a5;font-size:12.5px;display:none}
 .archive-bar.warn.show{display:block}
-.archive-bar button{padding:6px 10px;border-radius:8px;border:0;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
-#messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:82%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.4;word-wrap:break-word;position:relative}
-.msg.them{align-self:flex-start;background:var(--them);border:1px solid var(--border);border-bottom-left-radius:4px}
-.msg.me{align-self:flex-end;background:linear-gradient(135deg,var(--mine),var(--mine2));color:#fff;border-bottom-right-radius:4px}
-.msg .time{display:block;font-size:10.5px;opacity:.7;margin-top:4px;text-align:right}
-.msg .ticks{display:inline-block;margin-left:4px;font-size:11px;font-weight:700;letter-spacing:-2px;vertical-align:middle}
-.msg .ticks.sent{color:rgba(255,255,255,.55)}
-.msg .ticks.delivered{color:rgba(255,255,255,.85)}
-.msg .ticks.read{color:#7cb8ff}
+.archive-bar button{padding:6px 12px;border-radius:8px;border:0;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.2),inset 0 -2px 0 rgba(0,0,0,.3);transition:transform .15s, box-shadow .2s}
+.archive-bar button:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.5),0 0 20px rgba(167,139,250,.35),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -2px 0 rgba(0,0,0,.3)}
+
+#messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:6px;background-image:radial-gradient(circle at 20% 30%,rgba(167,139,250,.06),transparent 50%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.04),transparent 50%);position:relative}
+.msg{max-width:80%;padding:8px 12px;border-radius:14px;font-size:15px;line-height:1.4;word-wrap:break-word;position:relative;animation:msgIn .25s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.msg.them{align-self:flex-start;background:linear-gradient(180deg,var(--them),rgba(0,0,0,.15));border:1px solid rgba(167,139,250,.12);border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.3),inset 0 1px 0 rgba(232,230,226,.04)}
+.msg.me{align-self:flex-end;background:linear-gradient(180deg,var(--mine),var(--mine2));color:var(--text);border-bottom-right-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.4),0 0 20px rgba(167,139,250,.15),inset 0 1px 0 rgba(232,230,226,.12)}
+.msg .time{display:inline-block;font-size:11px;opacity:.6;margin-left:6px;vertical-align:bottom;float:right;margin-top:6px}
+.msg .ticks{display:inline-block;margin-left:2px;font-size:11px;font-weight:700;letter-spacing:-2px;vertical-align:middle;opacity:.85}
+.msg .ticks.read{color:var(--accent-bright)}
 .msg.them .ticks{color:var(--muted)}
-.msg .hashtag{color:#7cb8ff;cursor:pointer;font-weight:600}
-.msg .sname{display:block;font-size:11.5px;font-weight:700;color:var(--accent);margin-bottom:3px}
+.msg .hashtag{color:var(--accent-bright);cursor:pointer;font-weight:500}
+.msg .sname{display:block;font-size:12px;font-weight:600;color:var(--accent-bright);margin-bottom:2px}
 .msg .attach{display:block;margin:6px 0;max-width:100%;border-radius:10px;overflow:hidden;text-decoration:none;color:inherit}
-.msg .attach .file-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.25);padding:10px 12px;border-radius:10px;font-size:13px;min-width:180px}
+.msg .attach .file-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.25);padding:10px 12px;border-radius:8px;font-size:13px;min-width:180px}
 .msg .attach .file-row .fi{font-size:22px;flex-shrink:0}
-.msg .attach .file-row .fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.msg .attach .file-row .fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
 .msg .attach .file-row .fs{opacity:.65;font-size:11.5px;flex-shrink:0}
 .reactions{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
-.reaction{background:rgba(127,127,127,.15);padding:2px 8px;border-radius:10px;font-size:12px;cursor:pointer}
-.composer{display:flex;gap:10px;padding:12px 14px;border-top:1px solid var(--border);background:var(--panel);flex-shrink:0;align-items:center}
-.composer input{flex:1;min-width:0;padding:12px 16px;background:var(--panel2);border:1px solid var(--border2);border-radius:24px;color:var(--text);outline:none;font-size:15px}
-.composer .send-btn{width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;font-size:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;flex-shrink:0}
-.composer .emoji-btn,.composer .attach-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-size:18px;flex-shrink:0}
-.empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px;padding:0 20px}
-.panel{position:fixed;inset:0;z-index:70;display:none;background:rgba(0,0,0,.5)}
-.panel.open{display:block}
-.panel .box{position:absolute;top:0;right:0;bottom:0;width:min(520px,100vw);background:var(--panel);display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+.reaction{background:rgba(167,139,250,.12);padding:2px 8px;border-radius:10px;font-size:12px;cursor:pointer;transition:background .15s, transform .15s}
+.reaction:hover{background:rgba(167,139,250,.3);transform:translateY(-1px)}
+
+.composer{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);background:linear-gradient(180deg,var(--panel2),var(--panel));flex-shrink:0;align-items:center}
+.composer input{flex:1;min-width:0;padding:11px 16px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:22px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
+.composer input:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
+.composer input::placeholder{color:var(--muted2)}
+.composer .send-btn{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:16px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;flex-shrink:0;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;box-shadow:0 4px 16px rgba(139,92,246,.5),inset 0 1px 0 rgba(232,230,226,.25),inset 0 -2px 0 rgba(0,0,0,.3)}
+.composer .send-btn:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 8px 28px rgba(139,92,246,.6),0 0 32px rgba(167,139,250,.5),inset 0 1px 0 rgba(232,230,226,.35),inset 0 -2px 0 rgba(0,0,0,.3)}
+.composer .send-btn:active{transform:translateY(1px) scale(.94);box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
+.composer .emoji-btn,.composer .attach-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--border2);background:linear-gradient(180deg,var(--panel3),var(--panel2));color:var(--text2);cursor:pointer;font-size:18px;flex-shrink:0;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .2s, border-color .2s, color .2s;box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.08),inset 0 -2px 0 rgba(0,0,0,.3)}
+.composer .emoji-btn:hover,.composer .attach-btn:hover{color:var(--accent-bright);border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.5),0 0 24px rgba(167,139,250,.35),inset 0 1px 0 rgba(232,230,226,.12),inset 0 -2px 0 rgba(0,0,0,.3)}
+.composer .emoji-btn:active,.composer .attach-btn:active{transform:translateY(1px);box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
+
+.empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px;padding:0 20px;line-height:1.6}
+.empty-chat-ghost{width:120px;height:120px;margin:0 auto 20px;filter:drop-shadow(0 10px 30px rgba(167,139,250,.4));opacity:.35;animation:ghostFloat 4s ease-in-out infinite}
+@keyframes ghostFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+.empty-chat-ghost .eye{animation:ghostBlink 4.2s ease-in-out infinite;transform-origin:center}
+
+/* Панели */
+.panel{position:fixed;inset:0;z-index:70;display:none;background:rgba(8,2,18,.75);backdrop-filter:blur(6px)}
+.panel.open{display:block;animation:panelFade .25s ease-out}
+@keyframes panelFade{from{opacity:0}to{opacity:1}}
+.panel .box{position:absolute;top:0;right:0;bottom:0;width:min(520px,100vw);background:linear-gradient(180deg,var(--panel),var(--bg));display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0);box-shadow:-20px 0 60px rgba(0,0,0,.7);border-left:1px solid rgba(167,139,250,.25);animation:panelSlide .3s cubic-bezier(.2,.9,.3,1.1)}
+@keyframes panelSlide{from{transform:translateX(40px);opacity:.6}to{transform:translateX(0);opacity:1}}
 @media(max-width:600px){.panel .box{width:100vw}}
-.st-header{height:58px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--border);flex-shrink:0}
-.st-header h2{margin:0;font-size:17px}
+
+.st-header{height:56px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--border);flex-shrink:0;background:linear-gradient(180deg,var(--panel2),var(--panel))}
+.st-header h2{margin:0;font-size:16px;font-weight:600}
 .st-header .spacer{flex:1}
-.st-header button{background:transparent;border:0;color:var(--text);font-size:22px;cursor:pointer;padding:6px;min-width:var(--tap)}
-.st-back{background:transparent;border:0;color:var(--text);font-size:22px;cursor:pointer;padding:6px;min-width:var(--tap)}
+.st-header button{background:linear-gradient(180deg,var(--panel3),var(--panel2));border:1px solid var(--border2);color:var(--text2);font-size:18px;cursor:pointer;padding:6px;min-width:var(--tap);border-radius:10px;transition:transform .15s, box-shadow .2s, border-color .2s, color .2s;box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.08),inset 0 -2px 0 rgba(0,0,0,.3)}
+.st-header button:hover{color:var(--accent-bright);border-color:var(--accent);transform:translateY(-1px)}
+.st-back{background:linear-gradient(180deg,var(--panel3),var(--panel2));border:1px solid var(--border2);color:var(--text);font-size:18px;cursor:pointer;padding:6px;min-width:var(--tap);border-radius:10px;transition:transform .15s, box-shadow .2s, border-color .2s, color .2s;box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.08),inset 0 -2px 0 rgba(0,0,0,.3)}
+.st-back:hover{color:var(--accent-bright);border-color:var(--accent);transform:translateY(-1px)}
+
 .st-body{flex:1;overflow-y:auto;padding:14px}
-.st-section{margin-bottom:20px}
-.st-section h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted)}
-.st-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--panel2);margin-bottom:8px;cursor:pointer;min-height:56px}
-.st-row:active{background:rgba(127,127,127,.2)}
-.st-row .icon{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:18px}
+.st-section{margin-bottom:22px}
+.st-section h3{margin:0 0 10px;font-size:11.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);padding-left:4px}
+.st-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(167,139,250,.05),transparent);border:1px solid transparent;margin-bottom:3px;cursor:pointer;min-height:56px;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), background .15s, border-color .15s, box-shadow .15s}
+.st-row:hover{background:linear-gradient(180deg,rgba(167,139,250,.15),rgba(167,139,250,.06));border-color:rgba(167,139,250,.3);transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.35),0 0 20px rgba(167,139,250,.15)}
+.st-row:active{transform:translateY(1px) scale(.99);box-shadow:inset 0 2px 6px rgba(0,0,0,.4)}
+.st-row .icon{width:36px;height:36px;border-radius:50%;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;font-size:17px;box-shadow:0 3px 10px rgba(139,92,246,.4),inset 0 1px 0 rgba(232,230,226,.25),inset 0 -2px 0 rgba(0,0,0,.2)}
 .st-row .txt{flex:1;min-width:0}
-.st-row .t1{font-weight:600;font-size:14.5px}
-.st-row .t2{font-size:12px;color:var(--muted)}
-.switch{position:relative;width:46px;height:26px;border-radius:14px;background:var(--border2);cursor:pointer;flex-shrink:0;transition:background .2s}
-.switch.on{background:var(--accent)}
-.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.st-row .t1{font-weight:500;font-size:14.5px}
+.st-row .t2{font-size:12.5px;color:var(--muted);margin-top:1px}
+
+.switch{position:relative;width:46px;height:26px;border-radius:14px;background:linear-gradient(180deg,var(--border),var(--border2));cursor:pointer;flex-shrink:0;transition:background .25s;box-shadow:inset 0 2px 4px rgba(0,0,0,.5)}
+.switch.on{background:linear-gradient(180deg,var(--accent-bright),var(--accent));box-shadow:0 0 20px rgba(167,139,250,.4),inset 0 1px 0 rgba(232,230,226,.2)}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#fff,var(--text2));transition:transform .25s cubic-bezier(.2,.9,.3,1.4);box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .switch.on::after{transform:translateX(20px)}
-.balance-card{background:linear-gradient(135deg,rgba(255,184,77,.12),rgba(255,92,138,.12));border:1px solid rgba(255,184,77,.35);border-radius:16px;padding:16px;text-align:center;margin-bottom:14px}
-.balance-card .num{font-size:32px;font-weight:700;color:#ffb84d;margin:4px 0}
+
+.balance-card{background:linear-gradient(180deg,rgba(167,139,250,.18),rgba(167,139,250,.05));border:1px solid rgba(167,139,250,.3);border-radius:16px;padding:20px;text-align:center;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 40px rgba(167,139,250,.15),inset 0 1px 0 rgba(232,230,226,.08)}
+.balance-card .num{font-size:32px;font-weight:700;color:var(--accent-bright);margin:4px 0;text-shadow:0 0 20px rgba(167,139,250,.5)}
 .balance-card .lbl{font-size:12.5px;color:var(--muted)}
-.card-info{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:10px;font-size:14px;line-height:1.7}
-.card-info .num{font-family:ui-monospace,Menlo,monospace;font-size:16px;letter-spacing:1.5px;color:var(--accent);font-weight:700;margin:4px 0;cursor:pointer;transition:color .15s}
-.card-info .num:hover{color:#7cb8ff}
-.card-info .num.copied{color:#4ade80 !important}
-.card-info .num .copy-hint{font-size:11px;color:var(--muted);font-weight:400;margin-left:8px;font-family:system-ui,sans-serif;letter-spacing:0}
+
+.card-info{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:10px;font-size:14px;line-height:1.7;box-shadow:0 4px 12px rgba(0,0,0,.3),inset 0 1px 0 rgba(232,230,226,.04)}
+.card-info .num{font-family:ui-monospace,Menlo,monospace;font-size:16px;letter-spacing:1.5px;color:var(--accent-bright);font-weight:600;margin:4px 0;cursor:pointer;transition:color .15s}
+.card-info .num:hover{color:var(--accent-warm)}
+
 #toastBox{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:min(420px,calc(100vw - 24px))}
-.toast{background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
-.toast .t1{font-weight:700;font-size:14px}
+.toast{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:12px 14px;box-shadow:0 12px 32px rgba(0,0,0,.6),0 0 40px rgba(167,139,250,.2),inset 0 1px 0 rgba(232,230,226,.06);animation:toastIn .35s cubic-bezier(.2,.9,.3,1.2)}
+.toast .t1{font-weight:600;font-size:14px}
 .toast .t2{font-size:12.5px;color:var(--muted);margin-top:2px}
-.tokens-badge{background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;margin-left:4px}
-.premium-name{background:linear-gradient(135deg,#ffb84d,#ff5c8a,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
-.premium-badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff;margin-left:4px}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.tokens-badge{background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;font-size:11px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:4px;box-shadow:0 2px 8px rgba(139,92,246,.4),inset 0 1px 0 rgba(232,230,226,.2)}
+.premium-name{color:var(--accent-bright);font-weight:600;text-shadow:0 0 12px rgba(167,139,250,.5)}
+.premium-badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;margin-left:4px;box-shadow:0 2px 8px rgba(139,92,246,.4)}
 .smile-prefix{margin-right:3px}
-.text-prefix{background:linear-gradient(135deg,#ff5c8a,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;margin-right:3px}
-body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:#000a;color:#c7b3ff;padding:4px 12px;border-radius:999px;font-size:11px;letter-spacing:1.5px;z-index:40;pointer-events:none}
-.hero{text-align:center;padding:20px 14px;background:linear-gradient(135deg,rgba(79,140,255,.12),rgba(124,92,255,.12));border:1px solid rgba(79,140,255,.35);border-radius:18px;margin-bottom:14px}
-.hero .name{font-size:20px;font-weight:700}
-.hero .prefix{color:#ffb84d;font-weight:700;margin-right:4px}
+.text-prefix{color:var(--accent-bright);font-weight:600;margin-right:3px}
+
+body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(31,18,56,.95);color:var(--accent-bright);padding:4px 14px;border-radius:999px;font-size:11px;letter-spacing:1px;z-index:40;pointer-events:none;border:1px solid var(--accent);box-shadow:0 0 24px rgba(167,139,250,.5)}
+
+.hero{text-align:center;padding:22px 14px;background:linear-gradient(180deg,rgba(167,139,250,.15),rgba(167,139,250,.05));border:1px solid rgba(167,139,250,.3);border-radius:16px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.08)}
+.hero .name{font-size:20px;font-weight:600}
+.hero .prefix{color:var(--accent-bright);font-weight:600;margin-right:4px}
 .hero .sub{font-size:12.5px;color:var(--muted);margin-top:4px}
-.btn-mini{padding:6px 12px;font-size:12.5px;border-radius:8px;border:1px solid var(--border2);background:var(--panel2);color:var(--text);cursor:pointer;font-family:inherit}
-.btn-mini.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#fff}
-.btn-mini.bad{background:rgba(255,92,92,.12);border-color:rgba(255,92,92,.4);color:var(--danger)}
-.btn-mini.good{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.4);color:var(--ok)}
-.role-tag{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;text-transform:uppercase;margin-left:4px}
-.role-owner{background:linear-gradient(135deg,#ffb84d,#ff5c8a);color:#fff}
-.role-coowner{background:rgba(79,140,255,.3);color:#8ab6ff}
-.role-member{background:rgba(127,127,127,.2);color:var(--muted)}
-.vote-row{background:var(--panel2);border:1px solid var(--border2);border-radius:14px;padding:12px;margin-bottom:10px}
+
+.btn-mini{padding:6px 12px;font-size:12.5px;border-radius:8px;border:1px solid var(--border2);background:linear-gradient(180deg,var(--panel3),var(--panel2));color:var(--text);cursor:pointer;font-family:inherit;transition:transform .15s, box-shadow .2s, border-color .2s, color .2s;box-shadow:0 2px 6px rgba(0,0,0,.3),inset 0 1px 0 rgba(232,230,226,.06),inset 0 -1px 0 rgba(0,0,0,.3)}
+.btn-mini:hover{border-color:var(--accent);color:var(--accent-bright);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.4),0 0 16px rgba(167,139,250,.3)}
+.btn-mini.primary{background:linear-gradient(180deg,var(--accent-bright),var(--accent));border-color:transparent;color:#150a26;font-weight:600}
+.btn-mini.bad{background:linear-gradient(180deg,rgba(248,113,113,.2),rgba(248,113,113,.08));border-color:rgba(248,113,113,.4);color:var(--danger)}
+.btn-mini.good{background:linear-gradient(180deg,rgba(74,222,128,.2),rgba(74,222,128,.08));border-color:rgba(74,222,128,.4);color:var(--ok)}
+
+.role-tag{display:inline-block;font-size:10px;font-weight:600;padding:1px 6px;border-radius:6px;text-transform:uppercase;margin-left:4px;letter-spacing:.3px}
+.role-owner{background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26}
+.role-coowner{background:rgba(167,139,250,.3);color:var(--accent-bright);border:1px solid rgba(167,139,250,.4)}
+.role-member{background:rgba(167,139,250,.1);color:var(--muted)}
+
+.vote-row{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:12px;padding:12px;margin-bottom:8px;box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .vote-row .title{font-weight:600;font-size:14px;margin-bottom:6px}
 .vote-row .desc{font-size:12.5px;color:var(--muted);margin-bottom:8px;line-height:1.4}
 .vote-row .actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.tx-row{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--panel2);margin-bottom:6px;font-size:13.5px}
-.tx-row .ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.tx-row .ico.in{background:rgba(74,222,128,.15);color:var(--ok)}
-.tx-row .ico.out{background:rgba(255,92,92,.15);color:var(--danger)}
+
+.tx-row{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;background:linear-gradient(180deg,var(--panel2),var(--panel));margin-bottom:6px;font-size:13.5px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.tx-row .ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(232,230,226,.1)}
+.tx-row .ico.in{background:linear-gradient(180deg,rgba(74,222,128,.25),rgba(74,222,128,.1));color:var(--ok)}
+.tx-row .ico.out{background:linear-gradient(180deg,rgba(248,113,113,.25),rgba(248,113,113,.1));color:var(--danger)}
 .tx-row .info{flex:1;min-width:0}
-.tx-row .t1{font-weight:600}
+.tx-row .t1{font-weight:500}
 .tx-row .t2{font-size:11.5px;color:var(--muted);margin-top:1px}
-.tx-row .amount{font-weight:700;white-space:nowrap}
+.tx-row .amount{font-weight:600;white-space:nowrap}
 .tx-row .amount.pos{color:var(--ok)}
 .tx-row .amount.neg{color:var(--danger)}
-.report-input{width:100%;padding:13px 14px;background:var(--panel2);border:1px solid var(--border2);border-radius:12px;color:var(--text);outline:none;font-size:15px;resize:vertical;font-family:inherit}
+
+.report-input{width:100%;padding:13px 14px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:12px;color:var(--text);outline:none;font-size:15px;resize:vertical;font-family:inherit;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
+.report-input:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
 .field-label{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:14px 0 6px;font-weight:600}
+
 .admin-stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:14px}
-.admin-stat .card{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:10px;text-align:center}
-.admin-stat .num{font-size:20px;font-weight:700;color:var(--accent)}
+.admin-stat .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:12px;padding:12px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.3),inset 0 1px 0 rgba(232,230,226,.04)}
+.admin-stat .num{font-size:20px;font-weight:700;color:var(--accent-bright)}
 .admin-stat .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+
 .attach-row{display:flex;gap:8px;margin-top:10px}
-.attach-btn2{flex:1;padding:12px;border-radius:12px;border:1px dashed var(--border2);background:var(--panel2);color:var(--text);cursor:pointer;font-size:13.5px;text-align:center;font-family:inherit}
+.attach-btn2{flex:1;padding:12px;border-radius:12px;border:1px dashed var(--border2);background:linear-gradient(180deg,transparent,rgba(167,139,250,.04));color:var(--text);cursor:pointer;font-size:13.5px;text-align:center;font-family:inherit;transition:all .15s}
+.attach-btn2:hover{border-color:var(--accent);color:var(--accent-bright);background:linear-gradient(180deg,rgba(167,139,250,.08),rgba(167,139,250,.04))}
 .attach-preview{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.attach-preview .thumb{position:relative;width:72px;height:72px;border-radius:10px;background-size:cover;background-position:center;border:1px solid var(--border2)}
-.attach-preview .thumb .rm{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
-.emoji-panel{position:absolute;bottom:60px;left:12px;right:12px;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:10px;z-index:60;display:none;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.attach-preview .thumb{position:relative;width:72px;height:72px;border-radius:10px;background-size:cover;background-position:center;border:1px solid var(--border2);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.attach-preview .thumb .rm{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.7);color:var(--text);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
+
+.emoji-panel{position:absolute;bottom:56px;left:12px;right:12px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:14px;padding:10px;z-index:60;display:none;box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 40px rgba(167,139,250,.15);animation:emojiIn .2s ease-out}
 .emoji-panel.open{display:block}
+@keyframes emojiIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .emoji-panel .tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;max-height:60px;overflow-y:auto}
-.emoji-panel .tab{padding:4px 10px;border-radius:8px;font-size:12px;background:var(--panel2);border:1px solid var(--border2);cursor:pointer;color:var(--muted);white-space:nowrap}
-.emoji-panel .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.emoji-panel .tab{padding:4px 10px;border-radius:8px;font-size:12px;background:linear-gradient(180deg,var(--panel3),var(--panel2));border:1px solid var(--border2);cursor:pointer;color:var(--muted);white-space:nowrap;transition:all .15s;box-shadow:0 2px 6px rgba(0,0,0,.3),inset 0 1px 0 rgba(232,230,226,.06)}
+.emoji-panel .tab:hover{color:var(--accent-bright);border-color:var(--accent);transform:translateY(-1px)}
+.emoji-panel .tab.active{background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;border-color:transparent;box-shadow:0 3px 10px rgba(139,92,246,.5)}
 .emoji-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px;max-height:220px;overflow-y:auto}
-.emoji-grid .e{font-size:22px;text-align:center;padding:6px;border-radius:8px;cursor:pointer;background:transparent;border:0;color:inherit}
-.emoji-grid .e:hover{background:var(--panel2)}
-.msg .msg-menu-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:6px;background:rgba(0,0,0,.45);color:#fff;border:0;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;line-height:1}
+.emoji-grid .e{font-size:22px;text-align:center;padding:6px;border-radius:10px;cursor:pointer;background:transparent;border:0;color:inherit;transition:transform .15s, background .15s}
+.emoji-grid .e:hover{background:rgba(167,139,250,.15);transform:scale(1.15)}
+
+.msg .msg-menu-btn{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:6px;background:rgba(21,10,38,.6);color:var(--text);border:0;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;line-height:1;opacity:.7;transition:opacity .15s}
 .msg:hover .msg-menu-btn{display:flex}
-.msg.me .msg-menu-btn{background:rgba(0,0,0,.25)}
-.msg-menu{position:fixed;z-index:200;background:var(--panel);border:1px solid var(--border2);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.6);padding:6px;min-width:220px;display:none;font-size:14px}
+.msg-menu{position:fixed;z-index:200;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.7),0 0 30px rgba(167,139,250,.2);padding:6px;min-width:220px;display:none;font-size:14px;animation:menuIn .15s ease-out}
 .msg-menu.open{display:block}
-.msg-menu .mi{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--text);white-space:nowrap}
-.msg-menu .mi:hover{background:var(--panel2)}
-.msg-menu .mi.danger{color:#ff8a8a}
+@keyframes menuIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.msg-menu .mi{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--text);white-space:nowrap;transition:background .12s, transform .12s}
+.msg-menu .mi:hover{background:rgba(167,139,250,.15);transform:translateX(2px)}
+.msg-menu .mi.danger{color:#fca5a5}
+.msg-menu .mi.danger:hover{background:rgba(248,113,113,.15)}
 .msg-menu .sep{height:1px;background:var(--border);margin:4px 2px}
 .msg-menu .row-emojis{display:flex;gap:4px;padding:4px 6px 6px;border-bottom:1px solid var(--border);margin-bottom:4px}
-.msg-menu .row-emojis span{font-size:20px;cursor:pointer;padding:4px 6px;border-radius:8px}
-.msg-menu .row-emojis span:hover{background:var(--panel2)}
-#peerProfile{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px}
-#peerProfile.open{display:flex}
-#peerProfile .box{background:var(--panel);border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:380px;text-align:center}
-#peerProfile .avatar{width:96px;height:96px;font-size:34px;margin:0 auto 12px}
-#peerProfile .name{font-size:20px;font-weight:700}
+.msg-menu .row-emojis span{font-size:20px;cursor:pointer;padding:4px 6px;border-radius:8px;transition:transform .12s, background .12s}
+.msg-menu .row-emojis span:hover{background:rgba(167,139,250,.15);transform:scale(1.2)}
+
+#peerProfile{position:fixed;inset:0;z-index:80;background:rgba(8,2,18,.8);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
+#peerProfile.open{display:flex;animation:panelFade .2s ease-out}
+#peerProfile .box{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:20px;padding:24px;width:100%;max-width:380px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(167,139,250,.2),inset 0 1px 0 rgba(232,230,226,.06);animation:pop .3s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+#peerProfile .avatar{width:96px;height:96px;font-size:34px;margin:0 auto 12px;border-radius:50%;box-shadow:0 8px 24px rgba(0,0,0,.5),inset 0 2px 0 rgba(232,230,226,.15)}
+#peerProfile .name{font-size:20px;font-weight:600}
 #peerProfile .status{font-size:13px;color:var(--muted);margin-top:4px}
-#peerProfile .desc{font-size:13.5px;color:var(--text);margin-top:12px;line-height:1.5;padding:10px 12px;background:var(--panel2);border-radius:12px;text-align:left;min-height:50px}
+#peerProfile .desc{font-size:13.5px;color:var(--text);margin-top:12px;line-height:1.5;padding:10px 12px;background:rgba(0,0,0,.2);border-radius:10px;text-align:left;min-height:50px;border:1px solid var(--border)}
 #peerProfile .row{margin-top:14px}
-.upload-overlay{position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:#fff}
-.upload-overlay.show{display:flex}
-.upload-overlay .bar{width:220px;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
-.upload-overlay .bar .fill{height:100%;width:0;background:linear-gradient(90deg,#4f8cff,#7c5cff);transition:width .15s}
-.click-btn{width:180px;height:180px;border-radius:50%;border:0;cursor:pointer;background:radial-gradient(circle at 30% 30%,#5cff8f,#22a55a 60%,#0e6b30);color:#fff;font-size:22px;font-weight:800;letter-spacing:2px;box-shadow:0 20px 60px rgba(34,165,90,.6),0 0 0 8px rgba(34,165,90,.15);transition:transform .08s ease-out}
-.click-btn:active{transform:scale(.94)}
-.progress-outer{height:10px;background:var(--border2);border-radius:5px;overflow:hidden}
-.progress-inner{height:100%;background:linear-gradient(90deg,#22a55a,#4ade80);transition:width .15s}
-@media(max-width:600px){.msg-menu{left:12px !important;right:12px;bottom:12px;top:auto !important;max-height:70vh;overflow-y:auto;border-radius:16px;min-width:0}}
+
+.upload-overlay{position:fixed;inset:0;z-index:150;background:rgba(8,2,18,.85);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:var(--text)}
+.upload-overlay.show{display:flex;animation:panelFade .2s ease-out}
+.upload-overlay .bar{width:220px;height:6px;background:rgba(167,139,250,.2);border-radius:3px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(0,0,0,.3)}
+.upload-overlay .bar .fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-bright));transition:width .15s;box-shadow:0 0 12px rgba(167,139,250,.6)}
+
+.click-btn{width:180px;height:180px;border-radius:50%;border:0;cursor:pointer;background:radial-gradient(circle at 30% 25%,var(--accent-warm),var(--accent) 55%,var(--accent2) 100%);color:#150a26;font-size:22px;font-weight:800;letter-spacing:2px;box-shadow:0 20px 60px rgba(139,92,246,.6),0 0 0 8px rgba(167,139,250,.15),inset 0 4px 0 rgba(232,230,226,.25),inset 0 -6px 0 rgba(0,0,0,.25);transition:transform .08s ease-out, box-shadow .2s;position:relative;overflow:hidden}
+.click-btn::before{content:'';position:absolute;top:8%;left:15%;right:15%;height:35%;border-radius:50%;background:radial-gradient(ellipse,rgba(232,230,226,.35),transparent 70%);pointer-events:none}
+.click-btn:active{transform:scale(.94);box-shadow:0 10px 30px rgba(139,92,246,.5),0 0 0 4px rgba(167,139,250,.2),inset 0 6px 12px rgba(0,0,0,.3)}
+
+.progress-outer{height:10px;background:linear-gradient(180deg,var(--border),var(--border2));border-radius:5px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.4)}
+.progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-bright));transition:width .2s;box-shadow:0 0 12px rgba(167,139,250,.6)}
+
+/* ===== ВИНЬЕТКА ===== */
+.vignette{position:fixed;inset:0;z-index:500;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(21,10,38,.7) 100%);opacity:0;transition:opacity .4s ease-out}
+.vignette.show{opacity:1;transition:opacity .25s ease-in}
+
+/* ===== СЦЕНЫ ПРИЗРАКА ===== */
+.ghost-scene{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,0);transition:background .5s ease;pointer-events:none}
+.ghost-scene.show{display:flex;pointer-events:auto}
+.ghost-scene.dark{background:rgba(8,2,18,.92);backdrop-filter:blur(8px)}
+.ghost-scene.fade-out{background:rgba(0,0,0,0);transition:background .6s ease}
+.ghost-big{width:180px;height:180px;filter:drop-shadow(0 20px 60px rgba(167,139,250,.7));position:relative;z-index:2}
+.ghost-big svg{width:100%;height:100%;display:block}
+.ghost-big .eye{animation:ghostBlink 3.5s ease-in-out infinite;transform-origin:center}
+@keyframes ghostDescend{0%{transform:translateY(-100vh) scale(.6);opacity:0}40%{opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
+.ghost-big.descend{animation:ghostDescend 1.4s cubic-bezier(.3,.7,.4,1) forwards}
+@keyframes ghostHover{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.ghost-big.hover{animation:ghostHover 2.5s ease-in-out infinite}
+@keyframes ghostVanish{0%{transform:scale(1);opacity:1;filter:blur(0) drop-shadow(0 20px 60px rgba(167,139,250,.7))}40%{transform:scale(1.15);opacity:.9;filter:blur(2px) drop-shadow(0 20px 80px rgba(167,139,250,.9))}100%{transform:scale(.3) translateY(-40px);opacity:0;filter:blur(14px) drop-shadow(0 20px 100px rgba(167,139,250,0))}}
+.ghost-big.vanish{animation:ghostVanish 1.3s cubic-bezier(.4,0,.6,1) forwards}
+
+.ghost-scene .scene-text{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-1px;color:var(--text);margin-top:36px;opacity:0;text-align:center;text-shadow:0 4px 30px rgba(0,0,0,.7),0 0 40px rgba(167,139,250,.5);z-index:2}
+@keyframes textIn{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes textOut{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-20px) scale(.95)}}
+.ghost-scene .scene-text.in{animation:textIn .8s cubic-bezier(.2,.9,.3,1.2) forwards}
+.ghost-scene .scene-text.out{animation:textOut .8s ease-in forwards}
+.ghost-scene .scene-sub{font-size:14.5px;color:var(--muted);margin-top:8px;opacity:0;text-align:center;z-index:2}
+.ghost-scene .scene-sub.in{animation:textIn .8s .2s cubic-bezier(.2,.9,.3,1.2) forwards}
+.ghost-scene .scene-sub.out{animation:textOut .6s ease-in forwards}
+
+.flash{position:fixed;inset:0;z-index:700;background:radial-gradient(ellipse at center,rgba(232,230,226,.85),rgba(167,139,250,.4) 60%,transparent 100%);opacity:0;pointer-events:none;transition:opacity .35s ease-out}
+.flash.show{opacity:1;transition:opacity .2s ease-in}
+.flash.fade-out{opacity:0;transition:opacity .6s ease-out}
+
+/* ===== ЧАТ-БОТ ВОССТАНОВЛЕНИЯ ===== */
+.recovery-box{width:min(520px,100vw) !important}
+@media(min-width:820px){
+  .recovery-box{position:absolute !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%);bottom:auto !important;right:auto !important;height:min(720px,90vh);border-radius:20px;border:1px solid var(--border2);border-left:1px solid var(--border2) !important;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(167,139,250,.2)}
+}
+.recovery-header{background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border)}
+.recovery-avatar{width:38px;height:38px;border-radius:50%;padding:5px;background:linear-gradient(180deg,var(--panel3),var(--panel2));border:1px solid var(--border2);box-shadow:0 3px 10px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.1);flex-shrink:0}
+.recovery-avatar svg{width:100%;height:100%;display:block}
+.recovery-avatar .eye{animation:ghostBlink 4.2s ease-in-out infinite;transform-origin:center}
+.recovery-header h2{font-size:15px;margin-left:6px}
+.recovery-messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px;background-image:radial-gradient(circle at 20% 30%,rgba(167,139,250,.05),transparent 50%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.04),transparent 50%)}
+.recovery-msg{max-width:82%;padding:10px 14px;border-radius:14px;font-size:14.5px;line-height:1.5;word-wrap:break-word;animation:msgIn .3s cubic-bezier(.2,.9,.3,1.2)}
+.recovery-msg.bot{align-self:flex-start;background:linear-gradient(180deg,var(--them),rgba(0,0,0,.15));border:1px solid rgba(167,139,250,.15);border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.3),inset 0 1px 0 rgba(232,230,226,.04)}
+.recovery-msg.user{align-self:flex-end;background:linear-gradient(180deg,var(--mine),var(--mine2));color:var(--text);border-bottom-right-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.4),0 0 20px rgba(167,139,250,.15),inset 0 1px 0 rgba(232,230,226,.12)}
+.recovery-msg.system{align-self:center;background:transparent;color:var(--muted);font-size:12.5px;text-align:center;padding:6px 12px;font-style:italic}
+.recovery-msg .recovery-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.recovery-msg .recovery-actions button{padding:8px 14px;border-radius:10px;border:1px solid var(--border2);background:linear-gradient(180deg,var(--panel3),var(--panel2));color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;box-shadow:0 2px 6px rgba(0,0,0,.3),inset 0 1px 0 rgba(232,230,226,.08),inset 0 -1px 0 rgba(0,0,0,.3)}
+.recovery-msg .recovery-actions button:hover{border-color:var(--accent);color:var(--accent-bright);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.4),0 0 16px rgba(167,139,250,.3)}
+.recovery-msg .recovery-actions button.primary{background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;border-color:transparent}
+.recovery-composer{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);background:linear-gradient(180deg,var(--panel2),var(--panel));flex-shrink:0}
+.recovery-composer input{flex:1;padding:11px 16px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:22px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
+.recovery-composer input:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
+.recovery-composer .send-btn{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:16px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;flex-shrink:0;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;box-shadow:0 4px 16px rgba(139,92,246,.5),inset 0 1px 0 rgba(232,230,226,.25),inset 0 -2px 0 rgba(0,0,0,.3)}
+.recovery-composer .send-btn:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 8px 28px rgba(139,92,246,.6),0 0 32px rgba(167,139,250,.5),inset 0 1px 0 rgba(232,230,226,.35),inset 0 -2px 0 rgba(0,0,0,.3)}
+.recovery-composer .send-btn:active{transform:translateY(1px) scale(.94);box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
+
+/* ===== ПОКАЗ НОВОГО ПАРОЛЯ ===== */
+.password-reveal{position:fixed;inset:0;z-index:650;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(8,2,18,0);transition:background .5s ease;padding:20px}
+.password-reveal.show{display:flex}
+.password-reveal.dark{background:rgba(8,2,18,.95);backdrop-filter:blur(8px)}
+.password-reveal-inner{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:420px;width:100%}
+.password-ghost{width:160px;height:160px;filter:drop-shadow(0 20px 60px rgba(167,139,250,.7));transform:translateY(-100vh);opacity:0}
+.password-ghost.descend{animation:ghostDescend 1.4s cubic-bezier(.3,.7,.4,1) forwards}
+.password-ghost.hover{animation:ghostHover 2.5s ease-in-out infinite}
+.password-ghost .eye{animation:ghostBlink 3.5s ease-in-out infinite;transform-origin:center}
+.password-ghost.vanish{animation:ghostVanish 1.3s cubic-bezier(.4,0,.6,1) forwards}
+
+.password-reveal-title{font-size:15px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:24px;opacity:0}
+.password-reveal-title.show{animation:textIn .6s .3s cubic-bezier(.2,.9,.3,1.2) forwards}
+.password-reveal-pass{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:clamp(24px,5vw,36px);font-weight:800;letter-spacing:3px;color:var(--accent-bright);margin-top:14px;padding:16px 24px;border-radius:14px;background:linear-gradient(180deg,rgba(167,139,250,.15),rgba(167,139,250,.05));border:1px solid rgba(167,139,250,.35);box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 40px rgba(167,139,250,.25),inset 0 1px 0 rgba(232,230,226,.1);min-height:60px;display:flex;align-items:center;justify-content:center;text-shadow:0 0 20px rgba(167,139,250,.6);opacity:0}
+.password-reveal-pass.show{animation:textIn .5s cubic-bezier(.2,.9,.3,1.2) forwards}
+.password-reveal-pass .cursor{display:inline-block;width:3px;height:36px;background:var(--accent-bright);margin-left:4px;animation:cursorBlink 1s steps(2) infinite;vertical-align:middle;box-shadow:0 0 12px var(--accent-bright)}
+@keyframes cursorBlink{50%{opacity:0}}
+.password-reveal-hint{font-size:13.5px;color:var(--muted);margin-top:18px;line-height:1.5;opacity:0}
+.password-reveal-hint.show{animation:textIn .6s .3s cubic-bezier(.2,.9,.3,1.2) forwards}
+.password-reveal-btn{margin-top:28px;padding:14px 36px;border-radius:14px;border:0;cursor:pointer;font-size:16px;font-weight:700;font-family:inherit;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;box-shadow:0 8px 28px rgba(139,92,246,.5),0 0 40px rgba(167,139,250,.4),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -3px 0 rgba(0,0,0,.2);opacity:0;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s}
+.password-reveal-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(139,92,246,.6),0 0 60px rgba(167,139,250,.5),inset 0 1px 0 rgba(232,230,226,.4),inset 0 -3px 0 rgba(0,0,0,.2)}
+.password-reveal-btn:active{transform:translateY(1px) scale(.98)}
+.password-reveal-btn.show{animation:textIn .6s .5s cubic-bezier(.2,.9,.3,1.2) forwards}
+
 @media(max-width:600px){
+  .msg-menu{left:12px !important;right:12px;bottom:12px;top:auto !important;max-height:70vh;overflow-y:auto;border-radius:16px;min-width:0}
   body:not(.in-chat) #hTitle{display:none !important}
   body:not(.in-chat) #chatSaveBtn{display:none !important}
   body:not(.in-chat) #chatSaveDot{display:none !important}
   body.in-chat #notifBtn{display:none !important}
   body.in-chat #openShopBtn{display:none !important}
+  .ghost-big{width:140px;height:140px}
 }
 ::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--border3),var(--border2));border-radius:8px;border:1px solid var(--border)}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
 ::-webkit-scrollbar-track{background:transparent}
 </style>
 </head>
@@ -245,6 +449,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 
 <div id="loading"><div class="spinner"></div><div style="color:var(--muted);font-size:13px">Подключение...</div></div>
 
+<!-- АВТОРИЗАЦИЯ -->
 <div id="auth">
   <div class="card">
     <div id="authMode">
@@ -255,32 +460,53 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
       <input id="inPass" type="password" placeholder="Пароль"/>
       <button class="btn" onclick="doLogin()">Войти</button>
       <div class="row"><button class="btn ghost" onclick="switchTo('reg')">Регистрация</button></div>
+      <div class="row"><button class="btn ghost" onclick="openRecoveryBot()" style="font-size:13px">Забыли пароль?</button></div>
     </div>
     <div id="regMode" style="display:none">
       <h1>Регистрация</h1>
-      <p class="sub">Придумай логин и пароль</p>
+      <p class="sub">Придумай логин, пароль и секретный вопрос</p>
       <div id="regMsg" class="msg-ok"></div>
       <input id="regLogin" placeholder="Логин (мин. 3)" autocapitalize="off"/>
       <input id="regPass" type="password" placeholder="Пароль (мин. 6)"/>
       <input id="regPass2" type="password" placeholder="Повтори пароль"/>
+      <input id="regQuestion" placeholder="Секретный вопрос (например: «Кличка первой собаки»)" autocapitalize="off"/>
+      <input id="regAnswer" placeholder="Ответ на вопрос (запомни точно)" autocapitalize="off"/>
       <button class="btn" onclick="doRegister()">Создать аккаунт</button>
       <div class="row"><button class="btn ghost" onclick="switchTo('login')">Назад</button></div>
     </div>
   </div>
 </div>
 
+<!-- ПРИЛОЖЕНИЕ -->
 <div id="app">
   <header>
     <button id="backBtn" style="display:none" onclick="backToList()">←</button>
     <button id="homeBtn" onclick="location.href='index.html'" title="На главную">🏠</button>
+    <div class="header-ghost">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#a78bfa"/>
+            <stop offset="100%" stop-color="#6d28d9"/>
+          </linearGradient>
+        </defs>
+        <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#hg)"/>
+        <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+        <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+        <g class="eye">
+          <circle cx="40" cy="44" r="1.6" fill="#e8e6e2"/>
+          <circle cx="60" cy="44" r="1.6" fill="#e8e6e2"/>
+        </g>
+      </svg>
+    </div>
     <div class="title" id="hTitle" onclick="openChatInfo()">Ink</div>
     <div class="spacer"></div>
     <div id="chatSaveDot" class="header-dot" title="Статус сохранения" style="display:none"></div>
     <button id="chatSaveBtn" onclick="saveFromHeader()" title="Сохранить переписку" style="display:none">💾</button>
     <button id="notifBtn" onclick="toggleNotifications()" title="Уведомления">🔔</button>
     <button id="openShopBtn" onclick="openShop()">💰<span class="tokens-badge" id="tokensCount">0</span></button>
-    <button onclick="toggleInkognito()">🕶️</button>
-    <button onclick="openSettings()">⚙️</button>
+    <button onclick="toggleInkognito()" title="Inkognito">🕶️</button>
+    <button onclick="openSettings()" title="Настройки">⚙️</button>
   </header>
   <div class="layout">
     <div class="sidebar">
@@ -321,6 +547,7 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
   </div>
 </div>
 
+<!-- ПАНЕЛИ -->
 <div class="panel" id="settings"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Настройки</h2><div class="spacer"></div><button onclick="closePanel('settings')">✕</button></div><div class="st-body" id="settingsBody"></div></div></div>
 <div class="panel" id="editProfile"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Мой профиль</h2><div class="spacer"></div><button onclick="closePanel('editProfile')">✕</button></div><div class="st-body" id="editProfileBody"></div></div></div>
 <div class="panel" id="premiumPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>💎 Premium</h2><div class="spacer"></div><button onclick="closePanel('premiumPanel')">✕</button></div><div class="st-body" id="premiumBody"></div></div></div>
@@ -340,6 +567,39 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 <div class="panel" id="clickerPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🖱️ Кликер</h2><div class="spacer"></div><button onclick="closePanel('clickerPanel')">✕</button></div><div class="st-body" id="clickerBody"></div></div></div>
 <div class="panel" id="reportPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="reportTitle">⚠️ Жалоба</h2><div class="spacer"></div><button onclick="closePanel('reportPanel')">✕</button></div><div class="st-body" id="reportBody"></div></div></div>
 <div class="panel" id="adminPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Админ-панель</h2><div class="spacer"></div><button onclick="closePanel('adminPanel')">✕</button></div><div class="st-body" id="adminBody"></div></div></div>
+
+<!-- ЧАТ-БОТ ВОССТАНОВЛЕНИЯ -->
+<div class="panel" id="recoveryBot">
+  <div class="box recovery-box">
+    <div class="st-header recovery-header">
+      <button class="st-back" onclick="closeRecoveryBot()">←</button>
+      <div class="recovery-avatar">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="rgBot" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#a78bfa"/>
+              <stop offset="100%" stop-color="#6d28d9"/>
+            </linearGradient>
+          </defs>
+          <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#rgBot)"/>
+          <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+          <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
+          <g class="eye">
+            <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+            <circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/>
+          </g>
+        </svg>
+      </div>
+      <h2>Восстановление</h2>
+      <div class="spacer"></div>
+    </div>
+    <div class="recovery-messages" id="recoveryMessages"></div>
+    <div class="recovery-composer">
+      <input id="recoveryInput" placeholder="Сообщение..." onkeydown="if(event.key==='Enter'){event.preventDefault();recoverySend();}"/>
+      <button class="send-btn" onclick="recoverySend()">➤</button>
+    </div>
+  </div>
+</div>
 
 <div id="peerProfile"><div class="box" onclick="event.stopPropagation()">
   <div class="avatar" id="ppAvatar"></div>
@@ -364,6 +624,54 @@ body.inkognito::after{content:"РЕЖИМ INKOGNITO";position:fixed;bottom:8px;l
 
 <div id="toastBox"></div>
 
+<!-- ВИНЬЕТКА, ВСПЫШКА, СЦЕНЫ -->
+<div class="vignette" id="vignette"></div>
+<div class="flash" id="flash"></div>
+<div class="ghost-scene" id="ghostScene">
+  <svg class="ghost-big" id="ghostBig" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gbg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#a78bfa"/>
+        <stop offset="100%" stop-color="#6d28d9"/>
+      </linearGradient>
+    </defs>
+    <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#gbg)"/>
+    <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+    <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
+    <g class="eye">
+      <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+      <circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/>
+    </g>
+  </svg>
+  <div class="scene-text" id="sceneText"></div>
+  <div class="scene-sub" id="sceneSub"></div>
+</div>
+
+<!-- СЦЕНА ПОКАЗА ПАРОЛЯ -->
+<div class="password-reveal" id="passwordReveal">
+  <div class="password-reveal-inner">
+    <svg class="password-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="prg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#a78bfa"/>
+          <stop offset="100%" stop-color="#6d28d9"/>
+        </linearGradient>
+      </defs>
+      <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#prg)"/>
+      <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+      <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
+      <g class="eye">
+        <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+        <circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/>
+      </g>
+    </svg>
+    <div class="password-reveal-title">Новый пароль</div>
+    <div class="password-reveal-pass" id="passwordRevealPass"></div>
+    <div class="password-reveal-hint">Сохрани его — больше не будет показан</div>
+    <button class="password-reveal-btn" id="passwordRevealBtn" onclick="closePasswordReveal()" style="display:none">Войти →</button>
+  </div>
+</div>
+
 <script>
 /* ============================================================ */
 /* НАСТРОЙКА */
@@ -386,12 +694,180 @@ let CURRENT_PEER_ID = null;
 let SEARCH_DEBOUNCE = null;
 let SEARCH_RESULTS = [];
 
-/* КЛИКЕР */
 let CLICKER_STATE = { total:0, tokensEarned:0, tokens:0, toNextToken:1000 };
 let CLICKER_PENDING = 0;
 let CLICKER_FLUSH_TIMER = null;
 let CLICKER_LOCAL_TOTAL = 0;
 
+function avatarColorClass(id){
+  const n = String(id || '?').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  return 'c' + (n % 8);
+}
+
+/* ============================================================ */
+/* АНИМАЦИЯ PREMIUM */
+/* ============================================================ */
+function playPremiumAnim(){
+  return new Promise((resolve) => {
+    const scene = document.getElementById('ghostScene');
+    const ghost = document.getElementById('ghostBig');
+    const text = document.getElementById('sceneText');
+    const sub = document.getElementById('sceneSub');
+    const flash = document.getElementById('flash');
+
+    ghost.className = 'ghost-big';
+    text.className = 'scene-text';
+    sub.className = 'scene-sub';
+    text.textContent = '';
+    sub.textContent = '';
+
+    scene.classList.add('show');
+    setTimeout(() => scene.classList.add('dark'), 30);
+    setTimeout(() => ghost.classList.add('descend'), 200);
+    setTimeout(() => { ghost.classList.remove('descend'); ghost.classList.add('hover'); }, 1700);
+    setTimeout(() => { text.textContent = '🎉 Поздравляем!'; text.classList.add('in'); }, 2200);
+    setTimeout(() => { sub.textContent = 'Premium активирован на 30 дней'; sub.classList.add('in'); }, 2600);
+    setTimeout(() => { text.classList.remove('in'); text.classList.add('out'); sub.classList.remove('in'); sub.classList.add('out'); }, 4400);
+    setTimeout(() => { ghost.classList.remove('hover'); ghost.classList.add('vanish'); scene.classList.remove('dark'); scene.classList.add('fade-out'); }, 4800);
+    setTimeout(() => { flash.classList.add('show'); }, 5400);
+    setTimeout(() => {
+      scene.classList.remove('show', 'fade-out');
+      flash.classList.remove('show');
+      flash.classList.add('fade-out');
+      setTimeout(() => flash.classList.remove('fade-out'), 700);
+      resolve();
+    }, 5800);
+  });
+}
+
+/* ============================================================ */
+/* АНИМАЦИЯ INKOGNITO (первый раз) */
+/* ============================================================ */
+function playInkognitoFirstAnim(){
+  return new Promise((resolve) => {
+    const scene = document.getElementById('ghostScene');
+    const ghost = document.getElementById('ghostBig');
+    const text = document.getElementById('sceneText');
+    const sub = document.getElementById('sceneSub');
+    const flash = document.getElementById('flash');
+
+    ghost.className = 'ghost-big';
+    text.className = 'scene-text';
+    sub.className = 'scene-sub';
+    text.textContent = '';
+    sub.textContent = '';
+
+    scene.classList.add('show');
+    setTimeout(() => scene.classList.add('dark'), 30);
+    setTimeout(() => ghost.classList.add('descend'), 200);
+    setTimeout(() => { ghost.classList.remove('descend'); ghost.classList.add('hover'); }, 1600);
+    setTimeout(() => {
+      const btn = document.createElement('button');
+      btn.className = 'ghost-press-btn';
+      btn.textContent = 'Активировать Inkognito';
+      btn.style.cssText = 'margin-top:36px;padding:14px 32px;border-radius:14px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;font-weight:700;font-size:16px;border:0;cursor:pointer;box-shadow:0 8px 28px rgba(139,92,246,.5);z-index:2;font-family:inherit';
+      scene.appendChild(btn);
+      setTimeout(() => {
+        btn.style.opacity = '0';
+        btn.style.transition = 'opacity .4s';
+        ghost.classList.remove('hover');
+        ghost.classList.add('vanish');
+        setTimeout(() => { text.textContent = '🕶️ Режим призрака активирован'; text.classList.add('in'); }, 400);
+      }, 1800);
+      setTimeout(() => btn.remove(), 3600);
+    }, 1800);
+    setTimeout(() => { text.classList.remove('in'); text.classList.add('out'); }, 4000);
+    setTimeout(() => { scene.classList.remove('dark'); scene.classList.add('fade-out'); }, 4400);
+    setTimeout(() => { flash.classList.add('show'); }, 4700);
+    setTimeout(() => {
+      scene.classList.remove('show', 'fade-out');
+      flash.classList.remove('show');
+      flash.classList.add('fade-out');
+      setTimeout(() => flash.classList.remove('fade-out'), 700);
+      resolve();
+    }, 5100);
+  });
+}
+
+function quickVignette(){
+  const v = document.getElementById('vignette');
+  v.classList.add('show');
+  setTimeout(() => v.classList.remove('show'), 900);
+}
+
+/* ============================================================ */
+/* ПОКАЗ НОВОГО ПАРОЛЯ */
+/* ============================================================ */
+let PASSWORD_REVEAL_CTX = null;
+
+function playPasswordReveal(login, password){
+  PASSWORD_REVEAL_CTX = { login, password };
+
+  const overlay = document.getElementById('passwordReveal');
+  const ghost = overlay.querySelector('.password-ghost');
+  const title = overlay.querySelector('.password-reveal-title');
+  const passEl = document.getElementById('passwordRevealPass');
+  const hint = overlay.querySelector('.password-reveal-hint');
+  const btn = document.getElementById('passwordRevealBtn');
+
+  ghost.className = 'password-ghost';
+  title.className = 'password-reveal-title';
+  passEl.className = 'password-reveal-pass';
+  hint.className = 'password-reveal-hint';
+  btn.className = 'password-reveal-btn';
+  passEl.textContent = '';
+  btn.style.display = 'none';
+
+  overlay.classList.add('show');
+  setTimeout(() => overlay.classList.add('dark'), 30);
+  setTimeout(() => ghost.classList.add('descend'), 200);
+  setTimeout(() => { ghost.classList.remove('descend'); ghost.classList.add('hover'); }, 1700);
+
+  setTimeout(() => title.classList.add('show'), 2000);
+
+  setTimeout(() => {
+    passEl.classList.add('show');
+    let i = 0;
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    passEl.appendChild(cursor);
+    const t = setInterval(() => {
+      if(i < password.length){
+        cursor.insertAdjacentText('beforebegin', password[i]);
+        i++;
+      } else {
+        clearInterval(t);
+        setTimeout(() => cursor.remove(), 1000);
+      }
+    }, 90);
+  }, 2500);
+
+  setTimeout(() => hint.classList.add('show'), 4200);
+  setTimeout(() => { btn.style.display = ''; btn.classList.add('show'); }, 4700);
+}
+
+function closePasswordReveal(){
+  const overlay = document.getElementById('passwordReveal');
+  const ghost = overlay.querySelector('.password-ghost');
+  ghost.classList.remove('hover');
+  ghost.classList.add('vanish');
+  overlay.classList.remove('dark');
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    if(PASSWORD_REVEAL_CTX){
+      $('inLogin').value = PASSWORD_REVEAL_CTX.login;
+      $('inPass').value = '';
+      $('inPass').focus();
+      showMsg('authMsg', 'Введи новый пароль', 'ok');
+      setTimeout(() => { const m = $('authMsg'); if(m) m.className = 'msg-ok'; }, 3500);
+    }
+    PASSWORD_REVEAL_CTX = null;
+  }, 400);
+}
+
+/* ============================================================ */
+/* API */
+/* ============================================================ */
 async function api(path, method, body){
   const opt = { method: method || 'GET', headers: {'Content-Type':'application/json'} };
   if(TOKEN) opt.headers['Authorization'] = 'Bearer ' + TOKEN;
@@ -434,14 +910,203 @@ function closePanel(id){ const el=document.getElementById(id); if(el) el.classLi
 function goBack(){ if(!STACK.length) return; const cur = STACK.pop(); const curEl = document.getElementById(cur); if(curEl) curEl.classList.remove('open'); const prev = STACK[STACK.length-1]; if(prev){ const p = document.getElementById(prev); if(p) p.classList.add('open'); } }
 
 /* ============================================================ */
+/* ЧАТ-БОТ ВОССТАНОВЛЕНИЯ */
+/* ============================================================ */
+let RECOVERY_STATE = { step: 'login', login: null, question: null, attempts: 0, contact: null };
+
+function openRecoveryBot(){
+  RECOVERY_STATE = { step: 'login', login: null, question: null, attempts: 0, contact: null };
+  $('recoveryMessages').innerHTML = '';
+  openPanel('recoveryBot');
+  setTimeout(() => {
+    botSay('Привет! Я помогу восстановить доступ к аккаунту.');
+    setTimeout(() => botSay('Напиши свой логин — я проверю, есть ли такой аккаунт.'), 700);
+  }, 300);
+}
+
+function closeRecoveryBot(){
+  closePanel('recoveryBot');
+}
+
+function botSay(text, actions){
+  const box = $('recoveryMessages');
+  const el = document.createElement('div');
+  el.className = 'recovery-msg bot';
+  el.innerHTML = esc(text);
+  if(actions && actions.length){
+    const acts = document.createElement('div');
+    acts.className = 'recovery-actions';
+    actions.forEach(a => {
+      const b = document.createElement('button');
+      b.textContent = a.label;
+      if(a.primary) b.classList.add('primary');
+      b.onclick = a.onClick;
+      acts.appendChild(b);
+    });
+    el.appendChild(acts);
+  }
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+}
+
+function userSay(text){
+  const box = $('recoveryMessages');
+  const el = document.createElement('div');
+  el.className = 'recovery-msg user';
+  el.textContent = text;
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+}
+
+function showTyping(){
+  const box = $('recoveryMessages');
+  const el = document.createElement('div');
+  el.className = 'recovery-msg bot';
+  el.id = 'recoveryTyping';
+  el.textContent = '···';
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+}
+function hideTyping(){
+  const t = document.getElementById('recoveryTyping');
+  if(t) t.remove();
+}
+
+async function recoverySend(){
+  const input = $('recoveryInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  userSay(text);
+
+  if(RECOVERY_STATE.step === 'login'){
+    RECOVERY_STATE.login = text;
+    showTyping();
+    try {
+      const r = await fetch(API + '/recovery/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login: text })
+      });
+      const d = await r.json();
+      hideTyping();
+      if(!r.ok){
+        botSay('Хм, не нашёл такой логин. Проверь написание или отправь заявку админу.', [
+          { label: 'Попробовать снова', onClick: () => { RECOVERY_STATE.step = 'login'; } },
+          { label: 'Заявка админу', onClick: () => recoveryGoToHelp() }
+        ]);
+        return;
+      }
+      RECOVERY_STATE.question = d.question;
+      botSay('Логин найден ✅');
+      setTimeout(() => {
+        botSay('Ответь на свой секретный вопрос:');
+        setTimeout(() => botSay('«' + d.question + '»'), 500);
+      }, 500);
+      RECOVERY_STATE.step = 'answer';
+    } catch(e){
+      hideTyping();
+      botSay('Ошибка связи. Попробуй позже или отправь заявку админу.', [
+        { label: 'Заявка админу', onClick: () => recoveryGoToHelp() }
+      ]);
+    }
+  }
+  else if(RECOVERY_STATE.step === 'answer'){
+    showTyping();
+    try {
+      const r = await fetch(API + '/recovery/answer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login: RECOVERY_STATE.login, answer: text })
+      });
+      const d = await r.json();
+      hideTyping();
+
+      if(d.ok){
+        botSay('✅ Верно! Генерирую новый пароль...');
+        setTimeout(() => {
+          closeRecoveryBot();
+          playPasswordReveal(d.login, d.password);
+        }, 800);
+        RECOVERY_STATE.step = 'done';
+      } else {
+        RECOVERY_STATE.attempts++;
+        if(RECOVERY_STATE.attempts >= 3){
+          botSay('Не получилось с ответом. Давай отправим заявку админу.', [
+            { label: 'Заявка админу', onClick: () => recoveryGoToHelp(), primary: true }
+          ]);
+        } else {
+          botSay('❌ Ответ не совпадает. Попробуй ещё раз.');
+          setTimeout(() => botSay('«' + RECOVERY_STATE.question + '»'), 500);
+        }
+      }
+    } catch(e){
+      hideTyping();
+      botSay('Ошибка. Попробуй ещё раз или отправь заявку админу.', [
+        { label: 'Заявка админу', onClick: () => recoveryGoToHelp() }
+      ]);
+    }
+  }
+  else if(RECOVERY_STATE.step === 'help_contact'){
+    RECOVERY_STATE.contact = text;
+    botSay('Записал. Теперь объясни ситуацию — что помнишь об аккаунте, когда последний раз заходил, что произошло.');
+    RECOVERY_STATE.step = 'help_message';
+  }
+  else if(RECOVERY_STATE.step === 'help_message'){
+    showTyping();
+    try {
+      const r = await fetch(API + '/recovery/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          login: RECOVERY_STATE.login || '—',
+          contact: RECOVERY_STATE.contact,
+          message: text
+        })
+      });
+      hideTyping();
+      if(r.ok){
+        botSay('✅ Заявка отправлена. Админ свяжется с тобой по указанному контакту.');
+        RECOVERY_STATE.step = 'done';
+      } else {
+        botSay('Ошибка. Попробуй позже.');
+      }
+    } catch(e){
+      hideTyping();
+      botSay('Ошибка связи. Попробуй позже.');
+    }
+  }
+  else if(RECOVERY_STATE.step === 'done'){
+    botSay('Заявка уже отправлена. Жди ответа админа.');
+  }
+}
+
+function recoveryGoToHelp(){
+  RECOVERY_STATE.step = 'help_contact';
+  botSay('Хорошо. Напиши, как с тобой удобнее связаться — Telegram, email, телефон. Один контакт.');
+}
+
+/* ============================================================ */
 /* AUTH */
 /* ============================================================ */
 async function doRegister(){
-  const l = $('regLogin').value.trim(); const p1 = $('regPass').value, p2 = $('regPass2').value;
+  const l = $('regLogin').value.trim();
+  const p1 = $('regPass').value, p2 = $('regPass2').value;
+  const q = $('regQuestion').value.trim();
+  const a = $('regAnswer').value.trim();
   if(l.length<3) return showMsg('regMsg','Логин минимум 3','err');
   if(p1.length<6) return showMsg('regMsg','Пароль минимум 6','err');
   if(p1!==p2) return showMsg('regMsg','Пароли не совпадают','err');
-  try { showMsg('regMsg','Создаю...','ok'); const r = await api('/auth/register','POST',{ username:l, password:p1 }); TOKEN = r.token; localStorage.setItem('ink_token', TOKEN); showMsg('regMsg','Готово!','ok'); setTimeout(enterApp, 400); }
+  if(!q) return showMsg('regMsg','Задай секретный вопрос','err');
+  if(!a) return showMsg('regMsg','Напиши ответ на вопрос','err');
+  try {
+    showMsg('regMsg','Создаю...','ok');
+    const r = await api('/auth/register','POST',{ username:l, password:p1, secretQuestion:q, secretAnswer:a });
+    TOKEN = r.token;
+    localStorage.setItem('ink_token', TOKEN);
+    showMsg('regMsg','Готово!','ok');
+    setTimeout(enterApp, 400);
+  }
   catch(e){ showMsg('regMsg', e.message, 'err'); }
 }
 async function doLogin(){
@@ -503,9 +1168,7 @@ function startPresence(){
   api('/presence','POST').then(r => { ME.tokens = r.tokens; renderTokensBadge(); }).catch(()=>{});
 }
 
-/* ============================================================ */
 /* PUSH */
-/* ============================================================ */
 async function initPush(){
   try {
     if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
@@ -542,9 +1205,7 @@ if('serviceWorker' in navigator){
   });
 }
 
-/* ============================================================ */
 /* ИМЯ / АВАТАР */
-/* ============================================================ */
 function isPremium(u){ if(!u || !u.premium) return false; if(!u.premium_until) return true; return new Date(u.premium_until) > new Date() }
 function userById(id){ return USERS.find(u => u.id === id) }
 function nameHTML(u){
@@ -566,8 +1227,9 @@ function nameHTML(u){
 function avatarHTML(u, cls){
   const c = cls || '';
   if(!u) return `<div class="avatar ${c}">?</div>`;
-  if(u.avatar_url) return `<div class="avatar ${c}" style="background-image:url('${u.avatar_url}')"></div>`;
-  return `<div class="avatar ${c}">${(u.login||'?')[0].toUpperCase()}</div>`;
+  const colorCls = avatarColorClass(u.id || u.login);
+  if(u.avatar_url) return `<div class="avatar ${c} ${colorCls}" style="background-image:url('${u.avatar_url}')"></div>`;
+  return `<div class="avatar ${c} ${colorCls}">${(u.login||'?')[0].toUpperCase()}</div>`;
 }
 function statusText(u){
   if(!u) return '—';
@@ -580,13 +1242,13 @@ function statusText(u){
 }
 function isOnline(u){ if(!u || !u.last_seen) return false; return (Date.now() - new Date(u.last_seen).getTime()) < 120000; }
 
-/* ============================================================ */
-/* ПРОФИЛЬ СОБЕСЕДНИКА */
-/* ============================================================ */
+/* ПРОФИЛЬ */
 function openPeerProfile(uid){
   const u = userById(uid); if(!u) return;
   CURRENT_PEER_ID = uid;
   const av = $('ppAvatar');
+  const colorCls = avatarColorClass(u.id);
+  av.className = 'avatar ' + colorCls;
   if(u.avatar_url){ av.style.backgroundImage = `url('${u.avatar_url}')`; av.textContent = ''; }
   else { av.style.backgroundImage = ''; av.textContent = (u.login||'?')[0].toUpperCase(); }
   $('ppName').innerHTML = nameHTML(u);
@@ -624,9 +1286,6 @@ function openReportForPeer(){
   openReportToAdmin(u ? u.login : '');
 }
 
-/* ============================================================ */
-/* ПОЛОСКА СОБЕСЕДНИКА */
-/* ============================================================ */
 function renderPeerBar(){
   const bar = $('peerBar'); if(!bar) return;
   if(!CURRENT_CHAT || CURRENT_CHAT.type !== 'private'){ bar.classList.remove('show'); stopPeerStatusTimer(); return; }
@@ -635,6 +1294,8 @@ function renderPeerBar(){
   if(!u){ bar.classList.remove('show'); return; }
   bar.classList.add('show');
   const av = $('peerAvatar');
+  const colorCls = avatarColorClass(u.id);
+  av.className = 'avatar ' + colorCls;
   if(u.avatar_url){ av.style.backgroundImage = `url('${u.avatar_url}')`; av.textContent = ''; }
   else { av.style.backgroundImage = ''; av.textContent = (u.login||'?')[0].toUpperCase(); }
   $('peerName').innerHTML = nameHTML(u);
@@ -663,9 +1324,7 @@ function startPeerStatusTimer(){
 }
 function stopPeerStatusTimer(){ if(PEER_STATUS_TIMER){ clearInterval(PEER_STATUS_TIMER); PEER_STATUS_TIMER = null; } }
 
-/* ============================================================ */
 /* ПОИСК */
-/* ============================================================ */
 function onSearchInput(){
   renderChats();
   clearTimeout(SEARCH_DEBOUNCE);
@@ -673,7 +1332,6 @@ function onSearchInput(){
   if(q.length < 1){ SEARCH_RESULTS = []; renderSearchResults(); return; }
   SEARCH_DEBOUNCE = setTimeout(() => globalSearch(q), 350);
 }
-
 async function globalSearch(q){
   const lq = q.toLowerCase();
   const results = [];
@@ -692,7 +1350,6 @@ async function globalSearch(q){
   SEARCH_RESULTS = results.slice(0, 30);
   renderSearchResults();
 }
-
 function renderSearchResults(){
   const box = $('searchGlobal'); if(!box) return;
   if(!SEARCH_RESULTS.length){ box.style.display = 'none'; box.innerHTML = ''; return; }
@@ -703,14 +1360,14 @@ function renderSearchResults(){
       ${SEARCH_RESULTS.map(r => {
         if(r.kind === 'user'){
           return `<div class="chat-item" onclick="startPrivateWith(${r.id})">
-            <div class="avatar">${(r.name||'?')[0].toUpperCase()}</div>
+            <div class="avatar ${avatarColorClass(r.id)}">${(r.name||'?')[0].toUpperCase()}</div>
             <div class="meta"><div class="name">${esc(r.name)}</div><div class="last">${r.sub}</div></div>
             <button class="btn-mini primary">Написать</button>
           </div>`;
         }
         if(r.kind === 'channel'){
           return `<div class="chat-item">
-            <div class="avatar" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">${(r.name||'?')[0].toUpperCase()}</div>
+            <div class="avatar ${avatarColorClass(r.id)}">${(r.name||'?')[0].toUpperCase()}</div>
             <div class="meta"><div class="name">${esc(r.name)}</div><div class="last">📢 ${esc(r.sub)}</div></div>
             ${r.isMember
               ? `<button class="btn-mini good" onclick="event.stopPropagation();openChat(${r.id})">Открыть</button>`
@@ -721,7 +1378,6 @@ function renderSearchResults(){
       }).join('')}
     </div>`;
 }
-
 async function joinChannel(id){
   try {
     await api('/channels/' + id + '/join', 'POST');
@@ -740,9 +1396,7 @@ async function startPrivateWith(uid){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================ */
 /* СПИСОК ЧАТОВ */
-/* ============================================================ */
 function renderChats(){
   const box = $('chatList'); box.innerHTML = '';
   if(!CHATS.length){ box.innerHTML = '<div class="empty">Чатов пока нет</div>'; return }
@@ -760,10 +1414,10 @@ function renderChats(){
   list.forEach(c => {
     const all = MSGS[c.id] || [];
     const last = all.filter(m => !m.deleted_for_all).slice(-1)[0];
-
     let displayName = c.name || '—';
     let avatarLetter = (c.name || '?').replace(/^#+/,'')[0].toUpperCase();
     let avatarURL = '';
+    let avatarId = c.id;
     if(c.type === 'private'){
       const otherId = (c.memberIds||[]).find(x => x !== ME.id);
       const other = otherId ? USERS.find(u => u.id === otherId) : null;
@@ -771,14 +1425,17 @@ function renderChats(){
         displayName = other.login;
         avatarLetter = (other.login||'?')[0].toUpperCase();
         if(other.avatar_url) avatarURL = other.avatar_url;
+        avatarId = other.id;
       }
     }
     const isGroup = c.type === 'group' || c.type === 'channel';
     const el = document.createElement('div');
     el.className = 'chat-item';
+    if(CURRENT_CHAT && c.id === CURRENT_CHAT.id) el.classList.add('active');
     const lastText = last ? (last.file ? ('📎 ' + (last.file.name || 'файл')) : esc(last.text||'')) : '';
     const avatarStyle = avatarURL ? `background-image:url('${avatarURL}')` : '';
-    el.innerHTML = `<div class="avatar" style="${avatarStyle}">${avatarURL ? '' : avatarLetter}</div>
+    const colorCls = avatarColorClass(avatarId);
+    el.innerHTML = `<div class="avatar ${colorCls}" style="${avatarStyle}">${avatarURL ? '' : avatarLetter}</div>
       <div class="meta"><div class="name">${esc(displayName)} ${isGroup ? '<span style="font-size:10px;color:var(--muted)">'+c.type+'</span>' : ''}</div>
       <div class="last">${lastText.slice(0,40)}</div></div>`;
     el.onclick = () => openChat(c.id);
@@ -792,6 +1449,7 @@ async function openChat(id){
   document.body.classList.add('in-chat');
   $('backBtn').style.display = 'inline-block';
   $('hTitle').textContent = CURRENT_CHAT.name;
+  renderChats();
   try { MSGS[id] = await api('/messages/' + id); } catch(e){ console.warn('[openChat]', e); }
   await renderMessagesAndArchive();
   renderPeerBar();
@@ -810,22 +1468,18 @@ function backToList(){
   $('peerBar').classList.remove('show');
   $('liveTyping').classList.remove('show');
   updateArchiveBar();
+  renderChats();
   stopSilentPolling(); stopTypingPolling(); stopPeerStatusTimer();
 }
 function openChatInfo(){ if(CURRENT_CHAT) openChatSettings(); }
 
-/* ============================================================ */
-/* РОЛИ */
-/* ============================================================ */
 function myChatRole(c){
   if(!c) return 'member';
   if(c.ownerId === ME.id) return 'owner';
   return (c.roles && c.roles[ME.id]) || 'member';
 }
 
-/* ============================================================ */
-/* ZIP-СОХРАНЕНИЕ */
-/* ============================================================ */
+/* ZIP */
 async function fetchFileBlob(url){ try { const r = await fetch(url); if(!r.ok) return null; return await r.blob(); } catch(e){ return null; } }
 async function buildArchiveZip(chat, messages){
   const files = [ { name: 'messages.json', data: new Blob([JSON.stringify(messages, null, 2)], { type:'application/json' }) } ];
@@ -930,62 +1584,38 @@ async function saveFromHeader(){
   updateArchiveBar();
 }
 
-/* ============================================================ */
-/* СТАТУС СОХРАНЕНИЯ */
-/* ============================================================ */
 function updateArchiveBar(){
   const bar = $('archiveBar');
   const warn = $('archiveWarn');
   const saveBtn = $('chatSaveBtn');
   const dot = $('chatSaveDot');
-
   if(warn) warn.classList.remove('show');
-
   if(bar){
     if(CURRENT_CHAT && CURRENT_CHAT.type === 'private' && DRAFT_INFO && !DRAFT_INFO.myConverted && DRAFT_INFO.draftCount > 0){
       $('archiveLine').innerHTML = `📦 Архив за <b>${DRAFT_INFO.month}</b>: ${DRAFT_INFO.draftCount} сообщений`;
       bar.classList.add('show');
     } else { bar.classList.remove('show'); }
   }
-
   if(!CURRENT_CHAT){ if(saveBtn) saveBtn.style.display='none'; if(dot) dot.style.display='none'; return; }
-
   const role = myChatRole(CURRENT_CHAT);
-  const canSave =
-    CURRENT_CHAT.type === 'private' ||
-    ((CURRENT_CHAT.type === 'channel' || CURRENT_CHAT.type === 'group') && (role === 'owner' || role === 'coowner'));
-
+  const canSave = CURRENT_CHAT.type === 'private' || ((CURRENT_CHAT.type === 'channel' || CURRENT_CHAT.type === 'group') && (role === 'owner' || role === 'coowner'));
   if(saveBtn && dot){
     if(canSave){
-      saveBtn.style.display = '';
-      dot.style.display = '';
+      saveBtn.style.display = ''; dot.style.display = '';
       const day = new Date().getDate();
       const saved = DRAFT_INFO && DRAFT_INFO.myConverted;
-      if(CURRENT_CHAT.type === 'private' && day < 14){
-        dot.className = 'header-dot';
-        dot.title = 'Сохранять можно с 14-го числа';
-      } else if(saved){
-        dot.className = 'header-dot ok';
-        dot.title = 'Сохранено';
-      } else {
-        dot.className = 'header-dot warn';
-        dot.title = 'Не сохранено';
-      }
-    } else {
-      saveBtn.style.display = 'none';
-      dot.style.display = 'none';
-    }
+      if(CURRENT_CHAT.type === 'private' && day < 14){ dot.className = 'header-dot'; dot.title = 'Сохранять можно с 14-го числа'; }
+      else if(saved){ dot.className = 'header-dot ok'; dot.title = 'Сохранено'; }
+      else { dot.className = 'header-dot warn'; dot.title = 'Не сохранено'; }
+    } else { saveBtn.style.display = 'none'; dot.style.display = 'none'; }
   }
 }
 
-/* ============================================================ */
-/* СООБЩЕНИЯ */
-/* ============================================================ */
 function buildTicks(m){
   if(!m) return '';
   if(m.status === 'read') return `<span class="ticks read" title="Прочитано">✓✓</span>`;
-  if(m.status === 'delivered') return `<span class="ticks delivered" title="Доставлено">✓✓</span>`;
-  return `<span class="ticks sent" title="Отправлено">✓</span>`;
+  if(m.status === 'delivered') return `<span class="ticks" title="Доставлено">✓✓</span>`;
+  return `<span class="ticks" title="Отправлено">✓</span>`;
 }
 function attachHTML(f){
   if(!f || !f.url) return '';
@@ -1005,7 +1635,26 @@ async function renderMessagesAndArchive(){
   const box = $('messages'); box.innerHTML = '';
   const msgs = (MSGS[CURRENT_CHAT.id] || []).slice();
   if(!msgs.length){
-    box.innerHTML = '<div class="empty">Сообщений пока нет</div>';
+    box.innerHTML = `
+      <div class="empty">
+        <svg class="empty-chat-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="eg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#a78bfa"/>
+              <stop offset="100%" stop-color="#6d28d9"/>
+            </linearGradient>
+          </defs>
+          <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#eg)"/>
+          <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+          <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
+          <g class="eye">
+            <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+            <circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/>
+          </g>
+        </svg>
+        <div>Сообщений пока нет</div>
+        <div style="font-size:12.5px;color:var(--muted2);margin-top:8px">Напиши первым — призрак за тобой 👻</div>
+      </div>`;
     updateArchiveBar();
     renderPeerBar();
     return;
@@ -1060,9 +1709,7 @@ async function downloadArchive(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================ */
 /* TYPING */
-/* ============================================================ */
 function onTypingInput(){
   if(!CURRENT_CHAT) return;
   const now = Date.now();
@@ -1095,9 +1742,7 @@ function startTypingPolling(){
 }
 function stopTypingPolling(){ if(typingPollTimer){ clearInterval(typingPollTimer); typingPollTimer = null; } }
 
-/* ============================================================ */
-/* ТИХИЙ ОПРОС (активный чат) */
-/* ============================================================ */
+/* ТИХИЙ ОПРОС */
 let silentPollTimer = null;
 let lastMsgSignature = '';
 function startSilentPolling(){
@@ -1121,22 +1766,16 @@ function startSilentPolling(){
 }
 function stopSilentPolling(){ if(silentPollTimer){ clearInterval(silentPollTimer); silentPollTimer = null; } }
 
-/* ============================================================ */
-/* ГЛОБАЛЬНЫЙ ОПРОС СОСТОЯНИЯ */
-/* каждые 3 сек подтягиваем список чатов, юзеров, кланы */
-/* НЕ трогает активный чат — там свой polling 1.5 сек */
-/* ============================================================ */
+/* ГЛОБАЛЬНЫЙ ОПРОС */
 let globalPollTimer = null;
 let globalPollPaused = false;
-
 function startGlobalPolling(){
   stopGlobalPolling();
   globalPollTimer = setInterval(async () => {
-    if(document.hidden) return;              // вкладка неактивна — не дёргаем сервер
-    if(globalPollPaused) return;             // идёт долгая операция — не мешаем
-    if(!TOKEN || !ME) return;                // не залогинен
+    if(document.hidden) return;
+    if(globalPollPaused) return;
+    if(!TOKEN || !ME) return;
     try {
-      // 1. Список чатов — новые, переименования, удаления
       try {
         const chatsFresh = await api('/chats');
         const chatsChanged = JSON.stringify(chatsFresh) !== JSON.stringify(CHATS);
@@ -1148,9 +1787,7 @@ function startGlobalPolling(){
           }
           renderChats();
         }
-      } catch(e){ console.warn('[global-poll] chats', e.message); }
-
-      // 2. Пользователи — статусы, аватарки, премиум, донатер-префиксы
+      } catch(e){}
       try {
         const usersFresh = await api('/users');
         const keyOf = u => [u.id, u.last_seen, u.avatar_url, u.premium, u.premium_until, u.is_donor, u.show_smile_prefix, u.show_text_prefix, u.donor_smile_prefix, u.donor_text_prefix];
@@ -1160,79 +1797,74 @@ function startGlobalPolling(){
           if(CURRENT_CHAT) renderPeerBar();
           renderChats();
         }
-      } catch(e){ console.warn('[global-poll] users', e.message); }
-
-      // 3. Кланы — если открыт список
+      } catch(e){}
       if($('clansList') && $('clansList').classList.contains('open')){
         try {
           const clansFresh = await api('/clans');
-          if(JSON.stringify(clansFresh) !== JSON.stringify(CLANS)){
-            CLANS = clansFresh;
-            renderClansList();
-          }
+          if(JSON.stringify(clansFresh) !== JSON.stringify(CLANS)){ CLANS = clansFresh; renderClansList(); }
         } catch(e){}
       }
-
-      // 4. Открытая карточка клана — обновляем участников, казну, предложения
       if($('clanCard') && $('clanCard').classList.contains('open') && CURRENT_CLAN){
         try {
           const clanFresh = await api('/clans/' + CURRENT_CLAN.id);
-          if(JSON.stringify(clanFresh) !== JSON.stringify(CURRENT_CLAN)){
-            CURRENT_CLAN = clanFresh;
-            renderClanBody();
-          }
+          if(JSON.stringify(clanFresh) !== JSON.stringify(CURRENT_CLAN)){ CURRENT_CLAN = clanFresh; renderClanBody(); }
         } catch(e){}
       }
-
-      // 5. Рейтинг кланов — если открыт
       if($('clanRating') && $('clanRating').classList.contains('open')){
         try {
           const ratingFresh = await api('/clans/rating');
-          if(JSON.stringify(ratingFresh) !== JSON.stringify(RATING)){
-            RATING = ratingFresh;
-            openClansRating();
-          }
+          if(JSON.stringify(ratingFresh) !== JSON.stringify(RATING)){ RATING = ratingFresh; openClansRating(); }
         } catch(e){}
       }
-
-      // 6. Баланс токенов — если админ выдал, увидим без перезахода
       try {
         const meFresh = await api('/users/me');
-        if(meFresh.tokens !== ME.tokens){
-          ME.tokens = meFresh.tokens;
-          renderTokensBadge();
-        }
+        if(meFresh.tokens !== ME.tokens){ ME.tokens = meFresh.tokens; renderTokensBadge(); }
       } catch(e){}
-
-      // 7. Открытые транзакции
       if($('transactions') && $('transactions').classList.contains('open')){
         try {
           const txFresh = await api('/transactions');
-          if(JSON.stringify(txFresh) !== JSON.stringify(TX)){
-            TX = txFresh;
-            openTransactions();
-          }
+          if(JSON.stringify(txFresh) !== JSON.stringify(TX)){ TX = txFresh; openTransactions(); }
         } catch(e){}
       }
-
-    } catch(e){
-      console.warn('[global-poll]', e.message);
-    }
+    } catch(e){}
   }, 3000);
 }
+function stopGlobalPolling(){ if(globalPollTimer){ clearInterval(globalPollTimer); globalPollTimer = null; } }
+function pauseGlobalPolling(ms){ globalPollPaused = true; setTimeout(() => { globalPollPaused = false; }, ms || 2000); }
 
-function stopGlobalPolling(){
-  if(globalPollTimer){ clearInterval(globalPollTimer); globalPollTimer = null; }
+function buildReactionsHTML(m){
+  if(!m.reactions || typeof m.reactions !== 'object' || !Object.keys(m.reactions).length) return '';
+  let rx = '<div class="reactions">';
+  for(const [e, list] of Object.entries(m.reactions)){ rx += `<span class="reaction" onclick="toggleReaction(${m.id},'${e}')">${e} ${(list||[]).length}</span>`; }
+  rx += '</div>';
+  return rx;
+}
+function softUpdateMessages(fresh){
+  if(CURRENT_CHAT){
+    const hasNewFromOthers = fresh.some(m => m.sender_id !== ME.id && m.status === 'sent');
+    if(hasNewFromOthers){ api('/messages/delivered', 'POST', { chat_id: CURRENT_CHAT.id }).catch(()=>{}); }
+  }
+  const box = $('messages'); if(!box) return;
+  const visible = fresh.filter(m => !m.deleted_for_all);
+  const wasAtBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+  const existing = Array.from(box.querySelectorAll('.msg'));
+  const idsMatch = existing.length === visible.length && existing.every((el, i) => Number(el.dataset.mid) === Number(visible[i].id));
+  if(idsMatch){
+    existing.forEach((el, i) => {
+      const m = visible[i];
+      const rxHtml = buildReactionsHTML(m);
+      const rxEl = el.querySelector('.reactions');
+      if(rxEl){ if(rxHtml !== rxEl.outerHTML) rxEl.outerHTML = rxHtml; }
+      else if(rxHtml){ el.insertAdjacentHTML('beforeend', rxHtml); }
+    });
+    if(wasAtBottom) box.scrollTop = box.scrollHeight;
+    return;
+  }
+  renderMessagesAndArchive();
+  if(wasAtBottom) box.scrollTop = box.scrollHeight;
 }
 
-function pauseGlobalPolling(ms){
-  globalPollPaused = true;
-  setTimeout(() => { globalPollPaused = false; }, ms || 2000);
-}
-
-/* ============================================================ */
 /* МЕНЮ СООБЩЕНИЙ */
-/* ============================================================ */
 let LP_TIMER = null;
 function attachLongPress(el, mid){
   el.addEventListener('touchstart', () => { LP_TIMER = setTimeout(() => { openMsgMenu({clientX:window.innerWidth/2, clientY:window.innerHeight/2}, mid); }, 500); }, { passive: true });
@@ -1320,9 +1952,7 @@ async function toggleReaction(mid, emo){
   catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================ */
 /* ФАЙЛЫ */
-/* ============================================================ */
 function pickFile(){ $('fileInput').click(); }
 async function onFilePick(e){
   const files = Array.from(e.target.files || []);
@@ -1379,9 +2009,7 @@ function compressImage(file, maxSide, quality){
   });
 }
 
-/* ============================================================ */
-/* ОТПРАВКА ТЕКСТА */
-/* ============================================================ */
+/* ОТПРАВКА */
 async function sendMsg(){
   const v = $('msgInput').value.trim();
   if(!v || !CURRENT_CHAT) return;
@@ -1398,9 +2026,7 @@ async function sendMsg(){
   } catch(e){ toast('Ошибка отправки', e.message); }
 }
 
-/* ============================================================ */
 /* НАСТРОЙКИ ЧАТА */
-/* ============================================================ */
 function roleTag(role){
   if(role === 'owner')   return '<span class="role-tag role-owner">Владелец</span>';
   if(role === 'coowner') return '<span class="role-tag role-coowner">Админ</span>';
@@ -1412,9 +2038,7 @@ function openChatSettings(){
   const role = myChatRole(c);
   const canManage = role === 'owner';
   const enabled = NOTIF_CHATS[c.id] !== false;
-
   $('chatSettingsTitle').textContent = (c.type === 'channel' ? '📢 ' : (c.type === 'group' ? '👥 ' : '')) + c.name;
-
   let html = `
     <div class="st-section"><h3>Информация</h3>
       <div class="st-row" style="cursor:default">
@@ -1423,7 +2047,6 @@ function openChatSettings(){
       </div>
       ${c.desc ? `<div class="st-row" style="cursor:default"><div class="txt"><div class="t2">${esc(c.desc)}</div></div></div>` : ''}
     </div>
-
     <div class="st-section"><h3>Уведомления</h3>
       <div class="st-row" onclick="toggleChatNotif()">
         <div class="icon">🔔</div>
@@ -1431,17 +2054,15 @@ function openChatSettings(){
         <div class="switch ${enabled ? 'on' : ''}"></div>
       </div>
     </div>`;
-
   if(c.type === 'channel' && (role === 'owner' || role === 'coowner')){
     html += `
     <div class="st-section"><h3>📦 Сохранение канала</h3>
       <div class="st-row" onclick="saveChannelArchive()">
-        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💾</div>
+        <div class="icon">💾</div>
         <div class="txt"><div class="t1">Сохранить архив канала</div><div class="t2">ZIP скачается и отправится в канал</div></div>
       </div>
     </div>`;
   }
-
   html += `<div class="st-section"><h3>Участники (${(c.memberIds||[]).length})</h3>`;
   (c.memberIds||[]).forEach(uid => {
     const u = userById(uid); if(!u) return;
@@ -1459,19 +2080,17 @@ function openChatSettings(){
     </div>`;
   });
   html += `</div>`;
-
   if(canManage){
     html += `
     <div class="st-section"><h3>Управление</h3>
       <div class="st-row" onclick="openRenameChat()"><div class="icon">✏️</div><div class="txt"><div class="t1">Переименовать</div></div></div>
       <div class="st-row" onclick="openEditChatDesc()"><div class="icon">📝</div><div class="txt"><div class="t1">Изменить описание</div></div></div>
-      <div class="st-row" onclick="deleteChat()" style="background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.35)">
-        <div class="icon" style="background:rgba(255,92,92,.2);color:#ff8a8a">🗑️</div>
-        <div class="txt"><div class="t1" style="color:#ffb3b3">Удалить ${c.type === 'channel' ? 'канал' : 'чат'}</div></div>
+      <div class="st-row" onclick="deleteChat()" style="background:rgba(248,113,113,.08)">
+        <div class="icon" style="background:linear-gradient(180deg,#f87171,#b34040);color:#150a26">🗑️</div>
+        <div class="txt"><div class="t1" style="color:#fca5a5">Удалить ${c.type === 'channel' ? 'канал' : 'чат'}</div></div>
       </div>
     </div>`;
   }
-
   $('chatSettingsBody').innerHTML = html;
   openPanel('chatSettings');
 }
@@ -1537,9 +2156,7 @@ async function deleteChat(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================ */
 /* СОЗДАНИЕ ЧАТА */
-/* ============================================================ */
 let CC_TYPE = 'private', CC_SEL = [];
 function openCreateChatPanel(){ CC_TYPE = 'private'; CC_SEL = []; renderCreateChatBody(); openPanel('createChat'); }
 function renderCreateChatBody(){
@@ -1553,10 +2170,10 @@ function renderCreateChatBody(){
     ${CC_TYPE !== 'private' ? '<label class="field-label">Название</label><input id="ccName" class="report-input"/>' : ''}
     <label class="field-label">Участники</label>
     ${list.map(u => `
-      <div class="st-row" onclick="toggleCC(${u.id})" style="background:${CC_SEL.includes(u.id)?'rgba(79,140,255,.15)':'var(--panel2)'}">
+      <div class="st-row" onclick="toggleCC(${u.id})" style="background:${CC_SEL.includes(u.id)?'rgba(167,139,250,.18)':'transparent'}">
         ${avatarHTML(u,'sm')}
         <div class="txt"><div class="t1">${nameHTML(u)}</div><div class="t2">ID: ${u.id}</div></div>
-        <div style="width:24px;height:24px;border-radius:6px;border:2px solid ${CC_SEL.includes(u.id)?'var(--accent)':'var(--border2)'};background:${CC_SEL.includes(u.id)?'var(--accent)':'transparent'};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">${CC_SEL.includes(u.id)?'✓':''}</div>
+        <div style="width:24px;height:24px;border-radius:50%;border:2px solid ${CC_SEL.includes(u.id)?'var(--accent)':'var(--border2)'};background:${CC_SEL.includes(u.id)?'var(--accent)':'transparent'};display:flex;align-items:center;justify-content:center;color:#150a26;font-weight:700;font-size:13px;box-shadow:${CC_SEL.includes(u.id)?'0 0 16px rgba(167,139,250,.5)':'inset 0 2px 4px rgba(0,0,0,.3)'}">${CC_SEL.includes(u.id)?'✓':''}</div>
       </div>`).join('')}
     <button class="btn" style="margin-top:14px" onclick="createChatFinal()">Создать</button>`;
 }
@@ -1585,9 +2202,7 @@ async function createChatFinal(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================ */
 /* НАСТРОЙКИ (мои) */
-/* ============================================================ */
 function openSettings(){ renderSettingsBody(); openPanel('settings'); }
 function renderSettingsBody(){
   const inkActive = ME.inkUntil && new Date(ME.inkUntil) > new Date();
@@ -1602,41 +2217,41 @@ function renderSettingsBody(){
     </div>
     ${prem ? `<div class="st-section"><h3>💎 Premium</h3>
       <div class="st-row" onclick="openPremiumPanel()">
-        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div>
+        <div class="icon">💎</div>
         <div class="txt"><div class="t1">Premium-функции</div></div>
       </div></div>` : ''}
     <div class="st-section"><h3>🖱️ Кликер</h3>
       <div class="st-row" onclick="openClicker()">
-        <div class="icon" style="background:linear-gradient(135deg,#22a55a,#15803d)">🖱️</div>
+        <div class="icon">🖱️</div>
         <div class="txt"><div class="t1">Кликер</div><div class="t2">1000 кликов = 1 токен</div></div>
       </div>
     </div>
     <div class="st-section"><h3>🚫 Чёрный список</h3>
       <div class="st-row" onclick="openBlockedList()">
-        <div class="icon" style="background:linear-gradient(135deg,#e04343,#a02020)">🚫</div>
+        <div class="icon">🚫</div>
         <div class="txt"><div class="t1">Заблокированные</div><div class="t2">${(ME.blocked||[]).length} чел.</div></div>
       </div>
     </div>
     <div class="st-section"><h3>🛡️ Кланы</h3>
-      <div class="st-row" onclick="openClansList()"><div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">🛡️</div><div class="txt"><div class="t1">Кланы</div></div></div>
-      <div class="st-row" onclick="openClansRating()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">🏆</div><div class="txt"><div class="t1">Рейтинг кланов</div></div></div>
+      <div class="st-row" onclick="openClansList()"><div class="icon">🛡️</div><div class="txt"><div class="t1">Кланы</div></div></div>
+      <div class="st-row" onclick="openClansRating()"><div class="icon">🏆</div><div class="txt"><div class="t1">Рейтинг кланов</div></div></div>
     </div>
     <div class="st-section"><h3>💰 Токены</h3>
-      <div class="st-row" onclick="openWallet()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💰</div><div class="txt"><div class="t1">Кошелёк</div></div></div>
-      <div class="st-row" onclick="openTransactions()"><div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">📜</div><div class="txt"><div class="t1">Транзакции</div></div></div>
+      <div class="st-row" onclick="openWallet()"><div class="icon">💰</div><div class="txt"><div class="t1">Кошелёк</div></div></div>
+      <div class="st-row" onclick="openTransactions()"><div class="icon">📜</div><div class="txt"><div class="t1">Транзакции</div></div></div>
     </div>
     <div class="st-section"><h3>🎨 Кастомизация</h3>
-      <div class="st-row" onclick="openEmojiCustomize()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">😊</div><div class="txt"><div class="t1">Эмодзи</div></div></div>
+      <div class="st-row" onclick="openEmojiCustomize()"><div class="icon">😊</div><div class="txt"><div class="t1">Эмодзи</div></div></div>
     </div>
     <div class="st-section" style="display:${ME.is_donor ? 'block' : 'none'}">
       <h3>Префиксы донатера</h3>
       <div class="st-row" onclick="toggleSmilePrefix()">
-        <div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">🌟</div>
+        <div class="icon">🌟</div>
         <div class="txt"><div class="t1">Смайл-префикс</div><div class="t2">${ME.show_smile_prefix !== false ? 'Показан' : 'Скрыт'}</div></div>
         <div class="switch ${ME.show_smile_prefix !== false ? 'on' : ''}"></div>
       </div>
       <div class="st-row" onclick="toggleTextPrefix()">
-        <div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">💜</div>
+        <div class="icon">💜</div>
         <div class="txt"><div class="t1">«Спасink»</div><div class="t2">${ME.show_text_prefix !== false ? 'Показан' : 'Скрыт'}</div></div>
         <div class="switch ${ME.show_text_prefix !== false ? 'on' : ''}"></div>
       </div>
@@ -1649,23 +2264,23 @@ function renderSettingsBody(){
       </div>
     </div>
     <div class="st-section"><h3>🕶️ Inkognito</h3>
-      <div class="st-row" onclick="toggleInkognito()"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">${inkActive ? 'Активен' : 'Не активен'}</div></div></div>
+      <div class="st-row" onclick="toggleInkognito()"><div class="icon">🕶️</div><div class="txt"><div class="t1">${inkActive ? 'Активен' : 'Не активен'}</div></div></div>
     </div>
     <div class="st-section"><h3>❤️ Донат</h3>
-      <div class="st-row" onclick="openDonate()"><div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">❤️</div><div class="txt"><div class="t1">Поддержать проект</div><div class="t2">от 25 ₽</div></div></div>
+      <div class="st-row" onclick="openDonate()"><div class="icon">❤️</div><div class="txt"><div class="t1">Поддержать проект</div><div class="t2">от 25 ₽</div></div></div>
     </div>
     <div class="st-section"><h3>Обратная связь</h3>
-      <div class="st-row" onclick="openReportToAdmin()"><div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">⚠️</div><div class="txt"><div class="t1">Жалоба админу</div></div></div>
+      <div class="st-row" onclick="openReportToAdmin()"><div class="icon">⚠️</div><div class="txt"><div class="t1">Жалоба админу</div></div></div>
     </div>
     ${isAdmin ? `<div class="st-section"><h3>🛡️ Админ</h3>
-      <div class="st-row" onclick="openAdmin()"><div class="icon" style="background:linear-gradient(135deg,#c8410f,#a02020)">🛡️</div><div class="txt"><div class="t1">Админ-панель</div></div></div>
+      <div class="st-row" onclick="openAdmin()"><div class="icon">🛡️</div><div class="txt"><div class="t1">Админ-панель</div></div></div>
     </div>` : ''}
     <div class="st-section"><h3>Аккаунт</h3>
-      <div class="st-row" onclick="openChangePassword()"><div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">🔑</div><div class="txt"><div class="t1">Сменить пароль</div></div></div>
-      <div class="st-row" onclick="logout()"><div class="icon" style="background:rgba(255,209,138,.2);color:var(--warn)">🚪</div><div class="txt"><div class="t1">Выйти</div></div></div>
-      <div class="st-row" onclick="deleteMyAccount()" style="background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.35)">
-        <div class="icon" style="background:rgba(255,92,92,.2);color:#ff8a8a">🗑️</div>
-        <div class="txt"><div class="t1" style="color:#ffb3b3">Удалить аккаунт</div></div>
+      <div class="st-row" onclick="openChangePassword()"><div class="icon">🔑</div><div class="txt"><div class="t1">Сменить пароль</div></div></div>
+      <div class="st-row" onclick="logout()"><div class="icon">🚪</div><div class="txt"><div class="t1">Выйти</div></div></div>
+      <div class="st-row" onclick="deleteMyAccount()" style="background:rgba(248,113,113,.08)">
+        <div class="icon" style="background:linear-gradient(180deg,#f87171,#b34040);color:#150a26">🗑️</div>
+        <div class="txt"><div class="t1" style="color:#fca5a5">Удалить аккаунт</div></div>
       </div>
     </div>`;
 }
@@ -1699,9 +2314,7 @@ async function unblockUser(id){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================ */
 /* КЛИКЕР */
-/* ============================================================ */
 async function openClicker(){
   openPanel('clickerPanel');
   $('clickerBody').innerHTML = '<div class="empty">Загрузка...</div>';
@@ -1753,9 +2366,7 @@ async function flushClicks(){
   } catch(e){ toast('Ошибка кликера', e.message); }
 }
 
-/* ============================================================ */
 /* PREMIUM */
-/* ============================================================ */
 function openPremiumPanel(){ renderPremiumBody(); openPanel('premiumPanel'); }
 function renderPremiumBody(){
   const prem = isPremium(ME);
@@ -1765,12 +2376,12 @@ function renderPremiumBody(){
     <div style="font-size:12.5px;color:var(--muted)">до ${ME.premium_until ? new Date(ME.premium_until).toLocaleDateString('ru-RU') : '∞'}</div></div>
     <div class="st-section"><h3>Отображение</h3>
       <div class="st-row" onclick="togglePremiumBadge()">
-        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div>
+        <div class="icon">💎</div>
         <div class="txt"><div class="t1">Значок «PRO»</div><div class="t2">${ME.show_premium_badge !== false ? 'Показан' : 'Скрыт'}</div></div>
         <div class="switch ${ME.show_premium_badge !== false ? 'on' : ''}"></div>
       </div>
       <div class="st-row" onclick="togglePremiumName()">
-        <div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">🎨</div>
+        <div class="icon">🎨</div>
         <div class="txt"><div class="t1">Цветной ник</div><div class="t2">${ME.show_premium_name !== false ? 'Вкл' : 'Выкл'}</div></div>
         <div class="switch ${ME.show_premium_name !== false ? 'on' : ''}"></div>
       </div>
@@ -1789,13 +2400,11 @@ async function togglePremiumName(){ const next = !(ME.show_premium_name !== fals
 async function savePremPrefix(){ const v = ($('premPrefixInput').value || '').trim().slice(0,4); try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: v, show_custom_prefix: true }); await loadAll(); renderPremiumBody(); renderChats(); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function clearPremPrefix(){ try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: '' }); await loadAll(); renderPremiumBody(); renderChats(); } catch(e){} }
 
-/* ============================================================ */
 /* ПРОФИЛЬ (мой) */
-/* ============================================================ */
 function openEditProfile(){
   const av = ME.avatar_url
     ? `<div class="avatar" style="width:96px;height:96px;font-size:34px;margin:0 auto 12px;background-image:url('${ME.avatar_url}');background-size:cover;background-position:center" onclick="document.getElementById('pePhoto').click()"></div>`
-    : `<div class="avatar" style="width:96px;height:96px;font-size:34px;margin:0 auto 12px" onclick="document.getElementById('pePhoto').click()">${(ME.login||'?')[0].toUpperCase()}</div>`;
+    : `<div class="avatar ${avatarColorClass(ME.id)}" style="width:96px;height:96px;font-size:34px;margin:0 auto 12px" onclick="document.getElementById('pePhoto').click()">${(ME.login||'?')[0].toUpperCase()}</div>`;
   $('editProfileBody').innerHTML = `
     <div style="text-align:center;margin-bottom:12px">
       ${av}
@@ -1829,9 +2438,7 @@ async function onAvatarPick(ev){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================ */
 /* СМЕНА ПАРОЛЯ */
-/* ============================================================ */
 function openChangePassword(){
   if(STACK.length) closePanel(STACK[STACK.length-1]);
   $('editProfileBody').innerHTML = `
@@ -1856,24 +2463,39 @@ async function doChangePassword(){
   catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ============================================================ */
 /* INKOGNITO */
-/* ============================================================ */
 async function toggleInkognito(){
   const active = ME.inkUntil && new Date(ME.inkUntil) > new Date();
   if(!active){
     if(!confirm('Купить на 1 день за 2 токена?')) return;
     if((ME.tokens||0) < 2) return toast('Мало токенов','');
-    try { await api('/admin/credit-tokens','POST',{ user_id: ME.id, amount: -2 }); ME.tokens -= 2; ME.inkUntil = new Date(Date.now() + 86400000).toISOString(); renderTokensBadge(); }
-    catch(e){ toast('Ошибка', e.message); return }
+    const hasSeenInk = localStorage.getItem('ink_seen_inkognito') === '1';
+    if(!hasSeenInk){
+      await playInkognitoFirstAnim();
+      try { await api('/admin/credit-tokens','POST',{ user_id: ME.id, amount: -2 }); ME.tokens -= 2; ME.inkUntil = new Date(Date.now() + 86400000).toISOString(); renderTokensBadge(); }
+      catch(e){ toast('Ошибка', e.message); return }
+      document.body.classList.add('inkognito');
+      localStorage.setItem('ink_seen_inkognito', '1');
+      toast('🕶️ Inkognito включён','24 часа');
+    } else {
+      quickVignette();
+      try { await api('/admin/credit-tokens','POST',{ user_id: ME.id, amount: -2 }); ME.tokens -= 2; ME.inkUntil = new Date(Date.now() + 86400000).toISOString(); renderTokensBadge(); }
+      catch(e){ toast('Ошибка', e.message); return }
+      setTimeout(() => {
+        document.body.classList.add('inkognito');
+        toast('🕶️ Inkognito включён','24 часа');
+      }, 400);
+    }
+  } else {
+    quickVignette();
+    setTimeout(() => {
+      document.body.classList.remove('inkognito');
+      toast('Inkognito выключен','');
+    }, 400);
   }
-  document.body.classList.toggle('inkognito');
-  toast(document.body.classList.contains('inkognito') ? '🕶️ включён' : 'выключен','');
 }
 
-/* ============================================================ */
 /* ЭМОДЗИ */
-/* ============================================================ */
 const EMOJI_PREMIUM = ['💎','👑','🏆','🥇','💫','🌠','🦄','🐉','🍾','🥂','💐','🎊','🎈','🔮'];
 const EMOJI_DONOR = ['💖','💜','🤍','💝','💘','💗'];
 const EMOJI_CATEGORIES = {
@@ -1913,19 +2535,19 @@ function renderEmojiPanel(){
 }
 function insertEmoji(e){ $('msgInput').value += e; $('msgInput').focus() }
 function openEmojiCustomize(){
-  const isPrem = isPremium(ME); const custom = ME.custom_emoji || []; const hidden = ME.hidden_emoji || [];
+  const custom = ME.custom_emoji || []; const hidden = ME.hidden_emoji || [];
   const uniq = [...new Set([...EMOJI_PREMIUM, ...EMOJI_DONOR, ...Object.values(EMOJI_CATEGORIES).flatMap(c=>c.emojis)])];
   $('emojiCustomizeBody').innerHTML = `
     <div class="st-section"><h3>Мои эмодзи (до 20)</h3>
       <div class="row"><input id="myEmojiInput" maxlength="4" class="report-input" style="flex:1" placeholder="1 эмодзи"/><button class="btn ok" style="width:auto;padding:0 14px" onclick="addMyEmoji()">+</button></div>
       <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:4px">
-        ${custom.length ? custom.map((e,i)=>`<span style="font-size:22px;background:var(--panel2);padding:6px 8px;border-radius:8px;border:1px solid var(--border2);cursor:pointer" onclick="removeMyEmoji(${i})">${e} ✕</span>`).join('') : '<span style="color:var(--muted);font-size:12.5px">Своих пока нет</span>'}
+        ${custom.length ? custom.map((e,i)=>`<span style="font-size:22px;background:linear-gradient(180deg,var(--panel3),var(--panel2));padding:6px 8px;border-radius:10px;border:1px solid var(--border2);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.3)" onclick="removeMyEmoji(${i})">${e} ✕</span>`).join('') : '<span style="color:var(--muted);font-size:12.5px">Своих пока нет</span>'}
       </div>
     </div>
     <div class="st-section"><h3>Скрыть эмодзи</h3>
-      <div style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:10px;max-height:280px;overflow:auto">
+      <div style="background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:12px;padding:10px;max-height:280px;overflow:auto">
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(36px,1fr));gap:4px">
-          ${uniq.slice(0, 300).map(e=>{ const isHidden = hidden.includes(e); return `<button style="font-size:22px;padding:6px;border-radius:8px;cursor:pointer;background:${isHidden?'rgba(255,92,92,.15)':'transparent'};border:1px solid ${isHidden?'rgba(255,92,92,.4)':'transparent'};color:inherit" onclick="toggleHideEmoji('${e}')">${e}</button>`; }).join('')}
+          ${uniq.slice(0, 300).map(e=>{ const isHidden = hidden.includes(e); return `<button style="font-size:22px;padding:6px;border-radius:8px;cursor:pointer;background:${isHidden?'rgba(248,113,113,.15)':'transparent'};border:1px solid ${isHidden?'rgba(248,113,113,.4)':'transparent'};color:inherit" onclick="toggleHideEmoji('${e}')">${e}</button>`; }).join('')}
         </div>
       </div>
     </div>`;
@@ -1935,16 +2557,14 @@ async function addMyEmoji(){ if(!isPremium(ME)) return alert('Только Premi
 async function removeMyEmoji(i){ const list = (ME.custom_emoji||[]).slice(); list.splice(i,1); try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
 async function toggleHideEmoji(e){ const list = (ME.hidden_emoji||[]).slice(); const i = list.indexOf(e); if(i>=0) list.splice(i,1); else list.push(e); try { await api('/users/me/emoji','PUT',{ hidden_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
 
-/* ============================================================ */
 /* КЛАНЫ */
-/* ============================================================ */
 async function openClansList(){ try { CLANS = await api('/clans'); } catch(e){ CLANS = [] } renderClansList(); openPanel('clansList'); }
 function clanCard(c){
   if(!c) return '';
   const myRole = ((c.members||[]).find(m => m.userId === ME.id) || {}).role;
   const tag = myRole === 'owner' ? '<span class="role-tag role-owner">Владелец</span>' : myRole === 'coowner' ? '<span class="role-tag role-coowner">Админ</span>' : myRole ? '<span class="role-tag role-member">Участник</span>' : '';
   return `<div class="st-row" onclick="openClan(${c.id})">
-    <div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff);font-size:20px">${c.prefix || c.name[0].toUpperCase()}</div>
+    <div class="icon">${c.prefix || c.name[0].toUpperCase()}</div>
     <div class="txt"><div class="t1">${esc(c.name)} ${tag}</div><div class="t2">👥 ${(c.members||[]).length} · 💰 ${fmt(c.wallet)}</div></div>
   </div>`;
 }
@@ -1973,7 +2593,7 @@ async function renderClanBody(){
   $('clanTitle').textContent = (c.prefix || '') + ' ' + c.name;
   $('clanBody').innerHTML = `
     <div class="hero">
-      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#4f8cff,#7c5cff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 10px">${c.prefix || c.name[0].toUpperCase()}</div>
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 10px;box-shadow:0 4px 20px rgba(167,139,250,.5),inset 0 2px 0 rgba(232,230,226,.2),inset 0 -2px 0 rgba(0,0,0,.2)">${c.prefix || c.name[0].toUpperCase()}</div>
       <div class="name"><span class="prefix">${esc(c.prefix||'')}</span>${esc(c.name)}</div>
       <div class="sub">${esc(c.desc||'—')}</div>
       ${frozen ? '<div style="margin-top:8px;color:var(--danger);font-weight:600">🧊 Клан заморожен</div>' : ''}
@@ -1982,13 +2602,13 @@ async function renderClanBody(){
     <div class="st-section"><h3>Действия</h3>
       ${inClan ? `
         <div class="st-row" onclick="openClanDeposit()"><div class="icon">💰</div><div class="txt"><div class="t1">Пополнить кошелёк клана</div></div></div>
-        <div class="st-row" onclick="openClanProposal()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💡</div><div class="txt"><div class="t1">Предложить покупку</div></div></div>
+        <div class="st-row" onclick="openClanProposal()"><div class="icon">💡</div><div class="txt"><div class="t1">Предложить покупку</div></div></div>
       ` : `<div class="st-row" onclick="joinClan(${c.id})"><div class="icon">➕</div><div class="txt"><div class="t1">Войти в клан</div></div></div>`}
       ${canManage ? `<div class="st-row" onclick="openEditClan()"><div class="icon">✏️</div><div class="txt"><div class="t1">Изменить клан</div></div></div>` : ''}
       ${inClan ? `
         <div class="st-row" onclick="openClanInk(${c.id})"><div class="icon">🕶️</div><div class="txt"><div class="t1">Хранилище Inkognito</div><div class="t2">Слотов: ${c.inkStock || 0}</div></div></div>
         <div class="st-row" onclick="withdrawClan(${c.id})"><div class="icon">📤</div><div class="txt"><div class="t1">Вывести свою долю</div></div></div>
-        <div class="st-row" onclick="leaveClan(${c.id})"><div class="icon" style="background:rgba(255,92,92,.2);color:#ff8a8a">🚪</div><div class="txt"><div class="t1">Выйти из клана</div></div></div>
+        <div class="st-row" onclick="leaveClan(${c.id})"><div class="icon" style="background:linear-gradient(180deg,#f87171,#b34040);color:#150a26">🚪</div><div class="txt"><div class="t1">Выйти из клана</div></div></div>
       ` : ''}
     </div>
     ${isOwner ? `<div class="st-section"><h3>💡 Предложения (${proposals.length})</h3>
@@ -2009,7 +2629,7 @@ async function renderClanBody(){
       }).join('')}
     </div>
     <div class="st-section"><h3>Ежемесячно</h3>
-      <div class="st-row" style="cursor:default"><div class="icon" style="background:linear-gradient(135deg,#4f8cff,#7c5cff)">📅</div><div class="txt"><div class="t1">Сбор: ${monthlyCost} токенов</div></div></div>
+      <div class="st-row" style="cursor:default"><div class="icon">📅</div><div class="txt"><div class="t1">Сбор: ${monthlyCost} токенов</div></div></div>
       ${isOwner ? `<button class="btn danger" onclick="payMonthly(${c.id})">Оплатить ${monthlyCost}</button>` : ''}
     </div>`;
 }
@@ -2035,7 +2655,7 @@ function openClanCreate(){ $('clanCreateBody').innerHTML = `
     <label class="field-label">Название</label><input id="ccName" class="report-input"/>
     <label class="field-label">Описание</label><textarea id="ccDesc" rows="3" class="report-input"></textarea>
     <label class="field-label">Префикс (до 4)</label><input id="ccPrefix" maxlength="4" class="report-input"/>
-    <div style="background:rgba(255,209,138,.1);border:1px solid rgba(255,209,138,.3);color:var(--warn);padding:12px;border-radius:12px;font-size:12.5px;margin-top:14px">Создание — 30 токенов.</div>
+    <div style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:var(--warn);padding:12px;border-radius:12px;font-size:12.5px;margin-top:14px;box-shadow:inset 0 1px 0 rgba(232,230,226,.05)">Создание — 30 токенов.</div>
     <button class="btn gold" style="margin-top:14px" onclick="doCreateClan()">Создать за 30 токенов</button>`; openPanel('clanCreate'); }
 async function doCreateClan(){ try { const r = await api('/clans','POST',{ name: $('ccName').value.trim(), desc: $('ccDesc').value.trim(), prefix: $('ccPrefix').value.trim() }); await loadAll(); await openClansList(); closePanel('clanCreate'); toast('🛡️ Создан',''); await openClan(r.clan.id); } catch(e){ toast('Ошибка', e.message) } }
 function openEditClan(){ const c = CURRENT_CLAN; $('clanBody').innerHTML = `
@@ -2046,8 +2666,8 @@ function openEditClan(){ const c = CURRENT_CLAN; $('clanBody').innerHTML = `
 async function saveClanEdit(){ try { await api('/clans/'+CURRENT_CLAN.id,'PUT',{ name: $('ecName').value.trim(), desc: $('ecDesc').value.trim(), prefix: $('ecPrefix').value.trim() }); await openClan(CURRENT_CLAN.id); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
 function openClanProposal(){ $('clanProposalBody').innerHTML = `
     <div class="st-section"><h3>Что предложить</h3>
-      <div class="st-row" onclick="submitProp('premium')"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div><div class="txt"><div class="t1">Premium всем на 30 дней</div></div></div>
-      <div class="st-row" onclick="submitProp('inkognito')"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">Inkognito</div></div></div>
+      <div class="st-row" onclick="submitProp('premium')"><div class="icon">💎</div><div class="txt"><div class="t1">Premium всем на 30 дней</div></div></div>
+      <div class="st-row" onclick="submitProp('inkognito')"><div class="icon">🕶️</div><div class="txt"><div class="t1">Inkognito</div></div></div>
     </div>
     <label class="field-label">Комментарий</label><textarea id="propNote" rows="3" class="report-input"></textarea>`; openPanel('clanProposal'); }
 async function submitProp(type){ try { const note = ($('propNote') && $('propNote').value || '').trim(); await api('/clans/'+CURRENT_CLAN.id+'/propose','POST',{ type, note }); closePanel('clanProposal'); toast('💡 Отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
@@ -2065,14 +2685,12 @@ async function payMonthly(id){ try { const r = await api('/clans/'+id+'/pay-mont
 async function openClansRating(){ try { RATING = await api('/clans/rating'); } catch(e){ RATING = [] }
   $('clanRatingBody').innerHTML = RATING.length ? RATING.map((c,i) => `
     <div class="st-row" onclick="openClan(${c.id})">
-      <div class="icon" style="background:${i===0?'linear-gradient(135deg,#ffb84d,#ff5c8a)':(i===1?'linear-gradient(135deg,#c0c8d4,#7a8598)':(i===2?'linear-gradient(135deg,#c98a4a,#8a5a2a)':'linear-gradient(135deg,#4f8cff,#7c5cff)'))}">${i+1}</div>
+      <div class="icon" style="background:linear-gradient(180deg,${i===0?'#fbbf24,#d97706':(i===1?'#c0c8d4,#7a8598':(i===2?'#c98a4a,#8a5a2a':'#a78bfa,#6d28d9'))});color:#150a26">${i+1}</div>
       <div class="txt"><div class="t1">${esc(c.prefix||'')} ${esc(c.name)}</div><div class="t2">👥 ${(c.members||[]).length} · 💰 ${fmt(c.wallet)}</div></div>
     </div>`).join('') : '<div class="empty">Кланов нет</div>';
   openPanel('clanRating'); }
 
-/* ============================================================ */
 /* КОШЕЛЁК */
-/* ============================================================ */
 async function openWallet(){ try { ME = await api('/users/me'); } catch(e){}
   $('walletBody').innerHTML = `
     <div class="balance-card"><div class="lbl">Баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
@@ -2093,31 +2711,44 @@ async function openTransactions(){ try { TX = await api('/transactions'); } catc
     </div>`; }).join('') : '<div class="empty">Транзакций нет</div>';
   openPanel('transactions'); }
 
-/* ============================================================ */
 /* МАГАЗИН */
-/* ============================================================ */
 function openShop(){ $('shopBody').innerHTML = `
     <div class="balance-card"><div class="lbl">Баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
     <div class="st-section"><h3>💎 Premium</h3>
-      <div class="st-row" onclick="buyPremium()"><div class="icon" style="background:linear-gradient(135deg,#ffb84d,#ff5c8a)">💎</div><div class="txt"><div class="t1">Купить Premium</div><div class="t2">30 токенов = 30 дней</div></div></div>
+      <div class="st-row" onclick="buyPremium()"><div class="icon">💎</div><div class="txt"><div class="t1">Купить Premium</div><div class="t2">30 токенов = 30 дней</div></div></div>
     </div>
     <div class="st-section"><h3>🕶️ Inkognito</h3>
-      <div class="st-row" onclick="toggleInkognito()"><div class="icon" style="background:linear-gradient(135deg,#7c5cff,#4f8cff)">🕶️</div><div class="txt"><div class="t1">${ME.inkUntil && new Date(ME.inkUntil) > new Date() ? 'Активен' : 'Купить 1 день'}</div><div class="t2">2 токена</div></div></div>
+      <div class="st-row" onclick="toggleInkognito()"><div class="icon">🕶️</div><div class="txt"><div class="t1">${ME.inkUntil && new Date(ME.inkUntil) > new Date() ? 'Активен' : 'Купить 1 день'}</div><div class="t2">2 токена</div></div></div>
     </div>`; openPanel('shop'); }
-async function buyPremium(){ if(!confirm('Списать 30 токенов и активировать Premium на 30 дней?')) return; pauseGlobalPolling(3000); try { await api('/premium/purchase','POST',{ days: 30 }); await loadAll(); renderTokensBadge(); closePanel('shop'); toast('💎 Активирован','30 дней'); } catch(e){ toast('Ошибка', e.message) } }
 
-/* ============================================================ */
+async function buyPremium(){
+  if(!confirm('Списать 30 токенов и активировать Premium на 30 дней?')) return;
+  pauseGlobalPolling(8000);
+  try {
+    await api('/premium/purchase','POST',{ days: 30 });
+    closePanel('shop');
+    await playPremiumAnim();
+    await loadAll();
+    renderTokensBadge();
+    renderChats();
+    toast('💎 Premium активирован','30 дней');
+  } catch(e){
+    toast('Ошибка', e.message);
+  } finally {
+    pauseGlobalPolling(500);
+  }
+}
+
 /* ДОНАТ */
-/* ============================================================ */
 function openDonate(){ $('shopBody').innerHTML = `
     <div class="st-section"><h3>❤️ Поддержать Ink</h3>
-      <div style="background:rgba(79,140,255,.08);border:1px solid rgba(79,140,255,.25);color:#c7d5ff;padding:12px;border-radius:12px;font-size:13px;line-height:1.5;margin-bottom:12px">
+      <div style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);color:var(--accent-bright);padding:12px;border-radius:12px;font-size:13px;line-height:1.5;margin-bottom:12px;box-shadow:inset 0 1px 0 rgba(232,230,226,.05)">
         Донат — добровольная поддержка проекта. Мы принимаем платежи только через ЮMoney: у сервиса есть подтверждение оплаты и история поступлений.
       </div>
       <div class="card-info">
         <div style="font-weight:700;margin-bottom:6px">Перевод через ЮMoney:</div>
         <a href="${YOOMONEY_LINK}" target="_blank" rel="noopener"
-           style="display:flex;align-items:center;justify-content:center;padding:14px 18px;border-radius:12px;background:#232c3b;border:1px solid #333e52;color:#e8ecf3;text-decoration:none;font-weight:600;font-size:14.5px;margin-top:6px">
+           style="display:flex;align-items:center;justify-content:center;padding:14px 18px;border-radius:12px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;text-decoration:none;font-weight:700;font-size:14.5px;margin-top:6px;box-shadow:0 4px 16px rgba(139,92,246,.4),inset 0 1px 0 rgba(232,230,226,.25),inset 0 -2px 0 rgba(0,0,0,.2)">
           Открыть страницу доната
         </a>
       </div>
@@ -2134,9 +2765,7 @@ function openDonate(){ $('shopBody').innerHTML = `
     </div>`; openPanel('shop'); }
 async function submitDonate(){ const amount = parseInt($('donateAmount').value, 10); const message = ($('donateMsg').value || '').trim(); const purpose = ($('donatePurpose') && $('donatePurpose').value) || 'support'; if(!amount || amount < 25) return toast('Минимум 25 ₽',''); const purposeText = purpose === 'tokens' ? 'Купить токены' : 'Поддержать проект'; if(!confirm(`Отправить заявку на ${amount} ₽?`)) return; pauseGlobalPolling(3000); try { await api('/donations','POST',{ amount, message, purpose, purpose_text: purposeText }); closePanel('shop'); toast('❤️ Отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
 
-/* ============================================================ */
 /* ЖАЛОБЫ */
-/* ============================================================ */
 function openReportToAdmin(prefillLogin){
   $('reportTitle').textContent = '⚠️ Жалоба админу';
   REPORT_SCREENS = [];
@@ -2156,9 +2785,7 @@ function removeScreenshot(i){ REPORT_SCREENS.splice(i,1); renderReportPreview() 
 function renderReportPreview(){ const b = $('reportPreview'); if(!b) return; b.innerHTML = REPORT_SCREENS.map((src,i)=>`<div class="thumb" style="background-image:url('${src}')"><div class="rm" onclick="removeScreenshot(${i})">✕</div></div>`).join(''); }
 async function sendGeneralReport(){ const target_login = ($('reportTargetLogin').value||'').trim(); const reason = ($('reportReason').value||'').trim(); if(!target_login || !reason) return alert('Заполни'); try { await api('/reports','POST',{ target_login, reason, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('⚠️ Отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
 
-/* ============================================================ */
-/* АДМИН-ПАНЕЛЬ */
-/* ============================================================ */
+/* АДМИН */
 function openAdmin(){ if(!(ME.is_admin || ME.isAdmin)) return toast('Только админ',''); renderAdmin(); openPanel('adminPanel'); }
 async function renderAdmin(){
   let donations=[]; try { donations = await api('/admin/donations'); } catch(e){}
@@ -2169,12 +2796,13 @@ async function renderAdmin(){
     <div class="admin-stat">
       <div class="card"><div class="num">${USERS.length}</div><div class="lbl">Всего</div></div>
       <div class="card"><div class="num" style="color:var(--warn)">${prem}</div><div class="lbl">Premium</div></div>
-      <div class="card"><div class="num" style="color:#ff5c8a">${donors}</div><div class="lbl">Донат.</div></div>
+      <div class="card"><div class="num" style="color:var(--accent-bright)">${donors}</div><div class="lbl">Донат.</div></div>
       <div class="card"><div class="num" style="color:var(--danger)">${banned}</div><div class="lbl">Бан</div></div>
     </div>
     <div class="st-section"><h3>Разделы</h3>
-      <div class="st-row" onclick="adminTabDonations()"><div class="icon" style="background:linear-gradient(135deg,#ff5c8a,#7c5cff)">❤️</div><div class="txt"><div class="t1">Донаты</div><div class="t2">${donations.filter(x=>x.status==='pending').length} ожидает</div></div></div>
+      <div class="st-row" onclick="adminTabDonations()"><div class="icon">❤️</div><div class="txt"><div class="t1">Донаты</div><div class="t2">${donations.filter(x=>x.status==='pending').length} ожидает</div></div></div>
       <div class="st-row" onclick="adminTabUsers()"><div class="icon">👥</div><div class="txt"><div class="t1">Пользователи</div><div class="t2">${USERS.length}</div></div></div>
+      <div class="st-row" onclick="adminTabHelp()"><div class="icon">🆘</div><div class="txt"><div class="t1">Ожидают помощи</div><div class="t2">Заявки на восстановление</div></div></div>
     </div>`;
 }
 async function adminTabDonations(){
@@ -2186,8 +2814,8 @@ async function adminTabDonations(){
       ${pending.length ? pending.map(x=>`
         <div class="st-row" style="cursor:default;flex-direction:column;align-items:stretch">
           <div><div class="t1">${esc(x.login || x.username || '—')} · ${x.amount} ₽</div>
-          <div class="t2">Цель: <b>${esc(x.purpose_text || 'Поддержать проект')}</b> · ****${esc(x.contact||'')}</div>
-          ${x.message ? `<div class="t2" style="margin-top:4px;color:var(--text)">✉️ «${esc(x.message)}»</div>` : ''}</div>
+            <div class="t2">Цель: <b>${esc(x.purpose_text || 'Поддержать проект')}</b></div>
+            ${x.message ? `<div class="t2" style="margin-top:4px;color:var(--text)">✉️ «${esc(x.message)}»</div>` : ''}</div>
           <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
             <button class="btn ok sm" onclick="confirmDonation(${x.id})">✓ Подтвердить</button>
             <button class="btn danger sm" onclick="rejectDonation(${x.id})">✕</button>
@@ -2197,6 +2825,44 @@ async function adminTabDonations(){
 }
 async function confirmDonation(id){ if(!confirm('Подтвердить?')) return; try { const r = await api('/admin/donations/'+id+'/confirm','POST'); toast('❤️', '+' + (r.tokens||0) + ' токенов'); await loadAll(); adminTabDonations(); } catch(e){ toast('Ошибка', e.message) } }
 async function rejectDonation(id){ if(!confirm('Отклонить?')) return; try { await api('/admin/donations/'+id+'/reject','POST'); toast('Отклонено',''); adminTabDonations(); } catch(e){ toast('Ошибка', e.message) } }
+
+async function adminTabHelp(){
+  const list = await api('/admin/recovery').catch(()=>[]);
+  const filtered = list.filter(r => r.type === 'help' && r.status === 'pending');
+  $('adminBody').innerHTML = `
+    <button class="btn ghost" onclick="renderAdmin()">← Назад</button>
+    <div class="st-section" style="margin-top:12px"><h3>Ожидают помощи (${filtered.length})</h3>
+      ${filtered.length ? filtered.map(x => `
+        <div class="st-row" style="flex-direction:column;align-items:stretch;cursor:default">
+          <div><div class="t1">${esc(x.login)}</div>
+            <div class="t2">Контакт: <b>${esc(x.contact)}</b></div>
+            <div class="t2" style="margin-top:4px;color:var(--text)">${esc(x.message)}</div>
+            <div class="t2" style="margin-top:4px">${new Date(x.at).toLocaleString('ru-RU')}</div></div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+            <button class="btn ok sm" onclick="adminResetPassword(${x.id})">🔑 Сбросить пароль</button>
+            <button class="btn danger sm" onclick="adminDeclineRecovery(${x.id})">✕ Отклонить</button>
+          </div>
+        </div>
+      `).join('') : '<div class="empty">Нет заявок</div>'}
+    </div>`;
+}
+async function adminResetPassword(id){
+  if(!confirm('Сбросить пароль на временный?')) return;
+  try {
+    const r = await api('/admin/recovery/' + id + '/reset', 'POST');
+    alert('✅ Пароль сброшен\n\nЛогин: ' + r.login + '\nВременный пароль: ' + r.tempPassword + '\n\nСообщи пользователю.');
+    adminTabHelp();
+  } catch(e){ toast('Ошибка', e.message); }
+}
+async function adminDeclineRecovery(id){
+  if(!confirm('Отклонить заявку?')) return;
+  try {
+    await api('/admin/recovery/' + id + '/decline', 'POST');
+    toast('Отклонено','');
+    renderAdmin();
+  } catch(e){ toast('Ошибка', e.message); }
+}
+
 async function adminTabUsers(){
   $('adminBody').innerHTML = `
     <button class="btn ghost" onclick="renderAdmin()">← Назад</button>
@@ -2231,9 +2897,7 @@ async function applyGiveTokens(uid, sign){ const amount = parseInt($('giveAmount
 async function adminBan(uid){ if(!confirm('Забанить на 30 дней?')) return; const reason = prompt('Причина:', 'нарушение правил') || 'нарушение правил'; try { await api('/admin/users/'+uid,'PUT',{ blocked_until: new Date(Date.now()+30*86400000).toISOString(), block_reason: reason, banned: true }); await loadAll(); adminUserPanel(uid); toast('🚫 Забанен',''); } catch(e){ toast('Ошибка', e.message) } }
 async function adminUnban(uid){ try { await api('/admin/users/'+uid,'PUT',{ blocked_until: null, block_reason: '', banned: false }); await loadAll(); adminUserPanel(uid); toast('✅ Разбанен',''); } catch(e){ toast('Ошибка', e.message) } }
 
-/* ============================================================ */
 /* СТАРТ */
-/* ============================================================ */
 (async function init(){
   if(!TOKEN){ $('auth').style.display = 'flex'; return; }
   try { await enterApp(); }
