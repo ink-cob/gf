@@ -251,6 +251,68 @@ body.in-chat #backBtn{display:inline-flex !important}
   flex-shrink:0;align-items:center;position:relative;z-index:2;
   box-shadow:0 -4px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.04);
 }
+/* Приветственная сцена для всех аккаунтов */
+.welcome-scene{
+  position:fixed;inset:0;z-index:640;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(8,2,18,0);backdrop-filter:blur(0px);
+  transition:background .5s ease, backdrop-filter .5s ease;
+  padding:20px;overflow-y:auto;
+}
+.welcome-scene.show{display:flex;background:rgba(8,2,18,.95);backdrop-filter:blur(10px)}
+.welcome-inner{
+  max-width:480px;width:100%;text-align:center;
+  animation:welcomeIn .5s cubic-bezier(.2,.9,.3,1.2);
+}
+@keyframes welcomeIn{
+  from{opacity:0;transform:translateY(30px) scale(.95)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.welcome-ghost{
+  width:140px;height:140px;margin:0 auto 20px;display:block;
+  filter:drop-shadow(0 20px 60px rgba(167,139,250,.7));
+  animation:ghostFloat 3.4s ease-in-out infinite;
+}
+.welcome-ghost .eye{animation:ghostBlink 3.5s ease-in-out infinite;transform-origin:center}
+.welcome-title{
+  font-size:clamp(22px,4vw,28px);font-weight:800;
+  color:var(--text);margin:0 0 20px;letter-spacing:-.5px;
+  text-shadow:0 4px 30px rgba(0,0,0,.7),0 0 40px rgba(167,139,250,.5);
+}
+.welcome-body{
+  background:linear-gradient(180deg,rgba(167,139,250,.10),rgba(167,139,250,.03));
+  border:1px solid rgba(167,139,250,.3);border-radius:16px;
+  padding:20px;margin-bottom:24px;text-align:left;
+  box-shadow:0 8px 24px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.06);
+}
+.welcome-body p{
+  font-size:14.5px;color:var(--text2);line-height:1.6;margin:0 0 12px;
+}
+.welcome-body p b{color:var(--accent-bright);font-weight:600}
+.welcome-steps{
+  background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px;margin-top:14px;
+  font-size:13.5px;color:var(--text);
+  line-height:1.9;
+  font-family:ui-monospace,Menlo,monospace;
+}
+.welcome-steps > div::before{content:'▸ ';color:var(--accent-bright);font-weight:700}
+.welcome-btn{
+  padding:16px 40px;border-radius:14px;border:0;cursor:pointer;
+  font-size:16px;font-weight:700;font-family:inherit;
+  background:linear-gradient(180deg,var(--accent-bright),var(--accent));
+  color:#150a26;
+  box-shadow:
+    0 8px 28px rgba(139,92,246,.5),
+    0 0 40px rgba(167,139,250,.4),
+    inset 0 1px 0 rgba(232,230,226,.3),
+    inset 0 -3px 0 rgba(0,0,0,.2);
+  transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;
+}
+.welcome-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 40px rgba(139,92,246,.7),0 0 60px rgba(167,139,250,.5),inset 0 1px 0 rgba(232,230,226,.4),inset 0 -3px 0 rgba(0,0,0,.2);
+}
 .composer input{flex:1;min-width:0;padding:11px 16px;background:linear-gradient(180deg,var(--bg),var(--panel));border:1px solid var(--border2);border-radius:22px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.03)}
 .composer input:focus{border-color:var(--accent);box-shadow:inset 0 2px 6px rgba(0,0,0,.4),0 0 0 3px rgba(167,139,250,.2)}
 .composer input::placeholder{color:var(--muted2)}
@@ -687,6 +749,38 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 <div class="vignette" id="vignette"></div>
 <div class="flash" id="flash"></div>
 <div class="ghost-scene" id="ghostScene">
+<div class="welcome-scene" id="welcomeScene">
+  <div class="welcome-inner">
+    <svg class="welcome-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="wg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#a78bfa"/>
+          <stop offset="100%" stop-color="#6d28d9"/>
+        </linearGradient>
+      </defs>
+      <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#wg)"/>
+      <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+      <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
+      <g class="eye">
+        <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+        <circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/>
+      </g>
+    </svg>
+    <h2 class="welcome-title">Привет! Я — твой призрак</h2>
+    <div class="welcome-body">
+      <p>Я помогаю восстанавливать аккаунты. Если забудешь пароль — просто нажми <b>«Забыли пароль?»</b> на экране входа.</p>
+      <p>Я задам тебе <b>секретный вопрос</b>, ты ответишь — и получишь новый пароль. Это безопаснее, чем почта или SMS.</p>
+      <p>Чтобы всё работало — задай вопрос и ответ прямо сейчас:</p>
+      <div class="welcome-steps">
+        <div>1. Открой <b>Настройки</b> (⚙️)</div>
+        <div>2. Зайди в <b>Профиль</b></div>
+        <div>3. Внизу найди раздел <b>«🔐 Восстановление доступа»</b></div>
+        <div>4. Напиши вопрос и ответ, сохрани</div>
+      </div>
+    </div>
+    <button class="welcome-btn" onclick="closeWelcome()">Понял, погнали →</button>
+  </div>
+</div>
   <svg class="ghost-big" id="ghostBig" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="gbg" x1="0" y1="0" x2="1" y2="1">
@@ -1097,6 +1191,7 @@ async function enterApp(){
     $('auth').style.display = 'none';
     $('app').classList.add('open');
     renderChats(); renderTokensBadge(); renderNotifBtn();
+maybeShowWelcome();
     startPresence(); startGlobalPolling(); initPush();
   } catch(e){ toast('Ошибка', e.message); $('auth').style.display = 'flex'; }
 }
@@ -1279,6 +1374,30 @@ async function globalSearch(q){
   } catch(e){ console.warn('[search]', e.message); }
   SEARCH_RESULTS = results.slice(0, 30);
   renderSearchResults();
+}
+function maybeShowWelcome(){
+  const version = '2.4.0'; // обнови, если выпустишь новую версию
+  const seen = localStorage.getItem('ink_welcome_' + version);
+  if(seen) return;
+  if(!ME || !ME.secret_question){
+    // Если у пользователя нет вопроса — показываем обязательно
+    openWelcome();
+  } else {
+    // Если есть — показываем один раз, чтобы напомнить
+    openWelcome();
+  }
+}
+
+function openWelcome(){
+  const el = document.getElementById('welcomeScene');
+  if(el) el.classList.add('show');
+}
+
+function closeWelcome(){
+  const version = '2.4.0';
+  localStorage.setItem('ink_welcome_' + version, '1');
+  const el = document.getElementById('welcomeScene');
+  if(el) el.classList.remove('show');
 }
 function renderSearchResults(){
   const box = $('searchGlobal'); if(!box) return;
