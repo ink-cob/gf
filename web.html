@@ -2634,16 +2634,6 @@ function openDonate(){ $('shopBody').innerHTML = `
           Открыть страницу доната
         </a>
       </div>
-      <label class="field-label">Сумма (мин. 25 ₽)</label>
-      <input id="donateAmount" type="number" class="report-input" value="100" min="25"/>
-      <label class="field-label">Цель доната</label>
-      <select id="donatePurpose" class="report-input" style="cursor:pointer">
-        <option value="support">❤️ Поддержать проект</option>
-        <option value="tokens">💳 Купить токены</option>
-      </select>
-      <label class="field-label">Сообщение</label>
-      <textarea id="donateMsg" rows="3" class="report-input"></textarea>
-      <button class="btn gold" style="margin-top:14px" onclick="submitDonate()">Отправить заявку</button>
     </div>`; openPanel('shop'); }
 async function submitDonate(){ const amount = parseInt($('donateAmount').value, 10); const message = ($('donateMsg').value || '').trim(); const purpose = ($('donatePurpose') && $('donatePurpose').value) || 'support'; if(!amount || amount < 25) return toast('Минимум 25 ₽',''); const purposeText = purpose === 'tokens' ? 'Купить токены' : 'Поддержать проект'; if(!confirm(`Отправить заявку на ${amount} ₽?`)) return; pauseGlobalPolling(3000); try { await api('/donations','POST',{ amount, message, purpose, purpose_text: purposeText }); closePanel('shop'); toast('❤️ Отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
 
