@@ -41,7 +41,7 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background
 input,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
 button{font-family:inherit}
 
-/* ===== АВТОРИЗАЦИЯ ===== */
+/* АВТОРИЗАЦИЯ */
 #auth{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:radial-gradient(1200px 600px at 50% -10%,var(--panel2) 0%,var(--bg) 60%);padding:16px;overflow:auto}
 #auth .card{width:100%;max-width:400px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:18px;padding:28px 24px;box-shadow:0 30px 70px rgba(0,0,0,.7),0 0 60px rgba(167,139,250,.15),inset 0 1px 0 rgba(232,230,226,.05)}
 #auth h1{margin:0 0 6px;font-size:26px}
@@ -49,7 +49,6 @@ button{font-family:inherit}
 #auth input{width:100%;padding:14px;margin-bottom:10px;background:var(--panel);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:16px;outline:none;min-height:var(--tap);transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
 #auth input:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
 
-/* ===== КНОПКИ ===== */
 .btn{width:100%;padding:14px;border:0;border-radius:12px;cursor:pointer;font-size:15px;font-weight:700;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;min-height:var(--tap);box-shadow:var(--shadow-raised);text-shadow:0 1px 0 rgba(232,230,226,.3);position:relative;overflow:hidden}
 .btn::before{content:'';position:absolute;inset:0;border-radius:12px;background:radial-gradient(ellipse at top,rgba(232,230,226,.2),transparent 60%);pointer-events:none}
 .btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,.6),0 0 40px rgba(167,139,250,.4),inset 0 1px 0 rgba(232,230,226,.2),inset 0 -3px 0 rgba(0,0,0,.4)}
@@ -74,7 +73,7 @@ button{font-family:inherit}
 #app{display:none;flex-direction:column;height:100dvh;overflow:hidden}
 #app.open{display:flex}
 
-/* ===== ШАПКА ===== */
+/* ШАПКА */
 header{height:56px;display:flex;align-items:center;gap:2px;padding:0 6px;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border);flex-shrink:0;padding-top:env(safe-area-inset-top,0);box-shadow:0 2px 8px rgba(0,0,0,.4)}
 header .title{font-weight:600;font-size:16px;padding:8px 10px;cursor:pointer;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 header .spacer{flex:1}
@@ -87,7 +86,6 @@ header button:active{transform:translateY(1px) scale(.96);box-shadow:inset 0 2px
 .header-dot.ok{background:var(--ok);box-shadow:0 0 12px var(--ok)}
 @keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.2)}}
 
-/* Призрак в шапке */
 .header-ghost{width:22px;height:22px;flex-shrink:0;margin:0 4px 0 8px;filter:drop-shadow(0 0 6px rgba(167,139,250,.4))}
 .header-ghost svg{width:100%;height:100%;display:block}
 .header-ghost .eye{animation:ghostBlink 4.2s ease-in-out infinite;transform-origin:center}
@@ -107,14 +105,96 @@ body.in-chat #backBtn{display:inline-flex !important}
   body.in-chat #backBtn{display:none !important}
 }
 
-/* Поиск */
+/* ============================================================ */
+/* МНОГОСЛОЙНЫЙ ФОН ЧАТА */
+/* ============================================================ */
+#messages{
+  flex:1;overflow-y:auto;padding:16px 14px;
+  display:flex;flex-direction:column;gap:6px;
+  position:relative;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(167,139,250,.10), transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(139,92,246,.08), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(167,139,250,.06), transparent 55%),
+    linear-gradient(160deg, #14082a 0%, #1a0d33 40%, #180c2e 70%, #120723 100%);
+  background-attachment: local;
+}
+#messages::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(167,139,250,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(167,139,250,.035) 1px, transparent 1px);
+  background-size:48px 48px;
+  background-position:0 0;
+  mask-image:radial-gradient(ellipse at 50% 50%, black 30%, transparent 85%);
+  -webkit-mask-image:radial-gradient(ellipse at 50% 50%, black 30%, transparent 85%);
+  animation:gridShift 60s linear infinite;
+}
+#messages::after{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(167,139,250,.18), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(139,92,246,.15), transparent 60%);
+  animation:bgBreath 12s ease-in-out infinite;
+}
+@keyframes gridShift{
+  from{background-position:0 0, 0 0}
+  to{background-position:48px 48px, 48px 48px}
+}
+@keyframes bgBreath{
+  0%,100%{opacity:.7}
+  50%{opacity:1}
+}
+
+.msg{position:relative;z-index:1;max-width:80%;padding:8px 12px;border-radius:14px;font-size:15px;line-height:1.4;word-wrap:break-word;animation:msgIn .25s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.msg.them{
+  align-self:flex-start;
+  background:linear-gradient(180deg,rgba(45,27,74,.95),rgba(30,17,52,.95));
+  border:1px solid rgba(167,139,250,.15);
+  border-bottom-left-radius:4px;
+  box-shadow:
+    0 4px 16px rgba(0,0,0,.45),
+    0 1px 2px rgba(0,0,0,.4),
+    0 0 0 1px rgba(167,139,250,.06),
+    inset 0 1px 0 rgba(232,230,226,.05);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.msg.me{
+  align-self:flex-end;
+  background:linear-gradient(180deg,#4a2678,#3a1c60);
+  color:var(--text);
+  border:1px solid rgba(167,139,250,.2);
+  border-bottom-right-radius:4px;
+  box-shadow:
+    0 6px 20px rgba(0,0,0,.5),
+    0 2px 6px rgba(0,0,0,.4),
+    0 0 24px rgba(167,139,250,.15),
+    inset 0 1px 0 rgba(232,230,226,.15),
+    inset 0 -1px 0 rgba(0,0,0,.2);
+}
+.msg .time{display:inline-block;font-size:11px;opacity:.6;margin-left:6px;vertical-align:bottom;float:right;margin-top:6px}
+.msg .ticks{display:inline-block;margin-left:2px;font-size:11px;font-weight:700;letter-spacing:-2px;vertical-align:middle;opacity:.85}
+.msg .ticks.read{color:var(--accent-bright)}
+.msg.them .ticks{color:var(--muted)}
+.msg .hashtag{color:var(--accent-bright);cursor:pointer;font-weight:500}
+.msg .sname{display:block;font-size:12px;font-weight:600;color:var(--accent-bright);margin-bottom:2px}
+.msg .attach{display:block;margin:6px 0;max-width:100%;border-radius:10px;overflow:hidden;text-decoration:none;color:inherit}
+.msg .attach .file-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.3);padding:10px 12px;border-radius:8px;font-size:13px;min-width:180px}
+.msg .attach .file-row .fi{font-size:22px;flex-shrink:0}
+.msg .attach .file-row .fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.msg .attach .file-row .fs{opacity:.65;font-size:11.5px;flex-shrink:0}
+.reactions{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.reaction{background:rgba(167,139,250,.12);padding:2px 8px;border-radius:10px;font-size:12px;cursor:pointer;transition:background .15s, transform .15s}
+.reaction:hover{background:rgba(167,139,250,.3);transform:translateY(-1px)}
+
+/* Поиск и остальное */
 .search{margin:10px 12px 0;padding:12px 14px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
 .search:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
 .search::placeholder{color:var(--muted2)}
-
 .createBtn{margin:8px 12px 0;padding:11px;text-align:center;border-radius:12px;border:1px dashed var(--border2);color:var(--muted);cursor:pointer;font-size:13.5px;transition:all .2s;background:linear-gradient(180deg,transparent,rgba(167,139,250,.04))}
 .createBtn:hover{border-color:var(--accent);color:var(--accent-bright);background:linear-gradient(180deg,rgba(167,139,250,.08),rgba(167,139,250,.04));box-shadow:0 0 24px rgba(167,139,250,.15)}
-
 .chatList{flex:1;overflow-y:auto;padding:6px 8px 14px}
 .chat-item{display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;cursor:pointer;min-height:62px;transition:background .15s, transform .15s, box-shadow .15s;border:1px solid transparent}
 .chat-item:hover{background:linear-gradient(180deg,rgba(167,139,250,.12),rgba(167,139,250,.06));transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
@@ -133,14 +213,12 @@ body.in-chat #backBtn{display:inline-flex !important}
 .avatar.c5{background:linear-gradient(135deg,#65aadd,#4a8ac5);color:#150a26}
 .avatar.c6{background:linear-gradient(135deg,#ee7aae,#cf5f92);color:#150a26}
 .avatar.c7{background:linear-gradient(135deg,#90b7d1,#6b93ac);color:#150a26}
-
 .chat-item .meta{flex:1;min-width:0}
 .chat-item .name{font-weight:500;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chat-item .last{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-
 .search-section{padding:12px 14px 6px;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 
-.peer-bar{display:none;align-items:center;gap:10px;padding:8px 14px;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border);flex-shrink:0;cursor:pointer;min-height:54px;transition:background .15s}
+.peer-bar{display:none;align-items:center;gap:10px;padding:8px 14px;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border);flex-shrink:0;cursor:pointer;min-height:54px;transition:background .15s;position:relative;z-index:2}
 .peer-bar.show{display:flex}
 .peer-bar:hover{background:linear-gradient(180deg,var(--panel3),var(--panel2))}
 .peer-bar .avatar{width:38px;height:38px;font-size:15px}
@@ -151,11 +229,11 @@ body.in-chat #backBtn{display:inline-flex !important}
 .peer-bar .status.typing{color:var(--accent-bright)}
 .peer-bar .arrow{color:var(--muted);font-size:16px}
 
-.live-typing{display:none;padding:8px 14px;background:linear-gradient(180deg,rgba(167,139,250,.12),rgba(167,139,250,.05));border-bottom:1px solid rgba(167,139,250,.25);font-size:13px;color:var(--accent-bright);flex-shrink:0;font-family:ui-monospace,Menlo,monospace;word-break:break-word;line-height:1.4;max-height:80px;overflow-y:auto}
+.live-typing{display:none;padding:8px 14px;background:linear-gradient(180deg,rgba(167,139,250,.12),rgba(167,139,250,.05));border-bottom:1px solid rgba(167,139,250,.25);font-size:13px;color:var(--accent-bright);flex-shrink:0;font-family:ui-monospace,Menlo,monospace;word-break:break-word;line-height:1.4;max-height:80px;overflow-y:auto;position:relative;z-index:2}
 .live-typing.show{display:block}
 .live-typing .lbl{color:var(--accent-bright);font-weight:600;margin-right:6px}
 
-.archive-bar{padding:10px 14px;background:linear-gradient(180deg,rgba(251,191,36,.12),rgba(251,191,36,.05));border-bottom:1px solid rgba(251,191,36,.25);font-size:13px;display:none;flex-shrink:0}
+.archive-bar{padding:10px 14px;background:linear-gradient(180deg,rgba(251,191,36,.12),rgba(251,191,36,.05));border-bottom:1px solid rgba(251,191,36,.25);font-size:13px;display:none;flex-shrink:0;position:relative;z-index:2}
 .archive-bar.show{display:block}
 .archive-bar .line{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .archive-bar.warn{padding:8px 14px;background:rgba(248,113,113,.1);border-bottom:1px solid rgba(248,113,113,.25);color:#fca5a5;font-size:12.5px;display:none}
@@ -163,38 +241,26 @@ body.in-chat #backBtn{display:inline-flex !important}
 .archive-bar button{padding:6px 12px;border-radius:8px;border:0;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.2),inset 0 -2px 0 rgba(0,0,0,.3);transition:transform .15s, box-shadow .2s}
 .archive-bar button:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.5),0 0 20px rgba(167,139,250,.35),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -2px 0 rgba(0,0,0,.3)}
 
-#messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:6px;background-image:radial-gradient(circle at 20% 30%,rgba(167,139,250,.06),transparent 50%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.04),transparent 50%);position:relative}
-.msg{max-width:80%;padding:8px 12px;border-radius:14px;font-size:15px;line-height:1.4;word-wrap:break-word;position:relative;animation:msgIn .25s cubic-bezier(.2,.9,.3,1.2)}
-@keyframes msgIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-.msg.them{align-self:flex-start;background:linear-gradient(180deg,var(--them),rgba(0,0,0,.15));border:1px solid rgba(167,139,250,.12);border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.3),inset 0 1px 0 rgba(232,230,226,.04)}
-.msg.me{align-self:flex-end;background:linear-gradient(180deg,var(--mine),var(--mine2));color:var(--text);border-bottom-right-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.4),0 0 20px rgba(167,139,250,.15),inset 0 1px 0 rgba(232,230,226,.12)}
-.msg .time{display:inline-block;font-size:11px;opacity:.6;margin-left:6px;vertical-align:bottom;float:right;margin-top:6px}
-.msg .ticks{display:inline-block;margin-left:2px;font-size:11px;font-weight:700;letter-spacing:-2px;vertical-align:middle;opacity:.85}
-.msg .ticks.read{color:var(--accent-bright)}
-.msg.them .ticks{color:var(--muted)}
-.msg .hashtag{color:var(--accent-bright);cursor:pointer;font-weight:500}
-.msg .sname{display:block;font-size:12px;font-weight:600;color:var(--accent-bright);margin-bottom:2px}
-.msg .attach{display:block;margin:6px 0;max-width:100%;border-radius:10px;overflow:hidden;text-decoration:none;color:inherit}
-.msg .attach .file-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.25);padding:10px 12px;border-radius:8px;font-size:13px;min-width:180px}
-.msg .attach .file-row .fi{font-size:22px;flex-shrink:0}
-.msg .attach .file-row .fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
-.msg .attach .file-row .fs{opacity:.65;font-size:11.5px;flex-shrink:0}
-.reactions{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
-.reaction{background:rgba(167,139,250,.12);padding:2px 8px;border-radius:10px;font-size:12px;cursor:pointer;transition:background .15s, transform .15s}
-.reaction:hover{background:rgba(167,139,250,.3);transform:translateY(-1px)}
-
-.composer{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border);background:linear-gradient(180deg,var(--panel2),var(--panel));flex-shrink:0;align-items:center}
-.composer input{flex:1;min-width:0;padding:11px 16px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:22px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
-.composer input:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
+/* ============================================================ */
+/* КОМПОЗЕР С ГЛУБИНОЙ */
+/* ============================================================ */
+.composer{
+  display:flex;gap:8px;padding:10px 12px;
+  border-top:1px solid var(--border);
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  flex-shrink:0;align-items:center;position:relative;z-index:2;
+  box-shadow:0 -4px 16px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.04);
+}
+.composer input{flex:1;min-width:0;padding:11px 16px;background:linear-gradient(180deg,var(--bg),var(--panel));border:1px solid var(--border2);border-radius:22px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.03)}
+.composer input:focus{border-color:var(--accent);box-shadow:inset 0 2px 6px rgba(0,0,0,.4),0 0 0 3px rgba(167,139,250,.2)}
 .composer input::placeholder{color:var(--muted2)}
 .composer .send-btn{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:16px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;flex-shrink:0;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;box-shadow:0 4px 16px rgba(139,92,246,.5),inset 0 1px 0 rgba(232,230,226,.25),inset 0 -2px 0 rgba(0,0,0,.3)}
 .composer .send-btn:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 8px 28px rgba(139,92,246,.6),0 0 32px rgba(167,139,250,.5),inset 0 1px 0 rgba(232,230,226,.35),inset 0 -2px 0 rgba(0,0,0,.3)}
 .composer .send-btn:active{transform:translateY(1px) scale(.94);box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
 .composer .emoji-btn,.composer .attach-btn{width:42px;height:42px;border-radius:50%;border:1px solid var(--border2);background:linear-gradient(180deg,var(--panel3),var(--panel2));color:var(--text2);cursor:pointer;font-size:18px;flex-shrink:0;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .2s, border-color .2s, color .2s;box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.08),inset 0 -2px 0 rgba(0,0,0,.3)}
 .composer .emoji-btn:hover,.composer .attach-btn:hover{color:var(--accent-bright);border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.5),0 0 24px rgba(167,139,250,.35),inset 0 1px 0 rgba(232,230,226,.12),inset 0 -2px 0 rgba(0,0,0,.3)}
-.composer .emoji-btn:active,.composer .attach-btn:active{transform:translateY(1px);box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
 
-.empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px;padding:0 20px;line-height:1.6}
+.empty{color:var(--muted);text-align:center;margin-top:40px;font-size:14px;padding:0 20px;line-height:1.6;position:relative;z-index:1}
 .empty-chat-ghost{width:120px;height:120px;margin:0 auto 20px;filter:drop-shadow(0 10px 30px rgba(167,139,250,.4));opacity:.35;animation:ghostFloat 4s ease-in-out infinite}
 @keyframes ghostFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
 .empty-chat-ghost .eye{animation:ghostBlink 4.2s ease-in-out infinite;transform-origin:center}
@@ -348,11 +414,11 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 .progress-outer{height:10px;background:linear-gradient(180deg,var(--border),var(--border2));border-radius:5px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.4)}
 .progress-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-bright));transition:width .2s;box-shadow:0 0 12px rgba(167,139,250,.6)}
 
-/* ===== ВИНЬЕТКА ===== */
+/* ВИНЬЕТКА */
 .vignette{position:fixed;inset:0;z-index:500;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(21,10,38,.7) 100%);opacity:0;transition:opacity .4s ease-out}
 .vignette.show{opacity:1;transition:opacity .25s ease-in}
 
-/* ===== СЦЕНЫ ПРИЗРАКА ===== */
+/* СЦЕНЫ ПРИЗРАКА */
 .ghost-scene{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,0);transition:background .5s ease;pointer-events:none}
 .ghost-scene.show{display:flex;pointer-events:auto}
 .ghost-scene.dark{background:rgba(8,2,18,.92);backdrop-filter:blur(8px)}
@@ -364,7 +430,7 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 .ghost-big.descend{animation:ghostDescend 1.4s cubic-bezier(.3,.7,.4,1) forwards}
 @keyframes ghostHover{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 .ghost-big.hover{animation:ghostHover 2.5s ease-in-out infinite}
-@keyframes ghostVanish{0%{transform:scale(1);opacity:1;filter:blur(0) drop-shadow(0 20px 60px rgba(167,139,250,.7))}40%{transform:scale(1.15);opacity:.9;filter:blur(2px) drop-shadow(0 20px 80px rgba(167,139,250,.9))}100%{transform:scale(.3) translateY(-40px);opacity:0;filter:blur(14px) drop-shadow(0 20px 100px rgba(167,139,250,0))}}
+@keyframes ghostVanish{0%{transform:scale(1);opacity:1;filter:blur(0)}40%{transform:scale(1.15);opacity:.9;filter:blur(2px)}100%{transform:scale(.3) translateY(-40px);opacity:0;filter:blur(14px)}}
 .ghost-big.vanish{animation:ghostVanish 1.3s cubic-bezier(.4,0,.6,1) forwards}
 
 .ghost-scene .scene-text{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-1px;color:var(--text);margin-top:36px;opacity:0;text-align:center;text-shadow:0 4px 30px rgba(0,0,0,.7),0 0 40px rgba(167,139,250,.5);z-index:2}
@@ -380,7 +446,7 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 .flash.show{opacity:1;transition:opacity .2s ease-in}
 .flash.fade-out{opacity:0;transition:opacity .6s ease-out}
 
-/* ===== ЧАТ-БОТ ВОССТАНОВЛЕНИЯ ===== */
+/* ЧАТ-БОТ */
 .recovery-box{width:min(520px,100vw) !important}
 @media(min-width:820px){
   .recovery-box{position:absolute !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%);bottom:auto !important;right:auto !important;height:min(720px,90vh);border-radius:20px;border:1px solid var(--border2);border-left:1px solid var(--border2) !important;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(167,139,250,.2)}
@@ -403,10 +469,8 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 .recovery-composer input{flex:1;padding:11px 16px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:22px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
 .recovery-composer input:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
 .recovery-composer .send-btn{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:16px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;flex-shrink:0;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;box-shadow:0 4px 16px rgba(139,92,246,.5),inset 0 1px 0 rgba(232,230,226,.25),inset 0 -2px 0 rgba(0,0,0,.3)}
-.recovery-composer .send-btn:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 8px 28px rgba(139,92,246,.6),0 0 32px rgba(167,139,250,.5),inset 0 1px 0 rgba(232,230,226,.35),inset 0 -2px 0 rgba(0,0,0,.3)}
-.recovery-composer .send-btn:active{transform:translateY(1px) scale(.94);box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
 
-/* ===== ПОКАЗ НОВОГО ПАРОЛЯ ===== */
+/* ПОКАЗ ПАРОЛЯ */
 .password-reveal{position:fixed;inset:0;z-index:650;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(8,2,18,0);transition:background .5s ease;padding:20px}
 .password-reveal.show{display:flex}
 .password-reveal.dark{background:rgba(8,2,18,.95);backdrop-filter:blur(8px)}
@@ -449,7 +513,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 
 <div id="loading"><div class="spinner"></div><div style="color:var(--muted);font-size:13px">Подключение...</div></div>
 
-<!-- АВТОРИЗАЦИЯ -->
 <div id="auth">
   <div class="card">
     <div id="authMode">
@@ -477,7 +540,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
   </div>
 </div>
 
-<!-- ПРИЛОЖЕНИЕ -->
 <div id="app">
   <header>
     <button id="backBtn" style="display:none" onclick="backToList()">←</button>
@@ -547,7 +609,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
   </div>
 </div>
 
-<!-- ПАНЕЛИ -->
 <div class="panel" id="settings"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Настройки</h2><div class="spacer"></div><button onclick="closePanel('settings')">✕</button></div><div class="st-body" id="settingsBody"></div></div></div>
 <div class="panel" id="editProfile"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>Мой профиль</h2><div class="spacer"></div><button onclick="closePanel('editProfile')">✕</button></div><div class="st-body" id="editProfileBody"></div></div></div>
 <div class="panel" id="premiumPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>💎 Premium</h2><div class="spacer"></div><button onclick="closePanel('premiumPanel')">✕</button></div><div class="st-body" id="premiumBody"></div></div></div>
@@ -568,7 +629,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 <div class="panel" id="reportPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="reportTitle">⚠️ Жалоба</h2><div class="spacer"></div><button onclick="closePanel('reportPanel')">✕</button></div><div class="st-body" id="reportBody"></div></div></div>
 <div class="panel" id="adminPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Админ-панель</h2><div class="spacer"></div><button onclick="closePanel('adminPanel')">✕</button></div><div class="st-body" id="adminBody"></div></div></div>
 
-<!-- ЧАТ-БОТ ВОССТАНОВЛЕНИЯ -->
 <div class="panel" id="recoveryBot">
   <div class="box recovery-box">
     <div class="st-header recovery-header">
@@ -624,7 +684,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 
 <div id="toastBox"></div>
 
-<!-- ВИНЬЕТКА, ВСПЫШКА, СЦЕНЫ -->
 <div class="vignette" id="vignette"></div>
 <div class="flash" id="flash"></div>
 <div class="ghost-scene" id="ghostScene">
@@ -647,7 +706,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
   <div class="scene-sub" id="sceneSub"></div>
 </div>
 
-<!-- СЦЕНА ПОКАЗА ПАРОЛЯ -->
 <div class="password-reveal" id="passwordReveal">
   <div class="password-reveal-inner">
     <svg class="password-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -673,9 +731,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 </div>
 
 <script>
-/* ============================================================ */
-/* НАСТРОЙКА */
-/* ============================================================ */
 const API = 'https://api.ink-chat.ru/api';
 const ASSET_BASE = 'https://api.ink-chat.ru';
 const YOOMONEY_LINK = 'https://yoomoney.ru/to/4100119641522628';
@@ -704,9 +759,7 @@ function avatarColorClass(id){
   return 'c' + (n % 8);
 }
 
-/* ============================================================ */
-/* АНИМАЦИЯ PREMIUM */
-/* ============================================================ */
+/* АНИМАЦИИ ПРИЗРАКА */
 function playPremiumAnim(){
   return new Promise((resolve) => {
     const scene = document.getElementById('ghostScene');
@@ -714,13 +767,8 @@ function playPremiumAnim(){
     const text = document.getElementById('sceneText');
     const sub = document.getElementById('sceneSub');
     const flash = document.getElementById('flash');
-
-    ghost.className = 'ghost-big';
-    text.className = 'scene-text';
-    sub.className = 'scene-sub';
-    text.textContent = '';
-    sub.textContent = '';
-
+    ghost.className = 'ghost-big'; text.className = 'scene-text'; sub.className = 'scene-sub';
+    text.textContent = ''; sub.textContent = '';
     scene.classList.add('show');
     setTimeout(() => scene.classList.add('dark'), 30);
     setTimeout(() => ghost.classList.add('descend'), 200);
@@ -730,62 +778,34 @@ function playPremiumAnim(){
     setTimeout(() => { text.classList.remove('in'); text.classList.add('out'); sub.classList.remove('in'); sub.classList.add('out'); }, 4400);
     setTimeout(() => { ghost.classList.remove('hover'); ghost.classList.add('vanish'); scene.classList.remove('dark'); scene.classList.add('fade-out'); }, 4800);
     setTimeout(() => { flash.classList.add('show'); }, 5400);
-    setTimeout(() => {
-      scene.classList.remove('show', 'fade-out');
-      flash.classList.remove('show');
-      flash.classList.add('fade-out');
-      setTimeout(() => flash.classList.remove('fade-out'), 700);
-      resolve();
-    }, 5800);
+    setTimeout(() => { scene.classList.remove('show', 'fade-out'); flash.classList.remove('show'); flash.classList.add('fade-out'); setTimeout(() => flash.classList.remove('fade-out'), 700); resolve(); }, 5800);
   });
 }
 
-/* ============================================================ */
-/* АНИМАЦИЯ INKOGNITO (первый раз) */
-/* ============================================================ */
 function playInkognitoFirstAnim(){
   return new Promise((resolve) => {
     const scene = document.getElementById('ghostScene');
     const ghost = document.getElementById('ghostBig');
     const text = document.getElementById('sceneText');
-    const sub = document.getElementById('sceneSub');
     const flash = document.getElementById('flash');
-
-    ghost.className = 'ghost-big';
-    text.className = 'scene-text';
-    sub.className = 'scene-sub';
+    ghost.className = 'ghost-big'; text.className = 'scene-text';
     text.textContent = '';
-    sub.textContent = '';
-
     scene.classList.add('show');
     setTimeout(() => scene.classList.add('dark'), 30);
     setTimeout(() => ghost.classList.add('descend'), 200);
     setTimeout(() => { ghost.classList.remove('descend'); ghost.classList.add('hover'); }, 1600);
     setTimeout(() => {
       const btn = document.createElement('button');
-      btn.className = 'ghost-press-btn';
       btn.textContent = 'Активировать Inkognito';
       btn.style.cssText = 'margin-top:36px;padding:14px 32px;border-radius:14px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;font-weight:700;font-size:16px;border:0;cursor:pointer;box-shadow:0 8px 28px rgba(139,92,246,.5);z-index:2;font-family:inherit';
       scene.appendChild(btn);
-      setTimeout(() => {
-        btn.style.opacity = '0';
-        btn.style.transition = 'opacity .4s';
-        ghost.classList.remove('hover');
-        ghost.classList.add('vanish');
-        setTimeout(() => { text.textContent = '🕶️ Режим призрака активирован'; text.classList.add('in'); }, 400);
-      }, 1800);
+      setTimeout(() => { btn.style.opacity = '0'; btn.style.transition = 'opacity .4s'; ghost.classList.remove('hover'); ghost.classList.add('vanish'); setTimeout(() => { text.textContent = '🕶️ Режим призрака активирован'; text.classList.add('in'); }, 400); }, 1800);
       setTimeout(() => btn.remove(), 3600);
     }, 1800);
     setTimeout(() => { text.classList.remove('in'); text.classList.add('out'); }, 4000);
     setTimeout(() => { scene.classList.remove('dark'); scene.classList.add('fade-out'); }, 4400);
     setTimeout(() => { flash.classList.add('show'); }, 4700);
-    setTimeout(() => {
-      scene.classList.remove('show', 'fade-out');
-      flash.classList.remove('show');
-      flash.classList.add('fade-out');
-      setTimeout(() => flash.classList.remove('fade-out'), 700);
-      resolve();
-    }, 5100);
+    setTimeout(() => { scene.classList.remove('show', 'fade-out'); flash.classList.remove('show'); flash.classList.add('fade-out'); setTimeout(() => flash.classList.remove('fade-out'), 700); resolve(); }, 5100);
   });
 }
 
@@ -795,36 +815,25 @@ function quickVignette(){
   setTimeout(() => v.classList.remove('show'), 900);
 }
 
-/* ============================================================ */
-/* ПОКАЗ НОВОГО ПАРОЛЯ */
-/* ============================================================ */
 let PASSWORD_REVEAL_CTX = null;
 
 function playPasswordReveal(login, password){
   PASSWORD_REVEAL_CTX = { login, password };
-
   const overlay = document.getElementById('passwordReveal');
   const ghost = overlay.querySelector('.password-ghost');
   const title = overlay.querySelector('.password-reveal-title');
   const passEl = document.getElementById('passwordRevealPass');
   const hint = overlay.querySelector('.password-reveal-hint');
   const btn = document.getElementById('passwordRevealBtn');
-
-  ghost.className = 'password-ghost';
-  title.className = 'password-reveal-title';
-  passEl.className = 'password-reveal-pass';
-  hint.className = 'password-reveal-hint';
-  btn.className = 'password-reveal-btn';
-  passEl.textContent = '';
+  ghost.className = 'password-ghost'; title.className = 'password-reveal-title';
+  passEl.className = 'password-reveal-pass'; hint.className = 'password-reveal-hint';
+  btn.className = 'password-reveal-btn'; passEl.textContent = '';
   btn.style.display = 'none';
-
   overlay.classList.add('show');
   setTimeout(() => overlay.classList.add('dark'), 30);
   setTimeout(() => ghost.classList.add('descend'), 200);
   setTimeout(() => { ghost.classList.remove('descend'); ghost.classList.add('hover'); }, 1700);
-
   setTimeout(() => title.classList.add('show'), 2000);
-
   setTimeout(() => {
     passEl.classList.add('show');
     let i = 0;
@@ -832,16 +841,10 @@ function playPasswordReveal(login, password){
     cursor.className = 'cursor';
     passEl.appendChild(cursor);
     const t = setInterval(() => {
-      if(i < password.length){
-        cursor.insertAdjacentText('beforebegin', password[i]);
-        i++;
-      } else {
-        clearInterval(t);
-        setTimeout(() => cursor.remove(), 1000);
-      }
+      if(i < password.length){ cursor.insertAdjacentText('beforebegin', password[i]); i++; }
+      else { clearInterval(t); setTimeout(() => cursor.remove(), 1000); }
     }, 90);
   }, 2500);
-
   setTimeout(() => hint.classList.add('show'), 4200);
   setTimeout(() => { btn.style.display = ''; btn.classList.add('show'); }, 4700);
 }
@@ -849,8 +852,7 @@ function playPasswordReveal(login, password){
 function closePasswordReveal(){
   const overlay = document.getElementById('passwordReveal');
   const ghost = overlay.querySelector('.password-ghost');
-  ghost.classList.remove('hover');
-  ghost.classList.add('vanish');
+  ghost.classList.remove('hover'); ghost.classList.add('vanish');
   overlay.classList.remove('dark');
   setTimeout(() => {
     overlay.classList.remove('show');
@@ -865,9 +867,7 @@ function closePasswordReveal(){
   }, 400);
 }
 
-/* ============================================================ */
 /* API */
-/* ============================================================ */
 async function api(path, method, body){
   const opt = { method: method || 'GET', headers: {'Content-Type':'application/json'} };
   if(TOKEN) opt.headers['Authorization'] = 'Bearer ' + TOKEN;
@@ -875,14 +875,11 @@ async function api(path, method, body){
   const r = await fetch(API + path, opt);
   let d = {};
   try { d = await r.json(); } catch(e){}
-  if(r.status === 403 && (d.banned || (d.error && d.error.startsWith('Забанен')))){
-    if(!KICKED_OUT){ KICKED_OUT = true; kickOut(d.error || 'Забанен', d.blocked_until); }
-    throw new Error(d.error || 'Забанен');
-  }
+  if(r.status === 403 && (d.banned)){ if(!KICKED_OUT){ KICKED_OUT = true; kickOut(d.error || 'Забанен'); } throw new Error(d.error || 'Забанен'); }
   if(!r.ok) throw new Error(d.error || ('HTTP ' + r.status));
   return d;
 }
-function kickOut(reason, until){
+function kickOut(reason){
   try { localStorage.removeItem('ink_token'); } catch(e){}
   TOKEN = null;
   try { stopSilentPolling(); } catch(e){}
@@ -909,9 +906,7 @@ function openPanel(id){ const el=document.getElementById(id); if(!el) return; if
 function closePanel(id){ const el=document.getElementById(id); if(el) el.classList.remove('open'); STACK = STACK.filter(x => x !== id); }
 function goBack(){ if(!STACK.length) return; const cur = STACK.pop(); const curEl = document.getElementById(cur); if(curEl) curEl.classList.remove('open'); const prev = STACK[STACK.length-1]; if(prev){ const p = document.getElementById(prev); if(p) p.classList.add('open'); } }
 
-/* ============================================================ */
-/* ЧАТ-БОТ ВОССТАНОВЛЕНИЯ */
-/* ============================================================ */
+/* ВОССТАНОВЛЕНИЕ */
 let RECOVERY_STATE = { step: 'login', login: null, question: null, attempts: 0, contact: null };
 
 function openRecoveryBot(){
@@ -924,9 +919,7 @@ function openRecoveryBot(){
   }, 300);
 }
 
-function closeRecoveryBot(){
-  closePanel('recoveryBot');
-}
+function closeRecoveryBot(){ closePanel('recoveryBot'); }
 
 function botSay(text, actions){
   const box = $('recoveryMessages');
@@ -967,10 +960,7 @@ function showTyping(){
   box.appendChild(el);
   box.scrollTop = box.scrollHeight;
 }
-function hideTyping(){
-  const t = document.getElementById('recoveryTyping');
-  if(t) t.remove();
-}
+function hideTyping(){ const t = document.getElementById('recoveryTyping'); if(t) t.remove(); }
 
 async function recoverySend(){
   const input = $('recoveryInput');
@@ -983,11 +973,7 @@ async function recoverySend(){
     RECOVERY_STATE.login = text;
     showTyping();
     try {
-      const r = await fetch(API + '/recovery/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ login: text })
-      });
+      const r = await fetch(API + '/recovery/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: text }) });
       const d = await r.json();
       hideTyping();
       if(!r.ok){
@@ -999,42 +985,27 @@ async function recoverySend(){
       }
       RECOVERY_STATE.question = d.question;
       botSay('Логин найден ✅');
-      setTimeout(() => {
-        botSay('Ответь на свой секретный вопрос:');
-        setTimeout(() => botSay('«' + d.question + '»'), 500);
-      }, 500);
+      setTimeout(() => { botSay('Ответь на свой секретный вопрос:'); setTimeout(() => botSay('«' + d.question + '»'), 500); }, 500);
       RECOVERY_STATE.step = 'answer';
     } catch(e){
       hideTyping();
-      botSay('Ошибка связи. Попробуй позже или отправь заявку админу.', [
-        { label: 'Заявка админу', onClick: () => recoveryGoToHelp() }
-      ]);
+      botSay('Ошибка связи. Попробуй позже или отправь заявку админу.', [{ label: 'Заявка админу', onClick: () => recoveryGoToHelp() }]);
     }
   }
   else if(RECOVERY_STATE.step === 'answer'){
     showTyping();
     try {
-      const r = await fetch(API + '/recovery/answer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ login: RECOVERY_STATE.login, answer: text })
-      });
+      const r = await fetch(API + '/recovery/answer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: RECOVERY_STATE.login, answer: text }) });
       const d = await r.json();
       hideTyping();
-
       if(d.ok){
         botSay('✅ Верно! Генерирую новый пароль...');
-        setTimeout(() => {
-          closeRecoveryBot();
-          playPasswordReveal(d.login, d.password);
-        }, 800);
+        setTimeout(() => { closeRecoveryBot(); playPasswordReveal(d.login, d.password); }, 800);
         RECOVERY_STATE.step = 'done';
       } else {
         RECOVERY_STATE.attempts++;
         if(RECOVERY_STATE.attempts >= 3){
-          botSay('Не получилось с ответом. Давай отправим заявку админу.', [
-            { label: 'Заявка админу', onClick: () => recoveryGoToHelp(), primary: true }
-          ]);
+          botSay('Не получилось с ответом. Давай отправим заявку админу.', [{ label: 'Заявка админу', onClick: () => recoveryGoToHelp(), primary: true }]);
         } else {
           botSay('❌ Ответ не совпадает. Попробуй ещё раз.');
           setTimeout(() => botSay('«' + RECOVERY_STATE.question + '»'), 500);
@@ -1042,9 +1013,7 @@ async function recoverySend(){
       }
     } catch(e){
       hideTyping();
-      botSay('Ошибка. Попробуй ещё раз или отправь заявку админу.', [
-        { label: 'Заявка админу', onClick: () => recoveryGoToHelp() }
-      ]);
+      botSay('Ошибка. Отправь заявку админу.', [{ label: 'Заявка админу', onClick: () => recoveryGoToHelp() }]);
     }
   }
   else if(RECOVERY_STATE.step === 'help_contact'){
@@ -1055,30 +1024,13 @@ async function recoverySend(){
   else if(RECOVERY_STATE.step === 'help_message'){
     showTyping();
     try {
-      const r = await fetch(API + '/recovery/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          login: RECOVERY_STATE.login || '—',
-          contact: RECOVERY_STATE.contact,
-          message: text
-        })
-      });
+      const r = await fetch(API + '/recovery/request', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login: RECOVERY_STATE.login || '—', contact: RECOVERY_STATE.contact, message: text }) });
       hideTyping();
-      if(r.ok){
-        botSay('✅ Заявка отправлена. Админ свяжется с тобой по указанному контакту.');
-        RECOVERY_STATE.step = 'done';
-      } else {
-        botSay('Ошибка. Попробуй позже.');
-      }
-    } catch(e){
-      hideTyping();
-      botSay('Ошибка связи. Попробуй позже.');
-    }
+      if(r.ok){ botSay('✅ Заявка отправлена. Админ свяжется с тобой по указанному контакту.'); RECOVERY_STATE.step = 'done'; }
+      else { botSay('Ошибка. Попробуй позже.'); }
+    } catch(e){ hideTyping(); botSay('Ошибка связи. Попробуй позже.'); }
   }
-  else if(RECOVERY_STATE.step === 'done'){
-    botSay('Заявка уже отправлена. Жди ответа админа.');
-  }
+  else if(RECOVERY_STATE.step === 'done'){ botSay('Заявка уже отправлена. Жди ответа админа.'); }
 }
 
 function recoveryGoToHelp(){
@@ -1086,9 +1038,7 @@ function recoveryGoToHelp(){
   botSay('Хорошо. Напиши, как с тобой удобнее связаться — Telegram, email, телефон. Один контакт.');
 }
 
-/* ============================================================ */
 /* AUTH */
-/* ============================================================ */
 async function doRegister(){
   const l = $('regLogin').value.trim();
   const p1 = $('regPass').value, p2 = $('regPass2').value;
@@ -1102,12 +1052,10 @@ async function doRegister(){
   try {
     showMsg('regMsg','Создаю...','ok');
     const r = await api('/auth/register','POST',{ username:l, password:p1, secretQuestion:q, secretAnswer:a });
-    TOKEN = r.token;
-    localStorage.setItem('ink_token', TOKEN);
+    TOKEN = r.token; localStorage.setItem('ink_token', TOKEN);
     showMsg('regMsg','Готово!','ok');
     setTimeout(enterApp, 400);
-  }
-  catch(e){ showMsg('regMsg', e.message, 'err'); }
+  } catch(e){ showMsg('regMsg', e.message, 'err'); }
 }
 async function doLogin(){
   const l = $('inLogin').value.trim(), p = $('inPass').value;
@@ -1123,18 +1071,13 @@ async function doLogin(){
 }
 function logout(){
   if(!confirm('Выйти?')) return;
-  stopGlobalPolling();
-  stopSilentPolling();
-  stopTypingPolling();
-  stopPeerStatusTimer();
+  stopGlobalPolling(); stopSilentPolling(); stopTypingPolling(); stopPeerStatusTimer();
   localStorage.removeItem('ink_token');
   TOKEN = null;
   location.href = 'index.html';
 }
 
-/* ============================================================ */
 /* ЗАГРУЗКА */
-/* ============================================================ */
 async function loadAll(){
   showLoading(true);
   try {
@@ -1154,9 +1097,7 @@ async function enterApp(){
     $('auth').style.display = 'none';
     $('app').classList.add('open');
     renderChats(); renderTokensBadge(); renderNotifBtn();
-    startPresence();
-    startGlobalPolling();
-    initPush();
+    startPresence(); startGlobalPolling(); initPush();
   } catch(e){ toast('Ошибка', e.message); $('auth').style.display = 'flex'; }
 }
 function renderTokensBadge(){ const el = $('tokensCount'); if(el) el.textContent = (ME && ME.tokens) || 0 }
@@ -1167,8 +1108,6 @@ function startPresence(){
   presenceTimer = setInterval(() => { api('/presence','POST').then(r => { ME.tokens = r.tokens; renderTokensBadge(); }).catch(()=>{}); }, 60000);
   api('/presence','POST').then(r => { ME.tokens = r.tokens; renderTokensBadge(); }).catch(()=>{});
 }
-
-/* PUSH */
 async function initPush(){
   try {
     if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
@@ -1195,14 +1134,6 @@ async function toggleNotifications(){
   NOTIF_GLOBAL = !NOTIF_GLOBAL; renderNotifBtn();
   try { await api('/push/settings','POST',{ global: NOTIF_GLOBAL }); toast(NOTIF_GLOBAL ? 'Уведомления включены' : 'Уведомления выключены',''); }
   catch(e){ toast('Ошибка', e.message); }
-}
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    if(event.data && event.data.type === 'open-chat' && event.data.chatId){
-      const cid = event.data.chatId;
-      if(CHATS.find(c => c.id === cid)) openChat(cid);
-    }
-  });
 }
 
 /* ИМЯ / АВАТАР */
@@ -1242,7 +1173,6 @@ function statusText(u){
 }
 function isOnline(u){ if(!u || !u.last_seen) return false; return (Date.now() - new Date(u.last_seen).getTime()) < 120000; }
 
-/* ПРОФИЛЬ */
 function openPeerProfile(uid){
   const u = userById(uid); if(!u) return;
   CURRENT_PEER_ID = uid;
@@ -1560,17 +1490,6 @@ async function saveChannelArchive(){
     a.href = URL.createObjectURL(zipBlob); a.download = fileName;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    if(CURRENT_CHAT.type === 'channel'){
-      const fd = new FormData();
-      fd.append('file', new File([zipBlob], fileName, { type:'application/zip' }));
-      const up = await fetch(API + '/upload', { method:'POST', headers: TOKEN ? { 'Authorization': 'Bearer ' + TOKEN } : {}, body: fd });
-      if(up.ok){
-        const res = await up.json();
-        await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: '📦 Архив за ' + month, file: { url: res.url, name: res.name, size: res.size, mime: res.mime, kind: 'file' } });
-        MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
-        await renderMessagesAndArchive();
-      }
-    }
     try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){}
     updateArchiveBar();
     toast('📦 Архив сохранён', fileName);
@@ -1586,10 +1505,8 @@ async function saveFromHeader(){
 
 function updateArchiveBar(){
   const bar = $('archiveBar');
-  const warn = $('archiveWarn');
   const saveBtn = $('chatSaveBtn');
   const dot = $('chatSaveDot');
-  if(warn) warn.classList.remove('show');
   if(bar){
     if(CURRENT_CHAT && CURRENT_CHAT.type === 'private' && DRAFT_INFO && !DRAFT_INFO.myConverted && DRAFT_INFO.draftCount > 0){
       $('archiveLine').innerHTML = `📦 Архив за <b>${DRAFT_INFO.month}</b>: ${DRAFT_INFO.draftCount} сообщений`;
@@ -1604,28 +1521,24 @@ function updateArchiveBar(){
       saveBtn.style.display = ''; dot.style.display = '';
       const day = new Date().getDate();
       const saved = DRAFT_INFO && DRAFT_INFO.myConverted;
-      if(CURRENT_CHAT.type === 'private' && day < 14){ dot.className = 'header-dot'; dot.title = 'Сохранять можно с 14-го числа'; }
-      else if(saved){ dot.className = 'header-dot ok'; dot.title = 'Сохранено'; }
-      else { dot.className = 'header-dot warn'; dot.title = 'Не сохранено'; }
+      if(CURRENT_CHAT.type === 'private' && day < 14){ dot.className = 'header-dot'; }
+      else if(saved){ dot.className = 'header-dot ok'; }
+      else { dot.className = 'header-dot warn'; }
     } else { saveBtn.style.display = 'none'; dot.style.display = 'none'; }
   }
 }
 
 function buildTicks(m){
   if(!m) return '';
-  if(m.status === 'read') return `<span class="ticks read" title="Прочитано">✓✓</span>`;
-  if(m.status === 'delivered') return `<span class="ticks" title="Доставлено">✓✓</span>`;
-  return `<span class="ticks" title="Отправлено">✓</span>`;
+  if(m.status === 'read') return `<span class="ticks read">✓✓</span>`;
+  if(m.status === 'delivered') return `<span class="ticks">✓✓</span>`;
+  return `<span class="ticks">✓</span>`;
 }
 function attachHTML(f){
   if(!f || !f.url) return '';
   const safeUrl = esc(fullUrl(f.url));
   return `<a class="attach" target="_blank" href="${safeUrl}" download="${esc(f.name||'file')}">
-    <div class="file-row">
-      <span class="fi">📄</span>
-      <span class="fn">${esc(f.name||'файл')}</span>
-      <span class="fs">${fmtSize(f.size)}</span>
-    </div>
+    <div class="file-row"><span class="fi">📄</span><span class="fn">${esc(f.name||'файл')}</span><span class="fs">${fmtSize(f.size)}</span></div>
   </a>`;
 }
 async function renderMessagesAndArchive(){
@@ -1638,26 +1551,15 @@ async function renderMessagesAndArchive(){
     box.innerHTML = `
       <div class="empty">
         <svg class="empty-chat-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="eg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#a78bfa"/>
-              <stop offset="100%" stop-color="#6d28d9"/>
-            </linearGradient>
-          </defs>
+          <defs><linearGradient id="eg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
           <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#eg)"/>
-          <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
-          <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
-          <g class="eye">
-            <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
-            <circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/>
-          </g>
+          <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/><circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
+          <g class="eye"><ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/><circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/></g>
         </svg>
         <div>Сообщений пока нет</div>
         <div style="font-size:12.5px;color:var(--muted2);margin-top:8px">Напиши первым — призрак за тобой 👻</div>
       </div>`;
-    updateArchiveBar();
-    renderPeerBar();
-    return;
+    updateArchiveBar(); renderPeerBar(); return;
   }
   msgs.forEach(m => {
     if(m.deleted_for_all) return;
@@ -1683,7 +1585,7 @@ async function renderMessagesAndArchive(){
     const ticksHTML = isMe ? buildTicks(m) : '';
     const timeStr = m.created_at ? new Date(m.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '';
     el.innerHTML = head + attach + (text ? '<div>'+text+'</div>' : '') + rx +
-      `<button class="msg-menu-btn" onclick="event.stopPropagation();openMsgMenu(event, ${m.id})" title="Действия">⋯</button>` +
+      `<button class="msg-menu-btn" onclick="event.stopPropagation();openMsgMenu(event, ${m.id})">⋯</button>` +
       `<span class="time">${timeStr}${ticksHTML}</span>`;
     el.ondblclick = () => toggleReaction(m.id, '👍');
     el.oncontextmenu = (e) => { e.preventDefault(); openMsgMenu(e, m.id); };
@@ -1709,7 +1611,6 @@ async function downloadArchive(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* TYPING */
 function onTypingInput(){
   if(!CURRENT_CHAT) return;
   const now = Date.now();
@@ -1733,16 +1634,13 @@ function startTypingPolling(){
       const other = userById(otherId);
       const inkActive = other && other.inkUntil && new Date(other.inkUntil) > new Date();
       if(list && list.length && inkActive){ box.classList.add('show'); txt.textContent = list[0].text || ''; }
-      else if(list && list.length && !inkActive){
-        box.classList.remove('show');
-        const st = $('peerStatus'); if(st){ st.className = 'status typing'; st.textContent = 'печатает…'; }
-      } else { box.classList.remove('show'); renderPeerBar(); }
+      else if(list && list.length && !inkActive){ box.classList.remove('show'); const st = $('peerStatus'); if(st){ st.className = 'status typing'; st.textContent = 'печатает…'; } }
+      else { box.classList.remove('show'); renderPeerBar(); }
     } catch(e){}
   }, 1500);
 }
 function stopTypingPolling(){ if(typingPollTimer){ clearInterval(typingPollTimer); typingPollTimer = null; } }
 
-/* ТИХИЙ ОПРОС */
 let silentPollTimer = null;
 let lastMsgSignature = '';
 function startSilentPolling(){
@@ -1766,7 +1664,6 @@ function startSilentPolling(){
 }
 function stopSilentPolling(){ if(silentPollTimer){ clearInterval(silentPollTimer); silentPollTimer = null; } }
 
-/* ГЛОБАЛЬНЫЙ ОПРОС */
 let globalPollTimer = null;
 let globalPollPaused = false;
 function startGlobalPolling(){
@@ -1778,54 +1675,25 @@ function startGlobalPolling(){
     try {
       try {
         const chatsFresh = await api('/chats');
-        const chatsChanged = JSON.stringify(chatsFresh) !== JSON.stringify(CHATS);
-        if(chatsChanged){
+        if(JSON.stringify(chatsFresh) !== JSON.stringify(CHATS)){
           CHATS = chatsFresh;
-          for(const c of CHATS){
-            if(CURRENT_CHAT && c.id === CURRENT_CHAT.id) continue;
-            if(!MSGS[c.id]) MSGS[c.id] = [];
-          }
+          for(const c of CHATS){ if(CURRENT_CHAT && c.id === CURRENT_CHAT.id) continue; if(!MSGS[c.id]) MSGS[c.id] = []; }
           renderChats();
         }
       } catch(e){}
       try {
         const usersFresh = await api('/users');
-        const keyOf = u => [u.id, u.last_seen, u.avatar_url, u.premium, u.premium_until, u.is_donor, u.show_smile_prefix, u.show_text_prefix, u.donor_smile_prefix, u.donor_text_prefix];
-        const usersChanged = JSON.stringify(usersFresh.map(keyOf)) !== JSON.stringify(USERS.map(keyOf));
-        if(usersChanged){
+        const keyOf = u => [u.id, u.last_seen, u.avatar_url, u.premium, u.premium_until, u.is_donor];
+        if(JSON.stringify(usersFresh.map(keyOf)) !== JSON.stringify(USERS.map(keyOf))){
           USERS = usersFresh;
           if(CURRENT_CHAT) renderPeerBar();
           renderChats();
         }
       } catch(e){}
-      if($('clansList') && $('clansList').classList.contains('open')){
-        try {
-          const clansFresh = await api('/clans');
-          if(JSON.stringify(clansFresh) !== JSON.stringify(CLANS)){ CLANS = clansFresh; renderClansList(); }
-        } catch(e){}
-      }
-      if($('clanCard') && $('clanCard').classList.contains('open') && CURRENT_CLAN){
-        try {
-          const clanFresh = await api('/clans/' + CURRENT_CLAN.id);
-          if(JSON.stringify(clanFresh) !== JSON.stringify(CURRENT_CLAN)){ CURRENT_CLAN = clanFresh; renderClanBody(); }
-        } catch(e){}
-      }
-      if($('clanRating') && $('clanRating').classList.contains('open')){
-        try {
-          const ratingFresh = await api('/clans/rating');
-          if(JSON.stringify(ratingFresh) !== JSON.stringify(RATING)){ RATING = ratingFresh; openClansRating(); }
-        } catch(e){}
-      }
-      try {
-        const meFresh = await api('/users/me');
-        if(meFresh.tokens !== ME.tokens){ ME.tokens = meFresh.tokens; renderTokensBadge(); }
-      } catch(e){}
-      if($('transactions') && $('transactions').classList.contains('open')){
-        try {
-          const txFresh = await api('/transactions');
-          if(JSON.stringify(txFresh) !== JSON.stringify(TX)){ TX = txFresh; openTransactions(); }
-        } catch(e){}
-      }
+      if($('clansList') && $('clansList').classList.contains('open')){ try { const c = await api('/clans'); if(JSON.stringify(c) !== JSON.stringify(CLANS)){ CLANS = c; renderClansList(); } } catch(e){} }
+      if($('clanCard') && $('clanCard').classList.contains('open') && CURRENT_CLAN){ try { const c = await api('/clans/' + CURRENT_CLAN.id); if(JSON.stringify(c) !== JSON.stringify(CURRENT_CLAN)){ CURRENT_CLAN = c; renderClanBody(); } } catch(e){} }
+      try { const meFresh = await api('/users/me'); if(meFresh.tokens !== ME.tokens){ ME.tokens = meFresh.tokens; renderTokensBadge(); } } catch(e){}
+      if($('transactions') && $('transactions').classList.contains('open')){ try { const t = await api('/transactions'); if(JSON.stringify(t) !== JSON.stringify(TX)){ TX = t; openTransactions(); } } catch(e){} }
     } catch(e){}
   }, 3000);
 }
@@ -1864,7 +1732,6 @@ function softUpdateMessages(fresh){
   if(wasAtBottom) box.scrollTop = box.scrollHeight;
 }
 
-/* МЕНЮ СООБЩЕНИЙ */
 let LP_TIMER = null;
 function attachLongPress(el, mid){
   el.addEventListener('touchstart', () => { LP_TIMER = setTimeout(() => { openMsgMenu({clientX:window.innerWidth/2, clientY:window.innerHeight/2}, mid); }, 500); }, { passive: true });
@@ -1875,9 +1742,8 @@ function openMsgMenu(e, mid){
   const menu = $('msgMenu'); if(!menu) return;
   const m = (MSGS[CURRENT_CHAT.id] || []).find(x => x.id === mid); if(!m) return;
   const mine = m.sender_id === ME.id;
-  const isAdmin = !!(ME.is_admin || ME.isAdmin);
   const role = myChatRole(CURRENT_CHAT);
-  const canModerate = role === 'owner' || role === 'coowner' || isAdmin;
+  const canModerate = role === 'owner' || role === 'coowner';
   const canDeleteAll = mine || canModerate;
   const quick = ['👍','❤️','🔥','😂','💯','💖'];
   let html = '<div class="row-emojis">';
@@ -1918,7 +1784,7 @@ function fallbackCopy(text){
   const ta = document.createElement('textarea');
   ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
   document.body.appendChild(ta); ta.select();
-  try { document.execCommand('copy'); toast('📋 Скопировано',''); } catch(e){ toast('Не удалось скопировать',''); }
+  try { document.execCommand('copy'); toast('📋 Скопировано',''); } catch(e){}
   document.body.removeChild(ta);
 }
 function editMsg(mid){
@@ -1952,7 +1818,6 @@ async function toggleReaction(mid, emo){
   catch(e){ toast('Ошибка', e.message); }
 }
 
-/* ФАЙЛЫ */
 function pickFile(){ $('fileInput').click(); }
 async function onFilePick(e){
   const files = Array.from(e.target.files || []);
@@ -1976,10 +1841,7 @@ async function uploadAndSend(file){
     if(!r.ok){ const d = await r.json().catch(()=>({})); throw new Error(d.error || ('HTTP ' + r.status)); }
     const res = await r.json();
     fill.style.width = '100%';
-    await api('/messages', 'POST', {
-      chat_id: CURRENT_CHAT.id, text: '',
-      file: { url: res.url, name: res.name, size: res.size, mime: res.mime, kind: 'file' }
-    });
+    await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: '', file: { url: res.url, name: res.name, size: res.size, mime: res.mime, kind: 'file' } });
     MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
     renderMessagesAndArchive(); renderChats();
     overlay.classList.remove('show');
@@ -2009,7 +1871,6 @@ function compressImage(file, maxSide, quality){
   });
 }
 
-/* ОТПРАВКА */
 async function sendMsg(){
   const v = $('msgInput').value.trim();
   if(!v || !CURRENT_CHAT) return;
@@ -2017,16 +1878,12 @@ async function sendMsg(){
   api('/typing', 'POST', { chat_id: CURRENT_CHAT.id, text: '' }).catch(()=>{});
   try {
     const res = await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: v });
-    if(res && res.message){
-      if(!MSGS[CURRENT_CHAT.id]) MSGS[CURRENT_CHAT.id] = [];
-      MSGS[CURRENT_CHAT.id].push(res.message);
-    }
+    if(res && res.message){ if(!MSGS[CURRENT_CHAT.id]) MSGS[CURRENT_CHAT.id] = []; MSGS[CURRENT_CHAT.id].push(res.message); }
     try { MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id); } catch(e){}
     renderMessagesAndArchive(); renderChats();
   } catch(e){ toast('Ошибка отправки', e.message); }
 }
 
-/* НАСТРОЙКИ ЧАТА */
 function roleTag(role){
   if(role === 'owner')   return '<span class="role-tag role-owner">Владелец</span>';
   if(role === 'coowner') return '<span class="role-tag role-coowner">Админ</span>';
@@ -2054,15 +1911,6 @@ function openChatSettings(){
         <div class="switch ${enabled ? 'on' : ''}"></div>
       </div>
     </div>`;
-  if(c.type === 'channel' && (role === 'owner' || role === 'coowner')){
-    html += `
-    <div class="st-section"><h3>📦 Сохранение канала</h3>
-      <div class="st-row" onclick="saveChannelArchive()">
-        <div class="icon">💾</div>
-        <div class="txt"><div class="t1">Сохранить архив канала</div><div class="t2">ZIP скачается и отправится в канал</div></div>
-      </div>
-    </div>`;
-  }
   html += `<div class="st-section"><h3>Участники (${(c.memberIds||[]).length})</h3>`;
   (c.memberIds||[]).forEach(uid => {
     const u = userById(uid); if(!u) return;
@@ -2156,7 +2004,6 @@ async function deleteChat(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* СОЗДАНИЕ ЧАТА */
 let CC_TYPE = 'private', CC_SEL = [];
 function openCreateChatPanel(){ CC_TYPE = 'private'; CC_SEL = []; renderCreateChatBody(); openPanel('createChat'); }
 function renderCreateChatBody(){
@@ -2202,7 +2049,6 @@ async function createChatFinal(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* НАСТРОЙКИ (мои) */
 function openSettings(){ renderSettingsBody(); openPanel('settings'); }
 function renderSettingsBody(){
   const inkActive = ME.inkUntil && new Date(ME.inkUntil) > new Date();
@@ -2216,21 +2062,13 @@ function renderSettingsBody(){
       </div>
     </div>
     ${prem ? `<div class="st-section"><h3>💎 Premium</h3>
-      <div class="st-row" onclick="openPremiumPanel()">
-        <div class="icon">💎</div>
-        <div class="txt"><div class="t1">Premium-функции</div></div>
-      </div></div>` : ''}
+      <div class="st-row" onclick="openPremiumPanel()"><div class="icon">💎</div><div class="txt"><div class="t1">Premium-функции</div></div></div>
+    </div>` : ''}
     <div class="st-section"><h3>🖱️ Кликер</h3>
-      <div class="st-row" onclick="openClicker()">
-        <div class="icon">🖱️</div>
-        <div class="txt"><div class="t1">Кликер</div><div class="t2">1000 кликов = 1 токен</div></div>
-      </div>
+      <div class="st-row" onclick="openClicker()"><div class="icon">🖱️</div><div class="txt"><div class="t1">Кликер</div><div class="t2">1000 кликов = 1 токен</div></div></div>
     </div>
     <div class="st-section"><h3>🚫 Чёрный список</h3>
-      <div class="st-row" onclick="openBlockedList()">
-        <div class="icon">🚫</div>
-        <div class="txt"><div class="t1">Заблокированные</div><div class="t2">${(ME.blocked||[]).length} чел.</div></div>
-      </div>
+      <div class="st-row" onclick="openBlockedList()"><div class="icon">🚫</div><div class="txt"><div class="t1">Заблокированные</div><div class="t2">${(ME.blocked||[]).length} чел.</div></div></div>
     </div>
     <div class="st-section"><h3>🛡️ Кланы</h3>
       <div class="st-row" onclick="openClansList()"><div class="icon">🛡️</div><div class="txt"><div class="t1">Кланы</div></div></div>
@@ -2297,8 +2135,7 @@ function openBlockedList(){
   $('settingsBody').innerHTML = `
     <button class="btn ghost" onclick="openSettings()">← Назад</button>
     <div class="st-section" style="margin-top:12px"><h3>Чёрный список (${ids.length})</h3>
-      ${ids.length ? ids.map(id => {
-        const u = userById(id); if(!u) return '';
+      ${ids.length ? ids.map(id => { const u = userById(id); if(!u) return '';
         return `<div class="st-row" style="cursor:default">${avatarHTML(u,'sm')}<div class="txt"><div class="t1">${esc(u.login)}</div></div>
           <button class="btn-mini good" onclick="unblockUser(${id})">Разблокировать</button></div>`;
       }).join('') : '<div class="empty">Список пуст</div>'}
@@ -2314,17 +2151,11 @@ async function unblockUser(id){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* КЛИКЕР */
 async function openClicker(){
   openPanel('clickerPanel');
   $('clickerBody').innerHTML = '<div class="empty">Загрузка...</div>';
-  try {
-    CLICKER_STATE = await api('/clicker/state');
-    CLICKER_LOCAL_TOTAL = CLICKER_STATE.total;
-    renderClicker();
-  } catch(e){
-    $('clickerBody').innerHTML = `<div class="empty">Ошибка: ${esc(e.message)}</div>`;
-  }
+  try { CLICKER_STATE = await api('/clicker/state'); CLICKER_LOCAL_TOTAL = CLICKER_STATE.total; renderClicker(); }
+  catch(e){ $('clickerBody').innerHTML = `<div class="empty">Ошибка: ${esc(e.message)}</div>`; }
 }
 function renderClicker(){
   const prog = CLICKER_LOCAL_TOTAL % 1000;
@@ -2340,14 +2171,11 @@ function renderClicker(){
     </div>
     <div style="margin:20px 0">
       <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:6px">
-        <span>До следующего токена</span>
-        <span>${prog} / 1000</span>
+        <span>До следующего токена</span><span>${prog} / 1000</span>
       </div>
       <div class="progress-outer"><div class="progress-inner" style="width:${pct}%"></div></div>
     </div>
-    <div style="text-align:center;color:var(--muted);font-size:12.5px;margin-top:20px">
-      Лимит: не больше 10 кликов в секунду.
-    </div>`;
+    <div style="text-align:center;color:var(--muted);font-size:12.5px;margin-top:20px">Лимит: не больше 10 кликов в секунду.</div>`;
 }
 function doClick(e){ if(e) e.preventDefault(); CLICKER_LOCAL_TOTAL++; CLICKER_PENDING++; renderClicker(); if(!CLICKER_FLUSH_TIMER){ CLICKER_FLUSH_TIMER = setTimeout(flushClicks, 700); } }
 async function flushClicks(){
@@ -2366,7 +2194,6 @@ async function flushClicks(){
   } catch(e){ toast('Ошибка кликера', e.message); }
 }
 
-/* PREMIUM */
 function openPremiumPanel(){ renderPremiumBody(); openPanel('premiumPanel'); }
 function renderPremiumBody(){
   const prem = isPremium(ME);
@@ -2400,7 +2227,6 @@ async function togglePremiumName(){ const next = !(ME.show_premium_name !== fals
 async function savePremPrefix(){ const v = ($('premPrefixInput').value || '').trim().slice(0,4); try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: v, show_custom_prefix: true }); await loadAll(); renderPremiumBody(); renderChats(); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function clearPremPrefix(){ try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: '' }); await loadAll(); renderPremiumBody(); renderChats(); } catch(e){} }
 
-/* ПРОФИЛЬ (мой) */
 function openEditProfile(){
   const av = ME.avatar_url
     ? `<div class="avatar" style="width:96px;height:96px;font-size:34px;margin:0 auto 12px;background-image:url('${ME.avatar_url}');background-size:cover;background-position:center" onclick="document.getElementById('pePhoto').click()"></div>`
@@ -2438,18 +2264,14 @@ async function onAvatarPick(ev){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* СМЕНА ПАРОЛЯ */
 function openChangePassword(){
   if(STACK.length) closePanel(STACK[STACK.length-1]);
   $('editProfileBody').innerHTML = `
     <div class="st-section">
       <h3>Смена пароля</h3>
-      <label class="field-label">Текущий пароль</label>
-      <input id="cpOld" type="password" class="report-input"/>
-      <label class="field-label">Новый пароль</label>
-      <input id="cpNew" type="password" class="report-input" placeholder="Минимум 6"/>
-      <label class="field-label">Повтори</label>
-      <input id="cpNew2" type="password" class="report-input"/>
+      <label class="field-label">Текущий пароль</label><input id="cpOld" type="password" class="report-input"/>
+      <label class="field-label">Новый пароль</label><input id="cpNew" type="password" class="report-input" placeholder="Минимум 6"/>
+      <label class="field-label">Повтори</label><input id="cpNew2" type="password" class="report-input"/>
       <button class="btn ok" style="margin-top:14px" onclick="doChangePassword()">Сменить</button>
       <button class="btn ghost" style="margin-top:8px" onclick="openSettings()">← Назад</button>
     </div>`;
@@ -2463,7 +2285,6 @@ async function doChangePassword(){
   catch(e){ toast('Ошибка', e.message); }
 }
 
-/* INKOGNITO */
 async function toggleInkognito(){
   const active = ME.inkUntil && new Date(ME.inkUntil) > new Date();
   if(!active){
@@ -2481,21 +2302,14 @@ async function toggleInkognito(){
       quickVignette();
       try { await api('/admin/credit-tokens','POST',{ user_id: ME.id, amount: -2 }); ME.tokens -= 2; ME.inkUntil = new Date(Date.now() + 86400000).toISOString(); renderTokensBadge(); }
       catch(e){ toast('Ошибка', e.message); return }
-      setTimeout(() => {
-        document.body.classList.add('inkognito');
-        toast('🕶️ Inkognito включён','24 часа');
-      }, 400);
+      setTimeout(() => { document.body.classList.add('inkognito'); toast('🕶️ Inkognito включён','24 часа'); }, 400);
     }
   } else {
     quickVignette();
-    setTimeout(() => {
-      document.body.classList.remove('inkognito');
-      toast('Inkognito выключен','');
-    }, 400);
+    setTimeout(() => { document.body.classList.remove('inkognito'); toast('Inkognito выключен',''); }, 400);
   }
 }
 
-/* ЭМОДЗИ */
 const EMOJI_PREMIUM = ['💎','👑','🏆','🥇','💫','🌠','🦄','🐉','🍾','🥂','💐','🎊','🎈','🔮'];
 const EMOJI_DONOR = ['💖','💜','🤍','💝','💘','💗'];
 const EMOJI_CATEGORIES = {
@@ -2557,7 +2371,6 @@ async function addMyEmoji(){ if(!isPremium(ME)) return alert('Только Premi
 async function removeMyEmoji(i){ const list = (ME.custom_emoji||[]).slice(); list.splice(i,1); try { await api('/users/me/emoji','PUT',{ custom_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
 async function toggleHideEmoji(e){ const list = (ME.hidden_emoji||[]).slice(); const i = list.indexOf(e); if(i>=0) list.splice(i,1); else list.push(e); try { await api('/users/me/emoji','PUT',{ hidden_emoji: list }); await loadAll(); openEmojiCustomize(); } catch(e){ toast('Ошибка', e.message) } }
 
-/* КЛАНЫ */
 async function openClansList(){ try { CLANS = await api('/clans'); } catch(e){ CLANS = [] } renderClansList(); openPanel('clansList'); }
 function clanCard(c){
   if(!c) return '';
@@ -2586,34 +2399,24 @@ async function renderClanBody(){
   const meRow = (c.members||[]).find(m => m.userId === ME.id);
   const isOwner = meRow && meRow.role === 'owner';
   const canManage = meRow && (meRow.role === 'owner' || meRow.role === 'coowner');
-  const monthlyCost = 4 * (c.members||[]).length;
-  const frozen = c.frozenUntil && new Date(c.frozenUntil) > new Date();
-  let proposals = [];
-  if(isOwner){ try { proposals = await api('/clans/' + c.id + '/proposals'); } catch(e){} }
   $('clanTitle').textContent = (c.prefix || '') + ' ' + c.name;
   $('clanBody').innerHTML = `
     <div class="hero">
       <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 10px;box-shadow:0 4px 20px rgba(167,139,250,.5),inset 0 2px 0 rgba(232,230,226,.2),inset 0 -2px 0 rgba(0,0,0,.2)">${c.prefix || c.name[0].toUpperCase()}</div>
       <div class="name"><span class="prefix">${esc(c.prefix||'')}</span>${esc(c.name)}</div>
       <div class="sub">${esc(c.desc||'—')}</div>
-      ${frozen ? '<div style="margin-top:8px;color:var(--danger);font-weight:600">🧊 Клан заморожен</div>' : ''}
     </div>
     <div class="balance-card"><div class="lbl">Клановый кошелёк</div><div class="num">${fmt(c.wallet)}</div></div>
     <div class="st-section"><h3>Действия</h3>
       ${inClan ? `
         <div class="st-row" onclick="openClanDeposit()"><div class="icon">💰</div><div class="txt"><div class="t1">Пополнить кошелёк клана</div></div></div>
-        <div class="st-row" onclick="openClanProposal()"><div class="icon">💡</div><div class="txt"><div class="t1">Предложить покупку</div></div></div>
       ` : `<div class="st-row" onclick="joinClan(${c.id})"><div class="icon">➕</div><div class="txt"><div class="t1">Войти в клан</div></div></div>`}
       ${canManage ? `<div class="st-row" onclick="openEditClan()"><div class="icon">✏️</div><div class="txt"><div class="t1">Изменить клан</div></div></div>` : ''}
       ${inClan ? `
-        <div class="st-row" onclick="openClanInk(${c.id})"><div class="icon">🕶️</div><div class="txt"><div class="t1">Хранилище Inkognito</div><div class="t2">Слотов: ${c.inkStock || 0}</div></div></div>
         <div class="st-row" onclick="withdrawClan(${c.id})"><div class="icon">📤</div><div class="txt"><div class="t1">Вывести свою долю</div></div></div>
         <div class="st-row" onclick="leaveClan(${c.id})"><div class="icon" style="background:linear-gradient(180deg,#f87171,#b34040);color:#150a26">🚪</div><div class="txt"><div class="t1">Выйти из клана</div></div></div>
       ` : ''}
     </div>
-    ${isOwner ? `<div class="st-section"><h3>💡 Предложения (${proposals.length})</h3>
-      ${proposals.length ? proposals.map(p => proposalCard(c, p)).join('') : '<div class="empty">Предложений нет</div>'}
-    </div>` : ''}
     <div class="st-section"><h3>Участники (${(c.members||[]).length})</h3>
       ${(c.members||[]).map(m => {
         const u = userById(m.userId); if(!u) return '';
@@ -2627,28 +2430,11 @@ async function renderClanBody(){
           </div>` : ''}
         </div>`;
       }).join('')}
-    </div>
-    <div class="st-section"><h3>Ежемесячно</h3>
-      <div class="st-row" style="cursor:default"><div class="icon">📅</div><div class="txt"><div class="t1">Сбор: ${monthlyCost} токенов</div></div></div>
-      ${isOwner ? `<button class="btn danger" onclick="payMonthly(${c.id})">Оплатить ${monthlyCost}</button>` : ''}
     </div>`;
-}
-function proposalCard(c, p){
-  const u = userById(p.byId) || { login:'—' };
-  const cost = p.type === 'premium' ? 10 * (c.members||[]).length : 2 * (c.members||[]).length;
-  const canPay = (c.wallet||0) >= cost;
-  return `<div class="vote-row">
-    <div class="title">${p.type === 'premium' ? '💎 Premium всем' : '🕶️ Inkognito'}</div>
-    <div class="desc">Предложил: <b>${esc(u.login)}</b><br>Стоимость: ${cost}</div>
-    <div class="actions">
-      <button class="btn-mini primary" onclick="startVoteFromProp(${c.id}, ${p.id})" ${!canPay ? 'disabled style="opacity:.5"' : ''}>🗳️ Начать</button>
-      <button class="btn-mini bad" onclick="declineProp(${c.id}, ${p.id})">✕</button>
-    </div>
-  </div>`;
 }
 async function joinClan(id){ try { await api('/clans/'+id+'/join','POST'); await openClan(id); renderClansList(); toast('Ты вошёл','') } catch(e){ toast('Ошибка', e.message) } }
 async function leaveClan(id){ if(!confirm('Выйти?')) return; try { const r = await api('/clans/'+id+'/leave','POST'); await loadAll(); closePanel('clanCard'); renderClansList(); toast('Вышел', r.share ? '+'+r.share : '') } catch(e){ toast('Ошибка', e.message) } }
-async function kickMem(uid){ if(!confirm('Исключить?')) return; try { const r = await api('/clans/'+CURRENT_CLAN.id+'/kick','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id); toast('Исключён','') } catch(e){ toast('Ошибка', e.message) } }
+async function kickMem(uid){ if(!confirm('Исключить?')) return; try { await api('/clans/'+CURRENT_CLAN.id+'/kick','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id); toast('Исключён','') } catch(e){ toast('Ошибка', e.message) } }
 async function promoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/promote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
 async function demoteMem(uid){ try { await api('/clans/'+CURRENT_CLAN.id+'/demote','POST',{ user_id: uid }); await openClan(CURRENT_CLAN.id) } catch(e){ toast('Ошибка', e.message) } }
 function openClanCreate(){ $('clanCreateBody').innerHTML = `
@@ -2664,24 +2450,8 @@ function openEditClan(){ const c = CURRENT_CLAN; $('clanBody').innerHTML = `
     <label class="field-label">Префикс</label><input id="ecPrefix" class="report-input" maxlength="4" value="${esc(c.prefix||'')}"/>
     <div class="row" style="margin-top:14px"><button class="btn ghost" onclick="renderClanBody()">Отмена</button><button class="btn" onclick="saveClanEdit()">Сохранить</button></div>`; }
 async function saveClanEdit(){ try { await api('/clans/'+CURRENT_CLAN.id,'PUT',{ name: $('ecName').value.trim(), desc: $('ecDesc').value.trim(), prefix: $('ecPrefix').value.trim() }); await openClan(CURRENT_CLAN.id); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
-function openClanProposal(){ $('clanProposalBody').innerHTML = `
-    <div class="st-section"><h3>Что предложить</h3>
-      <div class="st-row" onclick="submitProp('premium')"><div class="icon">💎</div><div class="txt"><div class="t1">Premium всем на 30 дней</div></div></div>
-      <div class="st-row" onclick="submitProp('inkognito')"><div class="icon">🕶️</div><div class="txt"><div class="t1">Inkognito</div></div></div>
-    </div>
-    <label class="field-label">Комментарий</label><textarea id="propNote" rows="3" class="report-input"></textarea>`; openPanel('clanProposal'); }
-async function submitProp(type){ try { const note = ($('propNote') && $('propNote').value || '').trim(); await api('/clans/'+CURRENT_CLAN.id+'/propose','POST',{ type, note }); closePanel('clanProposal'); toast('💡 Отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
-async function startVoteFromProp(clanId, pid){ try { await api('/clans/'+clanId+'/proposals/'+pid+'/start-vote','POST'); await openClan(clanId); toast('🗳️ Запущено',''); } catch(e){ toast('Ошибка', e.message) } }
-async function declineProp(clanId, pid){ if(!confirm('Отклонить?')) return; try { await api('/clans/'+clanId+'/proposals/'+pid+'/decline','POST'); await openClan(clanId) } catch(e){ toast('Ошибка', e.message) } }
 async function openClanDeposit(){ const amt = parseInt(prompt('Сколько токенов?', '10'), 10); if(!amt || amt <= 0) return; pauseGlobalPolling(3000); try { const r = await api('/clans/'+CURRENT_CLAN.id+'/deposit','POST',{ amount: amt }); ME.tokens = r.balance; renderTokensBadge(); await openClan(CURRENT_CLAN.id); toast('+'+amt,''); } catch(e){ toast('Ошибка', e.message) } }
 async function withdrawClan(id){ if(!confirm('Вывести долю?')) return; try { const r = await api('/clans/'+id+'/withdraw','POST'); ME.tokens = r.balance; renderTokensBadge(); await openClan(id); toast('+'+r.share,''); } catch(e){ toast('Ошибка', e.message) } }
-function openClanInk(id){ const c = CURRENT_CLAN; const meRow = (c.members||[]).find(m => m.userId === ME.id); const myActive = meRow && meRow.slotUntil && new Date(meRow.slotUntil) > new Date();
-  $('clanInkStockBody').innerHTML = `
-    <div class="balance-card"><div class="lbl">Слотов</div><div class="num">${c.inkStock || 0}</div></div>
-    ${myActive ? `<div style="text-align:center;color:var(--ok)">🕶️ до ${new Date(meRow.slotUntil).toLocaleString('ru-RU')}</div>` : `<button class="btn gold" onclick="useInkSlot(${id})" ${(c.inkStock || 0) <= 0 ? 'disabled style="opacity:.5"' : ''}>🕶️ Слот на 24 часа</button>`}`;
-  openPanel('clanInkStock'); }
-async function useInkSlot(id){ try { await api('/clans/'+id+'/ink/use-slot','POST'); closePanel('clanInkStock'); await openClan(id); toast('🕶️ активен','24 ч'); } catch(e){ toast('Ошибка', e.message) } }
-async function payMonthly(id){ try { const r = await api('/clans/'+id+'/pay-monthly','POST'); await openClan(id); toast('✓ Оплачен', r.cost) } catch(e){ toast('Ошибка', e.message) } }
 async function openClansRating(){ try { RATING = await api('/clans/rating'); } catch(e){ RATING = [] }
   $('clanRatingBody').innerHTML = RATING.length ? RATING.map((c,i) => `
     <div class="st-row" onclick="openClan(${c.id})">
@@ -2690,7 +2460,6 @@ async function openClansRating(){ try { RATING = await api('/clans/rating'); } c
     </div>`).join('') : '<div class="empty">Кланов нет</div>';
   openPanel('clanRating'); }
 
-/* КОШЕЛЁК */
 async function openWallet(){ try { ME = await api('/users/me'); } catch(e){}
   $('walletBody').innerHTML = `
     <div class="balance-card"><div class="lbl">Баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
@@ -2703,15 +2472,14 @@ function openSendTokens(){ $('sendTokensBody').innerHTML = `
     <button class="btn gold" style="margin-top:14px" onclick="doSendTokens()">Отправить</button>`; openPanel('sendTokens'); }
 async function doSendTokens(){ const to = $('sendTo').value.trim(), amt = parseInt($('sendAmt').value, 10), reason = $('sendReason').value.trim(); if(!to) return toast('Укажи логин',''); if(!amt || amt <= 0) return toast('Укажи сумму',''); pauseGlobalPolling(3000); try { const r = await api('/transfers','POST',{ to_login: to, amount: amt, reason }); ME.tokens = r.balance; renderTokensBadge(); closePanel('sendTokens'); toast('✓ Выполнено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function openTransactions(){ try { TX = await api('/transactions'); } catch(e){ TX = [] }
-  $('transactionsBody').innerHTML = TX.length ? TX.map(t => { const isIn = t.to === ME.id;
+  $('transactionsBody').innerHTML = TX.length ? TX.map(t => { const isIn = t.amount > 0;
     return `<div class="tx-row">
       <div class="ico ${isIn ? 'in' : 'out'}">${isIn ? '↓' : '↑'}</div>
-      <div class="info"><div class="t1">${esc(t.from_login||'—')} → ${esc(t.to_login||'—')}</div><div class="t2">${esc(t.reason||'')} · ${new Date(t.at).toLocaleString('ru-RU')}</div></div>
-      <div class="amount ${isIn ? 'pos' : 'neg'}">${isIn ? '+' : '−'}${fmt(t.amount)}</div>
+      <div class="info"><div class="t1">${esc(t.reason||'—')}</div><div class="t2">${new Date(t.at).toLocaleString('ru-RU')}</div></div>
+      <div class="amount ${isIn ? 'pos' : 'neg'}">${isIn ? '+' : '−'}${fmt(Math.abs(t.amount))}</div>
     </div>`; }).join('') : '<div class="empty">Транзакций нет</div>';
   openPanel('transactions'); }
 
-/* МАГАЗИН */
 function openShop(){ $('shopBody').innerHTML = `
     <div class="balance-card"><div class="lbl">Баланс</div><div class="num">${fmt(ME.tokens)}</div><div class="lbl">токенов</div></div>
     <div class="st-section"><h3>💎 Premium</h3>
@@ -2732,14 +2500,10 @@ async function buyPremium(){
     renderTokensBadge();
     renderChats();
     toast('💎 Premium активирован','30 дней');
-  } catch(e){
-    toast('Ошибка', e.message);
-  } finally {
-    pauseGlobalPolling(500);
-  }
+  } catch(e){ toast('Ошибка', e.message); }
+  finally { pauseGlobalPolling(500); }
 }
 
-/* ДОНАТ */
 function openDonate(){ $('shopBody').innerHTML = `
     <div class="st-section"><h3>❤️ Поддержать Ink</h3>
       <div style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);color:var(--accent-bright);padding:12px;border-radius:12px;font-size:13px;line-height:1.5;margin-bottom:12px;box-shadow:inset 0 1px 0 rgba(232,230,226,.05)">
@@ -2765,7 +2529,6 @@ function openDonate(){ $('shopBody').innerHTML = `
     </div>`; openPanel('shop'); }
 async function submitDonate(){ const amount = parseInt($('donateAmount').value, 10); const message = ($('donateMsg').value || '').trim(); const purpose = ($('donatePurpose') && $('donatePurpose').value) || 'support'; if(!amount || amount < 25) return toast('Минимум 25 ₽',''); const purposeText = purpose === 'tokens' ? 'Купить токены' : 'Поддержать проект'; if(!confirm(`Отправить заявку на ${amount} ₽?`)) return; pauseGlobalPolling(3000); try { await api('/donations','POST',{ amount, message, purpose, purpose_text: purposeText }); closePanel('shop'); toast('❤️ Отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
 
-/* ЖАЛОБЫ */
 function openReportToAdmin(prefillLogin){
   $('reportTitle').textContent = '⚠️ Жалоба админу';
   REPORT_SCREENS = [];
@@ -2785,7 +2548,6 @@ function removeScreenshot(i){ REPORT_SCREENS.splice(i,1); renderReportPreview() 
 function renderReportPreview(){ const b = $('reportPreview'); if(!b) return; b.innerHTML = REPORT_SCREENS.map((src,i)=>`<div class="thumb" style="background-image:url('${src}')"><div class="rm" onclick="removeScreenshot(${i})">✕</div></div>`).join(''); }
 async function sendGeneralReport(){ const target_login = ($('reportTargetLogin').value||'').trim(); const reason = ($('reportReason').value||'').trim(); if(!target_login || !reason) return alert('Заполни'); try { await api('/reports','POST',{ target_login, reason, screens: REPORT_SCREENS }); closePanel('reportPanel'); toast('⚠️ Отправлено',''); } catch(e){ toast('Ошибка', e.message) } }
 
-/* АДМИН */
 function openAdmin(){ if(!(ME.is_admin || ME.isAdmin)) return toast('Только админ',''); renderAdmin(); openPanel('adminPanel'); }
 async function renderAdmin(){
   let donations=[]; try { donations = await api('/admin/donations'); } catch(e){}
@@ -2800,32 +2562,10 @@ async function renderAdmin(){
       <div class="card"><div class="num" style="color:var(--danger)">${banned}</div><div class="lbl">Бан</div></div>
     </div>
     <div class="st-section"><h3>Разделы</h3>
-      <div class="st-row" onclick="adminTabDonations()"><div class="icon">❤️</div><div class="txt"><div class="t1">Донаты</div><div class="t2">${donations.filter(x=>x.status==='pending').length} ожидает</div></div></div>
       <div class="st-row" onclick="adminTabUsers()"><div class="icon">👥</div><div class="txt"><div class="t1">Пользователи</div><div class="t2">${USERS.length}</div></div></div>
       <div class="st-row" onclick="adminTabHelp()"><div class="icon">🆘</div><div class="txt"><div class="t1">Ожидают помощи</div><div class="t2">Заявки на восстановление</div></div></div>
     </div>`;
 }
-async function adminTabDonations(){
-  const donations = await api('/admin/donations').catch(()=>[]);
-  const pending = donations.filter(x=>x.status === 'pending' || !x.status);
-  $('adminBody').innerHTML = `
-    <button class="btn ghost" onclick="renderAdmin()">← Назад</button>
-    <div class="st-section" style="margin-top:12px"><h3>Ожидают (${pending.length})</h3>
-      ${pending.length ? pending.map(x=>`
-        <div class="st-row" style="cursor:default;flex-direction:column;align-items:stretch">
-          <div><div class="t1">${esc(x.login || x.username || '—')} · ${x.amount} ₽</div>
-            <div class="t2">Цель: <b>${esc(x.purpose_text || 'Поддержать проект')}</b></div>
-            ${x.message ? `<div class="t2" style="margin-top:4px;color:var(--text)">✉️ «${esc(x.message)}»</div>` : ''}</div>
-          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
-            <button class="btn ok sm" onclick="confirmDonation(${x.id})">✓ Подтвердить</button>
-            <button class="btn danger sm" onclick="rejectDonation(${x.id})">✕</button>
-          </div>
-        </div>`).join('') : '<div style="color:var(--muted);font-size:13px">Пусто</div>'}
-    </div>`;
-}
-async function confirmDonation(id){ if(!confirm('Подтвердить?')) return; try { const r = await api('/admin/donations/'+id+'/confirm','POST'); toast('❤️', '+' + (r.tokens||0) + ' токенов'); await loadAll(); adminTabDonations(); } catch(e){ toast('Ошибка', e.message) } }
-async function rejectDonation(id){ if(!confirm('Отклонить?')) return; try { await api('/admin/donations/'+id+'/reject','POST'); toast('Отклонено',''); adminTabDonations(); } catch(e){ toast('Ошибка', e.message) } }
-
 async function adminTabHelp(){
   const list = await api('/admin/recovery').catch(()=>[]);
   const filtered = list.filter(r => r.type === 'help' && r.status === 'pending');
@@ -2848,21 +2588,14 @@ async function adminTabHelp(){
 }
 async function adminResetPassword(id){
   if(!confirm('Сбросить пароль на временный?')) return;
-  try {
-    const r = await api('/admin/recovery/' + id + '/reset', 'POST');
-    alert('✅ Пароль сброшен\n\nЛогин: ' + r.login + '\nВременный пароль: ' + r.tempPassword + '\n\nСообщи пользователю.');
-    adminTabHelp();
-  } catch(e){ toast('Ошибка', e.message); }
+  try { const r = await api('/admin/recovery/' + id + '/reset', 'POST'); alert('✅ Пароль сброшен\n\nЛогин: ' + r.login + '\nВременный пароль: ' + r.tempPassword); adminTabHelp(); }
+  catch(e){ toast('Ошибка', e.message); }
 }
 async function adminDeclineRecovery(id){
   if(!confirm('Отклонить заявку?')) return;
-  try {
-    await api('/admin/recovery/' + id + '/decline', 'POST');
-    toast('Отклонено','');
-    renderAdmin();
-  } catch(e){ toast('Ошибка', e.message); }
+  try { await api('/admin/recovery/' + id + '/decline', 'POST'); toast('Отклонено',''); renderAdmin(); }
+  catch(e){ toast('Ошибка', e.message); }
 }
-
 async function adminTabUsers(){
   $('adminBody').innerHTML = `
     <button class="btn ghost" onclick="renderAdmin()">← Назад</button>
@@ -2875,29 +2608,16 @@ async function adminUserPanel(uid){
   $('adminBody').innerHTML = `
     <button class="btn ghost" onclick="adminTabUsers()">← К списку</button>
     <div class="st-row" style="cursor:default;margin-top:12px">${avatarHTML(u,'sm')}<div class="txt"><div class="t1">${esc(u.login)}</div><div class="t2">ID: ${u.id} · токенов: ${u.tokens||0}</div></div></div>
-    <div class="st-section"><h3>Роли</h3>
-      <div class="st-row" onclick="adminToggle(${uid},'is_admin')"><div class="txt"><div class="t1">${u.is_admin?'Снять админа':'Назначить админом'}</div></div></div>
-      <div class="st-row" onclick="adminToggle(${uid},'premium')"><div class="txt"><div class="t1">${u.premium?'Снять Premium':'Выдать Premium'}</div></div></div>
-    </div>
     <div class="st-section"><h3>Токены</h3>
       <label class="field-label">Сколько</label><input id="giveAmount" type="number" value="10" class="report-input"/>
       <div class="row" style="margin-top:8px">
         <button class="btn ok" onclick="applyGiveTokens(${uid},1)">Выдать</button>
         <button class="btn danger" onclick="applyGiveTokens(${uid},-1)">Списать</button>
       </div>
-    </div>
-    <div class="st-section"><h3>Модерация</h3>
-      ${u.blocked_until && new Date(u.blocked_until) > new Date()
-        ? `<div class="st-row" onclick="adminUnban(${uid})"><div class="txt"><div class="t1">✅ Разбанить</div></div></div>`
-        : `<div class="st-row" onclick="adminBan(${uid})"><div class="txt"><div class="t1">🚫 Забанить на 30 дней</div></div></div>`}
     </div>`;
 }
-async function adminToggle(uid, field){ const u = userById(uid); try { await api('/admin/users/'+uid,'PUT',{ [field]: !u[field] }); await loadAll(); adminUserPanel(uid); toast('Изменено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function applyGiveTokens(uid, sign){ const amount = parseInt($('giveAmount').value, 10); if(!amount || amount <= 0) return alert('Введи число'); try { await api('/admin/credit-tokens','POST',{ user_id: uid, amount: sign*amount }); await loadAll(); adminUserPanel(uid); toast(sign>0?'💰 +'+amount:'Списано '+amount,''); } catch(e){ toast('Ошибка', e.message) } }
-async function adminBan(uid){ if(!confirm('Забанить на 30 дней?')) return; const reason = prompt('Причина:', 'нарушение правил') || 'нарушение правил'; try { await api('/admin/users/'+uid,'PUT',{ blocked_until: new Date(Date.now()+30*86400000).toISOString(), block_reason: reason, banned: true }); await loadAll(); adminUserPanel(uid); toast('🚫 Забанен',''); } catch(e){ toast('Ошибка', e.message) } }
-async function adminUnban(uid){ try { await api('/admin/users/'+uid,'PUT',{ blocked_until: null, block_reason: '', banned: false }); await loadAll(); adminUserPanel(uid); toast('✅ Разбанен',''); } catch(e){ toast('Ошибка', e.message) } }
 
-/* СТАРТ */
 (async function init(){
   if(!TOKEN){ $('auth').style.display = 'flex'; return; }
   try { await enterApp(); }
