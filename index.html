@@ -23,8 +23,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-appl
 .room{position:fixed;inset:0;z-index:-3;pointer-events:none;overflow:hidden}
 .room .back-wall{position:absolute;inset:0;background:linear-gradient(180deg,var(--wall-1) 0%,var(--wall-2) 50%,var(--wall-3) 100%)}
 .room .back-wall::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(167,139,250,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,.04) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse at 50% 30%,black 20%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at 50% 30%,black 20%,transparent 75%)}
-.room .back-wall::after{content:'';position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(167,139,250,.14),transparent 60%);animation:wallGlow 10s ease-in-out infinite}
-@keyframes wallGlow{0%,100%{opacity:.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
+.room .back-wall::after{content:'';position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:min(900px,100vw);height:min(900px,100vw);background:radial-gradient(circle,rgba(167,139,250,.14),transparent 60%);animation:wallGlow 10s ease-in-out infinite;will-change:opacity}
+@keyframes wallGlow{0%,100%{opacity:.6}50%{opacity:1}}
 .room .floor{position:absolute;left:0;right:0;bottom:0;height:40vh;background:linear-gradient(180deg,transparent,var(--floor));transform:perspective(600px) rotateX(50deg);transform-origin:bottom}
 .room .floor::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(167,139,250,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,.06) 1px,transparent 1px);background-size:60px 60px;mask-image:linear-gradient(180deg,black,transparent 90%);-webkit-mask-image:linear-gradient(180deg,black,transparent 90%)}
 
@@ -87,7 +87,7 @@ section .desc{color:var(--text2);margin:0 0 40px;font-size:15px}
 .preview-text ul li::marker{color:var(--accent-bright)}
 .preview-text ul li b{color:var(--accent-bright);font-weight:600}
 
-.phone-mock{width:280px;height:560px;margin:0 auto;background:linear-gradient(160deg,#150828,#0d0419);border:2px solid var(--border3);border-radius:36px;padding:10px;position:relative;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 80px rgba(167,139,250,.25),inset 0 2px 0 rgba(232,230,226,.06),inset 0 -4px 0 rgba(0,0,0,.6);transform:rotateY(-8deg) rotateX(4deg);transition:transform .5s cubic-bezier(.2,.9,.3,1)}
+.phone-mock{width:280px;height:560px;margin:0 auto;background:linear-gradient(160deg,#150828,#0d0419);border:2px solid var(--border3);border-radius:36px;padding:10px;position:relative;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 80px rgba(167,139,250,.25),inset 0 2px 0 rgba(232,230,226,.06),inset 0 -4px 0 rgba(0,0,0,.6);transform:rotateY(-8deg) rotateX(4deg);transition:transform .5s cubic-bezier(.2,.9,.3,1);will-change:transform}
 .phone-mock:hover{transform:rotateY(0) rotateX(0) scale(1.02)}
 .phone-mock::before{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:60px;height:5px;border-radius:3px;background:var(--border3);z-index:5}
 .phone-screen{width:100%;height:100%;border-radius:28px;background:linear-gradient(180deg,#150a26,#0f0720);overflow:hidden;position:relative;display:flex;flex-direction:column}
@@ -195,8 +195,8 @@ section .desc{color:var(--text2);margin:0 0 40px;font-size:15px}
 .update-item ul li a:hover{color:#c4b0ff}
 
 .download-section{padding:70px 40px;background:linear-gradient(160deg,var(--panel2) 0%,var(--panel) 100%);border:1px solid var(--border2);border-radius:28px;text-align:center;margin:80px 0;position:relative;overflow:hidden;transition:all .4s;box-shadow:0 40px 100px rgba(0,0,0,.7),0 8px 20px rgba(0,0,0,.5),inset 0 1px 0 rgba(232,230,226,.05),inset 0 -6px 0 rgba(0,0,0,.5)}
-.download-section::before{content:'';position:absolute;top:-60%;left:50%;width:800px;height:800px;background:radial-gradient(circle,rgba(167,139,250,.22),transparent 65%);transform:translateX(-50%);pointer-events:none;animation:dlGlow 8s ease-in-out infinite}
-@keyframes dlGlow{0%,100%{opacity:.5;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.15)}}
+.download-section::before{content:'';position:absolute;top:-60%;left:50%;width:min(800px,100vw);height:min(800px,100vw);background:radial-gradient(circle,rgba(167,139,250,.22),transparent 65%);transform:translateX(-50%);pointer-events:none;animation:dlGlow 8s ease-in-out infinite;will-change:opacity}
+@keyframes dlGlow{0%,100%{opacity:.5}50%{opacity:1}}
 .download-section:hover{transform:translateY(-6px);border-color:var(--accent-line);box-shadow:0 60px 130px rgba(0,0,0,.8),0 12px 30px rgba(0,0,0,.6),0 0 100px rgba(167,139,250,.3),inset 0 1px 0 rgba(232,230,226,.08),inset 0 -6px 0 rgba(0,0,0,.5)}
 .download-section > *{position:relative;z-index:1}
 .download-section .d-ghost{width:90px;height:90px;margin:0 auto 24px;display:block;filter:drop-shadow(0 14px 34px rgba(167,139,250,.8));animation:ghostFly 5s ease-in-out infinite}
@@ -245,6 +245,53 @@ footer .owner{margin-top:20px;font-size:12px;color:var(--muted2)}
 .ripple{position:absolute;border-radius:50%;background:rgba(232,230,226,.35);transform:scale(0);animation:rippleAnim .6s ease-out;pointer-events:none}
 .btn.primary .ripple{background:rgba(232,230,226,.5)}
 @keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+/* ============================================================ */
+/* АДАПТАЦИЯ ПОД FPS */
+/* ============================================================ */
+
+/* perf-mid — среднее устройство */
+html.perf-mid .particles{display:none}
+html.perf-mid .room .back-wall::after{animation:none;opacity:.7}
+html.perf-mid .logo::after{animation:none;opacity:.6}
+html.perf-mid .download-section::before{animation:none;opacity:.6}
+html.perf-mid .updates-head .ver{animation:none}
+html.perf-mid .update-item.latest::before{animation:none}
+html.perf-mid .update-item .new-tag{box-shadow:none}
+html.perf-mid .app-header .icon-btn.active::after{animation:none;opacity:0}
+html.perf-mid .chat-sk .av.online::after{animation:none}
+html.perf-mid .chat-sk .name-blk,
+html.perf-mid .chat-sk .last-blk{animation:none;background:linear-gradient(90deg,#0d0419,#150a26);background-size:100% 100%}
+html.perf-mid .scroll-arrow a{animation:none}
+html.perf-mid .scroll-arrow a::after{animation:none}
+html.perf-mid .phone-mock,
+html.perf-mid .phone-mock:hover{transform:none;transition:none}
+html.perf-mid .preview-box:hover,
+html.perf-mid .download-section:hover,
+html.perf-mid .logo:hover{transform:none}
+
+/* perf-low — слабое устройство */
+html.perf-low .particles{display:none}
+html.perf-low .room .back-wall::after{display:none}
+html.perf-low .room .floor{display:none}
+html.perf-low .room .back-wall::before{background-size:120px 120px}
+html.perf-low .logo::after{display:none}
+html.perf-low .download-section::before{display:none}
+html.perf-low .updates-head .ver{animation:none}
+html.perf-low .update-item.latest::before{animation:none}
+html.perf-low .update-item .new-tag{box-shadow:none}
+html.perf-low .app-header .icon-btn.active::after{display:none}
+html.perf-low .chat-sk .av.online::after{animation:none}
+html.perf-low .chat-sk .name-blk,
+html.perf-low .chat-sk .last-blk{animation:none;background:#0d0419;background-image:none}
+html.perf-low .scroll-arrow a{animation:none}
+html.perf-low .scroll-arrow a::after{display:none}
+html.perf-low .phone-mock,
+html.perf-low .phone-mock:hover{transform:none;transition:none;box-shadow:0 20px 50px rgba(0,0,0,.6),inset 0 1px 0 rgba(232,230,226,.05)}
+html.perf-low .preview-box:hover,
+html.perf-low .download-section:hover,
+html.perf-low .logo:hover{transform:none}
+html.perf-low .reveal{opacity:1;transform:none;transition:none}
 
 @media(max-width:800px){.preview-box{grid-template-columns:1fr;gap:36px;padding:36px 24px}.phone-mock{width:240px;height:480px}}
 @media(max-width:600px){.wrap{padding:0 18px}header{padding:60px 0 50px}.logo{padding:10px 16px 10px 10px;gap:12px}.logo .ghost{width:44px;height:44px}.logo .name{font-size:24px}section{padding:56px 0}.download-section{padding:50px 24px;margin:56px 0}.download-grid{grid-template-columns:1fr}.btn{width:100%;justify-content:center;max-width:360px}.actions{flex-direction:column;align-items:center}.updates-head{gap:10px}.terminal{font-size:11.5px}}
@@ -494,10 +541,45 @@ footer .owner{margin-top:20px;font-size:12px;color:var(--muted2)}
 </div>
 
 <script>
+/* ============================================================ */
+/* ЗАМЕР FPS И АДАПТАЦИЯ */
+/* ============================================================ */
+(function(){
+  const html = document.documentElement;
+
+  const saved = localStorage.getItem('ink_perf');
+  if(saved){ html.classList.add('perf-' + saved); return; }
+
+  let frames = 0;
+  let startTime = performance.now();
+  const DURATION = 1200;
+
+  function loop(){
+    frames++;
+    const elapsed = performance.now() - startTime;
+    if(elapsed < DURATION){
+      requestAnimationFrame(loop);
+    } else {
+      const fps = Math.round((frames / elapsed) * 1000);
+      let level = 'high';
+      if(fps < 40) level = 'low';
+      else if(fps < 55) level = 'mid';
+      html.classList.add('perf-' + level);
+      localStorage.setItem('ink_perf', level);
+      console.log('[perf] FPS:', fps, '→ уровень:', level);
+    }
+  }
+  requestAnimationFrame(loop);
+})();
+
+/* ЧАСТИЦЫ — только на perf-high и не на телефоне */
 (function(){
   const box = document.getElementById('particles');
   if(!box) return;
-  const count = window.innerWidth < 700 ? 15 : 30;
+  if(document.documentElement.classList.contains('perf-low')) return;
+  if(document.documentElement.classList.contains('perf-mid')) return;
+  if(window.innerWidth < 700) return;
+  const count = 30;
   for(let i = 0; i < count; i++){
     const p = document.createElement('div');
     p.className = 'particle';
@@ -513,10 +595,13 @@ footer .owner{margin-top:20px;font-size:12px;color:var(--muted2)}
   }
 })();
 
+/* КУРСОР — только на ПК и не на perf-low */
 (function(){
   if(window.matchMedia('(max-width: 900px)').matches) return;
+  if(document.documentElement.classList.contains('perf-low')) return;
   const dot = document.getElementById('cursorDot');
   const ring = document.getElementById('cursorRing');
+  if(!dot || !ring) return;
   let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX; mouseY = e.clientY;
@@ -537,16 +622,25 @@ footer .owner{margin-top:20px;font-size:12px;color:var(--muted2)}
   document.addEventListener('mouseup', () => ring.classList.remove('click'));
 })();
 
+/* ПАРАЛЛАКС СТЕНЫ — только на perf-high */
 (function(){
+  if(document.documentElement.classList.contains('perf-low')) return;
+  if(document.documentElement.classList.contains('perf-mid')) return;
   const wall = document.getElementById('backWall');
+  if(!wall) return;
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
-    if(wall) wall.style.transform = `translateY(${y * 0.05}px)`;
+    wall.style.transform = `translateY(${y * 0.05}px)`;
   }, { passive: true });
 })();
 
+/* REVEAL — всегда работает, но на perf-low мгновенно */
 (function(){
   const items = document.querySelectorAll('.reveal');
+  if(document.documentElement.classList.contains('perf-low')){
+    items.forEach(el => el.classList.add('visible'));
+    return;
+  }
   if(!('IntersectionObserver' in window)){
     items.forEach(el => el.classList.add('visible'));
     return;
@@ -563,7 +657,9 @@ footer .owner{margin-top:20px;font-size:12px;color:var(--muted2)}
   items.forEach(el => io.observe(el));
 })();
 
+/* RIPPLE — на всех, кроме perf-low */
 (function(){
+  if(document.documentElement.classList.contains('perf-low')) return;
   document.querySelectorAll('.btn, .download-btn, .app-create').forEach(btn => {
     btn.style.position = 'relative';
     btn.addEventListener('click', function(e){
@@ -583,6 +679,7 @@ footer .owner{margin-top:20px;font-size:12px;color:var(--muted2)}
   });
 })();
 
+/* TOAST */
 function showToast(text){
   const box = document.getElementById('toastBox');
   if(!box) return;
@@ -596,6 +693,7 @@ document.querySelectorAll('[data-toast]').forEach(el => {
   el.addEventListener('click', () => showToast(el.getAttribute('data-toast')));
 });
 
+/* ТЕРМИНАЛ — печатающийся текст */
 (function(){
   const cmd1 = document.getElementById('cmd1');
   const cmd2 = document.getElementById('cmd2');
@@ -623,8 +721,11 @@ document.querySelectorAll('[data-toast]').forEach(el => {
   if(t) io.observe(t);
 })();
 
+/* 3D-НАКЛОН МОКАПА — только на ПК и perf-high */
 (function(){
   if(window.innerWidth < 900) return;
+  if(document.documentElement.classList.contains('perf-low')) return;
+  if(document.documentElement.classList.contains('perf-mid')) return;
   const card = document.getElementById('previewBox');
   if(!card) return;
   card.addEventListener('mousemove', (e) => {
@@ -636,10 +737,12 @@ document.querySelectorAll('[data-toast]').forEach(el => {
   card.addEventListener('mouseleave', () => { card.style.transform = ''; });
 })();
 
+/* НАСТРОЙКИ В МОКАПЕ */
 function openSettings(){ const el = document.getElementById('settingsOverlay'); if(el) el.classList.add('open'); }
 function closeSettings(){ const el = document.getElementById('settingsOverlay'); if(el) el.classList.remove('open'); }
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeSettings(); });
 
+/* ПЛАВНЫЙ СКРОЛЛ ПО ЯКОРЯМ */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', (e) => {
     const id = a.getAttribute('href');
