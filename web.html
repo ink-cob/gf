@@ -469,7 +469,28 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 .recovery-composer input{flex:1;padding:11px 16px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:22px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
 .recovery-composer input:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
 .recovery-composer .send-btn{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:16px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;flex-shrink:0;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;box-shadow:0 4px 16px rgba(139,92,246,.5),inset 0 1px 0 rgba(232,230,226,.25),inset 0 -2px 0 rgba(0,0,0,.3)}
-
+/* ЭКРАН БАНА */
+.ban-scene{position:fixed;inset:0;z-index:800;display:none;align-items:center;justify-content:center;background:rgba(20,2,2,.97);backdrop-filter:blur(10px);padding:20px;overflow-y:auto}
+.ban-scene.show{display:flex}
+.ban-inner{max-width:560px;width:100%;text-align:center;animation:welcomeIn .6s cubic-bezier(.2,.9,.3,1.2)}
+.ban-ghost{width:150px;height:150px;margin:0 auto 20px;display:block;filter:drop-shadow(0 20px 60px rgba(248,113,113,.7));animation:ghostFloat 3.4s ease-in-out infinite}
+.ban-ghost .eye{animation:ghostBlink 3.5s ease-in-out infinite;transform-origin:center}
+.ban-title{font-size:clamp(22px,4vw,28px);font-weight:800;color:#fca5a5;margin:0 0 20px;letter-spacing:-.5px;text-shadow:0 4px 30px rgba(0,0,0,.7),0 0 40px rgba(248,113,113,.5)}
+.ban-body{background:linear-gradient(180deg,rgba(248,113,113,.12),rgba(248,113,113,.04));border:1px solid rgba(248,113,113,.35);border-radius:16px;padding:20px;margin-bottom:16px;text-align:left;box-shadow:0 8px 24px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.06);font-size:14.5px;line-height:1.75;color:var(--text2)}
+.ban-body b{color:#fca5a5;font-weight:600}
+.ban-body .article{color:#fde68a}
+.ban-meta{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:18px;text-align:left;font-size:13px;color:var(--text2);line-height:1.8;font-family:ui-monospace,Menlo,monospace}
+.ban-meta b{color:var(--accent-bright)}
+.ban-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.ban-btn{padding:14px 28px;border-radius:14px;border:0;cursor:pointer;font-size:15px;font-weight:700;font-family:inherit;background:linear-gradient(180deg,#f87171,#b34040);color:#150a26;box-shadow:0 8px 28px rgba(248,113,113,.5),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -3px 0 rgba(0,0,0,.2);transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s}
+.ban-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(248,113,113,.6),inset 0 1px 0 rgba(232,230,226,.4),inset 0 -3px 0 rgba(0,0,0,.2)}
+.ban-btn.ghost{background:linear-gradient(180deg,var(--panel2),var(--panel));color:var(--text);border:1px solid var(--border2);box-shadow:0 4px 12px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.06),inset 0 -2px 0 rgba(0,0,0,.3)}
+.ban-btn.ghost:hover{border-color:var(--accent);color:var(--accent-bright);box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 24px rgba(167,139,250,.25),inset 0 1px 0 rgba(232,230,226,.1),inset 0 -2px 0 rgba(0,0,0,.3)}
+.ban-appeal-form{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:14px;text-align:left}
+.ban-appeal-form textarea{width:100%;padding:12px;background:var(--panel);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;outline:none;resize:vertical;font-family:inherit;min-height:90px;margin-top:8px}
+.ban-appeal-form textarea:focus{border-color:var(--accent)}
+.ban-appeal-form .row-btn{display:flex;gap:8px;margin-top:10px}
+.ban-appeal-form .row-btn button{flex:1}
 .password-reveal{position:fixed;inset:0;z-index:650;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(8,2,18,0);transition:background .5s ease;padding:20px}
 .password-reveal.show{display:flex}
 .password-reveal.dark{background:rgba(8,2,18,.95);backdrop-filter:blur(8px)}
@@ -753,7 +774,34 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
     <button class="welcome-btn" onclick="closeWelcome()">Понял, погнали →</button>
   </div>
 </div>
-
+<!-- ЭКРАН БАНА -->
+<div class="ban-scene" id="banScene">
+  <div class="ban-inner">
+    <svg class="ban-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bgBan" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f87171"/>
+          <stop offset="100%" stop-color="#7f1d1d"/>
+        </linearGradient>
+      </defs>
+      <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#bgBan)"/>
+      <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+      <circle cx="41.5" cy="44" r="1.6" fill="#ffdada"/>
+      <g class="eye">
+        <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
+        <circle cx="61.5" cy="44" r="1.6" fill="#ffdada"/>
+      </g>
+    </svg>
+    <h2 class="ban-title">🚫 Ваш аккаунт заблокирован</h2>
+    <div class="ban-body" id="banBody">Загрузка информации...</div>
+    <div class="ban-meta" id="banMeta"></div>
+    <div id="banAppealBox"></div>
+    <div class="ban-actions">
+      <button class="ban-btn" id="banAppealBtn" onclick="openBanAppeal()">📩 Подать заявку на пересмотр</button>
+      <button class="ban-btn ghost" onclick="logoutFromBan()">🚪 Выйти из аккаунта</button>
+    </div>
+  </div>
+</div>
 <div class="password-reveal" id="passwordReveal">
   <div class="password-reveal-inner">
     <svg class="password-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -971,11 +1019,26 @@ async function api(path, method, body){
   const r = await fetch(API + path, opt);
   let d = {};
   try { d = await r.json(); } catch(e){}
-  if(r.status === 403 && (d.banned)){ if(!KICKED_OUT){ KICKED_OUT = true; kickOut(d.error || 'Забанен'); } throw new Error(d.error || 'Забанен'); }
+  if(r.status === 403 && (d.banned)){
+  if(!KICKED_OUT){
+    KICKED_OUT = true;
+    kickOut(d.error || 'Забанен', {
+      login: ME ? ME.login : '',
+      blocked_until: d.blocked_until,
+      block_reason: d.block_reason || '',
+      reports_count: d.reports_count || 0,
+      article_id: d.article_id || null,
+      article_title: d.article_title || '',
+      banned_at: d.banned_at || null,
+      admin_login: d.admin_login || 'Администрация'
+    });
+  }
+  throw new Error(d.error || 'Забанен');
+}
   if(!r.ok) throw new Error(d.error || ('HTTP ' + r.status));
   return d;
 }
-function kickOut(reason){
+function kickOut(reason, banInfo){
   try { localStorage.removeItem('ink_token'); } catch(e){}
   TOKEN = null;
   try { stopSilentPolling(); } catch(e){}
@@ -984,9 +1047,16 @@ function kickOut(reason){
   try { stopGlobalPolling(); } catch(e){}
   try { if(presenceTimer) clearInterval(presenceTimer); } catch(e){}
   const app = document.getElementById('app'); if(app) app.classList.remove('open');
-  const auth = document.getElementById('auth'); if(auth) auth.style.display = 'flex';
-  const msg = document.getElementById('authMsg');
-  if(msg){ msg.className = 'msg-ok err'; msg.textContent = '🚫 ' + reason; }
+  const auth = document.getElementById('auth');
+
+  if(banInfo){
+    if(auth) auth.style.display = 'none';
+    showBanScreen(banInfo);
+  } else {
+    if(auth) auth.style.display = 'flex';
+    const msg = document.getElementById('authMsg');
+    if(msg){ msg.className = 'msg-ok err'; msg.textContent = '🚫 ' + reason; }
+  }
 }
 
 const $ = id => document.getElementById(id);
@@ -1407,7 +1477,87 @@ function maybeShowWelcome(){
   if(seen) return;
   openWelcome();
 }
+/* ============================================================ */
+/* ЭКРАН БАНА                                                    */
+/* ============================================================ */
+let BAN_INFO = null;
 
+function showBanScreen(info){
+  BAN_INFO = info;
+  const days = info.blocked_until && new Date(info.blocked_until).getFullYear() > 9000
+    ? 'навсегда'
+    : Math.max(1, Math.ceil((new Date(info.blocked_until) - Date.now()) / 86400000)) + ' дн.';
+  const article = info.article_id
+    ? `статьи ${info.article_id} «${esc(info.article_title)}» Правил сообщества Ink`
+    : 'действующих Правил сообщества Ink';
+  const login = info.login || 'пользователь';
+  const reports = info.reports_count || 0;
+  const reason = info.block_reason || 'нарушение правил';
+  const reportsWord = reports === 1 ? 'жалоба' : (reports >= 2 && reports <= 4 ? 'жалобы' : 'жалоб');
+
+  $('banBody').innerHTML = `
+    Уважаемый(ая) <b>${esc(login)}</b>, на вас было подано <b>${reports}</b> ${reportsWord},
+    и админ заблокировал ваш аккаунт на <b>${days}</b> по причине
+    <b>«${esc(reason)}»</b>, на основании <span class="article">${esc(article)}</span>.
+    Вы можете подать заявку на пересмотрение бана или подождать. Спасибо за понимание.
+  `;
+
+  const banDate = info.banned_at ? new Date(info.banned_at).toLocaleString('ru-RU') : new Date().toLocaleString('ru-RU');
+  const unbanDate = info.blocked_until && new Date(info.blocked_until).getFullYear() < 9000
+    ? new Date(info.blocked_until).toLocaleString('ru-RU')
+    : 'не разблокируется автоматически';
+  $('banMeta').innerHTML = `
+    <div><b>Дата бана:</b> ${esc(banDate)}</div>
+    <div><b>Дата разбана:</b> ${esc(unbanDate)}</div>
+    <div><b>Админ:</b> ${esc(info.admin_login || 'Администрация')}</div>
+  `;
+
+  $('banAppealBox').innerHTML = '';
+  $('banAppealBtn').style.display = '';
+  $('banScene').classList.add('show');
+}
+
+function openBanAppeal(){
+  const box = $('banAppealBox');
+  if(box.innerHTML) return;
+  box.innerHTML = `
+    <div class="ban-appeal-form">
+      <div style="font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600">Комментарий к заявке</div>
+      <textarea id="banAppealText" placeholder="Объясни ситуацию: что произошло, почему считаешь бан несправедливым, приложи детали..."></textarea>
+      <div class="row-btn">
+        <button class="ban-btn" onclick="submitBanAppeal()">Отправить</button>
+        <button class="ban-btn ghost" onclick="document.getElementById('banAppealBox').innerHTML=''">Отмена</button>
+      </div>
+    </div>`;
+  $('banAppealBtn').style.display = 'none';
+}
+
+async function submitBanAppeal(){
+  const text = ($('banAppealText').value || '').trim();
+  if(!text || text.length < 10) return toast('Опиши ситуацию подробнее', 'Минимум 10 символов');
+  try {
+    const r = await fetch(API + '/ban-appeals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        login: BAN_INFO ? BAN_INFO.login : '',
+        comment: text
+      })
+    });
+    const d = await r.json();
+    if(d.ok){
+      $('banAppealBox').innerHTML = '<div style="color:var(--ok);font-weight:600;text-align:center;padding:14px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);border-radius:12px;margin-top:12px">✓ Заявка отправлена. Админ рассмотрит её в течение 48 часов.</div>';
+    } else {
+      toast('Ошибка', d.error || 'не удалось отправить');
+    }
+  } catch(e){ toast('Ошибка', e.message); }
+}
+
+function logoutFromBan(){
+  try { localStorage.removeItem('ink_token'); } catch(e){}
+  TOKEN = null;
+  location.href = 'index.html';
+}
 function openWelcome(){
   const el = document.getElementById('welcomeScene');
   if(el) el.classList.add('show');
