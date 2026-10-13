@@ -91,18 +91,8 @@ header button:active{transform:translateY(1px) scale(.96);box-shadow:inset 0 2px
 .header-ghost .eye{animation:ghostBlink 4.2s ease-in-out infinite;transform-origin:center}
 @keyframes ghostBlink{0%,42%,58%,100%{transform:scaleY(1)}50%{transform:scaleY(.15)}}
 
-/* КНОПКА АДМИНА — заметная, но в стиле */
-.admin-btn{
-  background:linear-gradient(180deg,#fbbf24,#d97706) !important;
-  color:#150a26 !important;
-  border-color:#fbbf24 !important;
-  box-shadow:0 3px 10px rgba(251,191,36,.5),inset 0 1px 0 rgba(232,230,226,.35),inset 0 -2px 0 rgba(0,0,0,.25) !important;
-  font-weight:800;
-}
-.admin-btn:hover{
-  box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 32px rgba(251,191,36,.7),inset 0 1px 0 rgba(232,230,226,.4),inset 0 -2px 0 rgba(0,0,0,.25) !important;
-  border-color:#fcd34d !important;
-}
+.admin-btn{background:linear-gradient(180deg,#fbbf24,#d97706) !important;color:#150a26 !important;border-color:#fbbf24 !important;box-shadow:0 3px 10px rgba(251,191,36,.5),inset 0 1px 0 rgba(232,230,226,.35),inset 0 -2px 0 rgba(0,0,0,.25) !important;font-weight:800;}
+.admin-btn:hover{box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 32px rgba(251,191,36,.7),inset 0 1px 0 rgba(232,230,226,.4),inset 0 -2px 0 rgba(0,0,0,.25) !important;border-color:#fcd34d !important;}
 
 .layout{flex:1;display:flex;overflow:hidden;min-height:0;width:100%}
 .sidebar{display:flex;flex-direction:column;width:100%;height:100%;background:var(--panel);min-width:0}
@@ -110,63 +100,15 @@ header button:active{transform:translateY(1px) scale(.96);box-shadow:inset 0 2px
 body.in-chat .sidebar{display:none}
 body.in-chat .chatpane{display:flex}
 body.in-chat #backBtn{display:inline-flex !important}
-@media(min-width:820px){
-  .layout{display:grid;grid-template-columns:minmax(280px,340px) 1fr}
-  .sidebar{display:flex;border-right:1px solid var(--border)}
-  .chatpane{display:flex}
-  body.in-chat .sidebar{display:flex}
-  body.in-chat #backBtn{display:none !important}
-}
-@media(min-width:768px) and (max-width:819px){
-  .layout{display:grid;grid-template-columns:240px 1fr}
-  .sidebar{display:flex;border-right:1px solid var(--border)}
-  .chatpane{display:flex}
-  body.in-chat .sidebar{display:flex}
-  body.in-chat #backBtn{display:none !important}
-}
-@media(max-width:819px) and (orientation:landscape) and (min-width:600px){
-  .layout{display:grid;grid-template-columns:220px 1fr}
-  .sidebar{display:flex}
-  .chatpane{display:flex}
-  body.in-chat .sidebar{display:flex}
-  body.in-chat #backBtn{display:none !important}
-}
-@media(min-width:1440px){
-  .layout{grid-template-columns:360px 1fr}
-}
-@media(min-width:1920px){
-  .layout{grid-template-columns:400px 1fr}
-}
+@media(min-width:820px){.layout{display:grid;grid-template-columns:minmax(280px,340px) 1fr}.sidebar{display:flex;border-right:1px solid var(--border)}.chatpane{display:flex}body.in-chat .sidebar{display:flex}body.in-chat #backBtn{display:none !important}}
+@media(min-width:768px) and (max-width:819px){.layout{display:grid;grid-template-columns:240px 1fr}.sidebar{display:flex;border-right:1px solid var(--border)}.chatpane{display:flex}body.in-chat .sidebar{display:flex}body.in-chat #backBtn{display:none !important}}
+@media(max-width:819px) and (orientation:landscape) and (min-width:600px){.layout{display:grid;grid-template-columns:220px 1fr}.sidebar{display:flex}.chatpane{display:flex}body.in-chat .sidebar{display:flex}body.in-chat #backBtn{display:none !important}}
+@media(min-width:1440px){.layout{grid-template-columns:360px 1fr}}
+@media(min-width:1920px){.layout{grid-template-columns:400px 1fr}}
 
-#messages{
-  flex:1;overflow-y:auto;padding:16px 14px;
-  display:flex;flex-direction:column;gap:6px;
-  position:relative;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(167,139,250,.10), transparent 45%),
-    radial-gradient(circle at 85% 75%, rgba(139,92,246,.08), transparent 45%),
-    radial-gradient(circle at 50% 100%, rgba(167,139,250,.06), transparent 55%),
-    linear-gradient(160deg, #14082a 0%, #1a0d33 40%, #180c2e 70%, #120723 100%);
-  background-attachment: local;
-}
-#messages::before{
-  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
-  background-image:
-    linear-gradient(rgba(167,139,250,.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(167,139,250,.035) 1px, transparent 1px);
-  background-size:48px 48px;
-  background-position:0 0;
-  mask-image:radial-gradient(ellipse at 50% 50%, black 30%, transparent 85%);
-  -webkit-mask-image:radial-gradient(ellipse at 50% 50%, black 30%, transparent 85%);
-  animation:gridShift 60s linear infinite;
-}
-#messages::after{
-  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(167,139,250,.18), transparent 60%),
-    radial-gradient(ellipse at 50% 100%, rgba(139,92,246,.15), transparent 60%);
-  animation:bgBreath 12s ease-in-out infinite;
-}
+#messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:6px;position:relative;background:radial-gradient(circle at 15% 20%, rgba(167,139,250,.10), transparent 45%),radial-gradient(circle at 85% 75%, rgba(139,92,246,.08), transparent 45%),radial-gradient(circle at 50% 100%, rgba(167,139,250,.06), transparent 55%),linear-gradient(160deg, #14082a 0%, #1a0d33 40%, #180c2e 70%, #120723 100%);background-attachment: local;}
+#messages::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(167,139,250,.035) 1px, transparent 1px),linear-gradient(90deg, rgba(167,139,250,.035) 1px, transparent 1px);background-size:48px 48px;background-position:0 0;mask-image:radial-gradient(ellipse at 50% 50%, black 30%, transparent 85%);-webkit-mask-image:radial-gradient(ellipse at 50% 50%, black 30%, transparent 85%);animation:gridShift 60s linear infinite;}
+#messages::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 0%, rgba(167,139,250,.18), transparent 60%),radial-gradient(ellipse at 50% 100%, rgba(139,92,246,.15), transparent 60%);animation:bgBreath 12s ease-in-out infinite;}
 @keyframes gridShift{from{background-position:0 0, 0 0}to{background-position:48px 48px, 48px 48px}}
 @keyframes bgBreath{0%,100%{opacity:.7}50%{opacity:1}}
 
@@ -469,7 +411,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 .recovery-composer input{flex:1;padding:11px 16px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:22px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
 .recovery-composer input:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
 .recovery-composer .send-btn{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;font-size:16px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;flex-shrink:0;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;box-shadow:0 4px 16px rgba(139,92,246,.5),inset 0 1px 0 rgba(232,230,226,.25),inset 0 -2px 0 rgba(0,0,0,.3)}
-/* ЭКРАН БАНА */
 .ban-scene{position:fixed;inset:0;z-index:800;display:none;align-items:center;justify-content:center;background:rgba(20,2,2,.97);backdrop-filter:blur(10px);padding:20px;overflow-y:auto}
 .ban-scene.show{display:flex}
 .ban-inner{max-width:560px;width:100%;text-align:center;animation:welcomeIn .6s cubic-bezier(.2,.9,.3,1.2)}
@@ -517,6 +458,26 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 .password-reveal-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(139,92,246,.6),0 0 60px rgba(167,139,250,.5),inset 0 1px 0 rgba(232,230,226,.4),inset 0 -3px 0 rgba(0,0,0,.2)}
 .password-reveal-btn:active{transform:translateY(1px) scale(.98)}
 .password-reveal-btn.show{animation:textIn .6s .5s cubic-bezier(.2,.9,.3,1.2) forwards}
+
+/* ХЕШТЕГИ */
+.hashtag{cursor:pointer;transition:color .15s}
+.hashtag:hover{color:var(--accent-warm);text-shadow:0 0 12px rgba(167,139,250,.6)}
+.tag-sort{display:flex;gap:6px;padding:12px 4px;flex-wrap:wrap}
+.tag-sort button{padding:6px 14px;font-size:12.5px;border-radius:8px;border:1px solid var(--border2);background:linear-gradient(180deg,var(--panel3),var(--panel2));color:var(--text2);font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;box-shadow:0 2px 6px rgba(0,0,0,.3),inset 0 1px 0 rgba(232,230,226,.06)}
+.tag-sort button:hover{border-color:var(--accent);color:var(--accent-bright);transform:translateY(-1px)}
+.tag-sort button.on{background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;border-color:transparent;box-shadow:0 4px 14px rgba(139,92,246,.5)}
+.tag-info{background:linear-gradient(180deg,rgba(167,139,250,.12),rgba(167,139,250,.04));border:1px solid rgba(167,139,250,.3);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.08)}
+.tag-info .tag-h{font-size:22px;font-weight:800;color:var(--accent-bright);margin:0 0 12px;text-shadow:0 0 20px rgba(167,139,250,.5);word-break:break-all}
+.tag-info .tag-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(167,139,250,.15);font-size:13.5px;line-height:1.5}
+.tag-info .tag-row:last-child{border-bottom:0}
+.tag-info .tag-row .lbl{color:var(--muted);flex-shrink:0;min-width:120px}
+.tag-info .tag-row .val{color:var(--text);flex:1;word-break:break-word}
+.tag-info .tag-row .val b{color:var(--accent-bright);font-weight:700}
+.tag-info .tag-msg{background:rgba(0,0,0,.25);border-left:3px solid var(--accent-bright);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13px;color:var(--text2);line-height:1.5;font-style:italic}
+.tag-list-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(167,139,250,.06),transparent);border:1px solid transparent;margin-bottom:4px;cursor:pointer;transition:all .15s}
+.tag-list-item:hover{background:linear-gradient(180deg,rgba(167,139,250,.15),rgba(167,139,250,.06));border-color:rgba(167,139,250,.3);transform:translateX(3px)}
+.tag-list-item .tag-name{font-size:16px;font-weight:700;color:var(--accent-bright);flex:1;word-break:break-all}
+.tag-list-item .tag-count{font-size:12px;font-weight:700;color:#150a26;background:linear-gradient(180deg,var(--accent-bright),var(--accent));padding:3px 10px;border-radius:10px;box-shadow:0 2px 8px rgba(139,92,246,.4);flex-shrink:0}
 
 @media(max-width:600px){
   .msg-menu{left:12px !important;right:12px;bottom:12px;top:auto !important;max-height:70vh;overflow-y:auto;border-radius:16px;min-width:0}
@@ -607,7 +568,7 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
   </header>
   <div class="layout">
     <div class="sidebar">
-      <input class="search" id="searchInput" placeholder="Поиск: чаты, каналы, логин" oninput="onSearchInput()"/>
+      <input class="search" id="searchInput" placeholder="Поиск: чаты, каналы, логин, #хештег" oninput="onSearchInput()"/>
       <div class="createBtn" onclick="openCreateChatPanel()">+ Создать чат</div>
       <div class="chatList" id="chatList"></div>
       <div id="searchGlobal" style="display:none"></div>
@@ -663,6 +624,8 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 <div class="panel" id="clickerPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🖱️ Кликер</h2><div class="spacer"></div><button onclick="closePanel('clickerPanel')">✕</button></div><div class="st-body" id="clickerBody"></div></div></div>
 <div class="panel" id="reportPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="reportTitle">⚠️ Жалоба</h2><div class="spacer"></div><button onclick="closePanel('reportPanel')">✕</button></div><div class="st-body" id="reportBody"></div></div></div>
 <div class="panel" id="adminPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>🛡️ Админ-панель</h2><div class="spacer"></div><button onclick="closePanel('adminPanel')">✕</button></div><div class="st-body" id="adminBody"></div></div></div>
+<div class="panel" id="hashtagsPanel"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2>#️⃣ Хештеги</h2><div class="spacer"></div><button onclick="closePanel('hashtagsPanel')">✕</button></div><div class="st-body" id="hashtagsBody"></div></div></div>
+<div class="panel" id="hashtagDetail"><div class="box"><div class="st-header"><button class="st-back" onclick="goBack()">←</button><h2 id="hashtagDetailTitle">#тег</h2><div class="spacer"></div><button onclick="closePanel('hashtagDetail')">✕</button></div><div class="st-body" id="hashtagDetailBody"></div></div></div>
 
 <div class="panel" id="recoveryBot">
   <div class="box recovery-box">
@@ -774,7 +737,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
     <button class="welcome-btn" onclick="closeWelcome()">Понял, погнали →</button>
   </div>
 </div>
-<!-- ЭКРАН БАНА -->
 <div class="ban-scene" id="banScene">
   <div class="ban-inner">
     <svg class="ban-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -850,6 +812,10 @@ let CLICKER_STATE = { total:0, tokensEarned:0, tokens:0, toNextToken:1000 };
 let CLICKER_PENDING = 0;
 let CLICKER_FLUSH_TIMER = null;
 let CLICKER_LOCAL_TOTAL = 0;
+
+/* ХЕШТЕГИ */
+let HASHTAGS = [];
+let HASHTAG_SORT = 'popular';
 
 function avatarColorClass(id){
   const n = String(id || '?').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
@@ -1078,9 +1044,7 @@ function openPanel(id){ const el=document.getElementById(id); if(!el) return; if
 function closePanel(id){ const el=document.getElementById(id); if(el) el.classList.remove('open'); STACK = STACK.filter(x => x !== id); }
 function goBack(){ if(!STACK.length) return; const cur = STACK.pop(); const curEl = document.getElementById(cur); if(curEl) curEl.classList.remove('open'); const prev = STACK[STACK.length-1]; if(prev){ const p = document.getElementById(prev); if(p) p.classList.add('open'); } }
 
-/* ============================================================ */
-/* АДМИН-ПАНЕЛЬ — переход                                        */
-/* ============================================================ */
+/* АДМИН-ПАНЕЛЬ */
 function isAdmin(me){ return !!(me && (me.is_admin || me.isAdmin)); }
 function refreshAdminBtn(){
   const btn = $('adminBtn');
@@ -1453,6 +1417,23 @@ function onSearchInput(){
   SEARCH_DEBOUNCE = setTimeout(() => globalSearch(q), 350);
 }
 async function globalSearch(q){
+  // Если запрос начинается с # — это поиск по хештегу
+  if(q.startsWith('#')){
+    const tag = q.slice(1).toLowerCase().trim();
+    if(tag){
+      try {
+        const d = await api('/hashtag/' + encodeURIComponent(tag));
+        SEARCH_RESULTS = [{ kind: 'hashtag', tag: tag, count: d.count, firstAuthorLogin: d.firstAuthorLogin }];
+        renderSearchResults();
+        return;
+      } catch(e){
+        SEARCH_RESULTS = [];
+        renderSearchResults();
+        return;
+      }
+    }
+  }
+
   const lq = q.toLowerCase();
   const results = [];
   USERS.forEach(u => {
@@ -1476,9 +1457,7 @@ function maybeShowWelcome(){
   if(seen) return;
   openWelcome();
 }
-/* ============================================================ */
-/* ЭКРАН БАНА                                                    */
-/* ============================================================ */
+/* ЭКРАН БАНА */
 let BAN_INFO = null;
 
 function showBanScreen(info){
@@ -1576,6 +1555,16 @@ function renderSearchResults(){
     <div class="search-section">Найдено в Ink (${SEARCH_RESULTS.length})</div>
     <div style="padding:0 8px 14px">
       ${SEARCH_RESULTS.map(r => {
+        if(r.kind === 'hashtag'){
+          return `<div class="chat-item" onclick="openHashtagDetail('${esc(r.tag)}')" style="border:1px solid rgba(167,139,250,.3)">
+            <div class="avatar" style="background:linear-gradient(135deg,#a78bfa,#6d28d9);color:#150a26;font-weight:800">#</div>
+            <div class="meta">
+              <div class="name">#${esc(r.tag)}</div>
+              <div class="last">${r.count} упоминаний · первый: ${esc(r.firstAuthorLogin||'—')}</div>
+            </div>
+            <button class="btn-mini primary">Открыть</button>
+          </div>`;
+        }
         if(r.kind === 'user'){
           return `<div class="chat-item" onclick="startPrivateWith(${r.id})">
             <div class="avatar ${avatarColorClass(r.id)}">${(r.name||'?')[0].toUpperCase()}</div>
@@ -1868,7 +1857,7 @@ async function renderMessagesAndArchive(){
       }
       rx += '</div>';
     }
-    const text = esc(m.text || '').replace(/#([\wа-яё]+)/gi, (x,tag)=>`<span class="hashtag">#${tag}</span>`);
+    const text = esc(m.text || '').replace(/#([\wа-яё]+)/gi, (x,tag)=>`<span class="hashtag" onclick="event.stopPropagation();openHashtagDetail('${tag.toLowerCase()}')">#${tag}</span>`);
     const attach = attachHTML(m.file);
     const ticksHTML = isMe ? buildTicks(m) : '';
     const timeStr = m.created_at ? new Date(m.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '';
@@ -2337,6 +2326,115 @@ async function createChatFinal(){
   } catch(e){ toast('Ошибка', e.message); }
 }
 
+/* ============================================================ */
+/* ХЕШТЕГИ                                                       */
+/* ============================================================ */
+async function openHashtagsPanel(){
+  openPanel('hashtagsPanel');
+  $('hashtagsBody').innerHTML = '<div class="empty">Загрузка...</div>';
+  try {
+    HASHTAGS = await api('/hashtags');
+    renderHashtagsPanel();
+  } catch(e){
+    $('hashtagsBody').innerHTML = `<div class="empty">Ошибка: ${esc(e.message)}</div>`;
+  }
+}
+
+function setHashtagSort(sort){
+  HASHTAG_SORT = sort;
+  renderHashtagsPanel();
+}
+
+function renderHashtagsPanel(){
+  const box = $('hashtagsBody');
+  if(!HASHTAGS.length){
+    box.innerHTML = '<div class="empty">Хештегов пока нет.<br><br>Напиши сообщение с #тегом — и он появится здесь.</div>';
+    return;
+  }
+  let list = HASHTAGS.slice();
+  if(HASHTAG_SORT === 'popular') list.sort((a,b) => b.count - a.count);
+  else if(HASHTAG_SORT === 'new') list.sort((a,b) => new Date(b.firstAt) - new Date(a.firstAt));
+  else if(HASHTAG_SORT === 'az') list.sort((a,b) => a.tag.localeCompare(b.tag));
+
+  box.innerHTML = `
+    <div class="tag-sort">
+      <button class="${HASHTAG_SORT==='popular'?'on':''}" onclick="setHashtagSort('popular')">🔥 По популярности</button>
+      <button class="${HASHTAG_SORT==='new'?'on':''}" onclick="setHashtagSort('new')">🆕 Новые</button>
+      <button class="${HASHTAG_SORT==='az'?'on':''}" onclick="setHashtagSort('az')">🔤 А–Я</button>
+    </div>
+    <div style="font-size:12px;color:var(--muted);padding:0 4px 8px">Всего тегов: <b style="color:var(--accent-bright)">${HASHTAGS.length}</b></div>
+    ${list.map(t => `
+      <div class="tag-list-item" onclick="openHashtagDetail('${esc(t.tag)}')">
+        <div class="tag-name">#${esc(t.tag)}</div>
+        <div class="tag-count">${t.count}</div>
+      </div>
+    `).join('')}
+  `;
+}
+
+async function openHashtagDetail(tag){
+  openPanel('hashtagDetail');
+  $('hashtagDetailTitle').textContent = '#' + tag;
+  $('hashtagDetailBody').innerHTML = '<div class="empty">Загрузка...</div>';
+  try {
+    const d = await api('/hashtag/' + encodeURIComponent(tag));
+    renderHashtagDetail(d);
+  } catch(e){
+    $('hashtagDetailBody').innerHTML = `<div class="empty">Ошибка: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderHashtagDetail(d){
+  const firstAuthor = d.firstAuthorLogin || '—';
+  const firstAt = d.firstAt ? new Date(d.firstAt).toLocaleString('ru-RU') : '—';
+  const firstMsg = d.firstMessage || '—';
+
+  let matchesHTML = '';
+  if(d.matches && d.matches.length){
+    matchesHTML = `
+      <div class="st-section" style="margin-top:20px">
+        <h3>Последние сообщения (${d.matches.length})</h3>
+        ${d.matches.slice().reverse().map(m => {
+          const u = userById(m.sender_id);
+          const name = u ? esc(u.login) : '—';
+          const time = m.created_at ? new Date(m.created_at).toLocaleString('ru-RU') : '';
+          const text = esc(m.text || '').replace(/#([\wа-яё]+)/gi, (x,t)=>`<span class="hashtag">#${t}</span>`);
+          return `<div style="padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.2);margin-bottom:6px;font-size:13px;line-height:1.5">
+            <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:4px">
+              <b style="color:var(--accent-bright);font-size:12.5px">${name}</b>
+              <span style="color:var(--muted);font-size:11.5px">${time}</span>
+            </div>
+            <div style="color:var(--text2)">${text}</div>
+          </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  $('hashtagDetailBody').innerHTML = `
+    <div class="tag-info">
+      <div class="tag-h">#${esc(d.tag)}</div>
+      <div class="tag-row">
+        <div class="lbl">Упоминаний</div>
+        <div class="val"><b>${d.count}</b></div>
+      </div>
+      <div class="tag-row">
+        <div class="lbl">Первый автор</div>
+        <div class="val"><b>${esc(firstAuthor)}</b></div>
+      </div>
+      <div class="tag-row">
+        <div class="lbl">Когда впервые</div>
+        <div class="val">${esc(firstAt)}</div>
+      </div>
+      <div class="tag-row" style="flex-direction:column;align-items:flex-start">
+        <div class="lbl" style="margin-bottom:6px">Первое сообщение</div>
+        <div class="tag-msg">${esc(firstMsg)}</div>
+      </div>
+    </div>
+    ${matchesHTML}
+  `;
+}
+
+/* Настройки */
 function openSettings(){ renderSettingsBody(); openPanel('settings'); }
 function renderSettingsBody(){
   const inkActive = ME.inkUntil && new Date(ME.inkUntil) > new Date();
@@ -2360,6 +2458,9 @@ function renderSettingsBody(){
     </div>` : ''}
     <div class="st-section"><h3>🖱️ Кликер</h3>
       <div class="st-row" onclick="openClicker()"><div class="icon">🖱️</div><div class="txt"><div class="t1">Кликер</div><div class="t2">1000 кликов = 1 токен</div></div></div>
+    </div>
+    <div class="st-section"><h3>#️⃣ Хештеги</h3>
+      <div class="st-row" onclick="openHashtagsPanel()"><div class="icon">#️⃣</div><div class="txt"><div class="t1">Все хештеги</div><div class="t2">Список, статистика, сортировка</div></div></div>
     </div>
     <div class="st-section"><h3>🚫 Чёрный список</h3>
       <div class="st-row" onclick="openBlockedList()"><div class="icon">🚫</div><div class="txt"><div class="t1">Заблокированные</div><div class="t2">${(ME.blocked||[]).length} чел.</div></div></div>
@@ -2519,7 +2620,6 @@ async function togglePremiumName(){ const next = !(ME.show_premium_name !== fals
 async function savePremPrefix(){ const v = ($('premPrefixInput').value || '').trim().slice(0,4); try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: v, show_custom_prefix: true }); await loadAll(); renderPremiumBody(); renderChats(); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
 async function clearPremPrefix(){ try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: '' }); await loadAll(); renderPremiumBody(); renderChats(); } catch(e){} }
 
-/* ===== ПРОФИЛЬ — С БЛОКОМ ВОССТАНОВЛЕНИЯ ===== */
 function openEditProfile(){
   const av = ME.avatar_url
     ? `<div class="avatar" style="width:96px;height:96px;font-size:34px;margin:0 auto 12px;background-image:url('${ME.avatar_url}');background-size:cover;background-position:center" onclick="document.getElementById('pePhoto').click()"></div>`
