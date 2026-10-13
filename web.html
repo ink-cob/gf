@@ -10,27 +10,12 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%238b5cf6'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text></svg>"/>
 <style>
 :root{
-  --bg:#150a26;
-  --panel:#1f1238;
-  --panel2:#281745;
-  --panel3:#331d54;
-  --border:#261540;
-  --border2:#352058;
-  --border3:#452a70;
-  --accent:#8b5cf6;
-  --accent2:#6d28d9;
-  --accent-bright:#a78bfa;
-  --accent-warm:#c4a3ff;
-  --text:#e8e6e2;
-  --text2:#c8c4be;
-  --muted:#a8a29c;
-  --muted2:#7a746e;
-  --danger:#f87171;
-  --ok:#4ade80;
-  --warn:#fbbf24;
-  --mine:#452376;
-  --mine2:#381b62;
-  --them:#251640;
+  --bg:#150a26;--panel:#1f1238;--panel2:#281745;--panel3:#331d54;
+  --border:#261540;--border2:#352058;--border3:#452a70;
+  --accent:#8b5cf6;--accent2:#6d28d9;--accent-bright:#a78bfa;--accent-warm:#c4a3ff;
+  --text:#e8e6e2;--text2:#c8c4be;--muted:#a8a29c;--muted2:#7a746e;
+  --danger:#f87171;--ok:#4ade80;--warn:#fbbf24;
+  --mine:#452376;--mine2:#381b62;--them:#251640;
   --tap:44px;
   --shadow-raised:0 6px 24px rgba(0,0,0,.55), 0 0 24px rgba(167,139,250,.2), inset 0 1px 0 rgba(232,230,226,.12), inset 0 -3px 0 rgba(0,0,0,.4);
   --shadow-pressed:inset 0 2px 6px rgba(0,0,0,.5), 0 0 12px rgba(167,139,250,.15);
@@ -41,7 +26,6 @@ body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background
 input,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
 button{font-family:inherit}
 
-/* АВТОРИЗАЦИЯ */
 #auth{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:radial-gradient(1200px 600px at 50% -10%,var(--panel2) 0%,var(--bg) 60%);padding:16px;overflow:auto}
 #auth .card{width:100%;max-width:400px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:18px;padding:28px 24px;box-shadow:0 30px 70px rgba(0,0,0,.7),0 0 60px rgba(167,139,250,.15),inset 0 1px 0 rgba(232,230,226,.05)}
 #auth h1{margin:0 0 6px;font-size:26px}
@@ -70,10 +54,9 @@ button{font-family:inherit}
 .spinner{width:40px;height:40px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-#app{display:none;flex-direction:column;height:100dvh;overflow:hidden}
+#app{display:none;flex-direction:column;height:100dvh;overflow:hidden;min-height:0}
 #app.open{display:flex}
 
-/* ШАПКА */
 header{height:56px;display:flex;align-items:center;gap:2px;padding:0 6px;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border);flex-shrink:0;padding-top:env(safe-area-inset-top,0);box-shadow:0 2px 8px rgba(0,0,0,.4)}
 header .title{font-weight:600;font-size:16px;padding:8px 10px;cursor:pointer;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 header .spacer{flex:1}
@@ -94,19 +77,42 @@ header button:active{transform:translateY(1px) scale(.96);box-shadow:inset 0 2px
 .admin-btn{background:linear-gradient(180deg,#fbbf24,#d97706) !important;color:#150a26 !important;border-color:#fbbf24 !important;box-shadow:0 3px 10px rgba(251,191,36,.5),inset 0 1px 0 rgba(232,230,226,.35),inset 0 -2px 0 rgba(0,0,0,.25) !important;font-weight:800;}
 .admin-btn:hover{box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 32px rgba(251,191,36,.7),inset 0 1px 0 rgba(232,230,226,.4),inset 0 -2px 0 rgba(0,0,0,.25) !important;border-color:#fcd34d !important;}
 
-.layout{flex:1;display:flex;overflow:hidden;min-height:0;width:100%}
-.sidebar{display:flex;flex-direction:column;width:100%;height:100%;background:var(--panel);min-width:0}
-.chatpane{display:none;flex-direction:column;width:100%;height:100%;background:var(--bg);min-width:0;position:relative}
+/* ГЛАВНАЯ СЕТКА — починена прокрутка */
+.layout{flex:1;display:flex;overflow:hidden;min-height:0;height:0;width:100%}
+.sidebar{display:flex;flex-direction:column;width:100%;height:100%;background:var(--panel);min-width:0;min-height:0;overflow:hidden}
+.chatpane{display:none;flex-direction:column;width:100%;height:100%;background:var(--bg);min-width:0;min-height:0;position:relative;overflow:hidden}
 body.in-chat .sidebar{display:none}
 body.in-chat .chatpane{display:flex}
 body.in-chat #backBtn{display:inline-flex !important}
-@media(min-width:820px){.layout{display:grid;grid-template-columns:minmax(280px,340px) 1fr}.sidebar{display:flex;border-right:1px solid var(--border)}.chatpane{display:flex}body.in-chat .sidebar{display:flex}body.in-chat #backBtn{display:none !important}}
-@media(min-width:768px) and (max-width:819px){.layout{display:grid;grid-template-columns:240px 1fr}.sidebar{display:flex;border-right:1px solid var(--border)}.chatpane{display:flex}body.in-chat .sidebar{display:flex}body.in-chat #backBtn{display:none !important}}
-@media(max-width:819px) and (orientation:landscape) and (min-width:600px){.layout{display:grid;grid-template-columns:220px 1fr}.sidebar{display:flex}.chatpane{display:flex}body.in-chat .sidebar{display:flex}body.in-chat #backBtn{display:none !important}}
-@media(min-width:1440px){.layout{grid-template-columns:360px 1fr}}
-@media(min-width:1920px){.layout{grid-template-columns:400px 1fr}}
 
-#messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:6px;position:relative;background:radial-gradient(circle at 15% 20%, rgba(167,139,250,.10), transparent 45%),radial-gradient(circle at 85% 75%, rgba(139,92,246,.08), transparent 45%),radial-gradient(circle at 50% 100%, rgba(167,139,250,.06), transparent 55%),linear-gradient(160deg, #14082a 0%, #1a0d33 40%, #180c2e 70%, #120723 100%);background-attachment: local;}
+@media(min-width:820px){
+  .layout{display:grid;grid-template-columns:minmax(280px,340px) 1fr;height:100%}
+  .sidebar{display:flex;border-right:1px solid var(--border)}
+  .chatpane{display:flex}
+  body.in-chat .sidebar{display:flex}
+  body.in-chat #backBtn{display:none !important}
+}
+@media(min-width:768px) and (max-width:819px){
+  .layout{display:grid;grid-template-columns:240px 1fr;height:100%}
+  .sidebar{display:flex;border-right:1px solid var(--border)}
+  .chatpane{display:flex}
+  body.in-chat .sidebar{display:flex}
+  body.in-chat #backBtn{display:none !important}
+}
+@media(max-width:819px) and (orientation:landscape) and (min-width:600px){
+  .layout{display:grid;grid-template-columns:220px 1fr;height:100%}
+  .sidebar{display:flex}
+  .chatpane{display:flex}
+  body.in-chat .sidebar{display:flex}
+  body.in-chat #backBtn{display:none !important}
+}
+@media(min-width:1440px){ .layout{grid-template-columns:360px 1fr} }
+@media(min-width:1920px){ .layout{grid-template-columns:400px 1fr} }
+
+#messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 14px;display:flex;flex-direction:column;gap:6px;position:relative;min-height:0;
+  background:radial-gradient(circle at 15% 20%, rgba(167,139,250,.10), transparent 45%),radial-gradient(circle at 85% 75%, rgba(139,92,246,.08), transparent 45%),radial-gradient(circle at 50% 100%, rgba(167,139,250,.06), transparent 55%),linear-gradient(160deg, #14082a 0%, #1a0d33 40%, #180c2e 70%, #120723 100%);
+  background-attachment: local;
+}
 #messages::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(167,139,250,.035) 1px, transparent 1px),linear-gradient(90deg, rgba(167,139,250,.035) 1px, transparent 1px);background-size:48px 48px;background-position:0 0;mask-image:radial-gradient(ellipse at 50% 50%, black 30%, transparent 85%);-webkit-mask-image:radial-gradient(ellipse at 50% 50%, black 30%, transparent 85%);animation:gridShift 60s linear infinite;}
 #messages::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 0%, rgba(167,139,250,.18), transparent 60%),radial-gradient(ellipse at 50% 100%, rgba(139,92,246,.15), transparent 60%);animation:bgBreath 12s ease-in-out infinite;}
 @keyframes gridShift{from{background-position:0 0, 0 0}to{background-position:48px 48px, 48px 48px}}
@@ -131,12 +137,14 @@ body.in-chat #backBtn{display:inline-flex !important}
 .reaction{background:rgba(167,139,250,.12);padding:2px 8px;border-radius:10px;font-size:12px;cursor:pointer;transition:background .15s, transform .15s}
 .reaction:hover{background:rgba(167,139,250,.3);transform:translateY(-1px)}
 
-.search{margin:10px 12px 0;padding:12px 14px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
+.search{margin:10px 12px 0;padding:12px 14px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:14px;color:var(--text);outline:none;font-size:15px;transition:border-color .2s, box-shadow .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.3);flex-shrink:0}
 .search:focus{border-color:var(--accent);box-shadow:inset 0 2px 4px rgba(0,0,0,.3),0 0 0 3px rgba(167,139,250,.2)}
 .search::placeholder{color:var(--muted2)}
-.createBtn{margin:8px 12px 0;padding:11px;text-align:center;border-radius:12px;border:1px dashed var(--border2);color:var(--muted);cursor:pointer;font-size:13.5px;transition:all .2s;background:linear-gradient(180deg,transparent,rgba(167,139,250,.04))}
+.createBtn{margin:8px 12px 0;padding:11px;text-align:center;border-radius:12px;border:1px dashed var(--border2);color:var(--muted);cursor:pointer;font-size:13.5px;transition:all .2s;background:linear-gradient(180deg,transparent,rgba(167,139,250,.04));flex-shrink:0}
 .createBtn:hover{border-color:var(--accent);color:var(--accent-bright);background:linear-gradient(180deg,rgba(167,139,250,.08),rgba(167,139,250,.04));box-shadow:0 0 24px rgba(167,139,250,.15)}
-.chatList{flex:1;overflow-y:auto;padding:6px 8px 14px}
+
+/* СПИСОК ЧАТОВ — починена прокрутка */
+.chatList{flex:1 1 0%;overflow-y:auto;overflow-x:hidden;padding:6px 8px 14px;min-height:0;-webkit-overflow-scrolling:touch;scrollbar-gutter:stable}
 .chat-item{display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;cursor:pointer;min-height:62px;transition:background .15s, transform .15s, box-shadow .15s;border:1px solid transparent}
 .chat-item:hover{background:linear-gradient(180deg,rgba(167,139,250,.12),rgba(167,139,250,.06));transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
 .chat-item:active{transform:translateY(1px) scale(.99);box-shadow:inset 0 2px 6px rgba(0,0,0,.4)}
@@ -227,7 +235,7 @@ body.in-chat #backBtn{display:inline-flex !important}
 .st-back{background:linear-gradient(180deg,var(--panel3),var(--panel2));border:1px solid var(--border2);color:var(--text);font-size:18px;cursor:pointer;padding:6px;min-width:var(--tap);border-radius:10px;transition:transform .15s, box-shadow .2s, border-color .2s, color .2s;box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.08),inset 0 -2px 0 rgba(0,0,0,.3)}
 .st-back:hover{color:var(--accent-bright);border-color:var(--accent);transform:translateY(-1px)}
 
-.st-body{flex:1;overflow-y:auto;padding:14px}
+.st-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px;min-height:0}
 .st-section{margin-bottom:22px}
 .st-section h3{margin:0 0 10px;font-size:11.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);padding-left:4px}
 .st-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(167,139,250,.05),transparent);border:1px solid transparent;margin-bottom:3px;cursor:pointer;min-height:56px;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), background .15s, border-color .15s, box-shadow .15s}
@@ -398,7 +406,7 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 .recovery-avatar svg{width:100%;height:100%;display:block}
 .recovery-avatar .eye{animation:ghostBlink 4.2s ease-in-out infinite;transform-origin:center}
 .recovery-header h2{font-size:15px;margin-left:6px}
-.recovery-messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:10px;background-image:radial-gradient(circle at 20% 30%,rgba(167,139,250,.05),transparent 50%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.04),transparent 50%)}
+.recovery-messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 14px;display:flex;flex-direction:column;gap:10px;min-height:0;background-image:radial-gradient(circle at 20% 30%,rgba(167,139,250,.05),transparent 50%),radial-gradient(circle at 80% 70%,rgba(167,139,250,.04),transparent 50%)}
 .recovery-msg{max-width:82%;padding:10px 14px;border-radius:14px;font-size:14.5px;line-height:1.5;word-wrap:break-word;animation:msgIn .3s cubic-bezier(.2,.9,.3,1.2)}
 .recovery-msg.bot{align-self:flex-start;background:linear-gradient(180deg,var(--them),rgba(0,0,0,.15));border:1px solid rgba(167,139,250,.15);border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.3),inset 0 1px 0 rgba(232,230,226,.04)}
 .recovery-msg.user{align-self:flex-end;background:linear-gradient(180deg,var(--mine),var(--mine2));color:var(--text);border-bottom-right-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,.4),0 0 20px rgba(167,139,250,.15),inset 0 1px 0 rgba(232,230,226,.12)}
@@ -459,7 +467,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 .password-reveal-btn:active{transform:translateY(1px) scale(.98)}
 .password-reveal-btn.show{animation:textIn .6s .5s cubic-bezier(.2,.9,.3,1.2) forwards}
 
-/* ХЕШТЕГИ */
 .hashtag{cursor:pointer;transition:color .15s}
 .hashtag:hover{color:var(--accent-warm);text-shadow:0 0 12px rgba(167,139,250,.6)}
 .tag-sort{display:flex;gap:6px;padding:12px 4px;flex-wrap:wrap}
@@ -479,6 +486,23 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 .tag-list-item .tag-name{font-size:16px;font-weight:700;color:var(--accent-bright);flex:1;word-break:break-all}
 .tag-list-item .tag-count{font-size:12px;font-weight:700;color:#150a26;background:linear-gradient(180deg,var(--accent-bright),var(--accent));padding:3px 10px;border-radius:10px;box-shadow:0 2px 8px rgba(139,92,246,.4);flex-shrink:0}
 
+/* ====== СКРОЛЛБАРЫ — ВИДИМЫЕ ====== */
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,var(--accent-bright),var(--accent));
+  border-radius:8px;
+  border:2px solid var(--panel);
+  box-shadow:inset 0 1px 0 rgba(232,230,226,.25);
+}
+::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,var(--accent-warm),var(--accent-bright));
+  box-shadow:0 0 12px rgba(167,139,250,.7),inset 0 1px 0 rgba(232,230,226,.35);
+}
+::-webkit-scrollbar-track{background:rgba(167,139,250,.06);border-radius:8px}
+::-webkit-scrollbar-corner{background:transparent}
+/* Firefox */
+.chatList,#messages,.st-body,.recovery-messages{scrollbar-width:thin;scrollbar-color:var(--accent-bright) rgba(167,139,250,.06)}
+
 @media(max-width:600px){
   .msg-menu{left:12px !important;right:12px;bottom:12px;top:auto !important;max-height:70vh;overflow-y:auto;border-radius:16px;min-width:0}
   body:not(.in-chat) #hTitle{display:none !important}
@@ -488,22 +512,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
   body.in-chat #openShopBtn{display:none !important}
   .ghost-big{width:140px;height:140px}
 }
-::-webkit-scrollbar{width:12px;height:12px}
-::-webkit-scrollbar-thumb{
-  background:linear-gradient(180deg,var(--accent-bright),var(--accent));
-  border-radius:8px;
-  border:2px solid var(--panel);
-  box-shadow:inset 0 1px 0 rgba(232,230,226,.2);
-}
-::-webkit-scrollbar-thumb:hover{
-  background:linear-gradient(180deg,var(--accent-warm),var(--accent-bright));
-  box-shadow:0 0 12px rgba(167,139,250,.6),inset 0 1px 0 rgba(232,230,226,.3);
-}
-::-webkit-scrollbar-track{
-  background:rgba(167,139,250,.06);
-  border-radius:8px;
-}
-::-webkit-scrollbar-corner{background:transparent}
 </style>
 </head>
 <body>
@@ -553,19 +561,11 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
     <button id="homeBtn" onclick="location.href='index.html'" title="На главную">🏠</button>
     <div class="header-ghost">
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#a78bfa"/>
-            <stop offset="100%" stop-color="#6d28d9"/>
-          </linearGradient>
-        </defs>
+        <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
         <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#hg)"/>
         <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
         <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
-        <g class="eye">
-          <circle cx="40" cy="44" r="1.6" fill="#e8e6e2"/>
-          <circle cx="60" cy="44" r="1.6" fill="#e8e6e2"/>
-        </g>
+        <g class="eye"><circle cx="40" cy="44" r="1.6" fill="#e8e6e2"/><circle cx="60" cy="44" r="1.6" fill="#e8e6e2"/></g>
       </svg>
     </div>
     <div class="title" id="hTitle" onclick="openChatInfo()">Ink</div>
@@ -645,19 +645,11 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
       <button class="st-back" onclick="closeRecoveryBot()">←</button>
       <div class="recovery-avatar">
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="rgBot" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#a78bfa"/>
-              <stop offset="100%" stop-color="#6d28d9"/>
-            </linearGradient>
-          </defs>
+          <defs><linearGradient id="rgBot" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
           <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#rgBot)"/>
           <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
           <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
-          <g class="eye">
-            <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
-            <circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/>
-          </g>
+          <g class="eye"><ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/><circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/></g>
         </svg>
       </div>
       <h2>Восстановление</h2>
@@ -699,19 +691,11 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 
 <div class="ghost-scene" id="ghostScene">
   <svg class="ghost-big" id="ghostBig" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="gbg" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#a78bfa"/>
-        <stop offset="100%" stop-color="#6d28d9"/>
-      </linearGradient>
-    </defs>
+    <defs><linearGradient id="gbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
     <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#gbg)"/>
     <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
     <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
-    <g class="eye">
-      <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
-      <circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/>
-    </g>
+    <g class="eye"><ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/><circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/></g>
   </svg>
   <div class="scene-text" id="sceneText"></div>
   <div class="scene-sub" id="sceneSub"></div>
@@ -720,19 +704,11 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 <div class="welcome-scene" id="welcomeScene">
   <div class="welcome-inner">
     <svg class="welcome-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="wg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#a78bfa"/>
-          <stop offset="100%" stop-color="#6d28d9"/>
-        </linearGradient>
-      </defs>
+      <defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
       <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#wg)"/>
       <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
       <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
-      <g class="eye">
-        <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
-        <circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/>
-      </g>
+      <g class="eye"><ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/><circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/></g>
     </svg>
     <h2 class="welcome-title">Привет! Я — твой призрак</h2>
     <div class="welcome-body">
@@ -752,19 +728,11 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 <div class="ban-scene" id="banScene">
   <div class="ban-inner">
     <svg class="ban-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="bgBan" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#f87171"/>
-          <stop offset="100%" stop-color="#7f1d1d"/>
-        </linearGradient>
-      </defs>
+      <defs><linearGradient id="bgBan" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f87171"/><stop offset="100%" stop-color="#7f1d1d"/></linearGradient></defs>
       <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#bgBan)"/>
       <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
       <circle cx="41.5" cy="44" r="1.6" fill="#ffdada"/>
-      <g class="eye">
-        <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
-        <circle cx="61.5" cy="44" r="1.6" fill="#ffdada"/>
-      </g>
+      <g class="eye"><ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/><circle cx="61.5" cy="44" r="1.6" fill="#ffdada"/></g>
     </svg>
     <h2 class="ban-title">🚫 Ваш аккаунт заблокирован</h2>
     <div class="ban-body" id="banBody">Загрузка информации...</div>
@@ -779,19 +747,11 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 <div class="password-reveal" id="passwordReveal">
   <div class="password-reveal-inner">
     <svg class="password-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="prg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#a78bfa"/>
-          <stop offset="100%" stop-color="#6d28d9"/>
-        </linearGradient>
-      </defs>
+      <defs><linearGradient id="prg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
       <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#prg)"/>
       <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
       <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
-      <g class="eye">
-        <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/>
-        <circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/>
-      </g>
+      <g class="eye"><ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#150a26"/><circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/></g>
     </svg>
     <div class="password-reveal-title">Новый пароль</div>
     <div class="password-reveal-pass" id="passwordRevealPass"></div>
@@ -856,7 +816,6 @@ function playPremiumAnim(){
     setTimeout(() => { scene.classList.remove('show', 'fade-out'); flash.classList.remove('show'); flash.classList.add('fade-out'); setTimeout(() => flash.classList.remove('fade-out'), 700); resolve(); }, 5800);
   });
 }
-
 function playInkognitoFirstAnim(){
   return new Promise((resolve) => {
     const scene = document.getElementById('ghostScene');
@@ -883,15 +842,12 @@ function playInkognitoFirstAnim(){
     setTimeout(() => { scene.classList.remove('show', 'fade-out'); flash.classList.remove('show'); flash.classList.add('fade-out'); setTimeout(() => flash.classList.remove('fade-out'), 700); resolve(); }, 5100);
   });
 }
-
 function quickVignette(){
   const v = document.getElementById('vignette');
   v.classList.add('show');
   setTimeout(() => v.classList.remove('show'), 900);
 }
-
 let PASSWORD_REVEAL_CTX = null;
-
 function playPasswordReveal(login, password){
   PASSWORD_REVEAL_CTX = { login, password };
   const overlay = document.getElementById('passwordReveal');
@@ -938,7 +894,6 @@ function playPasswordReveal(login, password){
     localStorage.setItem(key, JSON.stringify(list.slice(0, 20)));
   } catch(e){}
 }
-
 function copyRevealedPassword(){
   if(!PASSWORD_REVEAL_CTX || !PASSWORD_REVEAL_CTX.password) return;
   const pass = PASSWORD_REVEAL_CTX.password;
@@ -967,7 +922,6 @@ function copyText(text, btn){
     navigator.clipboard.writeText(text).then(done).catch(() => { fallbackCopyRevealed(text); done(); });
   } else { fallbackCopyRevealed(text); done(); }
 }
-
 function closePasswordReveal(){
   const copyBtn = document.getElementById('passwordCopyBtn');
   if(copyBtn){ copyBtn.style.display = 'none'; copyBtn.classList.remove('show', 'copied'); copyBtn.textContent = '📋 Скопировать пароль'; }
@@ -997,21 +951,21 @@ async function api(path, method, body){
   let d = {};
   try { d = await r.json(); } catch(e){}
   if(r.status === 403 && (d.banned)){
-  if(!KICKED_OUT){
-    KICKED_OUT = true;
-    kickOut(d.error || 'Забанен', {
-      login: ME ? ME.login : '',
-      blocked_until: d.blocked_until,
-      block_reason: d.block_reason || '',
-      reports_count: d.reports_count || 0,
-      article_id: d.article_id || null,
-      article_title: d.article_title || '',
-      banned_at: d.banned_at || null,
-      admin_login: d.admin_login || 'Администрация'
-    });
+    if(!KICKED_OUT){
+      KICKED_OUT = true;
+      kickOut(d.error || 'Забанен', {
+        login: ME ? ME.login : '',
+        blocked_until: d.blocked_until,
+        block_reason: d.block_reason || '',
+        reports_count: d.reports_count || 0,
+        article_id: d.article_id || null,
+        article_title: d.article_title || '',
+        banned_at: d.banned_at || null,
+        admin_login: d.admin_login || 'Администрация'
+      });
+    }
+    throw new Error(d.error || 'Забанен');
   }
-  throw new Error(d.error || 'Забанен');
-}
   if(!r.ok) throw new Error(d.error || ('HTTP ' + r.status));
   return d;
 }
@@ -1025,7 +979,6 @@ function kickOut(reason, banInfo){
   try { if(presenceTimer) clearInterval(presenceTimer); } catch(e){}
   const app = document.getElementById('app'); if(app) app.classList.remove('open');
   const auth = document.getElementById('auth');
-
   if(banInfo){
     if(auth) auth.style.display = 'none';
     showBanScreen(banInfo);
@@ -1044,14 +997,12 @@ function fmtSize(n){ if(!n) return ''; if(n < 1024) return n + ' Б'; if(n < 102
 function showLoading(on){ const el=$('loading'); if(!el) return; on ? el.classList.add('open') : el.classList.remove('open') }
 function showMsg(id,t,k){ const el=$(id); if(!el) return; el.textContent=t; el.className='msg-ok '+k }
 function switchTo(w){ $('authMode').style.display=w==='login'?'block':'none'; $('regMode').style.display=w==='reg'?'block':'none'; $('authMsg').className='msg-ok'; $('regMsg').className='msg-ok' }
-
 function togglePassVisible(id, btn){
   const el = document.getElementById(id);
   if(!el) return;
   if(el.type === 'password'){ el.type = 'text'; btn.textContent = '🙈'; }
   else { el.type = 'password'; btn.textContent = '👁'; }
 }
-
 function openPanel(id){ const el=document.getElementById(id); if(!el) return; if(!el.classList.contains('open')) STACK.push(id); el.classList.add('open'); }
 function closePanel(id){ const el=document.getElementById(id); if(el) el.classList.remove('open'); STACK = STACK.filter(x => x !== id); }
 function goBack(){ if(!STACK.length) return; const cur = STACK.pop(); const curEl = document.getElementById(cur); if(curEl) curEl.classList.remove('open'); const prev = STACK[STACK.length-1]; if(prev){ const p = document.getElementById(prev); if(p) p.classList.add('open'); } }
@@ -1072,7 +1023,6 @@ function openAdminPanel(){
 
 /* ВОССТАНОВЛЕНИЕ */
 let RECOVERY_STATE = { step: 'login', login: null, question: null, attempts: 0, contact: null };
-
 function openRecoveryBot(){
   RECOVERY_STATE = { step: 'login', login: null, question: null, attempts: 0, contact: null };
   $('recoveryMessages').innerHTML = '';
@@ -1082,9 +1032,7 @@ function openRecoveryBot(){
     setTimeout(() => botSay('Напиши свой логин — я проверю, есть ли такой аккаунт.'), 700);
   }, 300);
 }
-
 function closeRecoveryBot(){ closePanel('recoveryBot'); }
-
 function botSay(text, actions){
   const box = $('recoveryMessages');
   const el = document.createElement('div');
@@ -1105,7 +1053,6 @@ function botSay(text, actions){
   box.appendChild(el);
   box.scrollTop = box.scrollHeight;
 }
-
 function userSay(text){
   const box = $('recoveryMessages');
   const el = document.createElement('div');
@@ -1114,7 +1061,6 @@ function userSay(text){
   box.appendChild(el);
   box.scrollTop = box.scrollHeight;
 }
-
 function showTyping(){
   const box = $('recoveryMessages');
   const el = document.createElement('div');
@@ -1132,7 +1078,6 @@ async function recoverySend(){
   if(!text) return;
   input.value = '';
   userSay(text);
-
   if(RECOVERY_STATE.step === 'login'){
     RECOVERY_STATE.login = text;
     showTyping();
@@ -1196,7 +1141,6 @@ async function recoverySend(){
   }
   else if(RECOVERY_STATE.step === 'done'){ botSay('Заявка уже отправлена. Жди ответа админа.'); }
 }
-
 function recoveryGoToHelp(){
   RECOVERY_STATE.step = 'help_contact';
   botSay('Хорошо. Напиши, как с тобой удобнее связаться — Telegram, email, телефон. Один контакт.');
@@ -1260,7 +1204,7 @@ async function enterApp(){
     await loadAll();
     $('auth').style.display = 'none';
     $('app').classList.add('open');
-    renderChats(); renderTokensBadge(); renderNotifBtn();
+    renderChats(true); renderTokensBadge(); renderNotifBtn();
     refreshAdminBtn();
     maybeShowWelcome();
     startPresence(); startGlobalPolling(); initPush();
@@ -1361,7 +1305,6 @@ function openPeerProfile(uid){
 }
 function closePeerProfile(){ $('peerProfile').classList.remove('open'); }
 document.getElementById('peerProfile').addEventListener('click', closePeerProfile);
-
 async function togglePeerBlock(){
   if(!CURRENT_PEER_ID) return;
   const blocked = Array.isArray(ME.blocked) && ME.blocked.includes(CURRENT_PEER_ID);
@@ -1381,7 +1324,6 @@ function openReportForPeer(){
   closePeerProfile();
   openReportToAdmin(u ? u.login : '');
 }
-
 function renderPeerBar(){
   const bar = $('peerBar'); if(!bar) return;
   if(!CURRENT_CHAT || CURRENT_CHAT.type !== 'private'){ bar.classList.remove('show'); stopPeerStatusTimer(); return; }
@@ -1422,14 +1364,13 @@ function stopPeerStatusTimer(){ if(PEER_STATUS_TIMER){ clearInterval(PEER_STATUS
 
 /* ПОИСК */
 function onSearchInput(){
-  renderChats();
+  renderChats(true);
   clearTimeout(SEARCH_DEBOUNCE);
   const q = ($('searchInput').value || '').trim();
   if(q.length < 1){ SEARCH_RESULTS = []; renderSearchResults(); return; }
   SEARCH_DEBOUNCE = setTimeout(() => globalSearch(q), 350);
 }
 async function globalSearch(q){
-  // Если запрос начинается с # — это поиск по хештегу
   if(q.startsWith('#')){
     const tag = q.slice(1).toLowerCase().trim();
     if(tag){
@@ -1445,7 +1386,6 @@ async function globalSearch(q){
       }
     }
   }
-
   const lq = q.toLowerCase();
   const results = [];
   USERS.forEach(u => {
@@ -1469,9 +1409,9 @@ function maybeShowWelcome(){
   if(seen) return;
   openWelcome();
 }
+
 /* ЭКРАН БАНА */
 let BAN_INFO = null;
-
 function showBanScreen(info){
   BAN_INFO = info;
   const days = info.blocked_until && new Date(info.blocked_until).getFullYear() > 9000
@@ -1484,14 +1424,12 @@ function showBanScreen(info){
   const reports = info.reports_count || 0;
   const reason = info.block_reason || 'нарушение правил';
   const reportsWord = reports === 1 ? 'жалоба' : (reports >= 2 && reports <= 4 ? 'жалобы' : 'жалоб');
-
   $('banBody').innerHTML = `
     Уважаемый(ая) <b>${esc(login)}</b>, на вас было подано <b>${reports}</b> ${reportsWord},
     и админ заблокировал ваш аккаунт на <b>${days}</b> по причине
     <b>«${esc(reason)}»</b>, на основании <span class="article">${esc(article)}</span>.
     Вы можете подать заявку на пересмотрение бана или подождать. Спасибо за понимание.
   `;
-
   const banDate = info.banned_at ? new Date(info.banned_at).toLocaleString('ru-RU') : new Date().toLocaleString('ru-RU');
   const unbanDate = info.blocked_until && new Date(info.blocked_until).getFullYear() < 9000
     ? new Date(info.blocked_until).toLocaleString('ru-RU')
@@ -1501,12 +1439,10 @@ function showBanScreen(info){
     <div><b>Дата разбана:</b> ${esc(unbanDate)}</div>
     <div><b>Админ:</b> ${esc(info.admin_login || 'Администрация')}</div>
   `;
-
   $('banAppealBox').innerHTML = '';
   $('banAppealBtn').style.display = '';
   $('banScene').classList.add('show');
 }
-
 function openBanAppeal(){
   const box = $('banAppealBox');
   if(box.innerHTML) return;
@@ -1521,7 +1457,6 @@ function openBanAppeal(){
     </div>`;
   $('banAppealBtn').style.display = 'none';
 }
-
 async function submitBanAppeal(){
   const text = ($('banAppealText').value || '').trim();
   if(!text || text.length < 10) return toast('Опиши ситуацию подробнее', 'Минимум 10 символов');
@@ -1529,10 +1464,7 @@ async function submitBanAppeal(){
     const r = await fetch(API + '/ban-appeals', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        login: BAN_INFO ? BAN_INFO.login : '',
-        comment: text
-      })
+      body: JSON.stringify({ login: BAN_INFO ? BAN_INFO.login : '', comment: text })
     });
     const d = await r.json();
     if(d.ok){
@@ -1542,7 +1474,6 @@ async function submitBanAppeal(){
     }
   } catch(e){ toast('Ошибка', e.message); }
 }
-
 function logoutFromBan(){
   try { localStorage.removeItem('ink_token'); } catch(e){}
   TOKEN = null;
@@ -1552,7 +1483,6 @@ function openWelcome(){
   const el = document.getElementById('welcomeScene');
   if(el) el.classList.add('show');
 }
-
 function closeWelcome(){
   const version = '2.4.0';
   localStorage.setItem('ink_welcome_' + version, '1');
@@ -1570,10 +1500,7 @@ function renderSearchResults(){
         if(r.kind === 'hashtag'){
           return `<div class="chat-item" onclick="openHashtagDetail('${esc(r.tag)}')" style="border:1px solid rgba(167,139,250,.3)">
             <div class="avatar" style="background:linear-gradient(135deg,#a78bfa,#6d28d9);color:#150a26;font-weight:800">#</div>
-            <div class="meta">
-              <div class="name">#${esc(r.tag)}</div>
-              <div class="last">${r.count} упоминаний · первый: ${esc(r.firstAuthorLogin||'—')}</div>
-            </div>
+            <div class="meta"><div class="name">#${esc(r.tag)}</div><div class="last">${r.count} упоминаний · первый: ${esc(r.firstAuthorLogin||'—')}</div></div>
             <button class="btn-mini primary">Открыть</button>
           </div>`;
         }
@@ -1600,7 +1527,7 @@ function renderSearchResults(){
 async function joinChannel(id){
   try {
     await api('/channels/' + id + '/join', 'POST');
-    await loadAll(); renderChats();
+    await loadAll(); renderChats(true);
     toast('✓ Ты вошёл в канал','');
     openChat(id);
   } catch(e){ toast('Ошибка', e.message); }
@@ -1611,16 +1538,65 @@ async function startPrivateWith(uid){
   if(ex){ openChat(ex.id); return; }
   try {
     const r = await api('/chats','POST',{ name:u.login, type:'private', members:[u.id] });
-    await loadAll(); renderChats(); openChat(r.id);
+    await loadAll(); renderChats(true); openChat(r.id);
   } catch(e){ toast('Ошибка', e.message); }
 }
 
-/* СПИСОК ЧАТОВ */
-function renderChats(){
-  const box = $('chatList'); box.innerHTML = '';
-  if(!CHATS.length){ box.innerHTML = '<div class="empty">Чатов пока нет</div>'; return }
+/* ============================================================ */
+/* СПИСОК ЧАТОВ — С ПАГИНАЦИЕЙ И ПРАВИЛЬНОЙ ПРОКРУТКОЙ            */
+/* ============================================================ */
+const CHAT_PAGE_SIZE = 30;
+let CHAT_RENDER_LIMIT = CHAT_PAGE_SIZE;
+let CHAT_SCROLL_BOUND = false;
+let CHAT_SORTED = [];
+
+function chatSortKey(c){
+  const all = MSGS[c.id] || [];
+  const last = all.filter(m => !m.deleted_for_all).slice(-1)[0];
+  const t = last && last.created_at ? new Date(last.created_at).getTime() : 0;
+  return t || (c.id || 0);
+}
+
+function buildChatItem(c){
+  const all = MSGS[c.id] || [];
+  const last = all.filter(m => !m.deleted_for_all).slice(-1)[0];
+  let displayName = c.name || '—';
+  let avatarLetter = (c.name || '?').replace(/^#+/,'')[0].toUpperCase();
+  let avatarURL = '';
+  let avatarId = c.id;
+  if(c.type === 'private'){
+    const otherId = (c.memberIds||[]).find(x => x !== ME.id);
+    const other = otherId ? USERS.find(u => u.id === otherId) : null;
+    if(other){
+      displayName = other.login;
+      avatarLetter = (other.login||'?')[0].toUpperCase();
+      if(other.avatar_url) avatarURL = other.avatar_url;
+      avatarId = other.id;
+    }
+  }
+  const isGroup = c.type === 'group' || c.type === 'channel';
+  const el = document.createElement('div');
+  el.className = 'chat-item';
+  if(CURRENT_CHAT && c.id === CURRENT_CHAT.id) el.classList.add('active');
+  const lastText = last ? (last.file ? ('📎 ' + (last.file.name || 'файл')) : esc(last.text||'')) : '';
+  const avatarStyle = avatarURL ? `background-image:url('${avatarURL}')` : '';
+  const colorCls = avatarColorClass(avatarId);
+  el.innerHTML = `<div class="avatar ${colorCls}" style="${avatarStyle}">${avatarURL ? '' : avatarLetter}</div>
+    <div class="meta"><div class="name">${esc(displayName)} ${isGroup ? '<span style="font-size:10px;color:var(--muted)">'+c.type+'</span>' : ''}</div>
+    <div class="last">${lastText.slice(0,40)}</div></div>`;
+  el.onclick = () => openChat(c.id);
+  return el;
+}
+
+function renderChats(reset){
+  if(reset) CHAT_RENDER_LIMIT = CHAT_PAGE_SIZE;
+  const box = $('chatList'); if(!box) return;
+  box.innerHTML = '';
+
+  if(!CHATS.length){ box.innerHTML = '<div class="empty">Чатов пока нет</div>'; return; }
+
   const q = ($('searchInput').value || '').trim().toLowerCase();
-  const list = q ? CHATS.filter(c => {
+  let list = q ? CHATS.filter(c => {
     if((c.name||'').toLowerCase().includes(q)) return true;
     if(c.type === 'private'){
       const otherId = (c.memberIds||[]).find(x => x !== ME.id);
@@ -1628,39 +1604,57 @@ function renderChats(){
       if(u && (u.login||'').toLowerCase().includes(q)) return true;
     }
     return false;
-  }) : CHATS;
-  if(!list.length){ box.innerHTML = '<div class="empty" style="margin-top:20px">Ничего в твоих чатах</div>'; return }
-  list.forEach(c => {
-    const all = MSGS[c.id] || [];
-    const last = all.filter(m => !m.deleted_for_all).slice(-1)[0];
-    let displayName = c.name || '—';
-    let avatarLetter = (c.name || '?').replace(/^#+/,'')[0].toUpperCase();
-    let avatarURL = '';
-    let avatarId = c.id;
-    if(c.type === 'private'){
-      const otherId = (c.memberIds||[]).find(x => x !== ME.id);
-      const other = otherId ? USERS.find(u => u.id === otherId) : null;
-      if(other){
-        displayName = other.login;
-        avatarLetter = (other.login||'?')[0].toUpperCase();
-        if(other.avatar_url) avatarURL = other.avatar_url;
-        avatarId = other.id;
-      }
-    }
-    const isGroup = c.type === 'group' || c.type === 'channel';
-    const el = document.createElement('div');
-    el.className = 'chat-item';
-    if(CURRENT_CHAT && c.id === CURRENT_CHAT.id) el.classList.add('active');
-    const lastText = last ? (last.file ? ('📎 ' + (last.file.name || 'файл')) : esc(last.text||'')) : '';
-    const avatarStyle = avatarURL ? `background-image:url('${avatarURL}')` : '';
-    const colorCls = avatarColorClass(avatarId);
-    el.innerHTML = `<div class="avatar ${colorCls}" style="${avatarStyle}">${avatarURL ? '' : avatarLetter}</div>
-      <div class="meta"><div class="name">${esc(displayName)} ${isGroup ? '<span style="font-size:10px;color:var(--muted)">'+c.type+'</span>' : ''}</div>
-      <div class="last">${lastText.slice(0,40)}</div></div>`;
-    el.onclick = () => openChat(c.id);
-    box.appendChild(el);
-  });
+  }) : CHATS.slice();
+
+  list.sort((a,b) => chatSortKey(b) - chatSortKey(a));
+  CHAT_SORTED = list;
+
+  if(!list.length){ box.innerHTML = '<div class="empty" style="margin-top:20px">Ничего в твоих чатах</div>'; return; }
+
+  const visible = list.slice(0, CHAT_RENDER_LIMIT);
+  visible.forEach(c => box.appendChild(buildChatItem(c)));
+
+  if(CHAT_RENDER_LIMIT < list.length){
+    const loadMore = document.createElement('div');
+    loadMore.className = 'chatList-loader';
+    loadMore.id = 'chatLoader';
+    loadMore.style.cssText = 'display:flex;justify-content:center;padding:14px;color:var(--muted);font-size:12.5px;gap:6px;align-items:center';
+    loadMore.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:var(--accent-bright);animation:pulseDot 1.2s ease-in-out infinite"></span><span style="width:6px;height:6px;border-radius:50%;background:var(--accent-bright);animation:pulseDot 1.2s .15s ease-in-out infinite"></span><span style="width:6px;height:6px;border-radius:50%;background:var(--accent-bright);animation:pulseDot 1.2s .3s ease-in-out infinite"></span>';
+    box.appendChild(loadMore);
+  }
+  if(CHAT_RENDER_LIMIT >= list.length && list.length > CHAT_PAGE_SIZE){
+    const upBtn = document.createElement('div');
+    upBtn.className = 'chat-scroll-top';
+    upBtn.textContent = '↑ Наверх (' + list.length + ')';
+    upBtn.style.cssText = 'margin:6px 4px 12px;padding:10px;text-align:center;border-radius:12px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--accent-line);color:var(--accent-bright);font-size:12.5px;font-weight:600;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 20px rgba(167,139,250,.25);transition:transform .15s, box-shadow .2s';
+    upBtn.onclick = () => { box.scrollTop = 0; };
+    box.appendChild(upBtn);
+  }
+
+  bindChatScroll();
 }
+
+function bindChatScroll(){
+  const box = $('chatList'); if(!box) return;
+  if(CHAT_SCROLL_BOUND) return;
+  CHAT_SCROLL_BOUND = true;
+  box.addEventListener('scroll', () => {
+    if(box.scrollHeight - box.scrollTop - box.clientHeight > 120) return;
+    if(CHAT_RENDER_LIMIT >= CHAT_SORTED.length) return;
+    const loader = $('chatLoader');
+    if(loader && loader.dataset.loading === '1') return;
+    if(loader) loader.dataset.loading = '1';
+    setTimeout(() => {
+      CHAT_RENDER_LIMIT += CHAT_PAGE_SIZE;
+      const oldScroll = box.scrollTop;
+      renderChats(false);
+      const newBox = $('chatList');
+      if(newBox) newBox.scrollTop = oldScroll;
+    }, 250);
+  }, { passive: true });
+}
+
+/* Открытие чата */
 async function openChat(id){
   CURRENT_CHAT = CHATS.find(c => c.id === id);
   if(!CURRENT_CHAT){ try { await loadAll(); CURRENT_CHAT = CHATS.find(c => c.id === id); } catch(e){} }
@@ -1668,7 +1662,7 @@ async function openChat(id){
   document.body.classList.add('in-chat');
   $('backBtn').style.display = 'inline-block';
   $('hTitle').textContent = CURRENT_CHAT.name;
-  renderChats();
+  renderChats(false);
   try { MSGS[id] = await api('/messages/' + id); } catch(e){ console.warn('[openChat]', e); }
   await renderMessagesAndArchive();
   renderPeerBar();
@@ -1687,7 +1681,7 @@ function backToList(){
   $('peerBar').classList.remove('show');
   $('liveTyping').classList.remove('show');
   updateArchiveBar();
-  renderChats();
+  renderChats(false);
   stopSilentPolling(); stopTypingPolling(); stopPeerStatusTimer();
 }
 function openChatInfo(){ if(CURRENT_CHAT) openChatSettings(); }
@@ -1791,7 +1785,6 @@ async function saveFromHeader(){
   try { DRAFT_INFO = await api('/chats/' + CURRENT_CHAT.id + '/day'); } catch(e){}
   updateArchiveBar();
 }
-
 function updateArchiveBar(){
   const bar = $('archiveBar');
   const saveBtn = $('chatSaveBtn');
@@ -1816,7 +1809,6 @@ function updateArchiveBar(){
     } else { saveBtn.style.display = 'none'; dot.style.display = 'none'; }
   }
 }
-
 function buildTicks(m){
   if(!m) return '';
   if(m.status === 'read') return `<span class="ticks read">✓✓</span>`;
@@ -1899,7 +1891,6 @@ async function downloadArchive(){
     await renderMessagesAndArchive();
   } catch(e){ toast('Ошибка', e.message); }
 }
-
 function onTypingInput(){
   if(!CURRENT_CHAT) return;
   const now = Date.now();
@@ -1947,7 +1938,7 @@ function startSilentPolling(){
       const hasNewFromOthers = fresh.some(m => m.sender_id !== ME.id && m.status !== 'read' && (!m.read_by || !m.read_by.includes(ME.id)));
       if(hasNewFromOthers && !document.hidden){ api('/messages/read', 'POST', { chat_id: CURRENT_CHAT.id }).catch(()=>{}); }
       softUpdateMessages(fresh);
-      renderChats();
+      renderChats(false);
     } catch(e){}
   }, 1500);
 }
@@ -1967,7 +1958,7 @@ function startGlobalPolling(){
         if(JSON.stringify(chatsFresh) !== JSON.stringify(CHATS)){
           CHATS = chatsFresh;
           for(const c of CHATS){ if(CURRENT_CHAT && c.id === CURRENT_CHAT.id) continue; if(!MSGS[c.id]) MSGS[c.id] = []; }
-          renderChats();
+          renderChats(false);
         }
       } catch(e){}
       try {
@@ -1976,7 +1967,7 @@ function startGlobalPolling(){
         if(JSON.stringify(usersFresh.map(keyOf)) !== JSON.stringify(USERS.map(keyOf))){
           USERS = usersFresh;
           if(CURRENT_CHAT) renderPeerBar();
-          renderChats();
+          renderChats(false);
         }
       } catch(e){}
       if($('clansList') && $('clansList').classList.contains('open')){ try { const c = await api('/clans'); if(JSON.stringify(c) !== JSON.stringify(CLANS)){ CLANS = c; renderClansList(); } } catch(e){} }
@@ -2092,7 +2083,7 @@ async function deleteMsg(mid, forAll){
     if(forAll){ await api('/messages/' + mid, 'PUT', { deleted_for_all: true }); m.deleted_for_all = true; }
     else { MSGS[CURRENT_CHAT.id] = MSGS[CURRENT_CHAT.id].filter(x => x.id !== mid); }
     renderMessagesAndArchive();
-    renderChats();
+    renderChats(false);
     toast('🗑️ Удалено','');
   } catch(e){ toast('Ошибка', e.message); }
 }
@@ -2132,7 +2123,7 @@ async function uploadAndSend(file){
     fill.style.width = '100%';
     await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: '', file: { url: res.url, name: res.name, size: res.size, mime: res.mime, kind: 'file' } });
     MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id);
-    renderMessagesAndArchive(); renderChats();
+    renderMessagesAndArchive(); renderChats(false);
     overlay.classList.remove('show');
   } catch(e){ overlay.classList.remove('show'); toast('Ошибка загрузки', e.message); }
 }
@@ -2159,7 +2150,6 @@ function compressImage(file, maxSide, quality){
     img.src = url;
   });
 }
-
 async function sendMsg(){
   const v = $('msgInput').value.trim();
   if(!v || !CURRENT_CHAT) return;
@@ -2169,7 +2159,7 @@ async function sendMsg(){
     const res = await api('/messages', 'POST', { chat_id: CURRENT_CHAT.id, text: v });
     if(res && res.message){ if(!MSGS[CURRENT_CHAT.id]) MSGS[CURRENT_CHAT.id] = []; MSGS[CURRENT_CHAT.id].push(res.message); }
     try { MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id); } catch(e){}
-    renderMessagesAndArchive(); renderChats();
+    renderMessagesAndArchive(); renderChats(false);
   } catch(e){ toast('Ошибка отправки', e.message); }
 }
 
@@ -2273,7 +2263,7 @@ async function saveChatInfo(patch){
     CURRENT_CHAT = await api('/chats/' + CURRENT_CHAT.id);
     CHATS = CHATS.map(c => c.id === CURRENT_CHAT.id ? CURRENT_CHAT : c);
     $('hTitle').textContent = CURRENT_CHAT.name;
-    renderChats();
+    renderChats(false);
     openChatSettings();
     toast('✓ Сохранено','');
   } catch(e){ toast('Ошибка', e.message); }
@@ -2288,7 +2278,7 @@ async function deleteChat(){
     delete MSGS[CURRENT_CHAT.id];
     closePanel('chatSettings');
     backToList();
-    renderChats();
+    renderChats(true);
     toast('🗑️ Удалено','');
   } catch(e){ toast('Ошибка', e.message); }
 }
@@ -2327,14 +2317,14 @@ async function createChatFinal(){
       const ex = CHATS.find(c => c.type === 'private' && (c.memberIds||[]).includes(u.id));
       if(ex){ closePanel('createChat'); return openChat(ex.id); }
       const r = await api('/chats','POST',{ name:u.login, type:'private', members:[u.id] });
-      await loadAll(); renderChats(); closePanel('createChat'); openChat(r.id);
+      await loadAll(); renderChats(true); closePanel('createChat'); openChat(r.id);
       return;
     }
     const name = ($('ccName') && $('ccName').value || '').trim();
     if(!name) return alert('Введи название');
     if(!CC_SEL.length) return alert('Добавь участников');
     const r = await api('/chats','POST',{ name, type:CC_TYPE, members:CC_SEL });
-    await loadAll(); renderChats(); closePanel('createChat'); openChat(r.id);
+    await loadAll(); renderChats(true); closePanel('createChat'); openChat(r.id);
   } catch(e){ toast('Ошибка', e.message); }
 }
 
@@ -2351,12 +2341,7 @@ async function openHashtagsPanel(){
     $('hashtagsBody').innerHTML = `<div class="empty">Ошибка: ${esc(e.message)}</div>`;
   }
 }
-
-function setHashtagSort(sort){
-  HASHTAG_SORT = sort;
-  renderHashtagsPanel();
-}
-
+function setHashtagSort(sort){ HASHTAG_SORT = sort; renderHashtagsPanel(); }
 function renderHashtagsPanel(){
   const box = $('hashtagsBody');
   if(!HASHTAGS.length){
@@ -2367,7 +2352,6 @@ function renderHashtagsPanel(){
   if(HASHTAG_SORT === 'popular') list.sort((a,b) => b.count - a.count);
   else if(HASHTAG_SORT === 'new') list.sort((a,b) => new Date(b.firstAt) - new Date(a.firstAt));
   else if(HASHTAG_SORT === 'az') list.sort((a,b) => a.tag.localeCompare(b.tag));
-
   box.innerHTML = `
     <div class="tag-sort">
       <button class="${HASHTAG_SORT==='popular'?'on':''}" onclick="setHashtagSort('popular')">🔥 По популярности</button>
@@ -2383,7 +2367,6 @@ function renderHashtagsPanel(){
     `).join('')}
   `;
 }
-
 async function openHashtagDetail(tag){
   openPanel('hashtagDetail');
   $('hashtagDetailTitle').textContent = '#' + tag;
@@ -2395,12 +2378,10 @@ async function openHashtagDetail(tag){
     $('hashtagDetailBody').innerHTML = `<div class="empty">Ошибка: ${esc(e.message)}</div>`;
   }
 }
-
 function renderHashtagDetail(d){
   const firstAuthor = d.firstAuthorLogin || '—';
   const firstAt = d.firstAt ? new Date(d.firstAt).toLocaleString('ru-RU') : '—';
   const firstMsg = d.firstMessage || '—';
-
   let matchesHTML = '';
   if(d.matches && d.matches.length){
     matchesHTML = `
@@ -2421,7 +2402,6 @@ function renderHashtagDetail(d){
         }).join('')}
       </div>`;
   }
-
   $('hashtagDetailBody').innerHTML = `
     <div class="tag-info">
       <div class="tag-h">#${esc(d.tag)}</div>
@@ -2527,8 +2507,8 @@ function renderSettingsBody(){
       </div>
     </div>`;
 }
-async function toggleSmilePrefix(){ const next = !(ME.show_smile_prefix !== false); try { await api('/users/me/donor-prefixes','PUT',{ show_smile: next }); ME.show_smile_prefix = next; renderSettingsBody(); renderChats(); } catch(e){ toast('Ошибка', e.message) } }
-async function toggleTextPrefix(){ const next = !(ME.show_text_prefix !== false); try { await api('/users/me/donor-prefixes','PUT',{ show_text: next }); ME.show_text_prefix = next; renderSettingsBody(); renderChats(); } catch(e){ toast('Ошибка', e.message) } }
+async function toggleSmilePrefix(){ const next = !(ME.show_smile_prefix !== false); try { await api('/users/me/donor-prefixes','PUT',{ show_smile: next }); ME.show_smile_prefix = next; renderSettingsBody(); renderChats(false); } catch(e){ toast('Ошибка', e.message) } }
+async function toggleTextPrefix(){ const next = !(ME.show_text_prefix !== false); try { await api('/users/me/donor-prefixes','PUT',{ show_text: next }); ME.show_text_prefix = next; renderSettingsBody(); renderChats(false); } catch(e){ toast('Ошибка', e.message) } }
 async function deleteMyAccount(){
   if(!confirm('Удалить аккаунт НАВСЕГДА?')) return;
   if(!confirm('Точно?')) return;
@@ -2555,7 +2535,6 @@ async function unblockUser(id){
     if(CURRENT_CHAT) { MSGS[CURRENT_CHAT.id] = await api('/messages/' + CURRENT_CHAT.id); renderMessagesAndArchive(); }
   } catch(e){ toast('Ошибка', e.message); }
 }
-
 async function openClicker(){
   openPanel('clickerPanel');
   $('clickerBody').innerHTML = '<div class="empty">Загрузка...</div>';
@@ -2598,7 +2577,6 @@ async function flushClicks(){
     if($('clickerPanel').classList.contains('open')) renderClicker();
   } catch(e){ toast('Ошибка кликера', e.message); }
 }
-
 function openPremiumPanel(){ renderPremiumBody(); openPanel('premiumPanel'); }
 function renderPremiumBody(){
   const prem = isPremium(ME);
@@ -2627,10 +2605,10 @@ function renderPremiumBody(){
       </div>
     </div>`;
 }
-async function togglePremiumBadge(){ const next = !(ME.show_premium_badge !== false); try { await api('/users/me/donor-prefixes','PUT',{ show_premium_badge: next }); ME.show_premium_badge = next; renderPremiumBody(); renderChats(); } catch(e){ toast('Ошибка', e.message) } }
-async function togglePremiumName(){ const next = !(ME.show_premium_name !== false); try { await api('/users/me/donor-prefixes','PUT',{ show_premium_name: next }); ME.show_premium_name = next; renderPremiumBody(); renderChats(); } catch(e){ toast('Ошибка', e.message) } }
-async function savePremPrefix(){ const v = ($('premPrefixInput').value || '').trim().slice(0,4); try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: v, show_custom_prefix: true }); await loadAll(); renderPremiumBody(); renderChats(); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
-async function clearPremPrefix(){ try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: '' }); await loadAll(); renderPremiumBody(); renderChats(); } catch(e){} }
+async function togglePremiumBadge(){ const next = !(ME.show_premium_badge !== false); try { await api('/users/me/donor-prefixes','PUT',{ show_premium_badge: next }); ME.show_premium_badge = next; renderPremiumBody(); renderChats(false); } catch(e){ toast('Ошибка', e.message) } }
+async function togglePremiumName(){ const next = !(ME.show_premium_name !== false); try { await api('/users/me/donor-prefixes','PUT',{ show_premium_name: next }); ME.show_premium_name = next; renderPremiumBody(); renderChats(false); } catch(e){ toast('Ошибка', e.message) } }
+async function savePremPrefix(){ const v = ($('premPrefixInput').value || '').trim().slice(0,4); try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: v, show_custom_prefix: true }); await loadAll(); renderPremiumBody(); renderChats(false); toast('Сохранено',''); } catch(e){ toast('Ошибка', e.message) } }
+async function clearPremPrefix(){ try { await api('/users/me/donor-prefixes','PUT',{ custom_prefix: '' }); await loadAll(); renderPremiumBody(); renderChats(false); } catch(e){} }
 
 function openEditProfile(){
   const av = ME.avatar_url
@@ -2660,7 +2638,6 @@ function openEditProfile(){
     </div>`;
   openPanel('editProfile');
 }
-
 async function saveSecretQA(){
   const q = ($('peSecretQ').value || '').trim();
   const a = ($('peSecretA').value || '').trim();
@@ -2676,7 +2653,6 @@ async function saveSecretQA(){
     openEditProfile();
   } catch(e){ toast('Ошибка', e.message); }
 }
-
 function openMyPasswords(){
   const key = 'ink_passwords_' + (ME.login || 'me');
   const list = JSON.parse(localStorage.getItem(key) || '[]');
@@ -2700,7 +2676,6 @@ function openMyPasswords(){
     </div>`;
   openPanel('editProfile');
 }
-
 async function saveProfile(){
   try { await api('/users/me','PUT',{ username: $('peLogin').value.trim(), description: $('peDesc').value.trim(), phone: $('pePhone').value.trim(), birthday: $('peBirthday').value }); await loadAll(); renderSettingsBody(); closePanel('editProfile'); toast('Сохранено',''); }
   catch(e){ toast('Ошибка', e.message) }
@@ -2720,7 +2695,6 @@ async function onAvatarPick(ev){
     r.readAsDataURL(compressed);
   } catch(e){ toast('Ошибка', e.message); }
 }
-
 function openChangePassword(){
   if(STACK.length) closePanel(STACK[STACK.length-1]);
   $('editProfileBody').innerHTML = `
@@ -2745,7 +2719,6 @@ async function doChangePassword(){
   try { await api('/users/me/password','PUT',{ oldPassword: oldP, newPassword: newP }); toast('🔑 Пароль изменён',''); $('cpOld').value=''; $('cpNew').value=''; $('cpNew2').value=''; openSettings(); }
   catch(e){ toast('Ошибка', e.message); }
 }
-
 async function toggleInkognito(){
   const active = ME.inkUntil && new Date(ME.inkUntil) > new Date();
   if(!active){
@@ -2949,7 +2922,6 @@ function openShop(){ $('shopBody').innerHTML = `
     <div class="st-section"><h3>🕶️ Inkognito</h3>
       <div class="st-row" onclick="toggleInkognito()"><div class="icon">🕶️</div><div class="txt"><div class="t1">${ME.inkUntil && new Date(ME.inkUntil) > new Date() ? 'Активен' : 'Купить 1 день'}</div><div class="t2">2 токена</div></div></div>
     </div>`; openPanel('shop'); }
-
 async function buyPremium(){
   if(!confirm('Списать 30 токенов и активировать Premium на 30 дней?')) return;
   pauseGlobalPolling(8000);
@@ -2959,12 +2931,11 @@ async function buyPremium(){
     await playPremiumAnim();
     await loadAll();
     renderTokensBadge();
-    renderChats();
+    renderChats(true);
     toast('💎 Premium активирован','30 дней');
   } catch(e){ toast('Ошибка', e.message); }
   finally { pauseGlobalPolling(500); }
 }
-
 function openDonate(){ $('shopBody').innerHTML = `
     <div class="st-section"><h3>❤️ Поддержать Ink</h3>
       <div style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);color:var(--accent-bright);padding:12px;border-radius:12px;font-size:13px;line-height:1.5;margin-bottom:12px;box-shadow:inset 0 1px 0 rgba(232,230,226,.05)">
@@ -2978,7 +2949,6 @@ function openDonate(){ $('shopBody').innerHTML = `
         </a>
       </div>
     </div>`; openPanel('shop'); }
-
 function openReportToAdmin(prefillLogin){
   $('reportTitle').textContent = '⚠️ Жалоба админу';
   REPORT_SCREENS = [];
