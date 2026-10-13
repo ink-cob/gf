@@ -4,30 +4,15 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Ink Мастер</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%238b5cf6'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='20' font-weight='bold' font-family='sans-serif'>I</text></svg>"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23fbbf24'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='18' font-weight='bold' font-family='sans-serif'>A</text></svg>"/>
 <style>
 :root{
-  --bg:#150a26;
-  --panel:#1f1238;
-  --panel2:#281745;
-  --panel3:#331d54;
-  --border:#261540;
-  --border2:#352058;
-  --border3:#452a70;
-  --accent:#8b5cf6;
-  --accent2:#6d28d9;
-  --accent-bright:#a78bfa;
-  --accent-warm:#c4a3ff;
-  --accent-soft:rgba(139,92,246,.10);
-  --accent-line:rgba(167,139,250,.35);
-  --text:#e8e6e2;
-  --text2:#c8c4be;
-  --muted:#a8a29c;
-  --muted2:#7a746e;
-  --ok:#4ade80;
-  --danger:#f87171;
-  --warn:#fbbf24;
-  --gold:#a78bfa;
+  --bg:#150a26;--panel:#1f1238;--panel2:#281745;--panel3:#331d54;
+  --border:#261540;--border2:#352058;--border3:#452a70;
+  --accent:#8b5cf6;--accent2:#6d28d9;--accent-bright:#a78bfa;--accent-warm:#c4a3ff;
+  --accent-soft:rgba(139,92,246,.10);--accent-line:rgba(167,139,250,.35);
+  --text:#e8e6e2;--text2:#c8c4be;--muted:#a8a29c;--muted2:#7a746e;
+  --ok:#4ade80;--danger:#f87171;--warn:#fbbf24;--gold:#a78bfa;
   --tap:44px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -60,7 +45,7 @@ input,textarea,select{font-family:inherit;font-size:14px}
 .ok-msg{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.4);color:#86efac;padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:10px;display:none}
 .ok-msg.on{display:block}
 
-/* ================= WELCOME-АНИМАЦИЯ ================= */
+/* ================= WELCOME ================= */
 #welcome{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;background:rgba(8,2,18,0);transition:background .5s ease;padding:20px;overflow-y:auto}
 #welcome.on{display:flex;background:rgba(8,2,18,.96);backdrop-filter:blur(10px)}
 #welcome .inner{max-width:520px;width:100%;text-align:center;animation:welcomeIn .6s cubic-bezier(.2,.9,.3,1.2)}
@@ -77,6 +62,14 @@ input,textarea,select{font-family:inherit;font-size:14px}
 #welcome .btn{padding:16px 40px;border-radius:14px;border:0;cursor:pointer;font-size:16px;font-weight:700;font-family:inherit;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;box-shadow:0 8px 28px rgba(139,92,246,.5),0 0 40px rgba(167,139,250,.4),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -3px 0 rgba(0,0,0,.2);transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s}
 #welcome .btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(139,92,246,.7),0 0 60px rgba(167,139,250,.5),inset 0 1px 0 rgba(232,230,226,.4),inset 0 -3px 0 rgba(0,0,0,.2)}
 
+/* ================= БАННЕР КОДЕКСА ================= */
+#codexBanner{display:none;background:linear-gradient(180deg,rgba(251,191,36,.15),rgba(251,191,36,.05));border-bottom:1px solid rgba(251,191,36,.4);padding:10px 18px;align-items:center;gap:12px;flex-wrap:wrap}
+#codexBanner.on{display:flex}
+#codexBanner .ico{font-size:20px}
+#codexBanner .txt{flex:1;min-width:200px}
+#codexBanner .txt b{color:var(--warn);font-size:14px}
+#codexBanner .txt .sub{font-size:12.5px;color:var(--text2);margin-top:2px}
+
 /* ================= КНОПКИ ================= */
 .btn{padding:11px 16px;border:0;border-radius:12px;font-size:14px;font-weight:700;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(139,92,246,.35),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -2px 0 rgba(0,0,0,.2);text-shadow:0 1px 0 rgba(232,230,226,.25)}
 .btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(139,92,246,.5),0 0 32px rgba(167,139,250,.4),inset 0 1px 0 rgba(232,230,226,.4),inset 0 -2px 0 rgba(0,0,0,.2)}
@@ -85,23 +78,24 @@ input,textarea,select{font-family:inherit;font-size:14px}
 .btn.ghost:hover{background:linear-gradient(180deg,var(--panel3),var(--panel2));border-color:var(--accent);color:var(--accent-bright);box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 24px rgba(167,139,250,.25),inset 0 1px 0 rgba(232,230,226,.1),inset 0 -2px 0 rgba(0,0,0,.3)}
 .btn.danger{background:linear-gradient(180deg,#f87171,#b34040);color:#150a26;box-shadow:0 4px 16px rgba(248,113,113,.35),inset 0 1px 0 rgba(232,230,226,.2),inset 0 -2px 0 rgba(0,0,0,.2)}
 .btn.ok{background:linear-gradient(180deg,#4ade80,#2b8c50);color:#150a26;box-shadow:0 4px 16px rgba(74,222,128,.35),inset 0 1px 0 rgba(232,230,226,.2),inset 0 -2px 0 rgba(0,0,0,.2)}
-.btn.gold{background:linear-gradient(180deg,var(--accent-warm),var(--accent));color:#150a26}
+.btn.gold{background:linear-gradient(180deg,var(--warn),#d97706);color:#150a26;box-shadow:0 4px 16px rgba(251,191,36,.35),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -2px 0 rgba(0,0,0,.2)}
 .btn.sm{padding:6px 10px;font-size:12px;border-radius:8px;min-height:32px}
 
 /* ================= ШАПКА ================= */
 #app{display:none}
 #app.on{display:block}
 header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
-header .logo{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(180deg,var(--accent-bright),var(--accent));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(139,92,246,.5),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -2px 0 rgba(0,0,0,.2)}
+header .logo{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(180deg,var(--warn),#d97706);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(251,191,36,.5),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -2px 0 rgba(0,0,0,.2)}
 header .logo svg{width:26px;height:26px;display:block}
 header .logo .eye{animation:blink 4.2s ease-in-out infinite;transform-origin:center}
 header .t1{font-weight:700;font-size:15px}
 header .t2{font-size:11.5px;color:var(--muted);margin-top:1px}
 header .spacer{flex:1}
 header .btn{padding:8px 12px;font-size:12.5px}
+header a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:5px}
 
 /* ================= ТАБЫ ================= */
-.tabs{display:flex;gap:4px;padding:12px 18px 0;border-bottom:1px solid var(--border);overflow-x:auto;background:linear-gradient(180deg,var(--panel),var(--bg))}
+.tabs{display:flex;gap:4px;padding:12px 18px 0;border-bottom:1px solid var(--border);overflow-x:auto;background:linear-gradient(180deg,var(--panel),var(--bg));scrollbar-width:thin}
 .tabs button{background:transparent;border:0;color:var(--muted);padding:10px 14px;font-size:13.5px;font-weight:600;border-bottom:2px solid transparent;white-space:nowrap;transition:color .2s, border-color .2s}
 .tabs button:hover{color:var(--text2)}
 .tabs button.on{color:var(--accent-bright);border-bottom-color:var(--accent-bright);text-shadow:0 0 12px rgba(167,139,250,.5)}
@@ -129,6 +123,8 @@ tr.selected td{background:rgba(139,92,246,.12)}
 .tag.prem{background:linear-gradient(180deg,var(--accent-warm),var(--accent));color:#150a26}
 .tag.ban{background:rgba(248,113,113,.25);color:#fca5a5}
 .tag.muted{background:rgba(167,139,250,.08);color:var(--muted)}
+.tag.warn{background:rgba(251,191,36,.2);color:#fde68a;border:1px solid rgba(251,191,36,.35)}
+.tag.ok{background:rgba(74,222,128,.2);color:#86efac;border:1px solid rgba(74,222,128,.35)}
 
 .actions{display:flex;gap:4px;flex-wrap:wrap}
 .empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:14px}
@@ -141,51 +137,59 @@ tr.selected td{background:rgba(139,92,246,.12)}
 
 .card-info{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:14px;padding:14px;margin-bottom:10px;font-size:13px;line-height:1.7;box-shadow:0 4px 14px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.04)}
 
-/* ========== МАССОВЫЕ ДЕЙСТВИЯ ========== */
-.mass-bar{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:16px;padding:14px;margin-bottom:14px;display:none;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.mass-bar.on{display:block}
-.mass-bar h3{margin:0 0 10px;font-size:14px}
-.mass-bar .cnt{color:var(--accent-bright);font-weight:700;text-shadow:0 0 12px rgba(167,139,250,.5)}
-.mass-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
-.mass-card{background:linear-gradient(180deg,var(--panel3),var(--panel2));border:1px solid var(--border2);border-radius:12px;padding:12px;box-shadow:inset 0 1px 0 rgba(232,230,226,.06),0 2px 8px rgba(0,0,0,.3)}
-.mass-card .lbl{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px}
-.mass-card .row-act{display:flex;gap:6px;flex-wrap:wrap}
-.mass-card input{width:100%;padding:8px 10px;background:var(--panel);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;outline:none;margin-bottom:6px}
-.mass-card input:focus{border-color:var(--accent)}
+/* ========== ФИЛЬТР ЛОГА ========== */
+.log-filter{display:flex;gap:6px;padding:12px;flex-wrap:wrap;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--panel2),var(--panel))}
+.log-filter button{padding:6px 12px;font-size:12.5px;border-radius:8px;border:1px solid var(--border2);background:linear-gradient(180deg,var(--panel3),var(--panel2));color:var(--text2);font-weight:600;transition:all .15s}
+.log-filter button:hover{border-color:var(--accent);color:var(--accent-bright)}
+.log-filter button.on{background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;border-color:transparent}
+.log-filter .cnt{color:var(--muted);font-size:12.5px;align-self:center;margin-left:auto}
+
+/* ========== КАРТОЧКА ЗАЯВКИ НА РАЗБАН ========== */
+.appeal{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.appeal .head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.appeal .head .login{font-size:15px;font-weight:700}
+.appeal .meta{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:13px;color:var(--text2);line-height:1.7}
+.appeal .meta b{color:var(--text)}
+.appeal .comment{background:rgba(167,139,250,.08);border-left:3px solid var(--accent-bright);border-radius:6px;padding:10px 12px;font-size:13.5px;line-height:1.6;margin-bottom:10px;color:var(--text2)}
+.appeal .btns{display:flex;gap:6px;flex-wrap:wrap}
+
+/* ========== IP-БАН ========== */
+.ip-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.ip-card .ip{font-family:ui-monospace,Menlo,monospace;font-size:15px;font-weight:700;color:var(--accent-bright);flex:1;min-width:150px}
+.ip-card .until{font-size:12.5px;color:var(--muted)}
+.ip-card .reason{font-size:12.5px;color:var(--text2);margin-top:2px}
 
 /* ========== КОДЕКС ========== */
 .codex{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:16px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.codex .preamble{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.codex .preamble{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:12px;padding:12px 14px;font-size:13px;color:#fde68a;line-height:1.6;margin-bottom:14px}
 .codex .art{border:1px solid var(--border2);border-radius:12px;margin-bottom:8px;overflow:hidden;background:linear-gradient(180deg,var(--panel3),var(--panel2))}
-.codex .art-head{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .15s}
+.codex .art-head{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .15s;user-select:none}
 .codex .art-head:hover{background:rgba(167,139,250,.08)}
-.codex .art-head .num{width:32px;height:32px;border-radius:9px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;box-shadow:0 3px 10px rgba(139,92,246,.4),inset 0 1px 0 rgba(232,230,226,.25)}
+.codex .art-head .num{width:32px;height:32px;border-radius:9px;background:linear-gradient(180deg,var(--warn),#d97706);color:#150a26;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;box-shadow:0 3px 10px rgba(251,191,36,.4),inset 0 1px 0 rgba(232,230,226,.3)}
 .codex .art-head .ttl{flex:1;font-weight:700;font-size:14px}
-.codex .art-head .arrow{color:var(--muted);transition:transform .2s}
+.codex .art-head .arrow{color:var(--muted);transition:transform .2s;font-size:18px}
 .codex .art.open .art-head .arrow{transform:rotate(90deg);color:var(--accent-bright)}
-.codex .art-body{padding:0 14px 14px;display:none;font-size:13px;line-height:1.6}
+.codex .art-body{padding:0 14px 14px;display:none;font-size:13px;line-height:1.6;color:var(--text2)}
 .codex .art.open .art-body{display:block}
-.codex .art-body h4{margin:12px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
-.codex .art-body .ok-lbl{color:#86efac}
-.codex .art-body .no-lbl{color:#fca5a5}
-.codex .art-body ul{margin:0;padding-left:20px;color:var(--text2)}
-.codex .art-body ul li{margin-bottom:4px}
-.codex .art-body .pun{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#fca5a5;margin-top:10px}
+.codex .art-body p{margin:0 0 8px}
+.codex .art-body .pun{margin-top:10px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#fca5a5}
+.codex .art-body .pun b{color:#fecaca;display:block;margin-bottom:4px;font-size:11.5px;text-transform:uppercase;letter-spacing:1px}
 .codex .agree{margin-top:16px;text-align:center}
 .codex .agree .btn{padding:14px 36px;font-size:15px}
+.codex .agree .done{color:var(--ok);font-weight:600;font-size:14px}
 
 /* ========== МОДАЛКА ========== */
 #modal{position:fixed;inset:0;z-index:200;background:rgba(8,2,18,.8);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
 #modal.on{display:flex;animation:modalFade .2s ease-out}
 @keyframes modalFade{from{opacity:0}to{opacity:1}}
-#modal .box{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(167,139,250,.2),inset 0 1px 0 rgba(232,230,226,.06);animation:modalIn .3s cubic-bezier(.2,.9,.3,1.2)}
+#modal .box{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(167,139,250,.2),inset 0 1px 0 rgba(232,230,226,.06);animation:modalIn .3s cubic-bezier(.2,.9,.3,1.2)}
 @keyframes modalIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 #modal h2{margin:0 0 14px;font-size:18px}
 #modal label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:12px 0 5px;font-weight:600}
 #modal input,#modal select,#modal textarea{width:100%;padding:11px 12px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;outline:none}
 #modal input:focus,#modal select:focus,#modal textarea:focus{border-color:var(--accent)}
-#modal .row-btns{display:flex;gap:8px;margin-top:14px}
-#modal .row-btns .btn{flex:1}
+#modal .row-btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+#modal .row-btns .btn{flex:1;min-width:120px}
 
 /* ========== TOASTS ========== */
 #toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;width:min(420px,calc(100vw - 24px));pointer-events:none}
@@ -205,7 +209,7 @@ tr.selected td{background:rgba(139,92,246,.12)}
 <div id="login" class="on">
   <div class="box">
     <svg class="ghost-big" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#d97706"/></linearGradient></defs>
       <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#lg)"/>
       <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#150a26"/>
       <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
@@ -237,11 +241,11 @@ tr.selected td{background:rgba(139,92,246,.12)}
     <h2 class="title">Привет, админ</h2>
     <div class="body">
       <p>Ты вошёл в <b>Ink Мастер</b> — панель управления проектом. Здесь ты можешь писать пользователям от лица Ink, выдавать токены и премиум, банить и разбирать жалобы.</p>
-      <p>Но вместе с правами приходит <b>ответственность</b>. На первой вкладке — <b>Кодекс администратора</b>. Прочитай его полностью и подтверди ознакомление, иначе часть функций будет недоступна.</p>
+      <p>Но вместе с правами приходит <b>ответственность</b>. На вкладке «Кодекс» — правила для администраторов. Прочитай и подтверди ознакомление.</p>
       <div class="steps">
         <div>Прочитай вкладку <b>Кодекс</b></div>
-        <div>Нажми <b>«Ознакомлен»</b> внизу</div>
-        <div>Все твои действия логируются</div>
+        <div>Нажми <b>«Ознакомлен»</b></div>
+        <div>Все действия логируются</div>
         <div>Незнание кодекса не освобождает от ответственности</div>
       </div>
     </div>
@@ -256,9 +260,9 @@ tr.selected td{background:rgba(139,92,246,.12)}
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#150a26"/><stop offset="100%" stop-color="#2a1550"/></linearGradient></defs>
         <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#hg)"/>
-        <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#a78bfa"/>
+        <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#fbbf24"/>
         <circle cx="41.5" cy="44" r="1.6" fill="#e8e6e2"/>
-        <g class="eye"><ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#a78bfa"/><circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/></g>
+        <g class="eye"><ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#fbbf24"/><circle cx="61.5" cy="44" r="1.6" fill="#e8e6e2"/></g>
       </svg>
     </div>
     <div>
@@ -266,79 +270,91 @@ tr.selected td{background:rgba(139,92,246,.12)}
       <div class="t2" id="connInfo">api.ink-chat.ru</div>
     </div>
     <div class="spacer"></div>
+    <a class="btn ghost" href="rules.html" target="_blank">📜 Правила</a>
+    <a class="btn ghost" href="codex.html" target="_blank">📖 Кодекс</a>
     <button class="btn ghost" onclick="reloadAll()">🔄 Обновить</button>
-    <button class="btn ghost" onclick="logout()">Выйти</button>
+    <a class="btn ghost" href="web.html">💬 В чат</a>
+<button class="btn ghost" onclick="logout()">🚪 Выйти</button>
   </header>
 
+  <!-- БАННЕР КОДЕКСА -->
+  <div id="codexBanner">
+    <span class="ico">📖</span>
+    <div class="txt">
+      <b>Прочитай кодекс администратора</b>
+      <div class="sub">Без подтверждения ознакомления часть функций недоступна</div>
+    </div>
+    <button class="btn gold sm" onclick="switchTab('codex')">Открыть кодекс</button>
+  </div>
+
   <div class="tabs">
-    <button class="on" data-tab="codex" onclick="switchTab('codex')">📖 Кодекс</button>
-    <button data-tab="users" onclick="switchTab('users')">👥 Пользователи</button>
+    <button class="on" data-tab="users" onclick="switchTab('users')">👥 Пользователи</button>
     <button data-tab="messages" onclick="switchTab('messages')">✉️ Сообщения</button>
+    <button data-tab="appeals" onclick="switchTab('appeals')">📩 Заявки на разбан</button>
+    <button data-tab="ipbans" onclick="switchTab('ipbans')">🛡️ IP-баны</button>
     <button data-tab="donations" onclick="switchTab('donations')">❤️ Донаты</button>
     <button data-tab="reports" onclick="switchTab('reports')">⚠️ Жалобы</button>
     <button data-tab="log" onclick="switchTab('log')">📜 Лог</button>
+    <button data-tab="codex" onclick="switchTab('codex')">📖 Кодекс</button>
     <button data-tab="system" onclick="switchTab('system')">⚙️ Система</button>
   </div>
 
   <main>
-    <section class="section on" id="sec-codex">
-      <div class="codex" id="codexBox"><div class="empty">Загрузка кодекса...</div></div>
-    </section>
-
-    <section class="section" id="sec-users">
+    <!-- ПОЛЬЗОВАТЕЛИ -->
+    <section class="section on" id="sec-users">
       <div class="stats" id="stats"></div>
       <input id="search" placeholder="Поиск по логину или ID..." oninput="renderUsers()" style="width:100%;padding:12px 14px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:12px;color:var(--text);font-size:14px;outline:none;margin-bottom:14px"/>
       <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-        <button class="btn ghost sm" onclick="selectAllVisible()">☑️ Выбрать всех видимых</button>
-        <button class="btn ghost sm" onclick="clearSelection()">✖️ Снять выбор</button>
+        <button class="btn ghost sm" onclick="selectAllVisible()">☑️ Выбрать всех</button>
+        <button class="btn ghost sm" onclick="clearSelection()">✖️ Снять</button>
         <button class="btn ghost sm" onclick="selectInvert()">🔁 Инвертировать</button>
-        <button class="btn sm" onclick="toggleMassPanel()">⚙️ Массовые действия</button>
+        <button class="btn sm" onclick="toggleMassPanel()">⚙️ Массовые</button>
       </div>
 
-      <div class="mass-bar" id="massBar">
+      <div class="mass-bar" id="massBar" style="display:none">
         <h3>Массовые действия · выбрано: <span class="cnt" id="massCount">0</span></h3>
-        <div class="mass-grid">
-          <div class="mass-card">
-            <div class="lbl">💰 Токены</div>
-            <input id="massTokens" type="number" placeholder="Сколько" value="10"/>
-            <div class="row-act">
-              <button class="btn ok sm" onclick="massTokens(1)">Выдать всем</button>
-              <button class="btn danger sm" onclick="massTokens(-1)">Списать всем</button>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px">
+          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+            <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">💰 Токены</div>
+            <input id="massTokens" type="number" value="10" style="width:100%;padding:8px 10px;background:var(--panel);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;outline:none;margin-bottom:6px"/>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button class="btn ok sm" onclick="massTokens(1)">Выдать</button>
+              <button class="btn danger sm" onclick="massTokens(-1)">Списать</button>
             </div>
           </div>
-          <div class="mass-card">
-            <div class="lbl">💎 Premium</div>
-            <input id="massPremDays" type="number" placeholder="Дней" value="30"/>
-            <div class="row-act">
+          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+            <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">💎 Premium</div>
+            <input id="massPremDays" type="number" value="30" style="width:100%;padding:8px 10px;background:var(--panel);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;outline:none;margin-bottom:6px"/>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button class="btn gold sm" onclick="massPremium(true)">Выдать</button>
               <button class="btn ghost sm" onclick="massPremium(false)">Снять</button>
             </div>
           </div>
-          <div class="mass-card">
-            <div class="lbl">🚫 Бан</div>
-            <input id="massBanDays" type="number" placeholder="Дней" value="30"/>
-            <div class="row-act">
+          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+            <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">🚫 Бан</div>
+            <input id="massBanDays" type="number" value="30" style="width:100%;padding:8px 10px;background:var(--panel);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;outline:none;margin-bottom:6px"/>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button class="btn danger sm" onclick="massBan()">Забанить</button>
               <button class="btn ok sm" onclick="massUnban()">Разбанить</button>
             </div>
           </div>
-          <div class="mass-card">
-            <div class="lbl">👑 Роли</div>
-            <div class="row-act">
+          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+            <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">👑 Роли</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button class="btn sm" onclick="massAdmin(true)">Админ</button>
               <button class="btn ghost sm" onclick="massAdmin(false)">Снять</button>
             </div>
           </div>
-          <div class="mass-card">
-            <div class="lbl">❤️ Донатер</div>
-            <div class="row-act">
+          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+            <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">❤️ Спасink</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button class="btn gold sm" onclick="massDonor(true)">Выдать</button>
               <button class="btn ghost sm" onclick="massDonor(false)">Снять</button>
             </div>
           </div>
-          <div class="mass-card">
-            <div class="lbl">🛠️ Сервис</div>
-            <div class="row-act">
+          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+            <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">🛠️ Сервис</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button class="btn ghost sm" onclick="copySelectedIds()">📋 ID</button>
               <button class="btn ghost sm" onclick="copySelectedLogins()">📋 Логины</button>
             </div>
@@ -357,6 +373,7 @@ tr.selected td{background:rgba(139,92,246,.12)}
       </div>
     </section>
 
+    <!-- СООБЩЕНИЯ -->
     <section class="section" id="sec-messages">
       <div class="card-info" style="margin-bottom:14px">
         Сообщения отправляются <b>от лица Ink</b>. Получатель увидит их в личном чате с аккаунтом <b>Ink</b>.
@@ -380,18 +397,56 @@ tr.selected td{background:rgba(139,92,246,.12)}
       </div>
     </section>
 
+    <!-- ЗАЯВКИ НА РАЗБАН -->
+    <section class="section" id="sec-appeals">
+      <div id="appealsBody"></div>
+    </section>
+
+    <!-- IP-БАНЫ -->
+    <section class="section" id="sec-ipbans">
+      <div style="background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:16px;padding:16px;margin-bottom:14px">
+        <h3 style="margin:0 0 10px;font-size:14px">🛡️ Забанить IP вручную</h3>
+        <input id="ipBanInput" placeholder="IP-адрес (например 192.168.1.1)" style="width:100%;padding:11px 12px;background:var(--panel);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;outline:none;margin-bottom:8px"/>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input id="ipBanDays" type="number" value="30" placeholder="Дней (0 = навсегда)" style="flex:1;min-width:150px;padding:11px 12px;background:var(--panel);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;outline:none"/>
+          <input id="ipBanReason" placeholder="Причина" style="flex:2;min-width:200px;padding:11px 12px;background:var(--panel);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;outline:none"/>
+        </div>
+        <button class="btn danger" style="margin-top:10px" onclick="manualIpBan()">Забанить IP</button>
+      </div>
+      <h3 style="font-size:14px;margin:0 0 10px">Активные IP-баны</h3>
+      <div id="ipbansBody"></div>
+    </section>
+
+    <!-- ДОНАТЫ -->
     <section class="section" id="sec-donations">
       <div class="tbl-wrap" id="donationsBody"></div>
     </section>
 
+    <!-- ЖАЛОБЫ -->
     <section class="section" id="sec-reports">
       <div class="tbl-wrap" id="reportsBody"></div>
     </section>
 
+    <!-- ЛОГ -->
     <section class="section" id="sec-log">
-      <div class="tbl-wrap" id="logBody"></div>
+      <div class="tbl-wrap">
+        <div class="log-filter" id="logFilter">
+          <button class="on" data-kind="all" onclick="setLogFilter('all')">Все</button>
+          <button data-kind="admin" onclick="setLogFilter('admin')">🛡️ Админ</button>
+          <button data-kind="user" onclick="setLogFilter('user')">👤 Пользователь</button>
+          <button data-kind="system" onclick="setLogFilter('system')">⚙️ Система</button>
+          <span class="cnt" id="logCount"></span>
+        </div>
+        <div id="logBody"></div>
+      </div>
     </section>
 
+    <!-- КОДЕКС -->
+    <section class="section" id="sec-codex">
+      <div class="codex" id="codexBox"></div>
+    </section>
+
+    <!-- СИСТЕМА -->
     <section class="section" id="sec-system">
       <div class="stats" id="sysStats"></div>
       <div class="card-info" style="margin-top:14px">
@@ -400,6 +455,8 @@ tr.selected td{background:rgba(139,92,246,.12)}
         <b>Пользователей:</b> <span id="sysUsers"></span><br>
         <b>Донатов:</b> <span id="sysDon"></span><br>
         <b>Жалоб:</b> <span id="sysRep"></span><br>
+        <b>Заявок на разбан:</b> <span id="sysAppeals"></span><br>
+        <b>Активных IP-банов:</b> <span id="sysIpBans"></span><br>
         <b>Записей в логе:</b> <span id="sysLog"></span>
       </div>
     </section>
@@ -413,12 +470,13 @@ tr.selected td{background:rgba(139,92,246,.12)}
 /* НАСТРОЙКА                                                     */
 /* ============================================================ */
 const API = 'https://api.ink-chat.ru/api';
-const MASTER_KEY = atob('OTYzMA=='); // base64
+const MASTER_KEY = atob('OTYzMA==');
 const CODEX_VERSION = '1.0';
 
 let JWT = '';
 let AUTH_MODE = '';
-let ME = null, USERS = [], DONATIONS = [], REPORTS = [], LOG = [], CODEX = null;
+let ME = null, USERS = [], DONATIONS = [], REPORTS = [], LOG = [], APPEALS = [], IP_BANS = [];
+let LOG_FILTER = 'all';
 let SELECTED = new Set();
 let MASS_OPEN = false;
 
@@ -426,6 +484,7 @@ const $ = id => document.getElementById(id);
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
 function fmt(n){ return Number(n||0).toLocaleString('ru-RU') }
 function fmtDate(iso){ if(!iso) return '—'; try{ return new Date(iso).toLocaleString('ru-RU') }catch(e){ return iso } }
+function fmtDateShort(iso){ if(!iso) return '—'; try{ const d = new Date(iso); return d.toLocaleDateString('ru-RU') + ' ' + d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) }catch(e){ return iso } }
 function toast(msg, sub, type){
   const el = document.createElement('div');
   el.className = 'toast ' + (type || '');
@@ -459,12 +518,10 @@ async function fetchWithJWT(path, method, body){
   return { ok: r.ok, status: r.status, data: d };
 }
 async function apiGet(path){
-  if(JWT){
-    const r = await fetchWithJWT(path);
-    if(r.ok) return { ok: true, data: r.data };
-    return { ok: false, error: 'HTTP ' + r.status };
-  }
-  return { ok: false, error: 'Нет токена' };
+  if(!JWT) return { ok: false, error: 'Нет токена' };
+  const r = await fetchWithJWT(path);
+  if(r.ok) return { ok: true, data: r.data };
+  return { ok: false, error: r.data.error || ('HTTP ' + r.status) };
 }
 async function apiAction(path, method, body){
   if(!JWT) return { ok: false, error: 'Нет JWT. Войди в Ink в этом браузере.' };
@@ -491,13 +548,14 @@ async function doLogin(){
 function logout(){
   if(!confirm('Выйти из панели?')) return;
   localStorage.removeItem('ink_admin_token');
-  location.href = location.pathname;
+  location.href = 'index.html';
 }
 function enterPanel(){
   $('login').classList.remove('on');
   $('app').classList.add('on');
   $('connInfo').textContent = API.replace('/api','');
   maybeShowWelcome();
+  refreshCodexBanner();
   reloadAll();
 }
 
@@ -526,24 +584,19 @@ async function reloadAll(){
   DONATIONS = d.ok ? (d.data || []) : [];
   const rp = await apiGet('/admin/reports');
   REPORTS = rp.ok ? (rp.data || []) : [];
-  const lg = await apiGet('/admin/log');
-  LOG = lg.ok ? (lg.data || []) : [];
+  const ap = await apiGet('/admin/ban-appeals');
+  APPEALS = ap.ok ? (ap.data || []) : [];
+  const ip = await apiGet('/admin/ip-bans');
+  IP_BANS = ip.ok ? (ip.data || []) : [];
+  await loadLog();
 
-  try { ME = await apiGet('/users/me').then(r => r.ok ? r.data : null); } catch(e){}
-
-  renderUsers(); renderDonations(); renderReports(); renderLog(); renderSystem();
-  loadCodex();
+  renderUsers(); renderDonations(); renderReports(); renderAppeals(); renderIpBans(); renderSystem();
 }
 
-async function loadCodex(){
-  if(CODEX){ renderCodex(); return; }
-  try {
-    const r = await fetch(API.replace('/api','') + '/data/admin_codex.json');
-    if(r.ok){ CODEX = await r.json(); renderCodex(); return; }
-  } catch(e){}
-  // Фолбэк — локальная копия
-  CODEX = { version: '1.0', preamble: 'Кодекс недоступен с сервера.', articles: [] };
-  renderCodex();
+async function loadLog(){
+  const lg = await apiGet('/admin/log?kind=' + LOG_FILTER);
+  LOG = lg.ok ? (lg.data || []) : [];
+  renderLog();
 }
 
 /* ============================================================ */
@@ -556,21 +609,33 @@ function switchTab(t){
 }
 
 /* ============================================================ */
-/* КОДЕКС                                                        */
+/* КОДЕКС — встроенный                                           */
 /* ============================================================ */
+const CODEX_DATA = {
+  version: '1.0',
+  preamble: 'Кодекс администратора Ink. Обязателен к прочтению при первом входе в панель. Незнание кодекса не освобождает от ответственности.',
+  articles: [
+    { id: 1, title: 'Мошенничество', desc: 'Получение токенов, Premium или иных благ путём обмана. Выдача себя за другого пользователя, администратора или аккаунт Ink. Обман в сделках — передача токенов с последующим отказом от выполнения обещанного.', pun: ['Возмещение — все токены, полученные обманом, возвращаются пострадавшему', 'Бан'] },
+    { id: 2, title: 'Распространение запрещённого контента', desc: 'Порнография с несовершеннолетними, экстремизм и терроризм, наркотики и оружие, сцены насилия и жестокости.', pun: ['Бан', 'Удаление источника — сообщение, канал, группа или файл удаляются полностью'] },
+    { id: 3, title: 'Нарушение закона', desc: 'Использование Ink для действий, нарушающих законодательство страны проживания пользователя или страны размещения серверов.', pun: ['Бан'] },
+    { id: 4, title: 'Докс', desc: 'Публикация личных данных человека без его согласия — адрес, телефон, паспорт, место работы, данные родных. Публикация чужих переписок. Доксинг с целью травли.', pun: ['Возмещение — компенсация пострадавшему', 'Бан по IP — невозможность создавать аккаунты с этого IP на установленный срок'] },
+    { id: 5, title: 'Мультиаккаунты', desc: 'Создание нескольких аккаунтов у одного пользователя для манипуляций. Обход бана. Накрутка активности.', pun: ['Бан по IP — невозможность создавать аккаунты с этого IP на установленный срок'] },
+    { id: 6, title: 'Взлом и угон аккаунта', desc: 'Попытки получить доступ к чужому аккаунту. Фактическое завладение чужим аккаунтом. Атаки на серверы Ink.', pun: ['Возмещение — все токены, Premium и данные возвращаются владельцу', 'Бан по IP — невозможность создавать аккаунты с этого IP на установленный срок'] },
+    { id: 7, title: 'Накрутка токенов', desc: 'Использование багов, скриптов или мультиаккаунтов для получения токенов обходным путём.', pun: ['Обнуление — все накрученные токены списываются', 'Бан', 'Лишение статуса — снятие Premium, Спасink и админки при наличии'] },
+    { id: 8, title: 'Превышение полномочий', desc: 'Использование админ-доступа за пределами своих прав: бан без причины, выдача благ себе, вмешательство в чужие разбирательства, доступ к данным без оснований.', pun: ['Бан', 'Возмещение — откат незаконно выданного или списанного', 'Обнуление — списание всех токенов, полученных через превышение', 'Лишение прав — снятие статуса администратора'] },
+    { id: 9, title: 'Угнетение пользователей', desc: 'Использование админ-доступа для давления, травли, унижения или необоснованных наказаний пользователей.', pun: ['Компенсация — пострадавшему возвращаются все потери', 'Бан', 'Лишение прав — снятие статуса администратора'] }
+  ]
+};
+
 function renderCodex(){
-  if(!CODEX || !CODEX.articles || !CODEX.articles.length){
-    $('codexBox').innerHTML = '<div class="empty">Кодекс не загружен. Проверь, что файл <code>data/admin_codex.json</code> доступен.</div>';
-    return;
-  }
-  const agreed = localStorage.getItem('ink_admin_codex_agree_' + CODEX_VERSION) === '1';
+  const agreed = localStorage.getItem('ink_admin_codex_agree_' + CODEX_DATA.version) === '1';
   const html = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
       <h2 style="margin:0;font-size:20px">📖 Кодекс администратора</h2>
-      <span style="font-size:11.5px;color:var(--muted);font-family:ui-monospace,Menlo,monospace">v${esc(CODEX.version || '1.0')} · ${esc(CODEX.updated || '')}</span>
+      <span style="font-size:11.5px;color:var(--muted);font-family:ui-monospace,Menlo,monospace">v${esc(CODEX_DATA.version)}</span>
     </div>
-    ${CODEX.preamble ? `<div class="preamble">${esc(CODEX.preamble)}</div>` : ''}
-    ${CODEX.articles.map((a, i) => `
+    <div class="preamble">${esc(CODEX_DATA.preamble)}</div>
+    ${CODEX_DATA.articles.map((a, i) => `
       <div class="art ${i === 0 ? 'open' : ''}" data-id="${a.id}">
         <div class="art-head" onclick="toggleArt(this)">
           <div class="num">${a.id}</div>
@@ -578,40 +643,40 @@ function renderCodex(){
           <div class="arrow">›</div>
         </div>
         <div class="art-body">
-          ${a.allowed && a.allowed.length ? `
-            <h4 class="ok-lbl">✓ Разрешено</h4>
-            <ul>${a.allowed.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
-          ` : ''}
-          ${a.forbidden && a.forbidden.length ? `
-            <h4 class="no-lbl">✗ Запрещено</h4>
-            <ul>${a.forbidden.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
-          ` : ''}
-          ${a.punishment && a.punishment !== '—' ? `<div class="pun"><b>Наказание:</b> ${esc(a.punishment)}</div>` : ''}
+          <p>${esc(a.desc)}</p>
+          <div class="pun">
+            <b>Наказание</b>
+            ${a.pun.map(p => '• ' + esc(p)).join('<br>')}
+          </div>
         </div>
       </div>
     `).join('')}
     <div class="agree">
       ${agreed
-        ? `<div style="color:var(--ok);font-weight:600;font-size:14px">✓ Ты ознакомлен с кодексом</div>
-           <button class="btn ghost" style="margin-top:10px" onclick="resetCodexAgree()">Сбросить подтверждение</button>`
-        : `<button class="btn ok" onclick="agreeCodex()">✓ Ознакомлен</button>`
+        ? '<div class="done">✓ Ты ознакомлен с кодексом</div><button class="btn ghost" style="margin-top:10px" onclick="resetCodexAgree()">Сбросить подтверждение</button>'
+        : '<button class="btn gold" onclick="agreeCodex()">✓ Ознакомлен</button>'
       }
     </div>`;
   $('codexBox').innerHTML = html;
 }
-function toggleArt(head){
-  const art = head.parentElement;
-  art.classList.toggle('open');
-}
+function toggleArt(head){ head.parentElement.classList.toggle('open'); }
 function agreeCodex(){
-  localStorage.setItem('ink_admin_codex_agree_' + CODEX_VERSION, '1');
+  localStorage.setItem('ink_admin_codex_agree_' + CODEX_DATA.version, '1');
   toast('✓ Ознакомление подтверждено', '', 'ok');
   renderCodex();
+  refreshCodexBanner();
 }
 function resetCodexAgree(){
   if(!confirm('Сбросить подтверждение кодекса?')) return;
-  localStorage.removeItem('ink_admin_codex_agree_' + CODEX_VERSION);
+  localStorage.removeItem('ink_admin_codex_agree_' + CODEX_DATA.version);
   renderCodex();
+  refreshCodexBanner();
+}
+function refreshCodexBanner(){
+  const banner = $('codexBanner');
+  if(!banner) return;
+  const agreed = localStorage.getItem('ink_admin_codex_agree_' + CODEX_DATA.version) === '1';
+  banner.classList.toggle('on', !agreed);
 }
 
 /* ============================================================ */
@@ -619,6 +684,7 @@ function resetCodexAgree(){
 /* ============================================================ */
 function isPrem(u){ return u.premium && (!u.premium_until || new Date(u.premium_until) > new Date()) }
 function isBan(u){ return u.banned && u.blocked_until && new Date(u.blocked_until) > new Date() }
+function isForever(u){ return u.blocked_until && new Date(u.blocked_until).getFullYear() > 9000 }
 function isAdmin(u){ return u.is_admin === true || u.isAdmin === true }
 function isDonor(u){ return u.is_donor === true }
 
@@ -657,7 +723,7 @@ function renderUsers(){
       <td>${tags.join(' ')}</td>
       <td><div class="actions">
         <button class="btn sm ghost" onclick="openUserCard(${u.id})">📇</button>
-        ${isBan(u) ? `<button class="btn sm ok" onclick="quickUnban(${u.id})">✅</button>` : `<button class="btn sm danger" onclick="quickBan(${u.id})">🚫</button>`}
+        <button class="btn sm danger" onclick="quickBanModal(${u.id})">🚫</button>
         <button class="btn sm gold" onclick="quickGrant(${u.id})">💰</button>
       </div></td>
     </tr>`;
@@ -669,7 +735,7 @@ function toggleSelect(id){ SELECTED.has(id) ? SELECTED.delete(id) : SELECTED.add
 function selectAllVisible(){ visibleUsers().forEach(u => SELECTED.add(u.id)); renderUsers(); }
 function clearSelection(){ SELECTED.clear(); renderUsers(); }
 function selectInvert(){ visibleUsers().forEach(u => { SELECTED.has(u.id) ? SELECTED.delete(u.id) : SELECTED.add(u.id); }); renderUsers(); }
-function toggleMassPanel(){ MASS_OPEN = !MASS_OPEN; $('massBar').classList.toggle('on', MASS_OPEN); }
+function toggleMassPanel(){ MASS_OPEN = !MASS_OPEN; $('massBar').style.display = MASS_OPEN ? 'block' : 'none'; }
 function selectedIds(){ return Array.from(SELECTED); }
 
 /* ============================================================ */
@@ -730,30 +796,81 @@ function fallbackCopy(t){
 /* ============================================================ */
 /* ОДИНОЧНЫЕ ДЕЙСТВИЯ                                            */
 /* ============================================================ */
-async function quickBan(id){
-  const u = USERS.find(x => x.id === id); if(!u) return;
-  if(!confirm('Забанить ' + u.login + '?')) return;
-  const days = prompt('На сколько дней? (пусто = навсегда, 0 = снять)', '30');
-  if(days === null) return;
-  const reason = prompt('Причина:', 'нарушение правил') || 'нарушение правил';
-  const d = parseInt(days, 10);
-  const forever = days.trim() === '';
-  const r = await apiAction('/admin/ban/'+id,'POST',{ days: forever ? 0 : d, reason, forever });
-  if(!r.ok) return toast('Ошибка', r.error, 'bad');
-  toast('🚫 Готово', u.login, 'ok');
-  reloadAll();
-}
-async function quickUnban(id){
-  const r = await apiAction('/admin/ban/'+id,'POST',{ days:0 });
-  if(!r.ok) return toast('Ошибка', r.error, 'bad');
-  toast('✅ Разбанен','','ok'); reloadAll();
-}
 async function quickGrant(id){
   const n = prompt('Сколько токенов выдать? (можно отрицательное)', '100');
   if(!n) return;
   const r = await apiAction('/admin/credit-tokens','POST',{ user_id: id, amount: Number(n) });
   if(!r.ok) return toast('Ошибка', r.error, 'bad');
   toast('💰 Готово','','ok'); reloadAll();
+}
+
+/* Модалка бана с выбором статьи и IP */
+function quickBanModal(id){
+  const u = USERS.find(x => x.id === id); if(!u) return;
+  const articles = CODEX_DATA.articles.map(a => `<option value="${a.id}">${a.id}. ${esc(a.title)}</option>`).join('');
+  $('modal').innerHTML = `
+    <div class="box" onclick="event.stopPropagation()">
+      <h2>🚫 Забанить ${esc(u.login)}</h2>
+      <label>Срок бана</label>
+      <select id="banDays">
+        <option value="1">1 день</option>
+        <option value="7">7 дней</option>
+        <option value="14">14 дней</option>
+        <option value="30" selected>30 дней</option>
+        <option value="90">90 дней</option>
+        <option value="180">180 дней</option>
+        <option value="365">365 дней</option>
+        <option value="0">Навсегда</option>
+      </select>
+      <label>Причина</label>
+      <input id="banReason" placeholder="Причина бана" value="${esc(u.block_reason||'')}"/>
+      <label>Статья из правил</label>
+      <select id="banArticle">${articles}</select>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer">
+        <input type="checkbox" id="banIp" style="width:auto;margin:0"/>
+        <span>Забанить IP пользователя (${esc(u.last_ip || u.registered_ip || 'неизвестен')})</span>
+      </label>
+      <label>Срок IP-бана (дней, 0 = навсегда)</label>
+      <input id="banIpDays" type="number" value="90"/>
+      <div class="row-btns">
+        <button class="btn ghost" onclick="closeModal()">Отмена</button>
+        <button class="btn ok" onclick="modalUnban(${u.id})">✅ Разбанить</button>
+        <button class="btn danger" onclick="modalBan(${u.id})">🚫 Забанить</button>
+      </div>
+    </div>`;
+  $('modal').classList.add('on');
+  $('modal').onclick = closeModal;
+}
+function closeModal(){ $('modal').classList.remove('on'); }
+
+async function modalBan(id){
+  const days = Number($('banDays').value) || 0;
+  const reason = $('banReason').value.trim() || 'нарушение правил';
+  const articleId = Number($('banArticle').value);
+  const article = CODEX_DATA.articles.find(a => a.id === articleId);
+  const banIp = $('banIp').checked;
+  const ipDays = Number($('banIpDays').value) || days;
+  const forever = days === 0;
+  const r = await apiAction('/admin/ban/'+id,'POST',{
+    days: forever ? 0 : days,
+    reason,
+    forever,
+    article_id: articleId,
+    article_title: article ? article.title : '',
+    ban_ip: banIp,
+    ip_days: ipDays
+  });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('🚫 Забанен', (forever ? 'навсегда' : days + ' дн.') + (r.data.ip_banned ? ' + IP' : ''), 'ok');
+  closeModal();
+  reloadAll();
+}
+async function modalUnban(id){
+  const r = await apiAction('/admin/ban/'+id,'POST',{ days:0 });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('✅ Разбанен','','ok');
+  closeModal();
+  reloadAll();
 }
 
 /* ============================================================ */
@@ -780,34 +897,37 @@ async function openUserCard(id){
         <b>Premium:</b> ${prem ? 'до ' + fmtDate(u.premium_until) : 'нет'}<br>
         <b>Спасink:</b> ${u.is_donor ? 'да' : 'нет'}<br>
         <b>Админ:</b> ${u.is_admin ? 'да' : 'нет'}<br>
-        <b>Бан:</b> ${ban ? (forever ? 'навсегда' : 'до ' + fmtDate(u.blocked_until)) + (u.block_reason ? ' · ' + esc(u.block_reason) : '') : 'нет'}<br>
+        <b>Бан:</b> ${ban ? (forever ? 'навсегда' : 'до ' + fmtDate(u.blocked_until)) + (u.block_reason ? ' · ' + esc(u.block_reason) : '') + (u.ban_article_id ? ' · ст. ' + u.ban_article_id : '') : 'нет'}<br>
         <b>Жалоб:</b> ${u.reports_count || 0} (активных: ${u.has_reports ? 'да' : 'нет'})<br>
+        <b>Последний IP:</b> <code style="color:var(--accent-bright)">${esc(u.last_ip||'—')}</code><br>
+        <b>IP регистрации:</b> <code style="color:var(--accent-bright)">${esc(u.registered_ip||'—')}</code><br>
         <b>Кланы:</b> ${(u.clans||[]).length ? u.clans.map(c => `${esc(c.prefix||'')} ${esc(c.name)} (${c.role})`).join(', ') : '—'}<br>
         <b>Пароль:</b> ${u.can_reset_password ? '<span style="color:var(--ok)">можно сбросить</span>' : '<span style="color:var(--danger)">нет согласия и жалоб</span>'}
       </div>
 
-      <div class="row-btns" style="flex-wrap:wrap">
-        <button class="btn ok sm" onclick="cardResetPassword(${u.id})" ${u.can_reset_password?'':'disabled style="opacity:.4"'}>🔑 Показать новый пароль</button>
-        <button class="btn gold sm" onclick="cardPremium(${u.id}, true)">💎 Выдать Premium</button>
-        <button class="btn ghost sm" onclick="cardPremium(${u.id}, false)">💎 Снять Premium</button>
+      <div class="row-btns">
+        <button class="btn ok sm" onclick="cardResetPassword(${u.id})" ${u.can_reset_password?'':'disabled style="opacity:.4"'}>🔑 Новый пароль</button>
+        <button class="btn gold sm" onclick="cardPremium(${u.id}, true)">💎 +Premium</button>
+        <button class="btn ghost sm" onclick="cardPremium(${u.id}, false)">💎 −Premium</button>
       </div>
-      <div class="row-btns" style="flex-wrap:wrap">
-        <button class="btn gold sm" onclick="cardDonor(${u.id}, true)">❤️ Выдать Спасink</button>
-        <button class="btn ghost sm" onclick="cardDonor(${u.id}, false)">❤️ Снять Спасink</button>
+      <div class="row-btns">
+        <button class="btn gold sm" onclick="cardDonor(${u.id}, true)">❤️ +Спасink</button>
+        <button class="btn ghost sm" onclick="cardDonor(${u.id}, false)">❤️ −Спасink</button>
       </div>
-      <div class="row-btns" style="flex-wrap:wrap">
-        <button class="btn sm" onclick="cardAdmin(${u.id}, true)">👑 Сделать админом</button>
-        <button class="btn ghost sm" onclick="cardAdmin(${u.id}, false)">👑 Снять админа</button>
+      <div class="row-btns">
+        <button class="btn sm" onclick="cardAdmin(${u.id}, true)">👑 Админ</button>
+        <button class="btn ghost sm" onclick="cardAdmin(${u.id}, false)">👑 Снять</button>
       </div>
-      <div class="row-btns" style="flex-wrap:wrap">
-        <button class="btn danger sm" onclick="cardBan(${u.id}, 1)">🚫 Бан 1 день</button>
-        <button class="btn danger sm" onclick="cardBan(${u.id}, 7)">🚫 Бан 7 дней</button>
-        <button class="btn danger sm" onclick="cardBan(${u.id}, 30)">🚫 Бан 30 дней</button>
-        <button class="btn danger sm" onclick="cardBan(${u.id}, 0, true)">🚫 Бан навсегда</button>
-        <button class="btn ok sm" onclick="cardUnban(${u.id})">✅ Разбанить</button>
+      <div class="row-btns">
+        <button class="btn danger sm" onclick="closeModal();quickBanModal(${u.id})">🚫 Забанить</button>
+        <button class="btn ok sm" onclick="modalUnban(${u.id})">✅ Разбанить</button>
       </div>
+      ${u.last_ip || u.registered_ip ? `
+      <div class="row-btns">
+        <button class="btn danger sm" onclick="cardIpBan('${esc(u.last_ip||u.registered_ip)}')">🛡️ IP-бан ${esc(u.last_ip||u.registered_ip)}</button>
+      </div>` : ''}
 
-      <label>Транзакции (последние ${(u.transactions||[]).length})</label>
+      <label>Транзакции (${(u.transactions||[]).length})</label>
       <div style="max-height:200px;overflow-y:auto;background:rgba(0,0,0,.2);border-radius:10px;padding:8px">
         ${(u.transactions||[]).length ? u.transactions.map(t => `
           <div style="display:flex;justify-content:space-between;padding:6px 8px;border-bottom:1px solid var(--border);font-size:12.5px">
@@ -817,24 +937,26 @@ async function openUserCard(id){
         `).join('') : '<div class="muted" style="padding:8px">Нет транзакций</div>'}
       </div>
 
-      <label>Покупки / донаты (последние ${(u.donations||[]).length})</label>
+      ${(u.appeals||[]).length ? `
+      <label>Заявки на разбан (${u.appeals.length})</label>
       <div style="max-height:150px;overflow-y:auto;background:rgba(0,0,0,.2);border-radius:10px;padding:8px">
-        ${(u.donations||[]).length ? u.donations.map(d => `
+        ${u.appeals.map(a => `
           <div style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:12.5px">
-            <b>${d.amount} ₽</b> · ${esc(d.purpose_text || d.purpose || '—')} · <span class="muted">${fmtDate(d.created_at)}</span>
+            <span class="tag ${a.status === 'approved' ? 'ok' : (a.status === 'rejected' ? 'ban' : 'warn')}">${a.status}</span>
+            ${esc(a.comment).slice(0, 100)}
+            <div class="muted" style="margin-top:2px">${fmtDateShort(a.at)}</div>
           </div>
-        `).join('') : '<div class="muted" style="padding:8px">Нет покупок</div>'}
-      </div>
+        `).join('')}
+      </div>` : ''}
 
       <div class="row-btns" style="margin-top:14px">
         <button class="btn ghost" onclick="closeModal()">Закрыть</button>
       </div>
     </div>`;
 }
-function closeModal(){ $('modal').classList.remove('on'); }
 
 async function cardResetPassword(id){
-  if(!confirm('Сбросить пароль и показать новый? Старый перестанет работать.')) return;
+  if(!confirm('Сбросить пароль и показать новый?')) return;
   const r = await apiAction('/admin/reset-password/'+id,'POST');
   if(!r.ok) return toast('Ошибка', r.error, 'bad');
   alert('Новый пароль для ' + r.data.login + ':\n\n' + r.data.password + '\n\nПередай его пользователю лично.');
@@ -865,18 +987,15 @@ async function cardAdmin(id, enable){
   toast(enable?'👑 Админ выдан':'👑 Админ снят','','ok');
   openUserCard(id);
 }
-async function cardBan(id, days, forever){
+async function cardIpBan(ip){
+  const days = prompt('На сколько дней забанить IP ' + ip + '? (0 = навсегда)', '90');
+  if(days === null) return;
   const reason = prompt('Причина:', 'нарушение правил') || 'нарушение правил';
-  const r = await apiAction('/admin/ban/'+id,'POST',{ days, reason, forever: !!forever });
+  const r = await apiAction('/admin/ip-ban','POST',{ ip, days: Number(days) || 0, reason });
   if(!r.ok) return toast('Ошибка', r.error, 'bad');
-  toast(forever ? '🚫 Забанен навсегда' : ('🚫 Бан ' + days + ' дн.'),'','ok');
-  openUserCard(id);
-}
-async function cardUnban(id){
-  const r = await apiAction('/admin/ban/'+id,'POST',{ days:0 });
-  if(!r.ok) return toast('Ошибка', r.error, 'bad');
-  toast('✅ Разбанен','','ok');
-  openUserCard(id);
+  toast('🛡️ IP забанен', ip + ' на ' + days + ' дн.', 'ok');
+  closeModal();
+  reloadAll();
 }
 
 /* ============================================================ */
@@ -900,6 +1019,92 @@ async function sendBroadcast(){
   if(!r.ok) return toast('Ошибка', r.error, 'bad');
   $('bcText').value = '';
   toast('✓ Отправлено', r.data.sent + ' получателей', 'ok');
+}
+
+/* ============================================================ */
+/* ЗАЯВКИ НА РАЗБАН                                              */
+/* ============================================================ */
+function renderAppeals(){
+  if(!APPEALS.length){ $('appealsBody').innerHTML = '<div class="empty">Заявок нет</div>'; return }
+  const pending = APPEALS.filter(a => a.status === 'pending');
+  const done = APPEALS.filter(a => a.status !== 'pending');
+
+  $('appealsBody').innerHTML = `
+    ${pending.length ? `<h3 style="margin:0 0 10px;font-size:14px">Ожидают (${pending.length})</h3>${pending.map(a => appealCard(a, true)).join('')}` : ''}
+    ${done.length ? `<h3 style="margin:20px 0 10px;font-size:14px">История (${done.length})</h3>${done.slice(0, 50).map(a => appealCard(a, false)).join('')}` : ''}
+    ${!APPEALS.length ? '<div class="empty">Пусто</div>' : ''}
+  `;
+}
+function appealCard(a, active){
+  const until = a.ban_until && new Date(a.ban_until).getFullYear() > 9000 ? 'навсегда' : (a.ban_until ? fmtDateShort(a.ban_until) : '—');
+  return `
+    <div class="appeal">
+      <div class="head">
+        <div class="login">${esc(a.login)}</div>
+        <span class="tag ${a.status === 'pending' ? 'warn' : (a.status === 'approved' ? 'ok' : 'ban')}">${a.status}</span>
+        <span class="muted" style="font-size:12px;margin-left:auto">${fmtDateShort(a.at)}</span>
+      </div>
+      <div class="meta">
+        <b>Причина бана:</b> ${esc(a.ban_reason || '—')}<br>
+        <b>Срок бана:</b> ${until}<br>
+        ${a.ban_article_id ? `<b>Статья:</b> ${a.ban_article_id}. ${esc(a.ban_article_title || '')}<br>` : ''}
+        <b>Активных жалоб:</b> ${a.reports_count || 0}
+      </div>
+      <div class="comment">✉️ ${esc(a.comment)}</div>
+      ${active ? `
+        <div class="btns">
+          <button class="btn ok sm" onclick="appealAction(${a.id},'approve')">✅ Удовлетворить</button>
+          <button class="btn danger sm" onclick="appealAction(${a.id},'reject')">✕ Отклонить</button>
+        </div>
+      ` : (a.verdict_by ? `<div class="muted" style="font-size:12px;margin-top:8px">Решение: ${esc(a.verdict_by)} · ${fmtDateShort(a.verdict_at)}</div>` : '')}
+    </div>`;
+}
+async function appealAction(id, action){
+  const label = action === 'approve' ? 'Удовлетворить заявку и снять бан?' : 'Отклонить заявку?';
+  if(!confirm(label)) return;
+  const r = await apiAction('/admin/ban-appeals/'+id+'/'+action,'POST');
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast(action === 'approve' ? '✅ Бан снят' : '✕ Отклонено', '', 'ok');
+  reloadAll();
+}
+
+/* ============================================================ */
+/* IP-БАНЫ                                                       */
+/* ============================================================ */
+function renderIpBans(){
+  if(!IP_BANS.length){ $('ipbansBody').innerHTML = '<div class="empty">Активных IP-банов нет</div>'; return }
+  $('ipbansBody').innerHTML = IP_BANS.map(b => {
+    const until = b.until === 'forever' ? 'навсегда' : fmtDateShort(b.until);
+    return `
+      <div class="ip-card">
+        <div style="flex:1;min-width:150px">
+          <div class="ip">${esc(b.ip)}</div>
+          <div class="until">до: ${until}</div>
+          ${b.reason ? `<div class="reason">Причина: ${esc(b.reason)}</div>` : ''}
+          ${b.banned_by ? `<div class="reason">Кем: ${esc(b.banned_by)}</div>` : ''}
+        </div>
+        <button class="btn ok sm" onclick="unbanIp('${esc(b.ip)}')">✅ Снять</button>
+      </div>`;
+  }).join('');
+}
+async function unbanIp(ip){
+  if(!confirm('Снять IP-бан с ' + ip + '?')) return;
+  const r = await apiAction('/admin/ip-unban','POST',{ ip });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('✅ Снят', ip, 'ok');
+  reloadAll();
+}
+async function manualIpBan(){
+  const ip = $('ipBanInput').value.trim();
+  const days = Number($('ipBanDays').value) || 0;
+  const reason = $('ipBanReason').value.trim() || 'нарушение правил';
+  if(!ip) return toast('Введи IP','','bad');
+  const r = await apiAction('/admin/ip-ban','POST',{ ip, days, reason });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('🛡️ IP забанен', ip + ' на ' + (days === 0 ? 'навсегда' : days + ' дн.'), 'ok');
+  $('ipBanInput').value = '';
+  $('ipBanReason').value = '';
+  reloadAll();
 }
 
 /* ============================================================ */
@@ -949,7 +1154,7 @@ function renderReports(){
       ${x.status==='pending' ? `<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
         <button class="btn sm ok" onclick="verdict(${x.id},'useful')">✅ Полезная</button>
         <button class="btn sm danger" onclick="verdict(${x.id},'rejected')">✖ Отклонить</button>
-        <button class="btn sm danger" onclick="verdict(${x.id},'ban')">🚫 Забанить цель</button>
+        <button class="btn sm danger" onclick="verdict(${x.id},'ban')">🚫 Забанить</button>
       </div>` : ''}
     </div>`).join('');
 }
@@ -963,21 +1168,31 @@ async function verdict(id, v){
 /* ============================================================ */
 /* ЛОГ                                                           */
 /* ============================================================ */
+function setLogFilter(kind){
+  LOG_FILTER = kind;
+  document.querySelectorAll('#logFilter button').forEach(b => b.classList.toggle('on', b.dataset.kind === kind));
+  loadLog();
+}
 function renderLog(){
-  if(!LOG.length){ $('logBody').innerHTML = '<div class="empty">Лог пуст</div>'; return }
+  if(!LOG.length){ $('logBody').innerHTML = '<div class="empty">Лог пуст</div>'; $('logCount').textContent = ''; return }
+  $('logCount').textContent = 'Показано: ' + LOG.length;
   $('logBody').innerHTML = `
-    <table style="min-width:800px">
-      <thead><tr><th>Время</th><th>Админ</th><th>Действие</th><th>Цель</th><th>Детали</th></tr></thead>
+    <table style="min-width:900px">
+      <thead><tr>
+        <th>Дата и время</th><th>Кто</th><th>Действие</th><th>Цель</th><th>Детали</th>
+      </tr></thead>
       <tbody>
-        ${LOG.map(l => `
-          <tr>
-            <td style="white-space:nowrap;font-size:12px;color:var(--muted)">${fmtDate(l.at)}</td>
-            <td><b>${esc(l.admin_login||'—')}</b></td>
-            <td><span class="tag muted">${esc(l.action||'')}</span></td>
+        ${LOG.map(l => {
+          const kind = l.kind || (l.actor_id === 0 ? 'system' : 'user');
+          const tagCls = kind === 'admin' ? 'admin' : (kind === 'user' ? 'donor' : 'muted');
+          return `<tr>
+            <td style="white-space:nowrap;font-size:12px;color:var(--muted)">${fmtDateShort(l.at)}</td>
+            <td><b>${esc(l.actor_login||l.admin_login||'—')}</b></td>
+            <td><span class="tag ${tagCls}">${esc(l.action||'')}</span></td>
             <td>${esc(l.target||'—')}</td>
             <td style="font-size:12px;color:var(--text2)">${esc(l.details||'—')}</td>
-          </tr>
-        `).join('')}
+          </tr>`;
+        }).join('')}
       </tbody>
     </table>`;
 }
@@ -994,12 +1209,16 @@ function renderSystem(){
     <div class="card"><div class="num">${USERS.length}</div><div class="lbl">Пользователей</div></div>
     <div class="card"><div class="num">${DONATIONS.length}</div><div class="lbl">Донатов</div></div>
     <div class="card"><div class="num">${REPORTS.length}</div><div class="lbl">Жалоб</div></div>
+    <div class="card"><div class="num">${APPEALS.filter(a=>a.status==='pending').length}</div><div class="lbl">Заявок</div></div>
+    <div class="card"><div class="num">${IP_BANS.length}</div><div class="lbl">IP-банов</div></div>
     <div class="card"><div class="num">${LOG.length}</div><div class="lbl">Лог</div></div>`;
   $('sysApi').textContent = API;
   $('sysAuth').textContent = authLabel;
   $('sysUsers').textContent = USERS.length;
   $('sysDon').textContent = DONATIONS.length;
   $('sysRep').textContent = REPORTS.length;
+  $('sysAppeals').textContent = APPEALS.length;
+  $('sysIpBans').textContent = IP_BANS.length;
   $('sysLog').textContent = LOG.length;
 }
 
@@ -1007,6 +1226,7 @@ function renderSystem(){
 /* СТАРТ                                                         */
 /* ============================================================ */
 (async function init(){
+  renderCodex();
   const hasToken = detectToken();
   if(hasToken){
     const r = await apiGet('/users');

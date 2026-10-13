@@ -1022,7 +1022,7 @@ function openAdminPanel(){
   if(!isAdmin(ME)){ toast('Доступ только для админа',''); return; }
   const t = TOKEN || localStorage.getItem('ink_token') || '';
   const url = ADMIN_PANEL_URL + (t ? ('?token=' + encodeURIComponent(t)) : '');
-  window.open(url, '_blank');
+  location.href = url;
 }
 
 /* ВОССТАНОВЛЕНИЕ */
