@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>История блокировок — Ink Мастер</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%23fbbf24'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='18' font-weight='bold' font-family='sans-serif'>H</text></svg>"/>
+<style>
+:root{
+  --bg:#150a26;--panel:#1f1238;--panel2:#281745;--panel3:#331d54;
+  --border:#261540;--border2:#352058;--border3:#452a70;
+  --accent:#8b5cf6;--accent2:#6d28d9;--accent-bright:#a78bfa;--accent-warm:#c4a3ff;
+  --accent-soft:rgba(139,92,246,.10);--accent-line:rgba(167,139,250,.35);
+  --text:#e8e6e2;--text2:#c8c4be;--muted:#a8a29c;--muted2:#7a746e;
+  --ok:#4ade80;--danger:#f87171;--warn:#fbbf24;--gold:#a78bfa;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;min-height:100vh;line-height:1.5}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit;font-size:14px}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--border3),var(--border2));border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+/* ШАПКА */
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px rgba(0,0,0,.4);flex-wrap:wrap}
+header .logo{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(180deg,var(--warn),#d97706);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(251,191,36,.5)}
+header .logo svg{width:26px;height:26px;display:block}
+header .t1{font-weight:700;font-size:15px}
+header .t2{font-size:11.5px;color:var(--muted);margin-top:1px}
+header .spacer{flex:1}
+header a.btn, header button.btn{padding:8px 12px;font-size:12.5px;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+
+/* КНОПКИ */
+.btn{padding:11px 16px;border:0;border-radius:12px;font-size:14px;font-weight:700;background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;transition:transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(139,92,246,.35),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -2px 0 rgba(0,0,0,.2)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(139,92,246,.5),0 0 32px rgba(167,139,250,.4),inset 0 1px 0 rgba(232,230,226,.4),inset 0 -2px 0 rgba(0,0,0,.2)}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn.ghost{background:linear-gradient(180deg,var(--panel2),var(--panel));color:var(--text2);border:1px solid var(--border2);box-shadow:0 3px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.06),inset 0 -2px 0 rgba(0,0,0,.3);text-shadow:none}
+.btn.ghost:hover{background:linear-gradient(180deg,var(--panel3),var(--panel2));border-color:var(--accent);color:var(--accent-bright);box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 24px rgba(167,139,250,.25),inset 0 1px 0 rgba(232,230,226,.1),inset 0 -2px 0 rgba(0,0,0,.3)}
+.btn.danger{background:linear-gradient(180deg,#f87171,#b34040);color:#150a26}
+.btn.ok{background:linear-gradient(180deg,#4ade80,#2b8c50);color:#150a26}
+.btn.gold{background:linear-gradient(180deg,var(--warn),#d97706);color:#150a26}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:8px;min-height:32px}
+
+main{padding:18px;max-width:1400px;margin:0 auto}
+
+/* ФИЛЬТР */
+.hist-toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.hist-toolbar input{flex:1;min-width:220px;padding:11px 14px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;outline:none}
+.hist-toolbar input:focus{border-color:var(--accent)}
+.hist-toolbar .chk-filter{padding:8px 12px;border-radius:10px;border:1px solid var(--border2);background:linear-gradient(180deg,var(--panel2),var(--panel));color:var(--text2);font-size:12.5px;font-weight:600;transition:all .15s}
+.hist-toolbar .chk-filter:hover{border-color:var(--accent);color:var(--accent-bright)}
+.hist-toolbar .chk-filter.on{background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26;border-color:transparent}
+
+/* КАРТОЧКА ЗАПИСИ */
+.hist-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.hist-card.active-ban{border-color:rgba(248,113,113,.4);background:linear-gradient(180deg,rgba(248,113,113,.06),var(--panel))}
+.hist-card.unbanned{border-color:rgba(74,222,128,.3);background:linear-gradient(180deg,rgba(74,222,128,.04),var(--panel))}
+.hist-card .head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.hist-card .head .login{font-size:15px;font-weight:700}
+.hist-card .meta{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:13px;color:var(--text2);line-height:1.7}
+.hist-card .meta b{color:var(--text)}
+.hist-card .notes{background:rgba(167,139,250,.08);border-radius:10px;padding:8px 10px;font-size:12.5px;color:var(--text2);line-height:1.6}
+.hist-card .notes .n{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(167,139,250,.15)}
+.hist-card .notes .n:last-child{border-bottom:0}
+.hist-card .notes .n .t{color:var(--muted);font-size:11.5px}
+.hist-card .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;text-transform:uppercase;margin-right:3px;letter-spacing:.5px}
+.tag.ban{background:rgba(248,113,113,.25);color:#fca5a5}
+.tag.ok{background:rgba(74,222,128,.2);color:#86efac;border:1px solid rgba(74,222,128,.35)}
+.tag.warn{background:rgba(251,191,36,.2);color:#fde68a;border:1px solid rgba(251,191,36,.35)}
+.tag.muted{background:rgba(167,139,250,.08);color:var(--muted)}
+.tag.admin{background:linear-gradient(180deg,var(--accent-bright),var(--accent));color:#150a26}
+
+.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:14px}
+.muted{color:var(--muted)}
+
+/* МОДАЛКА */
+#modal{position:fixed;inset:0;z-index:200;background:rgba(8,2,18,.8);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
+#modal.on{display:flex}
+#modal .box{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+#modal h2{margin:0 0 14px;font-size:18px}
+#modal .row-btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+#modal .row-btns .btn{flex:1;min-width:120px}
+
+/* TOASTS */
+#toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;width:min(420px,calc(100vw - 24px));pointer-events:none}
+.toast{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--accent-line);border-radius:12px;padding:11px 14px;font-size:13.5px;box-shadow:0 12px 32px rgba(0,0,0,.6),0 0 30px rgba(167,139,250,.2)}
+.toast.ok{border-color:rgba(74,222,128,.5)}
+.toast.bad{border-color:rgba(248,113,113,.5)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#150a26"/><stop offset="100%" stop-color="#2a1550"/></linearGradient></defs>
+      <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#hg)"/>
+      <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="#fbbf24"/>
+      <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="#fbbf24"/>
+    </svg>
+  </div>
+  <div>
+    <div class="t1">История блокировок</div>
+    <div class="t2" id="connInfo">Ink Мастер</div>
+  </div>
+  <div class="spacer"></div>
+  <a class="btn ghost" href="adminInk96309630.html">← К панели</a>
+  <a class="btn ghost" href="web.html">💬 В чат</a>
+</header>
+
+<main>
+  <div class="hist-toolbar">
+    <input id="histSearch" placeholder="Поиск по логину, админу, статье, IP..." oninput="debouncedLoad()"/>
+    <button class="chk-filter on" data-filter="all" onclick="setFilter('all')">Все</button>
+    <button class="chk-filter" data-filter="banned" onclick="setFilter('banned')">🔴 Забаненные</button>
+    <button class="chk-filter" data-filter="unbanned" onclick="setFilter('unbanned')">🟢 Разбаненные</button>
+    <button class="btn ghost sm" onclick="loadHistory()">🔄</button>
+  </div>
+  <div id="historyBody"><div class="empty">Загрузка...</div></div>
+</main>
+
+<div id="modal"></div>
+<div id="toasts"></div>
+
+<script>
+/* ============================================================ */
+/* НАСТРОЙКА                                                     */
+/* ============================================================ */
+const API = 'https://api.ink-chat.ru/api';
+let JWT = '';
+let HISTORY = [];
+let FILTER = 'all';
+let DEBOUNCE = null;
+
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+function fmt(n){ return Number(n||0).toLocaleString('ru-RU') }
+function fmtDate(iso){ if(!iso) return '—'; try{ return new Date(iso).toLocaleString('ru-RU') }catch(e){ return iso } }
+function fmtDateShort(iso){ if(!iso) return '—'; try{ const d = new Date(iso); return d.toLocaleDateString('ru-RU') + ' ' + d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) }catch(e){ return iso } }
+function toast(msg, sub, type){
+  const el = document.createElement('div');
+  el.className = 'toast ' + (type || '');
+  el.innerHTML = '<div>' + esc(msg) + '</div>' + (sub ? '<div style="color:var(--muted);font-size:12px;margin-top:2px">' + esc(sub) + '</div>' : '');
+  $('toasts').appendChild(el);
+  setTimeout(()=>el.remove(), 3500);
+}
+
+/* ============================================================ */
+/* АВТОРИЗАЦИЯ                                                   */
+/* ============================================================ */
+function detectToken(){
+  const urlT = new URLSearchParams(location.search).get('token');
+  if(urlT){ JWT = urlT; localStorage.setItem('ink_admin_token', urlT); return true; }
+  const inkT = localStorage.getItem('ink_token');
+  if(inkT){ JWT = inkT; return true; }
+  const admT = localStorage.getItem('ink_admin_token');
+  if(admT){ JWT = admT; return true; }
+  return false;
+}
+
+/* ============================================================ */
+/* API                                                           */
+/* ============================================================ */
+async function apiGet(path){
+  const headers = { 'Content-Type': 'application/json' };
+  if(JWT) headers['Authorization'] = 'Bearer ' + JWT;
+  const r = await fetch(API + path, { headers });
+  let d = {};
+  try { d = await r.json(); } catch(e){}
+  if(!r.ok) return { ok: false, error: d.error || ('HTTP ' + r.status) };
+  return { ok: true, data: d };
+}
+async function apiAction(path, method, body){
+  const headers = { 'Content-Type': 'application/json' };
+  if(JWT) headers['Authorization'] = 'Bearer ' + JWT;
+  const r = await fetch(API + path, { method: method || 'POST', headers, body: body ? JSON.stringify(body) : undefined });
+  let d = {};
+  try { d = await r.json(); } catch(e){}
+  if(!r.ok) return { ok: false, error: d.error || ('HTTP ' + r.status) };
+  return { ok: true, data: d };
+}
+
+/* ============================================================ */
+/* ФИЛЬТР                                                        */
+/* ============================================================ */
+function setFilter(f){
+  FILTER = f;
+  document.querySelectorAll('.chk-filter').forEach(b => b.classList.toggle('on', b.dataset.filter === f));
+  renderHistory();
+}
+
+/* ============================================================ */
+/* ЗАГРУЗКА                                                      */
+/* ============================================================ */
+async function loadHistory(){
+  const q = ($('histSearch') ? $('histSearch').value.trim() : '');
+  const r = await apiGet('/admin/ban-history' + (q ? ('?q=' + encodeURIComponent(q)) : ''));
+  if(!r.ok){
+    $('historyBody').innerHTML = '<div class="empty">Ошибка: ' + esc(r.error) + '. Возможно, надо войти заново через панель.</div>';
+    return;
+  }
+  HISTORY = r.data || [];
+  renderHistory();
+}
+function debouncedLoad(){ clearTimeout(DEBOUNCE); DEBOUNCE = setTimeout(loadHistory, 350); }
+
+function renderHistory(){
+  const list = HISTORY.filter(h => {
+    if(FILTER === 'all') return true;
+    if(FILTER === 'banned') return h.current_status === 'banned';
+    if(FILTER === 'unbanned') return h.current_status === 'unbanned';
+    return true;
+  });
+  if(!list.length){ $('historyBody').innerHTML = '<div class="empty">Записей нет</div>'; return; }
+
+  $('historyBody').innerHTML = list.map(h => {
+    const cls = h.current_status === 'banned' ? 'active-ban' : 'unbanned';
+    const until = h.ban_forever ? 'навсегда' : (h.ban_days ? h.ban_days + ' дн.' : '—');
+    const ipUntil = h.ip_ban_forever ? 'навсегда' : (h.ip_ban_days ? h.ip_ban_days + ' дн.' : '—');
+    const revoked = (h.revoked || []).map(r => r === 'premium' ? 'Premium' : r === 'donor' ? 'Спасink' : r === 'admin' ? 'Админ' : r);
+    return `
+      <div class="hist-card ${cls}">
+        <div class="head">
+          <div class="login">${esc(h.target_login)}</div>
+          <span class="tag ${h.current_status === 'banned' ? 'ban' : 'ok'}">${h.current_status === 'banned' ? '🔴 забанен' : '🟢 разбанен'}</span>
+          ${h.verdict !== 'pending' ? `<span class="tag ${h.verdict === 'approved' ? 'ok' : 'ban'}">${h.verdict === 'approved' ? 'обоснован' : 'необоснован'}</span>` : ''}
+          <span class="muted" style="font-size:12px;margin-left:auto">${fmtDateShort(h.at)} · #${h.id}</span>
+        </div>
+        <div class="meta">
+          <b>Админ:</b> ${esc(h.admin_login)}<br>
+          <b>Статья:</b> ${h.article_id ? `${h.article_id}. ${esc(h.article_title)}` : '—'}<br>
+          <b>Бан аккаунта:</b> ${h.ban_active ? until : (h.ban_days || h.ban_forever ? 'был ' + until : '—')}<br>
+          <b>IP:</b> ${h.ip ? esc(h.ip) + (h.ip_ban_active ? ' (забанен, ' + ipUntil + ')' : (h.ip_ban_days ? ' (был ' + ipUntil + ')' : '')) : '—'}<br>
+          <b>Причина:</b> ${esc(h.reason || '—')}
+          ${h.compensation ? `<br><b>Компенсация:</b> <span style="color:var(--warn)">${h.compensation} токенов → ${esc(h.compensation_to||'?')}</span>` : ''}
+          ${h.obnulenie ? `<br><b>Обнуление:</b> <span style="color:var(--danger)">отмечено</span>` : ''}
+          ${revoked.length ? `<br><b>Снять статусы:</b> <span style="color:var(--danger)">${revoked.join(', ')}</span>` : ''}
+        </div>
+        ${(h.notes && h.notes.length) ? `
+          <div class="notes">
+            ${h.notes.map(n => `<div class="n"><span>${esc(n.text)}</span><span class="t">${fmtDateShort(n.at)}</span></div>`).join('')}
+          </div>` : ''}
+        <div class="btns">
+          ${h.current_status === 'banned' ? `<button class="btn ok sm" onclick="historyUnban(${h.id}, ${h.target_id||'null'})">✅ Снять бан досрочно</button>` : ''}
+          ${h.verdict === 'pending' ? `
+            <button class="btn ok sm" onclick="historyVerdict(${h.id},'approved')">✓ Вердикт: обоснован</button>
+            <button class="btn danger sm" onclick="historyVerdict(${h.id},'rejected')">✕ Вердикт: необоснован</button>
+          ` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ============================================================ */
+/* ДЕЙСТВИЯ                                                      */
+/* ============================================================ */
+async function historyUnban(historyId, targetId){
+  if(!confirm('Снять бан досрочно?')) return;
+  if(!targetId){ toast('Нет привязки к аккаунту', '', 'bad'); return; }
+  const r = await apiAction('/admin/unban/'+targetId,'POST',{ history_id: historyId });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('✅ Разбанен досрочно','','ok');
+  loadHistory();
+}
+async function historyVerdict(historyId, verdict){
+  const r = await apiAction('/admin/ban-history/'+historyId+'/verdict','POST',{ verdict });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('✓ Вердикт обновлён','','ok');
+  loadHistory();
+}
+
+/* ============================================================ */
+/* СТАРТ                                                         */
+/* ============================================================ */
+(async function init(){
+  if(!detectToken()){
+    $('historyBody').innerHTML = '<div class="empty">Нет токена. Открой <a href="adminInk96309630.html" style="color:var(--accent-bright)">панель</a> и войди — токен подхватится.</div>';
+    return;
+  }
+  await loadHistory();
+})();
+</script>
+</body>
+</html>

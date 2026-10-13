@@ -84,7 +84,7 @@ input,textarea,select{font-family:inherit;font-size:14px}
 /* ================= ШАПКА ================= */
 #app{display:none}
 #app.on{display:block}
-header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,var(--panel2),var(--panel));border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px rgba(0,0,0,.4);flex-wrap:wrap}
 header .logo{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(180deg,var(--warn),#d97706);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(251,191,36,.5),inset 0 1px 0 rgba(232,230,226,.3),inset 0 -2px 0 rgba(0,0,0,.2)}
 header .logo svg{width:26px;height:26px;display:block}
 header .logo .eye{animation:blink 4.2s ease-in-out infinite;transform-origin:center}
@@ -182,7 +182,7 @@ tr.selected td{background:rgba(139,92,246,.12)}
 #modal{position:fixed;inset:0;z-index:200;background:rgba(8,2,18,.8);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
 #modal.on{display:flex;animation:modalFade .2s ease-out}
 @keyframes modalFade{from{opacity:0}to{opacity:1}}
-#modal .box{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(167,139,250,.2),inset 0 1px 0 rgba(232,230,226,.06);animation:modalIn .3s cubic-bezier(.2,.9,.3,1.2)}
+#modal .box{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 60px rgba(167,139,250,.2),inset 0 1px 0 rgba(232,230,226,.06);animation:modalIn .3s cubic-bezier(.2,.9,.3,1.2)}
 @keyframes modalIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 #modal h2{margin:0 0 14px;font-size:18px}
 #modal label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:12px 0 5px;font-weight:600}
@@ -190,6 +190,26 @@ tr.selected td{background:rgba(139,92,246,.12)}
 #modal input:focus,#modal select:focus,#modal textarea:focus{border-color:var(--accent)}
 #modal .row-btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 #modal .row-btns .btn{flex:1;min-width:120px}
+
+/* Динамические поля бана */
+#banDynamicFields{margin-top:12px}
+#banDynamicFields .field{margin-bottom:10px}
+#banDynamicFields .check{display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer;font-size:13.5px;color:var(--text2)}
+#banDynamicFields .check input{width:auto;margin:0}
+
+/* ========== ИСТОРИЯ БЛОКИРОВОК ========== */
+.hist-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.hist-card.active-ban{border-color:rgba(248,113,113,.4);background:linear-gradient(180deg,rgba(248,113,113,.06),var(--panel))}
+.hist-card.unbanned{border-color:rgba(74,222,128,.3);background:linear-gradient(180deg,rgba(74,222,128,.04),var(--panel))}
+.hist-card .head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.hist-card .head .login{font-size:15px;font-weight:700}
+.hist-card .meta{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:13px;color:var(--text2);line-height:1.7}
+.hist-card .meta b{color:var(--text)}
+.hist-card .notes{background:rgba(167,139,250,.08);border-radius:10px;padding:8px 10px;font-size:12.5px;color:var(--text2);line-height:1.6}
+.hist-card .notes .n{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(167,139,250,.15)}
+.hist-card .notes .n:last-child{border-bottom:0}
+.hist-card .notes .n .t{color:var(--muted);font-size:11.5px}
+.hist-card .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 
 /* ========== TOASTS ========== */
 #toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;width:min(420px,calc(100vw - 24px));pointer-events:none}
@@ -271,13 +291,13 @@ tr.selected td{background:rgba(139,92,246,.12)}
     </div>
     <div class="spacer"></div>
     <a class="btn ghost" href="rules.html" target="_blank">📜 Правила</a>
-    <a class="btn ghost" href="codex.html" target="_blank">📖 Кодекс</a>
-    <button class="btn ghost" onclick="reloadAll()">🔄 Обновить</button>
-    <a class="btn ghost" href="web.html">💬 В чат</a>
+<a class="btn ghost" href="codex.html" target="_blank">📖 Кодекс</a>
+<a class="btn ghost" href="history.html" style="background:linear-gradient(180deg,rgba(251,191,36,.2),rgba(251,191,36,.05));border-color:rgba(251,191,36,.4);color:#fde68a">📜 История блокировок</a>
+<button class="btn ghost" onclick="reloadAll()">🔄 Обновить</button>
+<a class="btn ghost" href="web.html">💬 В чат</a>
 <button class="btn ghost" onclick="logout()">🚪 Выйти</button>
   </header>
 
-  <!-- БАННЕР КОДЕКСА -->
   <div id="codexBanner">
     <span class="ico">📖</span>
     <div class="txt">
@@ -294,7 +314,7 @@ tr.selected td{background:rgba(139,92,246,.12)}
     <button data-tab="ipbans" onclick="switchTab('ipbans')">🛡️ IP-баны</button>
     <button data-tab="donations" onclick="switchTab('donations')">❤️ Донаты</button>
     <button data-tab="reports" onclick="switchTab('reports')">⚠️ Жалобы</button>
-    <button data-tab="log" onclick="switchTab('log')">📜 Лог</button>
+    <button data-tab="log" onclick="switchTab('log')">📋 Лог</button>
     <button data-tab="codex" onclick="switchTab('codex')">📖 Кодекс</button>
     <button data-tab="system" onclick="switchTab('system')">⚙️ Система</button>
   </div>
@@ -311,10 +331,10 @@ tr.selected td{background:rgba(139,92,246,.12)}
         <button class="btn sm" onclick="toggleMassPanel()">⚙️ Массовые</button>
       </div>
 
-      <div class="mass-bar" id="massBar" style="display:none">
-        <h3>Массовые действия · выбрано: <span class="cnt" id="massCount">0</span></h3>
+      <div id="massBar" style="display:none;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border2);border-radius:16px;padding:14px;margin-bottom:14px">
+        <h3 style="margin:0 0 10px;font-size:14px">Массовые действия · выбрано: <span class="cnt" id="massCount" style="color:var(--accent-bright)">0</span></h3>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px">
-          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+          <div style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
             <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">💰 Токены</div>
             <input id="massTokens" type="number" value="10" style="width:100%;padding:8px 10px;background:var(--panel);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;outline:none;margin-bottom:6px"/>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -322,7 +342,7 @@ tr.selected td{background:rgba(139,92,246,.12)}
               <button class="btn danger sm" onclick="massTokens(-1)">Списать</button>
             </div>
           </div>
-          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+          <div style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
             <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">💎 Premium</div>
             <input id="massPremDays" type="number" value="30" style="width:100%;padding:8px 10px;background:var(--panel);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;outline:none;margin-bottom:6px"/>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -330,7 +350,7 @@ tr.selected td{background:rgba(139,92,246,.12)}
               <button class="btn ghost sm" onclick="massPremium(false)">Снять</button>
             </div>
           </div>
-          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+          <div style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
             <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">🚫 Бан</div>
             <input id="massBanDays" type="number" value="30" style="width:100%;padding:8px 10px;background:var(--panel);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;outline:none;margin-bottom:6px"/>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -338,21 +358,21 @@ tr.selected td{background:rgba(139,92,246,.12)}
               <button class="btn ok sm" onclick="massUnban()">Разбанить</button>
             </div>
           </div>
-          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+          <div style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
             <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">👑 Роли</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button class="btn sm" onclick="massAdmin(true)">Админ</button>
               <button class="btn ghost sm" onclick="massAdmin(false)">Снять</button>
             </div>
           </div>
-          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+          <div style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
             <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">❤️ Спасink</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button class="btn gold sm" onclick="massDonor(true)">Выдать</button>
               <button class="btn ghost sm" onclick="massDonor(false)">Снять</button>
             </div>
           </div>
-          <div class="mass-card" style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
+          <div style="background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:12px">
             <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px">🛠️ Сервис</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button class="btn ghost sm" onclick="copySelectedIds()">📋 ID</button>
@@ -401,6 +421,8 @@ tr.selected td{background:rgba(139,92,246,.12)}
     <section class="section" id="sec-appeals">
       <div id="appealsBody"></div>
     </section>
+
+    <!-- ИСТОРИЯ БЛОКИРОВОК -->
 
     <!-- IP-БАНЫ -->
     <section class="section" id="sec-ipbans">
@@ -457,6 +479,7 @@ tr.selected td{background:rgba(139,92,246,.12)}
         <b>Жалоб:</b> <span id="sysRep"></span><br>
         <b>Заявок на разбан:</b> <span id="sysAppeals"></span><br>
         <b>Активных IP-банов:</b> <span id="sysIpBans"></span><br>
+        <b>Записей в истории блокировок:</b> <span id="sysHist"></span><br>
         <b>Записей в логе:</b> <span id="sysLog"></span>
       </div>
     </section>
@@ -475,7 +498,7 @@ const CODEX_VERSION = '1.0';
 
 let JWT = '';
 let AUTH_MODE = '';
-let ME = null, USERS = [], DONATIONS = [], REPORTS = [], LOG = [], APPEALS = [], IP_BANS = [];
+let ME = null, USERS = [], DONATIONS = [], REPORTS = [], LOG = [], APPEALS = [], IP_BANS = [], HISTORY = [];
 let LOG_FILTER = 'all';
 let SELECTED = new Set();
 let MASS_OPEN = false;
@@ -589,6 +612,7 @@ async function reloadAll(){
   const ip = await apiGet('/admin/ip-bans');
   IP_BANS = ip.ok ? (ip.data || []) : [];
   await loadLog();
+  await loadBanHistory();
 
   renderUsers(); renderDonations(); renderReports(); renderAppeals(); renderIpBans(); renderSystem();
 }
@@ -597,6 +621,12 @@ async function loadLog(){
   const lg = await apiGet('/admin/log?kind=' + LOG_FILTER);
   LOG = lg.ok ? (lg.data || []) : [];
   renderLog();
+}
+async function loadBanHistory(){
+  const q = ($('histSearch') ? $('histSearch').value.trim() : '');
+  const h = await apiGet('/admin/ban-history' + (q ? ('?q=' + encodeURIComponent(q)) : ''));
+  HISTORY = h.ok ? (h.data || []) : [];
+  renderHistory();
 }
 
 /* ============================================================ */
@@ -615,15 +645,15 @@ const CODEX_DATA = {
   version: '1.0',
   preamble: 'Кодекс администратора Ink. Обязателен к прочтению при первом входе в панель. Незнание кодекса не освобождает от ответственности.',
   articles: [
-    { id: 1, title: 'Мошенничество', desc: 'Получение токенов, Premium или иных благ путём обмана. Выдача себя за другого пользователя, администратора или аккаунт Ink. Обман в сделках — передача токенов с последующим отказом от выполнения обещанного.', pun: ['Возмещение — все токены, полученные обманом, возвращаются пострадавшему', 'Бан'] },
-    { id: 2, title: 'Распространение запрещённого контента', desc: 'Порнография с несовершеннолетними, экстремизм и терроризм, наркотики и оружие, сцены насилия и жестокости.', pun: ['Бан', 'Удаление источника — сообщение, канал, группа или файл удаляются полностью'] },
-    { id: 3, title: 'Нарушение закона', desc: 'Использование Ink для действий, нарушающих законодательство страны проживания пользователя или страны размещения серверов.', pun: ['Бан'] },
-    { id: 4, title: 'Докс', desc: 'Публикация личных данных человека без его согласия — адрес, телефон, паспорт, место работы, данные родных. Публикация чужих переписок. Доксинг с целью травли.', pun: ['Возмещение — компенсация пострадавшему', 'Бан по IP — невозможность создавать аккаунты с этого IP на установленный срок'] },
-    { id: 5, title: 'Мультиаккаунты', desc: 'Создание нескольких аккаунтов у одного пользователя для манипуляций. Обход бана. Накрутка активности.', pun: ['Бан по IP — невозможность создавать аккаунты с этого IP на установленный срок'] },
-    { id: 6, title: 'Взлом и угон аккаунта', desc: 'Попытки получить доступ к чужому аккаунту. Фактическое завладение чужим аккаунтом. Атаки на серверы Ink.', pun: ['Возмещение — все токены, Premium и данные возвращаются владельцу', 'Бан по IP — невозможность создавать аккаунты с этого IP на установленный срок'] },
-    { id: 7, title: 'Накрутка токенов', desc: 'Использование багов, скриптов или мультиаккаунтов для получения токенов обходным путём.', pun: ['Обнуление — все накрученные токены списываются', 'Бан', 'Лишение статуса — снятие Premium, Спасink и админки при наличии'] },
-    { id: 8, title: 'Превышение полномочий', desc: 'Использование админ-доступа за пределами своих прав: бан без причины, выдача благ себе, вмешательство в чужие разбирательства, доступ к данным без оснований.', pun: ['Бан', 'Возмещение — откат незаконно выданного или списанного', 'Обнуление — списание всех токенов, полученных через превышение', 'Лишение прав — снятие статуса администратора'] },
-    { id: 9, title: 'Угнетение пользователей', desc: 'Использование админ-доступа для давления, травли, унижения или необоснованных наказаний пользователей.', pun: ['Компенсация — пострадавшему возвращаются все потери', 'Бан', 'Лишение прав — снятие статуса администратора'] }
+    { id: 1, title: 'Мошенничество', desc: 'Получение токенов, Premium или иных благ путём обмана. Выдача себя за другого пользователя, администратора или аккаунт Ink. Обман в сделках — передача токенов с последующим отказом от выполнения обещанного.', pun: ['Возмещение — все токены, полученные обманом, возвращаются пострадавшему', 'Бан'], fields: ['compensation'] },
+    { id: 2, title: 'Распространение запрещённого контента', desc: 'Порнография с несовершеннолетними, экстремизм и терроризм, наркотики и оружие, сцены насилия и жестокости.', pun: ['Бан', 'Удаление источника — сообщение, канал, группа или файл удаляются полностью'], fields: [] },
+    { id: 3, title: 'Нарушение закона', desc: 'Использование Ink для действий, нарушающих законодательство страны проживания пользователя или страны размещения серверов.', pun: ['Бан'], fields: [] },
+    { id: 4, title: 'Докс', desc: 'Публикация личных данных человека без его согласия — адрес, телефон, паспорт, место работы, данные родных. Публикация чужих переписок. Доксинг с целью травли.', pun: ['Возмещение — компенсация пострадавшему', 'Бан по IP — невозможность создавать аккаунты с этого IP на установленный срок'], fields: ['compensation', 'ip'] },
+    { id: 5, title: 'Мультиаккаунты', desc: 'Создание нескольких аккаунтов у одного пользователя для манипуляций. Обход бана. Накрутка активности.', pun: ['Бан по IP — невозможность создавать аккаунты с этого IP на установленный срок'], fields: ['obnulenie', 'ip'] },
+    { id: 6, title: 'Взлом и угон аккаунта', desc: 'Попытки получить доступ к чужому аккаунту. Фактическое завладение чужим аккаунтом. Атаки на серверы Ink.', pun: ['Возмещение — все токены, Premium и данные возвращаются владельцу', 'Бан по IP — невозможность создавать аккаунты с этого IP на установленный срок'], fields: ['compensation', 'ip'] },
+    { id: 7, title: 'Накрутка токенов', desc: 'Использование багов, скриптов или мультиаккаунтов для получения токенов обходным путём.', pun: ['Обнуление — все накрученные токены списываются', 'Бан', 'Лишение статуса — снятие Premium, Спасink и админки при наличии'], fields: ['obnulenie', 'revoke'] },
+    { id: 8, title: 'Превышение полномочий', desc: 'Использование админ-доступа за пределами своих прав: бан без причины, выдача благ себе, вмешательство в чужие разбирательства, доступ к данным без оснований.', pun: ['Бан', 'Возмещение — откат незаконно выданного или списанного', 'Обнуление — списание всех токенов, полученных через превышение', 'Лишение прав — снятие статуса администратора'], fields: ['compensation', 'obnulenie', 'revoke'] },
+    { id: 9, title: 'Угнетение пользователей', desc: 'Использование админ-доступа для давления, травли, унижения или необоснованных наказаний пользователей.', pun: ['Компенсация — пострадавшему возвращаются все потери', 'Бан', 'Лишение прав — снятие статуса администратора'], fields: ['compensation', 'revoke'] }
   ]
 };
 
@@ -770,7 +800,7 @@ function massBan(){
   const reason = prompt('Причина:', 'массовый бан') || 'массовый бан';
   massAction('Забанить на ' + days + ' дн.', id => apiAction('/admin/ban/'+id,'POST',{ days, reason }));
 }
-function massUnban(){ massAction('Разбанить', id => apiAction('/admin/ban/'+id,'POST',{ days:0 })); }
+function massUnban(){ massAction('Разбанить', id => apiAction('/admin/unban/'+id,'POST',{})); }
 function massAdmin(enable){ massAction(enable?'Сделать админом':'Снять админа', id => apiAction('/admin/make-admin/'+id,'POST',{ enable })); }
 function massDonor(enable){ massAction(enable?'Выдать Спасink':'Снять Спасink', id => apiAction('/admin/donor/'+id,'POST',{ enable })); }
 function copySelectedIds(){
@@ -804,71 +834,180 @@ async function quickGrant(id){
   toast('💰 Готово','','ok'); reloadAll();
 }
 
-/* Модалка бана с выбором статьи и IP */
+/* ============================================================ */
+/* МОДАЛКА БАНА — с динамическими полями по статье               */
+/* ============================================================ */
 function quickBanModal(id){
   const u = USERS.find(x => x.id === id); if(!u) return;
-  const articles = CODEX_DATA.articles.map(a => `<option value="${a.id}">${a.id}. ${esc(a.title)}</option>`).join('');
+  const articlesOpts = CODEX_DATA.articles.map(a => `<option value="${a.id}">${a.id}. ${esc(a.title)}</option>`).join('');
+  const ip = u.last_ip || u.registered_ip || 'неизвестен';
+  const canBanIp = u.last_ip || u.registered_ip;
+
   $('modal').innerHTML = `
     <div class="box" onclick="event.stopPropagation()">
-      <h2>🚫 Забанить ${esc(u.login)}</h2>
-      <label>Срок бана</label>
-      <select id="banDays">
-        <option value="1">1 день</option>
-        <option value="7">7 дней</option>
-        <option value="14">14 дней</option>
-        <option value="30" selected>30 дней</option>
-        <option value="90">90 дней</option>
-        <option value="180">180 дней</option>
-        <option value="365">365 дней</option>
-        <option value="0">Навсегда</option>
+      <h2>🚫 Бан · ${esc(u.login)}</h2>
+
+      <label>Что забанить</label>
+      <select id="banTarget">
+        <option value="account">Только аккаунт</option>
+        ${canBanIp ? `<option value="ip">Только IP (${esc(ip)})</option>
+        <option value="both">Аккаунт + IP</option>` : ''}
       </select>
+
+      <div id="banAccountFields">
+        <label>Срок бана аккаунта</label>
+        <select id="banDays">
+          <option value="1">1 день</option>
+          <option value="7">7 дней</option>
+          <option value="14">14 дней</option>
+          <option value="30" selected>30 дней</option>
+          <option value="90">90 дней</option>
+          <option value="180">180 дней</option>
+          <option value="365">365 дней</option>
+          <option value="0">Навсегда</option>
+        </select>
+      </div>
+
+      <div id="banIpFields" style="display:none">
+        <label>Срок IP-бана</label>
+        <select id="banIpDays">
+          <option value="1">1 день</option>
+          <option value="7">7 дней</option>
+          <option value="30">30 дней</option>
+          <option value="90" selected>90 дней</option>
+          <option value="180">180 дней</option>
+          <option value="365">365 дней</option>
+          <option value="0">Навсегда</option>
+        </select>
+      </div>
+
       <label>Причина</label>
       <input id="banReason" placeholder="Причина бана" value="${esc(u.block_reason||'')}"/>
-      <label>Статья из правил</label>
-      <select id="banArticle">${articles}</select>
-      <label style="display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer">
-        <input type="checkbox" id="banIp" style="width:auto;margin:0"/>
-        <span>Забанить IP пользователя (${esc(u.last_ip || u.registered_ip || 'неизвестен')})</span>
-      </label>
-      <label>Срок IP-бана (дней, 0 = навсегда)</label>
-      <input id="banIpDays" type="number" value="90"/>
+
+      <label>Статья из кодекса</label>
+      <select id="banArticle" onchange="onArticleChange()">
+        <option value="0">— Без статьи —</option>
+        ${articlesOpts}
+      </select>
+
+      <div id="banDynamicFields"></div>
+
       <div class="row-btns">
         <button class="btn ghost" onclick="closeModal()">Отмена</button>
-        <button class="btn ok" onclick="modalUnban(${u.id})">✅ Разбанить</button>
+        ${isBan(u) ? `<button class="btn ok" onclick="modalUnban(${u.id})">✅ Разбанить</button>` : ''}
         <button class="btn danger" onclick="modalBan(${u.id})">🚫 Забанить</button>
       </div>
     </div>`;
   $('modal').classList.add('on');
   $('modal').onclick = closeModal;
+
+  /* показать/скрыть блоки */
+  $('banTarget').onchange = function(){
+    const v = this.value;
+    $('banAccountFields').style.display = (v === 'account' || v === 'both') ? 'block' : 'none';
+    $('banIpFields').style.display = (v === 'ip' || v === 'both') ? 'block' : 'none';
+  };
 }
 function closeModal(){ $('modal').classList.remove('on'); }
 
+/* Динамические поля зависят от статьи */
+function onArticleChange(){
+  const art = Number($('banArticle').value);
+  const box = $('banDynamicFields');
+  if(!art || art === 0){ box.innerHTML = ''; return; }
+  const data = CODEX_DATA.articles.find(a => a.id === art);
+  const fields = (data && data.fields) || [];
+  let html = '<div style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--border2)"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">Учёт наказания (только запись)</div>';
+
+  if(fields.includes('compensation')){
+    html += `<label>Компенсация жертве (токены)</label>
+             <input id="banCompensation" type="number" value="0" min="0"/>
+             <label>Логин жертвы</label>
+             <input id="banCompensationTo" placeholder="Кому вернуть токены"/>`;
+  }
+  if(fields.includes('obnulenie')){
+    html += `<label class="check" style="display:flex;align-items:center;gap:8px;margin-top:12px;cursor:pointer;font-size:13.5px;color:var(--text2)">
+               <input type="checkbox" id="banObnulenie" style="width:auto;margin:0"/> Отметить «обнулить токены нарушителя»
+             </label>`;
+  }
+  if(fields.includes('revoke')){
+    html += `<label style="margin-top:12px">Лишение статусов (отметить)</label>
+             <label class="check" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer;font-size:13.5px;color:var(--text2)">
+               <input type="checkbox" id="revokePremium" style="width:auto;margin:0"/> Premium
+             </label>
+             <label class="check" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer;font-size:13.5px;color:var(--text2)">
+               <input type="checkbox" id="revokeDonor" style="width:auto;margin:0"/> Спасink
+             </label>
+             <label class="check" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer;font-size:13.5px;color:var(--text2)">
+               <input type="checkbox" id="revokeAdmin" style="width:auto;margin:0"/> Админка
+             </label>`;
+  }
+  if(fields.includes('ip')){
+    html += `<div style="margin-top:12px;padding:10px 12px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);border-radius:10px;font-size:12.5px;color:var(--text2);line-height:1.5">
+               Эта статья подразумевает IP-бан. Включи «Аккаунт + IP» выше.
+             </div>`;
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
 async function modalBan(id){
-  const days = Number($('banDays').value) || 0;
+  const target = $('banTarget') ? $('banTarget').value : 'account';
+  const days = Number($('banDays') && $('banDays').value) || 0;
+  const ipDays = Number($('banIpDays') && $('banIpDays').value) || 0;
   const reason = $('banReason').value.trim() || 'нарушение правил';
-  const articleId = Number($('banArticle').value);
+  const articleId = Number($('banArticle').value) || 0;
   const article = CODEX_DATA.articles.find(a => a.id === articleId);
-  const banIp = $('banIp').checked;
-  const ipDays = Number($('banIpDays').value) || days;
+  const banIp = (target === 'ip' || target === 'both');
+  const banAcc = (target === 'account' || target === 'both');
   const forever = days === 0;
-  const r = await apiAction('/admin/ban/'+id,'POST',{
-    days: forever ? 0 : days,
+  const ipForever = ipDays === 0;
+
+  const compensation = $('banCompensation') ? Number($('banCompensation').value) || 0 : 0;
+  const compensationTo = $('banCompensationTo') ? $('banCompensationTo').value.trim() : '';
+  const obnulenie = $('banObnulenie') ? $('banObnulenie').checked : false;
+  const revoked = [];
+  if($('revokePremium') && $('revokePremium').checked) revoked.push('premium');
+  if($('revokeDonor') && $('revokeDonor').checked) revoked.push('donor');
+  if($('revokeAdmin') && $('revokeAdmin').checked) revoked.push('admin');
+
+  const body = {
+    days: banAcc ? (forever ? 0 : days) : 0,
     reason,
-    forever,
-    article_id: articleId,
+    forever: banAcc ? forever : false,
+    article_id: articleId || null,
     article_title: article ? article.title : '',
     ban_ip: banIp,
-    ip_days: ipDays
-  });
+    ip_days: ipDays,
+    ip_forever: ipForever,
+    compensation,
+    compensation_to: compensationTo,
+    obnulenie,
+    revoked
+  };
+
+  /* Если бан только IP — не трогаем аккаунт */
+  if(!banAcc && banIp){
+    body.days = 0;
+    body.forever = false;
+    body.ip_only = true;
+  }
+
+  const r = await apiAction('/admin/ban/'+id,'POST', body);
   if(!r.ok) return toast('Ошибка', r.error, 'bad');
-  toast('🚫 Забанен', (forever ? 'навсегда' : days + ' дн.') + (r.data.ip_banned ? ' + IP' : ''), 'ok');
+  let msg = '';
+  if(banAcc) msg += forever ? 'навсегда' : days + ' дн.';
+  if(banIp) msg += (msg ? ' + ' : '') + 'IP ' + (ipForever ? 'навсегда' : ipDays + ' дн.');
+  toast('🚫 Бан', msg, 'ok');
   closeModal();
   reloadAll();
 }
+
 async function modalUnban(id){
-  const r = await apiAction('/admin/ban/'+id,'POST',{ days:0 });
+  if(!confirm('Снять бан досрочно?')) return;
+  const r = await apiAction('/admin/unban/'+id,'POST',{});
   if(!r.ok) return toast('Ошибка', r.error, 'bad');
-  toast('✅ Разбанен','','ok');
+  toast('✅ Разбанен досрочно','','ok');
   closeModal();
   reloadAll();
 }
@@ -920,11 +1059,30 @@ async function openUserCard(id){
       </div>
       <div class="row-btns">
         <button class="btn danger sm" onclick="closeModal();quickBanModal(${u.id})">🚫 Забанить</button>
-        <button class="btn ok sm" onclick="modalUnban(${u.id})">✅ Разбанить</button>
+        ${ban ? `<button class="btn ok sm" onclick="modalUnban(${u.id})">✅ Разбанить</button>` : ''}
       </div>
-      ${u.last_ip || u.registered_ip ? `
-      <div class="row-btns">
-        <button class="btn danger sm" onclick="cardIpBan('${esc(u.last_ip||u.registered_ip)}')">🛡️ IP-бан ${esc(u.last_ip||u.registered_ip)}</button>
+
+      ${(u.ban_history && u.ban_history.length) ? `
+      <label>История блокировок (${u.ban_history.length})</label>
+      <div style="max-height:200px;overflow-y:auto;background:rgba(0,0,0,.2);border-radius:10px;padding:8px">
+        ${u.ban_history.map(h => `
+          <div style="padding:8px;border-bottom:1px solid var(--border);font-size:12.5px">
+            <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+              <span class="tag ${h.current_status === 'banned' ? 'ban' : 'ok'}">${h.current_status}</span>
+              <span class="muted">${fmtDateShort(h.at)}</span>
+            </div>
+            <div style="margin-top:4px">
+              ${h.article_id ? `Ст. ${h.article_id}. ${esc(h.article_title)}` : 'Без статьи'} ·
+              ${h.ban_forever ? 'навсегда' : (h.ban_days ? h.ban_days + ' дн.' : '—')}
+              ${h.ip ? ' · IP: ' + esc(h.ip) : ''}
+              ${h.ip_ban_active ? ' (IP-бан)' : ''}
+            </div>
+            ${h.reason ? `<div class="muted">Причина: ${esc(h.reason)}</div>` : ''}
+            ${h.compensation ? `<div style="color:var(--warn)">Компенсация: ${h.compensation} → ${esc(h.compensation_to||'?')}</div>` : ''}
+            ${h.obnulenie ? '<div style="color:var(--danger)">Обнуление отмечено</div>' : ''}
+            ${(h.revoked||[]).length ? `<div style="color:var(--danger)">Снять: ${h.revoked.join(', ')}</div>` : ''}
+          </div>
+        `).join('')}
       </div>` : ''}
 
       <label>Транзакции (${(u.transactions||[]).length})</label>
@@ -936,18 +1094,6 @@ async function openUserCard(id){
           </div>
         `).join('') : '<div class="muted" style="padding:8px">Нет транзакций</div>'}
       </div>
-
-      ${(u.appeals||[]).length ? `
-      <label>Заявки на разбан (${u.appeals.length})</label>
-      <div style="max-height:150px;overflow-y:auto;background:rgba(0,0,0,.2);border-radius:10px;padding:8px">
-        ${u.appeals.map(a => `
-          <div style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:12.5px">
-            <span class="tag ${a.status === 'approved' ? 'ok' : (a.status === 'rejected' ? 'ban' : 'warn')}">${a.status}</span>
-            ${esc(a.comment).slice(0, 100)}
-            <div class="muted" style="margin-top:2px">${fmtDateShort(a.at)}</div>
-          </div>
-        `).join('')}
-      </div>` : ''}
 
       <div class="row-btns" style="margin-top:14px">
         <button class="btn ghost" onclick="closeModal()">Закрыть</button>
@@ -986,16 +1132,6 @@ async function cardAdmin(id, enable){
   if(!r.ok) return toast('Ошибка', r.error, 'bad');
   toast(enable?'👑 Админ выдан':'👑 Админ снят','','ok');
   openUserCard(id);
-}
-async function cardIpBan(ip){
-  const days = prompt('На сколько дней забанить IP ' + ip + '? (0 = навсегда)', '90');
-  if(days === null) return;
-  const reason = prompt('Причина:', 'нарушение правил') || 'нарушение правил';
-  const r = await apiAction('/admin/ip-ban','POST',{ ip, days: Number(days) || 0, reason });
-  if(!r.ok) return toast('Ошибка', r.error, 'bad');
-  toast('🛡️ IP забанен', ip + ' на ' + days + ' дн.', 'ok');
-  closeModal();
-  reloadAll();
 }
 
 /* ============================================================ */
@@ -1066,6 +1202,64 @@ async function appealAction(id, action){
   if(!r.ok) return toast('Ошибка', r.error, 'bad');
   toast(action === 'approve' ? '✅ Бан снят' : '✕ Отклонено', '', 'ok');
   reloadAll();
+}
+
+/* ============================================================ */
+/* ИСТОРИЯ БЛОКИРОВОК                                            */
+/* ============================================================ */
+function renderHistory(){
+  if(!HISTORY.length){ $('historyBody').innerHTML = '<div class="empty">История пуста</div>'; return; }
+  $('historyBody').innerHTML = HISTORY.map(h => {
+    const cls = h.current_status === 'banned' ? 'active-ban' : 'unbanned';
+    const until = h.ban_forever ? 'навсегда' : (h.ban_days ? h.ban_days + ' дн.' : '—');
+    const ipUntil = h.ip_ban_forever ? 'навсегда' : (h.ip_ban_days ? h.ip_ban_days + ' дн.' : '—');
+    const revoked = (h.revoked || []).map(r => r === 'premium' ? 'Premium' : r === 'donor' ? 'Спасink' : r === 'admin' ? 'Админ' : r);
+    return `
+      <div class="hist-card ${cls}">
+        <div class="head">
+          <div class="login">${esc(h.target_login)}</div>
+          <span class="tag ${h.current_status === 'banned' ? 'ban' : 'ok'}">${h.current_status === 'banned' ? '🔴 забанен' : '🟢 разбанен'}</span>
+          ${h.verdict !== 'pending' ? `<span class="tag ${h.verdict === 'approved' ? 'ok' : 'ban'}">${h.verdict}</span>` : ''}
+          <span class="muted" style="font-size:12px;margin-left:auto">${fmtDateShort(h.at)} · #${h.id}</span>
+        </div>
+        <div class="meta">
+          <b>Админ:</b> ${esc(h.admin_login)}<br>
+          <b>Статья:</b> ${h.article_id ? `${h.article_id}. ${esc(h.article_title)}` : '—'}<br>
+          <b>Бан аккаунта:</b> ${h.ban_active ? until : (h.ban_days || h.ban_forever ? 'был ' + until : '—')}<br>
+          <b>IP:</b> ${h.ip ? esc(h.ip) + (h.ip_ban_active ? ' (забанен, ' + ipUntil + ')' : (h.ip_ban_days ? ' (был ' + ipUntil + ')' : '')) : '—'}<br>
+          <b>Причина:</b> ${esc(h.reason || '—')}
+          ${h.compensation ? `<br><b>Компенсация:</b> <span style="color:var(--warn)">${h.compensation} токенов → ${esc(h.compensation_to||'?')}</span>` : ''}
+          ${h.obnulenie ? `<br><b>Обнуление:</b> <span style="color:var(--danger)">отмечено</span>` : ''}
+          ${revoked.length ? `<br><b>Снять статусы:</b> <span style="color:var(--danger)">${revoked.join(', ')}</span>` : ''}
+        </div>
+        ${(h.notes && h.notes.length) ? `
+          <div class="notes">
+            ${h.notes.map(n => `<div class="n"><span>${esc(n.text)}</span><span class="t">${fmtDateShort(n.at)}</span></div>`).join('')}
+          </div>` : ''}
+        <div class="btns">
+          ${h.current_status === 'banned' ? `<button class="btn ok sm" onclick="historyUnban(${h.id}, ${h.target_id||'null'})">✅ Снять бан досрочно</button>` : ''}
+          ${h.verdict === 'pending' ? `
+            <button class="btn ok sm" onclick="historyVerdict(${h.id},'approved')">✓ Вердикт: обоснован</button>
+            <button class="btn danger sm" onclick="historyVerdict(${h.id},'rejected')">✕ Вердикт: необоснован</button>
+          ` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function historyUnban(historyId, targetId){
+  if(!confirm('Снять бан досрочно?')) return;
+  if(!targetId){ toast('Нет привязки к аккаунту', '', 'bad'); return; }
+  const r = await apiAction('/admin/unban/'+targetId,'POST',{ history_id: historyId });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('✅ Разбанен досрочно','','ok');
+  reloadAll();
+}
+async function historyVerdict(historyId, verdict){
+  const r = await apiAction('/admin/ban-history/'+historyId+'/verdict','POST',{ verdict });
+  if(!r.ok) return toast('Ошибка', r.error, 'bad');
+  toast('✓ Вердикт обновлён','','ok');
+  loadBanHistory();
 }
 
 /* ============================================================ */
@@ -1174,8 +1368,8 @@ function setLogFilter(kind){
   loadLog();
 }
 function renderLog(){
-  if(!LOG.length){ $('logBody').innerHTML = '<div class="empty">Лог пуст</div>'; $('logCount').textContent = ''; return }
-  $('logCount').textContent = 'Показано: ' + LOG.length;
+  if(!LOG.length){ $('logBody').innerHTML = '<div class="empty">Лог пуст</div>'; if($('logCount')) $('logCount').textContent = ''; return }
+  if($('logCount')) $('logCount').textContent = 'Показано: ' + LOG.length;
   $('logBody').innerHTML = `
     <table style="min-width:900px">
       <thead><tr>
@@ -1211,6 +1405,7 @@ function renderSystem(){
     <div class="card"><div class="num">${REPORTS.length}</div><div class="lbl">Жалоб</div></div>
     <div class="card"><div class="num">${APPEALS.filter(a=>a.status==='pending').length}</div><div class="lbl">Заявок</div></div>
     <div class="card"><div class="num">${IP_BANS.length}</div><div class="lbl">IP-банов</div></div>
+    <div class="card"><div class="num">${HISTORY.length}</div><div class="lbl">История</div></div>
     <div class="card"><div class="num">${LOG.length}</div><div class="lbl">Лог</div></div>`;
   $('sysApi').textContent = API;
   $('sysAuth').textContent = authLabel;
@@ -1219,6 +1414,7 @@ function renderSystem(){
   $('sysRep').textContent = REPORTS.length;
   $('sysAppeals').textContent = APPEALS.length;
   $('sysIpBans').textContent = IP_BANS.length;
+  $('sysHist').textContent = HISTORY.length;
   $('sysLog').textContent = LOG.length;
 }
 
