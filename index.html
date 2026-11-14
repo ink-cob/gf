@@ -923,47 +923,6 @@ function setTheme(newThemeId) {
     }, 50);
   }, 150);
 }
-
-function updateThemeMenuActive(theme) {
-  document.querySelectorAll('.theme-menu button').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.theme === theme);
-  });
-}
-
-document.addEventListener('click', (e) => {
-  const menu = document.getElementById('themeMenu');
-  const btn = document.querySelector('.theme-toggle-btn');
-  if(menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
-    menu.classList.remove('open');
-  }
-});
-
-// АНИМАЦИЯ ОБЗОРА ТЕМ (при первом заходе)
-if(!savedTheme) {
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      let step = 0;
-      function animateNext() {
-        if(step >= themes.length) {
-          setTheme('theme-ink');
-          return;
-        }
-        const nextTheme = themes[step];
-        const flash = document.getElementById('flashOverlay');
-        flash.classList.add('active');
-        setTimeout(() => {
-          document.body.className = nextTheme;
-          flash.classList.remove('active');
-          setTimeout(() => {
-            step++;
-            animateNext();
-          }, 500);
-        }, 150);
-      }
-      animateNext();
-    }, 500);
-  });
-}
 </script>
 </body>
 </html>
