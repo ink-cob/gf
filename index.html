@@ -9,6 +9,7 @@
 </head>
 <body>
 
+<!-- Кнопка и меню тем -->
 <button class="theme-toggle-btn" onclick="toggleThemeMenu()" title="Сменить тему">
   <div class="theme-color-dot"></div>
 </button>
@@ -217,7 +218,7 @@
 
 </div>
 
-<!-- ИНТРО ПЕРВОГО ЗАХОДА -->
+<!-- ИНТРО ПЕРВОГО ЗАХОДА (не перекрывает, если уже видели) -->
 <div id="introScene">
   <svg class="intro-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -288,8 +289,40 @@ document.addEventListener('click', (e) => {
   }
 });
 
-if(!savedTheme) {
-  window.addEventListener('load', () => {
+// ИНТРО (просто исчезает через 3 секунды, если не видели)
+(function(){
+  if(localStorage.getItem('ink_intro_seen')) return;
+  var el = document.getElementById('introScene');
+  if(!el) return;
+  el.classList.add('show');
+  setTimeout(closeIntro, 3000);
+})();
+
+function closeIntro(){
+  var el = document.getElementById('introScene');
+  if(!el || !el.classList.contains('show')) return;
+  el.style.transition = 'opacity .4s';
+  el.style.opacity = '0';
+  setTimeout(function(){
+    el.classList.remove('show');
+    el.style.opacity = '';
+    el.style.transition = '';
+  }, 400);
+  localStorage.setItem('ink_intro_seen', '1');
+}
+
+// ФИКС ПРОКРУТКИ И ПОЯВЛЕНИЯ
+window.addEventListener('load', () => {
+  // Принудительно показываем все элементы, которые уже на экране
+  document.querySelectorAll('.reveal').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if(rect.top < window.innerHeight) {
+      el.classList.add('visible');
+    }
+  });
+  
+  // Если тема не сохранена, запускаем анимацию перебора тем (как было)
+  if(!savedTheme) {
     setTimeout(() => {
       let step = 0;
       function animateNext() {
@@ -311,29 +344,8 @@ if(!savedTheme) {
       }
       animateNext();
     }, 500);
-  });
-}
-
-/* ===== ИНТРО ПЕРВОГО ЗАХОДА ===== */
-(function(){
-  if(localStorage.getItem('ink_intro_seen')) return;
-  var el = document.getElementById('introScene');
-  if(!el) return;
-  el.classList.add('show');
-  setTimeout(closeIntro, 3600);
-})();
-function closeIntro(){
-  var el = document.getElementById('introScene');
-  if(!el || !el.classList.contains('show')) return;
-  el.style.transition = 'opacity .45s';
-  el.style.opacity = '0';
-  setTimeout(function(){
-    el.classList.remove('show');
-    el.style.opacity = '';
-    el.style.transition = '';
-  }, 450);
-  localStorage.setItem('ink_intro_seen', '1');
-}
+  }
+});
 </script>
 </body>
 </html>
