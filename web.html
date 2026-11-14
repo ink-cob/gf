@@ -173,6 +173,7 @@ header button:active{transform:translateY(1px) scale(.96);box-shadow:inset 0 2px
   border: 1px solid var(--border2); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   margin: 0 2px; flex-shrink: 0;
+  margin: 0 2px 0 8px;
   box-shadow: 0 3px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(232,230,226,.08),inset 0 -2px 0 rgba(0,0,0,.4);
   transition: transform .15s cubic-bezier(.2,.9,.3,1.4), box-shadow .25s, border-color .2s;
 }
@@ -705,9 +706,6 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
 <div id="loading"><div class="spinner"></div><div style="color:var(--muted);font-size:13px">Подключение...</div></div>
 
 <!-- КНОПКА И МЕНЮ ТЕМ -->
-<button class="theme-toggle-btn" onclick="toggleThemeMenu()" title="Сменить тему">
-  <div class="theme-color-dot"></div>
-</button>
 <div class="theme-menu" id="themeMenu">
   <button onclick="setTheme('theme-ink')" data-theme="theme-ink"><span class="theme-menu-dot" style="background:#8b5cf6"></span> Черничная</button>
   <button onclick="setTheme('theme-milk')" data-theme="theme-milk"><span class="theme-menu-dot" style="background:#ffffff;border-color:#999"></span> Молочная</button>
@@ -759,6 +757,9 @@ body.inkognito::after{content:"🕶️ Inkognito";position:fixed;bottom:8px;left
   <header>
     <button id="backBtn" style="display:none" onclick="backToList()">←</button>
     <button id="homeBtn" onclick="location.href='index.html'" title="На главную">🏠</button>
+    <button class="theme-toggle-btn" onclick="toggleThemeMenu()" title="Сменить тему">
+      <div class="theme-color-dot"></div>
+    </button>
     <div class="header-ghost">
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>
