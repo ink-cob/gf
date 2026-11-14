@@ -2669,6 +2669,12 @@ function renderSettingsBody(){
         <div class="switch ${NOTIF_GLOBAL ? 'on' : ''}"></div>
       </div>
     </div>
+    <div class="st-section"><h3>📱 Push-уведомления</h3>
+      <div class="st-row" onclick="subscribeToPush()">
+        <div class="icon">🔔</div>
+        <div class="txt"><div class="t1">Включить Push</div><div class="t2">Приходят даже при закрытом сайте</div></div>
+      </div>
+    </div>
     <div class="st-section"><h3>🕶️ Inkognito</h3>
       <div class="st-row" onclick="toggleInkognito()"><div class="icon">🕶️</div><div class="txt"><div class="t1">${inkActive ? 'Активен' : 'Не активен'}</div></div></div>
     </div>
@@ -3255,6 +3261,55 @@ window.addEventListener('load', () => {
     runThemeAnimation();
   }
 });
+// ============================================================
+// PUSH-УВЕДОМЛЕНИЯ
+// ============================================================
+const PUSH_VAPID_PUBLIC = 'BKQAN86JiKjipx7eBy3c-ZN6wnJFOCkmViTnrrcdqrdzNwH6pLdyhhNNTtnSRsXyFKAubbHvvv-Q7OYkBsEV91Io';
+
+function urlB64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+
+async function subscribeToPush() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    return toast('Браузер не поддерживает push', '');
+  }
+  if (!ME || !ME.id) {
+    return toast('Сначала войди в аккаунт', '');
+  }
+
+  try {
+    // Регистрируем Service Worker для пушей
+    const reg = await navigator.serviceWorker.register('/sw-push.js');
+    await navigator.serviceWorker.ready;
+
+    // Запрашиваем разрешение
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') return toast('Разрешение отклонено', '');
+
+    // Подписываемся
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlB64ToUint8Array(PUSH_VAPID_PUBLIC)
+    });
+
+    // Отправляем подписку на сервер
+    const r = await fetch(API + '/push/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN },
+      body: JSON.stringify({ subscription: sub })
+    });
+
+    if (!r.ok) throw new Error('Ошибка сервера');
+    toast('✓ Уведомления включены', '');
+  } catch (e) {
+    console.error(e);
+    toast('Ошибка', e.message);
+  }
+}
 </script>
 </body>
 </html>
