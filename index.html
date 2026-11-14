@@ -176,7 +176,7 @@
     </svg>
     <h3>Установи Ink на своё устройство</h3>
     <p>Мы активно работаем над мобильным и десктопным приложением. Как только файлы будут готовы — кнопки появятся здесь.</p>
-    
+
     <div class="download-grid" style="opacity:.5;pointer-events:none">
       <a class="download-btn" href="javascript:void(0)">
         <span class="meta">
@@ -215,6 +215,31 @@
     <div class="owner">Независимый проект одного разработчика</div>
   </footer>
 
+</div>
+
+<!-- ИНТРО ПЕРВОГО ЗАХОДА -->
+<div id="introScene">
+  <svg class="intro-ghost" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="introG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="var(--accent-bright)"/>
+        <stop offset="100%" stop-color="var(--accent-dark)"/>
+      </linearGradient>
+    </defs>
+    <path d="M50 8 a32 32 0 0 1 32 32 v34 l-8 -8 -8 8 -8 -8 -8 8 -8 -8 -8 8 v-34 a32 32 0 0 1 32 -32 z" fill="url(#introG)"/>
+    <ellipse cx="40" cy="46" rx="4.5" ry="6" fill="var(--ghost-eyes)"/>
+    <circle cx="41.5" cy="44" r="1.6" fill="#fff"/>
+    <g class="eye">
+      <ellipse cx="60" cy="46" rx="4.5" ry="6" fill="var(--ghost-eyes)"/>
+      <circle cx="61.5" cy="44" r="1.6" fill="#fff"/>
+    </g>
+  </svg>
+  <h2 class="intro-title">Добро пожаловать в Ink</h2>
+  <p class="intro-sub">Кланы, токены, режим призрака и приватность. Всё, чего не хватает другим мессенджерам.</p>
+  <div class="intro-actions">
+    <button class="intro-btn" onclick="closeIntro()">Начать →</button>
+    <button class="intro-btn ghost" onclick="closeIntro()">Пропустить</button>
+  </div>
 </div>
 
 <script>
@@ -287,6 +312,27 @@ if(!savedTheme) {
       animateNext();
     }, 500);
   });
+}
+
+/* ===== ИНТРО ПЕРВОГО ЗАХОДА ===== */
+(function(){
+  if(localStorage.getItem('ink_intro_seen')) return;
+  var el = document.getElementById('introScene');
+  if(!el) return;
+  el.classList.add('show');
+  setTimeout(closeIntro, 3600);
+})();
+function closeIntro(){
+  var el = document.getElementById('introScene');
+  if(!el || !el.classList.contains('show')) return;
+  el.style.transition = 'opacity .45s';
+  el.style.opacity = '0';
+  setTimeout(function(){
+    el.classList.remove('show');
+    el.style.opacity = '';
+    el.style.transition = '';
+  }, 450);
+  localStorage.setItem('ink_intro_seen', '1');
 }
 </script>
 </body>
